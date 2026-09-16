@@ -59,6 +59,7 @@
   .script-toggle{margin-top:6px;}
   .script-toggle button{background:none;border:1px solid var(--ink-soft);color:var(--ink-soft);
     border-radius:6px;padding:5px 12px;font-size:12.5px;cursor:pointer;}
+  .script-toggle button:disabled{opacity:.5;cursor:not-allowed;}
   .script{display:none;margin-top:8px;font-size:13.5px;color:var(--ink-soft);
     background:#f5f2e8;border-radius:6px;padding:10px 14px;white-space:pre-line;}
   .script.show{display:block;}
@@ -149,7 +150,7 @@ function mc(container, items, withScript){
     const optsHtml = it.options.map((op,oi)=>`
       <div class="opt" data-correct="${oi===it.correct}"><span class="tag">(${String.fromCharCode(65+oi)})</span><span>${op}</span></div>`).join("");
     q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q||""}</div><div class="opts">${optsHtml}</div>
-      ${it.script ? `<div class="script-toggle"><button>顯示逐字稿</button></div><div class="script">${it.script}</div>`:""}`;
+      ${it.script ? `<div class="script-toggle"><button disabled title="送出成績後解鎖">🔒 顯示逐字稿</button></div><div class="script">${it.script}</div>`:""}`;
     q.querySelectorAll(".opt").forEach(o=>o.addEventListener("click", ()=>{
       if(q.dataset.answered==="true") return;
       q.dataset.answered="true";

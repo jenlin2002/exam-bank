@@ -29,7 +29,6 @@
         <option value="">選擇學生</option>
         <option value="BRANDEN">BRANDEN</option>
         <option value="MELISSA">MELISSA</option>
-        <option value="老大">老大</option>
       </select>
       <button id="examSubmitBtn" style="background:#b5842a;color:#fff;border:none;border-radius:6px;
         padding:7px 14px;font-size:13.5px;cursor:pointer;">送出成績</button>
@@ -53,6 +52,21 @@
     const statusEl = document.getElementById("examSyncStatus");
     if(!student){ alert("請先在右下角選擇學生身分"); return; }
     if(!window.EXAM_META){ alert("這個頁面尚未設定考卷資訊"); return; }
+
+    // 檢查所有可判斷對錯的題目是否都已作答
+    const unanswered = [];
+    document.querySelectorAll("section.block .q").forEach(q=>{
+      const gradable = q.querySelector(".opts") || q.querySelector("input.blank");
+      if(gradable && q.dataset.studentAnswer === undefined){
+        unanswered.push(q);
+      }
+    });
+    if(unanswered.length > 0){
+      alert(`還有 ${unanswered.length} 題尚未作答，請先完成所有測驗題目再送出成績。`);
+      unanswered[0].scrollIntoView({behavior:"smooth", block:"center"});
+      return;
+    }
+
     const date = nowStr();
     let sections = 0;
 
@@ -93,6 +107,14 @@
       statusEl.textContent = "尚未作答任何題目";
     } else {
       statusEl.textContent = `已送出 ${sections} 個單元的成績！`;
+      if(typeof window.unlockPrintMode === "function"){
+        window.unlockPrintMode();
+      }
+      document.querySelectorAll(".script-toggle button").forEach(b=>{
+        b.disabled = false;
+        b.textContent = "顯示逐字稿";
+        b.title = "";
+      });
     }
   };
 
