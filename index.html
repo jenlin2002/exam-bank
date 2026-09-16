@@ -3,140 +3,84 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Branden & Melissa 英文成長園地</title>
+<title>段考題庫｜康軒版七年級英語（二）</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Kalam:wght@400;700&family=Noto+Sans+TC:wght@400;500;700;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@500;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
   :root{
-    --bg: #1B3A2F;
-    --bg2: #163026;
-    --paper: #F7F3E8;
-    --paper2: #EFE9D8;
-    --yellow: #E8B94A;
-    --green: #7FB69A;
-    --red: #D97A6C;
-    --brown: #B08B5A;
-    --line: #2A4A3C;
+    --paper:#faf6ec; --ink:#26332b; --ink-soft:#5b6b5f;
+    --chalk-green:#2f4538; --gold:#b5842a; --paper-line:#e3dcc8;
   }
-  *{box-sizing:border-box; margin:0; padding:0;}
-  body{
-    background:var(--bg); color:var(--paper);
-    font-family:'Noto Sans TC', sans-serif;
-    min-height:100vh;
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:"Noto Sans TC",sans-serif;line-height:1.7;}
+  header{background:var(--chalk-green);color:#eef2ea;padding:30px 20px 42px;position:relative;}
+  header::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:14px;
+    background:repeating-linear-gradient(90deg,var(--paper) 0 18px, transparent 18px 20px);}
+  .inner{max-width:820px;margin:0 auto;}
+  .breadcrumb a{color:#cfe0d1;text-decoration:none;font-size:14px;}
+  h1{font-family:"Noto Serif TC",serif;font-size:clamp(24px,4vw,32px);margin:10px 0 6px;}
+  .sub{color:#cfe0d1;font-size:15px;margin:0;}
+  main{max-width:820px;margin:0 auto;padding:28px 20px 70px;}
+  .grid{display:grid;gap:14px;}
+  .card{
+    display:flex;justify-content:space-between;align-items:center;
+    background:#fff;border:1px solid var(--paper-line);border-radius:10px;
+    padding:18px 20px;text-decoration:none;color:var(--ink);
   }
-  header{
-    padding:50px 24px 30px; text-align:center;
-    border-bottom:1px solid var(--line);
+  .card.active:hover{border-color:var(--chalk-green);}
+  .card .name{font-family:"Noto Serif TC",serif;font-weight:700;font-size:17px;margin:0 0 4px;}
+  .card .desc{font-size:13.5px;color:var(--ink-soft);margin:0;}
+  .card .arrow{color:var(--gold);font-size:20px;}
+  .card.disabled{opacity:.5;}
+  .badge{
+    display:inline-block;font-size:12px;background:var(--gold);color:#fff;
+    padding:2px 9px;border-radius:999px;margin-left:8px;vertical-align:middle;
   }
-  .eyebrow{
-    font-family:'Space Mono', monospace; font-size:12px; letter-spacing:4px;
-    color:var(--yellow); font-weight:700; margin-bottom:8px;
-  }
-  h1{ font-family:'Kalam', cursive; font-size:34px; margin-bottom:8px; }
-  .sub{ font-size:14px; color:#9AA89C; }
-
-  main{ max-width:960px; margin:0 auto; padding:40px 20px 80px; }
-
-  .section-title{
-    font-family:'Space Mono', monospace; font-size:12px; letter-spacing:2px;
-    color:var(--green); margin:36px 0 16px; padding-bottom:8px; border-bottom:1px solid var(--line);
-  }
-  .section-title:first-child{ margin-top:0; }
-
-  .grid{
-    display:grid; grid-template-columns:repeat(auto-fill, minmax(280px,1fr));
-    gap:16px;
-  }
-
-  a.project-card{
-    display:block; background:var(--bg2); border:1px solid var(--line); border-radius:16px;
-    padding:24px 22px; text-decoration:none; color:var(--paper);
-    transition:transform 0.15s, border-color 0.15s;
-  }
-  a.project-card:hover{ transform:translateY(-3px); border-color:var(--yellow); }
-
-  .card-icon{ font-size:28px; margin-bottom:10px; }
-  .card-title{ font-family:'Kalam', cursive; font-size:20px; margin-bottom:6px; }
-  .card-desc{ font-size:13px; color:#9AA89C; line-height:1.6; margin-bottom:14px; }
-  .card-tag{
-    display:inline-block; font-family:'Space Mono', monospace; font-size:11px;
-    padding:3px 10px; border-radius:12px; letter-spacing:1px;
-  }
-  .tag-grammar{ background:rgba(232,185,74,0.15); color:var(--yellow); }
-  .tag-reading{ background:rgba(127,182,154,0.15); color:var(--green); }
-  .tag-listening{ background:rgba(217,122,108,0.15); color:var(--red); }
-  .tag-exam{ background:rgba(176,139,90,0.18); color:var(--brown); }
-
-  .placeholder-card{
-    display:flex; align-items:center; justify-content:center;
-    background:transparent; border:2px dashed var(--line); border-radius:16px;
-    padding:24px 22px; color:#5B6B60; font-size:13px; text-align:center; min-height:140px;
-  }
-
-  footer{
-    text-align:center; padding:24px; font-size:12px; color:#5B6B60;
-    border-top:1px solid var(--line);
-  }
+  .footer-link{display:block;text-align:center;margin-top:34px;color:var(--chalk-green);text-decoration:none;font-weight:700;font-size:14px;}
+  .footer-link:hover{text-decoration:underline;}
 </style>
 </head>
 <body>
-
 <header>
-  <div class="eyebrow">GROWING UP WITH ENGLISH</div>
-  <h1>Branden &amp; Melissa 英文成長園地</h1>
-  <div class="sub">所有自製英文學習網站的入口，點卡片進入各個子網站</div>
+  <div class="inner">
+    <div class="breadcrumb"><a href="https://jenlin2002.github.io/">🏠 回總目錄</a></div>
+    <h1>段考題庫</h1>
+    <p class="sub">康軒版七年級英語（二）平時考練習，題目會陸續增加</p>
+  </div>
 </header>
-
 <main>
-  <div class="section-title">📚 文法與句型</div>
-  <div class="grid">
-    <a class="project-card" href="https://jenlin2002.github.io/english-quiz/" target="_blank">
-      <div class="card-icon">✏️</div>
-      <div class="card-title">English Quiz｜文法課程總目錄</div>
-      <div class="card-desc">18週完整文法課程：教案、投影片（含語音播放）、互動測驗，涵蓋時態、句型、關係代名詞等主題。</div>
-      <span class="card-tag tag-grammar">18 WEEKS</span>
-    </a>
-  </div>
-
-  <div class="section-title">🌍 閱讀理解</div>
-  <div class="grid">
-    <a class="project-card" href="https://jenlin2002.github.io/nat-geo-reading/" target="_blank">
-      <div class="card-icon">🗺️</div>
-      <div class="card-title">Nat-Geo Reading｜國家地理風閱讀課程</div>
-      <div class="card-desc">10週國家地理風格閱讀教材，簡化版與進階版雙難度，含單字卡、克漏字、聽力與閱讀測驗。</div>
-      <span class="card-tag tag-reading">10 WEEKS · 2 LEVELS</span>
-    </a>
-  </div>
-
-  <div class="section-title">🎧 聽力與口說</div>
-  <div class="grid">
-    <a class="project-card" href="https://jenlin2002.github.io/daily_life_listening/" target="_blank">
-      <div class="card-icon">🎧</div>
-      <div class="card-title">英文聽力高頻句練習</div>
-      <div class="card-desc">16個生活主題單元，含原創高頻對話句與情境對話，每句都能單獨播放語音，也可以整段對話一起聽。</div>
-      <span class="card-tag tag-listening">16 UNITS</span>
-    </a>
-  </div>
-
-  <div class="section-title">📝 段考題庫</div>
-  <div class="grid">
-    <a class="project-card" href="https://jenlin2002.github.io/exam-bank/" target="_blank">
-      <div class="card-icon">📝</div>
-      <div class="card-title">國中英語段考題庫｜Exam Bank</div>
-      <div class="card-desc">康軒版七年級英語（二）平時考題庫，互動測驗＋完整題目與解答，涵蓋筆試與聽力，陸續加入各次段考內容。</div>
-      <span class="card-tag tag-exam">A / B / C 卷 · 陸續更新</span>
-    </a>
-  </div>
-
-  <div class="section-title">➕ 之後新增的項目</div>
-  <div class="grid">
-    <div class="placeholder-card">
-      在這裡新增下一個子網站的卡片
-    </div>
-  </div>
+  <div class="grid" id="examGrid"></div>
+  <script>
+    const EXAMS = [
+      {n:1, lesson:"Lesson 1", title:"Alan Plays Basketball Every Day", type:"筆試", href:"test1.html", status:"done"},
+      {n:2, lesson:"Lesson 2", title:"How Often Do You Clean Your Room?", type:"筆試", status:"todo"},
+      {n:3, lesson:"Review 1", title:"Lesson 1～2 總複習", type:"筆試", status:"todo"},
+      {n:4, lesson:"Lesson 1～2", title:"聽力測驗一", type:"聽力", href:"test4.html", status:"done"},
+      {n:5, lesson:"Lesson 3", title:"What's the Date Today?", type:"筆試", status:"todo"},
+      {n:6, lesson:"Lesson 4", title:"How Much Cake Do You Want?", type:"筆試", status:"todo"},
+      {n:7, lesson:"Review 2", title:"Lesson 3～4 總複習", type:"筆試", status:"todo"},
+      {n:8, lesson:"Lesson 3～4", title:"聽力測驗二", type:"聽力", href:"test8.html", status:"done"},
+      {n:9, lesson:"Lesson 5", title:"You Helped Me a Lot", type:"筆試", status:"todo"},
+      {n:10, lesson:"Lesson 6", title:"They Got Lots of People Together and Cleaned Up Bali's Beaches", type:"筆試", status:"todo"},
+      {n:11, lesson:"Review 3", title:"Lesson 5～6 總複習", type:"筆試", status:"todo"},
+      {n:12, lesson:"Lesson 5～6", title:"聽力測驗三", type:"聽力", href:"test12.html", status:"done"}
+    ];
+    const grid = document.getElementById("examGrid");
+    EXAMS.forEach(ex=>{
+      const done = ex.status==="done";
+      const el = document.createElement(done ? "a" : "div");
+      el.className = "card" + (done ? " active" : " disabled");
+      if(done) el.href = ex.href;
+      el.innerHTML = `
+        <div>
+          <p class="name">第${ex.n}次平時考・${ex.lesson}${done ? '<span class="badge">A卷</span>' : ''}</p>
+          <p class="desc">${ex.title}｜${ex.type}${done ? "" : "・整理中"}</p>
+        </div>
+        <div class="arrow">${done ? "→" : "…"}</div>`;
+      grid.appendChild(el);
+    });
+  </script>
+  <a class="footer-link" href="https://jenlin2002.github.io/english-quiz/">← 回英文文法課程總覽</a>
 </main>
-
-<footer>持續建置中，之後每完成一個新網站就會加進對應的分類裡。</footer>
-
 </body>
 </html>
