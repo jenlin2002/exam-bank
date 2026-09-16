@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>段考題庫｜第12次平時考 - 聽力三（Lesson 5～6）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@500;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#faf6ec; --paper-line:#e3dcc8; --ink:#26332b; --ink-soft:#5b6b5f;
+    --chalk-green:#2f4538; --chalk-green-2:#3d5a48; --pen-red:#b8433a; --pen-red-soft:#f4dedb;
+    --ok-green:#3f7d52; --ok-green-soft:#dfeee1; --gold:#b5842a; --radius:10px;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:"Noto Sans TC",sans-serif;line-height:1.7;}
+  header.hero{background:var(--chalk-green);color:#eef2ea;padding:28px 20px 40px;position:relative;}
+  header.hero::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:14px;
+    background:repeating-linear-gradient(90deg,var(--paper) 0 18px, transparent 18px 20px);}
+  .hero-inner{max-width:880px;margin:0 auto;}
+  .breadcrumb a{color:#cfe0d1;text-decoration:none;font-size:14px;}
+  h1{font-family:"Noto Serif TC",serif;font-weight:700;font-size:clamp(24px,4vw,34px);margin:10px 0 6px;}
+  .subtitle{color:#cfe0d1;font-size:15px;margin:0;}
+  main{max-width:880px;margin:0 auto;padding:28px 20px 80px;}
+  .notice{background:#fdf3e3;border:1px solid #ecd9ab;border-left:5px solid var(--gold);
+    border-radius:var(--radius);padding:14px 18px;margin-bottom:22px;font-size:13.5px;color:#6b5424;}
+  section.block{background:#fff;border:1px solid var(--paper-line);border-radius:var(--radius);padding:22px 22px 26px;margin-bottom:20px;}
+  .block h2{font-family:"Noto Serif TC",serif;font-size:19px;margin:0 0 4px;color:var(--chalk-green);}
+  .block .meta{color:var(--ink-soft);font-size:13px;margin:0 0 14px;}
+  audio{width:100%;margin-bottom:18px;}
+  .q{margin-bottom:18px;padding-bottom:16px;border-bottom:1px dashed var(--paper-line);}
+  .q:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0;}
+  .q-text{font-size:15.5px;margin-bottom:8px;}
+  .q-num{color:var(--gold);font-weight:700;margin-right:4px;}
+  .opts{display:grid;gap:8px;}
+  .opt{display:flex;gap:8px;align-items:flex-start;border:1.5px solid var(--paper-line);border-radius:8px;
+    padding:9px 12px;cursor:pointer;font-size:14.5px;background:#fffdf8;}
+  .opt:hover{border-color:var(--chalk-green-2);}
+  .opt.correct{border-color:var(--ok-green);background:var(--ok-green-soft);}
+  .opt.wrong{border-color:var(--pen-red);background:var(--pen-red-soft);}
+  .opt .tag{font-weight:700;color:var(--ink-soft);}
+  .opt.correct .tag{color:var(--ok-green);}
+  .opt.wrong .tag{color:var(--pen-red);}
+  .opt.disabled{cursor:default;}
+  input.blank{font-family:"Noto Sans TC",sans-serif;border:none;border-bottom:2px solid var(--chalk-green-2);
+    background:transparent;font-size:15px;padding:2px 4px;width:150px;}
+  .feedback{font-size:13.5px;font-weight:700;margin-left:6px;}
+  .feedback.ok{color:var(--ok-green);}
+  .feedback.no{color:var(--pen-red);}
+  .script-toggle{margin-top:6px;}
+  .script-toggle button{background:none;border:1px solid var(--ink-soft);color:var(--ink-soft);
+    border-radius:6px;padding:5px 12px;font-size:12.5px;cursor:pointer;}
+  .script{display:none;margin-top:8px;font-size:13.5px;color:var(--ink-soft);
+    background:#f5f2e8;border-radius:6px;padding:10px 14px;white-space:pre-line;}
+  .script.show{display:block;}
+  .footer-link{display:block;text-align:center;margin-top:30px;color:var(--chalk-green);text-decoration:none;font-weight:700;font-size:14px;}
+  .footer-link:hover{text-decoration:underline;}
+</style>
+</head>
+<body>
+<header class="hero">
+  <div class="hero-inner">
+    <div class="breadcrumb"><a href="https://jenlin2002.github.io/">🏠 回總目錄</a> ／ <a href="index.html" style="color:#cfe0d1;">段考題庫</a></div>
+    <h1>第12次平時考・聽力三</h1>
+    <p class="subtitle">Lesson 5～6｜康軒版七年級英語（二）Ａ卷</p>
+  </div>
+</header>
+<main>
+  <div class="notice">🎧 對應 CD 音軌 17～24。第1~5大題已對照逐字稿核對；第6~8大題（看圖選答、短文對話）建議聽完後對照考卷確認一次。</div>
+
+  <section class="block"><h2>一、聽CD中的句子，選出聽到的字詞</h2><p class="meta">10分，每題2分</p>
+    <audio controls src="audio/test12/track1.mp3"></audio><div id="sec1"></div></section>
+  <section class="block"><h2>二、聽CD中的句子，寫出空格中的單字</h2><p class="meta">10分，每題2分</p>
+    <audio controls src="audio/test12/track2.mp3"></audio><div id="sec2"></div></section>
+  <section class="block"><h2>三、聽CD中的句子，若敘述符合圖意則寫T，不符則寫F</h2><p class="meta">10分，每題2分（原考卷為看圖題，此處以文字描述取代圖片）</p>
+    <audio controls src="audio/test12/track3.mp3"></audio><div id="sec3"></div></section>
+  <section class="block"><h2>四、聽CD中的問句或直述句，選出一個最佳的回應</h2><p class="meta">10分，每題2分【仿會考】【仿英檢】</p>
+    <audio controls src="audio/test12/track4.mp3"></audio><div id="sec4"></div></section>
+  <section class="block"><h2>五、聽CD中的句子，選出適當的圖片</h2><p class="meta">10分，每題2分【仿會考】（原考卷為三選一圖片，此處以文字描述取代）</p>
+    <audio controls src="audio/test12/track5.mp3"></audio><div id="sec5"></div></section>
+  <section class="block"><h2>六、聽CD播放問題，選出與圖片最符合的敘述</h2><p class="meta">10分，每題2分【仿英檢】</p>
+    <audio controls src="audio/test12/track6.mp3"></audio><div id="sec6"></div></section>
+  <section class="block"><h2>七、聽CD中的短文或對話，選出最佳答案</h2><p class="meta">10分，每題2分【仿英檢】</p>
+    <audio controls src="audio/test12/track7.mp3"></audio><div id="sec7"></div></section>
+  <section class="block"><h2>八、聽CD中的短文或對話，選出最佳答案</h2><p class="meta">30分，每題3分</p>
+    <audio controls src="audio/test12/track8.mp3"></audio><div id="sec8"></div></section>
+
+  <a class="footer-link" href="index.html">← 回段考題庫總覽</a>
+</main>
+<script>
+function mc(container, items){
+  items.forEach((it,i)=>{
+    const q = document.createElement("div"); q.className="q";
+    const optsHtml = it.options.map((op,oi)=>`<div class="opt" data-correct="${oi===it.correct}"><span class="tag">(${String.fromCharCode(65+oi)})</span><span>${op}</span></div>`).join("");
+    q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q||""}</div><div class="opts">${optsHtml}</div>
+      ${it.script ? `<div class="script-toggle"><button>顯示逐字稿</button></div><div class="script">${it.script}</div>`:""}`;
+    q.querySelectorAll(".opt").forEach(o=>o.addEventListener("click", ()=>{
+      if(q.dataset.answered==="true") return; q.dataset.answered="true";
+      q.querySelectorAll(".opt").forEach(x=>{x.classList.add("disabled"); if(x.dataset.correct==="true") x.classList.add("correct");});
+      if(o.dataset.correct!=="true") o.classList.add("wrong");
+      const correctOptEl = q.querySelector('.opt[data-correct="true"]');
+      q.dataset.studentAnswer = o.textContent.trim();
+      q.dataset.correctAnswer = correctOptEl ? correctOptEl.textContent.trim() : "";
+      q.dataset.isCorrect = (o.dataset.correct==="true") ? "true" : "false";
+    }));
+    const tbtn = q.querySelector(".script-toggle button");
+    if(tbtn) tbtn.addEventListener("click", ()=>q.querySelector(".script").classList.toggle("show"));
+    container.appendChild(q);
+  });
+}
+function blank(container, items){
+  items.forEach((it,i)=>{
+    const q = document.createElement("div"); q.className="q";
+    q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q} <input type="text" class="blank" data-answer="${it.answer}"><span class="feedback"></span></div>`;
+    const input = q.querySelector("input");
+    input.addEventListener("input", ()=>{
+      const fb = q.querySelector(".feedback"); const val = input.value.trim().toLowerCase();
+      if(!val){fb.textContent=""; delete q.dataset.studentAnswer; return;}
+      if(val===it.answer.toLowerCase()){fb.textContent="✓";fb.className="feedback ok";}
+      else{fb.textContent="✗";fb.className="feedback no";}
+      q.dataset.studentAnswer = input.value.trim();
+      q.dataset.correctAnswer = it.answer;
+      q.dataset.isCorrect = (val===it.answer.toLowerCase()) ? "true" : "false";
+    });
+    container.appendChild(q);
+  });
+}
+function tf(container, items){
+  items.forEach((it,i)=>{
+    const q = document.createElement("div"); q.className="q";
+    q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>圖片描述：${it.desc}</div>
+      <div class="opts">
+        <div class="opt" data-correct="${it.answer==='T'}"><span class="tag">T</span><span>符合圖意</span></div>
+        <div class="opt" data-correct="${it.answer==='F'}"><span class="tag">F</span><span>不符合圖意</span></div>
+      </div>`;
+    q.querySelectorAll(".opt").forEach(o=>o.addEventListener("click", ()=>{
+      if(q.dataset.answered==="true") return; q.dataset.answered="true";
+      q.querySelectorAll(".opt").forEach(x=>{x.classList.add("disabled"); if(x.dataset.correct==="true") x.classList.add("correct");});
+      if(o.dataset.correct!=="true") o.classList.add("wrong");
+      const correctOptEl = q.querySelector('.opt[data-correct="true"]');
+      q.dataset.studentAnswer = o.textContent.trim();
+      q.dataset.correctAnswer = correctOptEl ? correctOptEl.textContent.trim() : "";
+      q.dataset.isCorrect = (o.dataset.correct==="true") ? "true" : "false";
+    }));
+    container.appendChild(q);
+  });
+}
+
+mc(document.getElementById("sec1"), [
+  {options:["surf","save","swim"], correct:0, script:"Can I surf the Net right now?"},
+  {options:["minutes","hours","hills"], correct:1, script:"Harry ate some snacks three hours ago."},
+  {options:["start","hate","stop"], correct:2, script:"Stop talking, guys. Be quiet."},
+  {options:["bring","buy","begin"], correct:0, script:"Please bring me some books, thanks."},
+  {options:["before","ago","then"], correct:0, script:"Kate was in the gym the day before yesterday."}
+]);
+
+blank(document.getElementById("sec2"), [
+  {q:"Daisy worked in a ____ before.", answer:"hospital"},
+  {q:"What can we ____ from the story?", answer:"learn"},
+  {q:"Let's hike in the ____ this Sunday.", answer:"mountains"},
+  {q:"I ____ an art museum yesterday.", answer:"visited"},
+  {q:"We should be ____ and help the poor.", answer:"kind"}
+]);
+
+tf(document.getElementById("sec3"), [
+  {desc:"Jessica今天要去市場買很多東西", answer:"T"},
+  {desc:"Vivian在科學營隊裡", answer:"F"},
+  {desc:"孩子們在公園玩捉迷藏", answer:"T"},
+  {desc:"Bella討厭吃葡萄", answer:"F"},
+  {desc:"我的父母現在在機場", answer:"F"}
+]);
+
+mc(document.getElementById("sec4"), [
+  {q:"Did you have fun at the art museum?", options:["No, the museum is great!","Yes, I can join the science camp.","Well, not really. It's a long story."], correct:2},
+  {q:"The meeting begins at 9. It's 8:30 now.", options:["Oh. The meeting was half an hour ago.","Great. We still have 30 minutes to prepare.","Well, we never have meetings before."], correct:1},
+  {q:"Oh, no! The computer isn't working.", options:["It's too old. Just throw it away.","We can use it to surf the Net.","I had a computer before."], correct:0},
+  {q:"Wow. This math problem is so difficult.", options:["Let me explain it to you again.","You are a wise person.","Math saved my life."], correct:0},
+  {q:"What do you collect picture books for?", options:["I loved reading before, but I hate it now.","I want to help the poor kids.","I should collect more books."], correct:1}
+]);
+
+mc(document.getElementById("sec5"), [
+  {options:["Some animals hunt at night.","（圖片B）","（圖片C）"], correct:0},
+  {options:["（圖片A）","（圖片B）","The boy doesn't want to share his snacks with his sister."], correct:2},
+  {options:["Mike is at home now, but he was on the basketball court an hour ago.","（圖片B）","（圖片C）"], correct:0},
+  {options:["The students are visiting an art museum.","（圖片B）","（圖片C）"], correct:0},
+  {options:["Oliver and his friends are playing soccer at the beach.","（圖片B）","（圖片C）"], correct:0}
+]);
+
+mc(document.getElementById("sec6"), [
+  {q:"What is Tom doing?", options:["He is swimming.","He is climbing a tree.","He is hiking."], correct:2},
+  {q:"What are there in front of May's house?", options:["There are many suitcases in front of her house.","There are many plastic bags in front of her house.","There are many packages in front of her house."], correct:2},
+  {q:"What did Mom give Mike on his birthday?", options:["She gave him a computer.","She gave him a watch.","She gave him some snacks."], correct:0},
+  {q:"Where did Nina work before?", options:["In an airport.","In an elementary school.","In a hospital."], correct:2},
+  {q:"Does Jack like the toy?", options:["Yes, he likes it.","No, he hates it.","No, and his sister hates it, too."], correct:1}
+]);
+
+mc(document.getElementById("sec7"), [
+  {q:"What might the man and the woman do in class?", options:["Answer difficult math problems.","Share stories about science.","Draw some beautiful pictures."], correct:2,
+   script:"W: Hey, Joe, what classes do you take this year?\nM: I take the art class. I want to learn more about art.\nW: That's cool! I like art, too. We can take the class together.\nM: Sure."},
+  {q:"Where might the man and the woman go next?", options:["To the beach.","To an airport.","To a hill."], correct:0,
+   script:"W: It's so hot today. Do you want to swim in the water?\nM: But I can't swim.\nW: Don't worry. I can teach you. Let's go!"},
+  {q:"What are the man and the woman doing?", options:["Camping with the kids.","Sharing stories with the kids.","Playing hide-and-seek with the kids."], correct:2,
+   script:"W: Where are the kids?\nM: I don't know. Let's check the living room.\nW: No, they aren't. Wow. They are really good at hiding. Oh, let's check the bedroom. They might be under the bed.\nW: Good idea. Kids! Mom and Dad are coming for you."},
+  {q:"What DIDN'T the man do at the beach?", options:["He didn't have lunch at the beach.","He didn't swim at the beach.","He didn't play with a ball at the beach."], correct:1,
+   script:"M: What did you do yesterday?\nW: I went to the beach. My brother and I played with a ball and had lunch there. Did you swim there?\nM: No, I didn't. I can't swim."},
+  {q:"Which is true?", options:["The man visited some art museums last month.","The woman loves art, and the man loves science.","The man and the woman were in the same camp."], correct:0,
+   script:"W: What did you do last month?\nM: I joined a science camp.\nW: Was it fun?\nM: Yes. What about you? What did you do?\nW: I joined an art camp. We visited a few art museums.\nM: Wow. You really love art."}
+]);
+
+mc(document.getElementById("sec8"), [
+  {q:"Who was Nina with yesterday?", options:["Her sister.","Her cousin.","Her parent."], correct:1,
+   script:"Good morning, guys. I'm Nina. My cousin, Cherry, and I went to Red Beach yesterday afternoon. We saw a lot of plastic bottles on the beach. We were sad about it. People shouldn't throw away their trash there! More people joined us later. I even saw one of my classmates. We picked up the plastic bottles and threw them into the trash can. In the end, the beach was clean, and I didn't have time to swim or play with water, but we were happy."},
+  {q:"What DIDN'T Nina do yesterday?", options:["Pick up trash.","Throw away bottles.","Swim."], correct:2},
+  {q:"Which is true?", options:["Nina saw her classmate yesterday.","Nina ate breakfast at the beach yesterday.","Nina went to the museum with Cherry yesterday."], correct:0},
+  {q:"What's the date of Tina's birthday?", options:["December 7th.","December 8th.","December 9th."], correct:1,
+   script:"Hello, I'm Lisa. Today is December 10th. Tina's twentieth birthday was the day before yesterday. Tina's mom prepared a big fruit cake for her. Tina's dad gave her a new computer. What about me? I made a beautiful birthday card for her. She really likes it. We had a lot of fun."},
+  {q:"What did Lisa give Tina on her birthday?", options:["A cake.","A computer.","A card."], correct:2},
+  {q:"Where might the man and the woman be?", options:["In the mountains.","At the beach.","In an art museum."], correct:2,
+   script:"M: The pictures are so beautiful. Did you draw them?\nW: Yes. And I really like this one, 'The Girl at the Beach.'\nM: I like this one more, 'The Hiking Man.' A man is next to a river. The sun is bright, and the trees are green. You can even see some fish in it.\nW: Thanks. That's amazing! Guess what? An old man just bought this picture from me yesterday for half a million dollars.\nM: Oh, that's great."},
+  {q:"How much is the picture?", options:["100,000 dollars.","500,000 dollars.","1,000,000 dollars."], correct:1},
+  {q:"What did the man eat for lunch?", options:["A pancake.","A piece of cake.","A sandwich."], correct:2,
+   script:"W: What do you want for dinner?\nM: I'm not hungry. I had a sandwich today at noon.\nW: But that was about seven hours ago. You should eat some food now. What about some pancakes?\nM: I love pancakes! Did you make them?\nW: No, my mom made them. She came to our house this afternoon and brought me a lot of pancakes.\nM: Oh, wait. I see a fruit cake on the kitchen table. Whose is it?\nW: Haha, I just bought it at the market this morning.\nM: I don't want pancakes for dinner then. I want a piece of fruit cake, please."},
+  {q:"What time might it be now?", options:["4 p.m.","7 p.m.","10 p.m."], correct:1},
+  {q:"Which is true?", options:["The woman visited some art museums last month.","The man hates pancakes.","The woman went to the market this morning."], correct:2}
+]);
+</script>
+<script>window.EXAM_META = {version:"A卷", examLabel:"第12次"};</script>
+<script src="sync.js"></script>
+</body>
+</html>

@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>段考題庫｜第8次平時考 - 聽力二（Lesson 3～4）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@500;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#faf6ec; --paper-line:#e3dcc8; --ink:#26332b; --ink-soft:#5b6b5f;
+    --chalk-green:#2f4538; --chalk-green-2:#3d5a48; --pen-red:#b8433a; --pen-red-soft:#f4dedb;
+    --ok-green:#3f7d52; --ok-green-soft:#dfeee1; --gold:#b5842a; --radius:10px;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:"Noto Sans TC",sans-serif;line-height:1.7;}
+  header.hero{background:var(--chalk-green);color:#eef2ea;padding:28px 20px 40px;position:relative;}
+  header.hero::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:14px;
+    background:repeating-linear-gradient(90deg,var(--paper) 0 18px, transparent 18px 20px);}
+  .hero-inner{max-width:880px;margin:0 auto;}
+  .breadcrumb a{color:#cfe0d1;text-decoration:none;font-size:14px;}
+  h1{font-family:"Noto Serif TC",serif;font-weight:700;font-size:clamp(24px,4vw,34px);margin:10px 0 6px;}
+  .subtitle{color:#cfe0d1;font-size:15px;margin:0;}
+  main{max-width:880px;margin:0 auto;padding:28px 20px 80px;}
+  .notice{background:#fdf3e3;border:1px solid #ecd9ab;border-left:5px solid var(--gold);
+    border-radius:var(--radius);padding:14px 18px;margin-bottom:22px;font-size:13.5px;color:#6b5424;}
+  section.block{background:#fff;border:1px solid var(--paper-line);border-radius:var(--radius);padding:22px 22px 26px;margin-bottom:20px;}
+  .block h2{font-family:"Noto Serif TC",serif;font-size:19px;margin:0 0 4px;color:var(--chalk-green);}
+  .block .meta{color:var(--ink-soft);font-size:13px;margin:0 0 14px;}
+  audio{width:100%;margin-bottom:18px;}
+  .q{margin-bottom:18px;padding-bottom:16px;border-bottom:1px dashed var(--paper-line);}
+  .q:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0;}
+  .q-text{font-size:15.5px;margin-bottom:8px;}
+  .q-num{color:var(--gold);font-weight:700;margin-right:4px;}
+  .opts{display:grid;gap:8px;}
+  .opt{display:flex;gap:8px;align-items:flex-start;border:1.5px solid var(--paper-line);border-radius:8px;
+    padding:9px 12px;cursor:pointer;font-size:14.5px;background:#fffdf8;}
+  .opt:hover{border-color:var(--chalk-green-2);}
+  .opt.correct{border-color:var(--ok-green);background:var(--ok-green-soft);}
+  .opt.wrong{border-color:var(--pen-red);background:var(--pen-red-soft);}
+  .opt .tag{font-weight:700;color:var(--ink-soft);}
+  .opt.correct .tag{color:var(--ok-green);}
+  .opt.wrong .tag{color:var(--pen-red);}
+  .opt.disabled{cursor:default;}
+  input.blank{font-family:"Noto Sans TC",sans-serif;border:none;border-bottom:2px solid var(--chalk-green-2);
+    background:transparent;font-size:15px;padding:2px 4px;width:150px;}
+  .feedback{font-size:13.5px;font-weight:700;margin-left:6px;}
+  .feedback.ok{color:var(--ok-green);}
+  .feedback.no{color:var(--pen-red);}
+  .script-toggle{margin-top:6px;}
+  .script-toggle button{background:none;border:1px solid var(--ink-soft);color:var(--ink-soft);
+    border-radius:6px;padding:5px 12px;font-size:12.5px;cursor:pointer;}
+  .script{display:none;margin-top:8px;font-size:13.5px;color:var(--ink-soft);
+    background:#f5f2e8;border-radius:6px;padding:10px 14px;white-space:pre-line;}
+  .script.show{display:block;}
+  .footer-link{display:block;text-align:center;margin-top:30px;color:var(--chalk-green);text-decoration:none;font-weight:700;font-size:14px;}
+  .footer-link:hover{text-decoration:underline;}
+</style>
+</head>
+<body>
+<header class="hero">
+  <div class="hero-inner">
+    <div class="breadcrumb"><a href="https://jenlin2002.github.io/">🏠 回總目錄</a> ／ <a href="index.html" style="color:#cfe0d1;">段考題庫</a></div>
+    <h1>第8次平時考・聽力二</h1>
+    <p class="subtitle">Lesson 3～4｜康軒版七年級英語（二）Ａ卷</p>
+  </div>
+</header>
+<main>
+  <div class="notice">🎧 對應 CD 音軌 9～16。第1~5大題已對照逐字稿核對；第6~8大題（看圖選答、短文對話）建議聽完後對照考卷確認一次。</div>
+
+  <section class="block"><h2>一、聽CD中的句子，選出聽到的字詞</h2><p class="meta">10分，每題2分</p>
+    <audio controls src="audio/test8/track1.mp3"></audio><div id="sec1"></div></section>
+  <section class="block"><h2>二、聽CD中的句子，寫出空格中的單字</h2><p class="meta">10分，每題2分</p>
+    <audio controls src="audio/test8/track2.mp3"></audio><div id="sec2"></div></section>
+  <section class="block"><h2>三、聽CD中的句子，若敘述符合圖意則寫T，不符則寫F</h2><p class="meta">10分，每題2分（原考卷為看圖題，此處以文字描述取代圖片）</p>
+    <audio controls src="audio/test8/track3.mp3"></audio><div id="sec3"></div></section>
+  <section class="block"><h2>四、聽CD中的問句或直述句，選出一個最佳的回應</h2><p class="meta">10分，每題2分【仿會考】【仿英檢】</p>
+    <audio controls src="audio/test8/track4.mp3"></audio><div id="sec4"></div></section>
+  <section class="block"><h2>五、聽CD中的句子，選出適當的圖片</h2><p class="meta">10分，每題2分【仿會考】（原考卷為三選一圖片，此處以文字描述取代）</p>
+    <audio controls src="audio/test8/track5.mp3"></audio><div id="sec5"></div></section>
+  <section class="block"><h2>六、聽CD播放問題，選出與圖片最符合的敘述</h2><p class="meta">10分，每題2分【仿英檢】</p>
+    <audio controls src="audio/test8/track6.mp3"></audio><div id="sec6"></div></section>
+  <section class="block"><h2>七、聽CD中的短文或對話，選出最佳答案</h2><p class="meta">10分，每題2分【仿英檢】</p>
+    <audio controls src="audio/test8/track7.mp3"></audio><div id="sec7"></div></section>
+  <section class="block"><h2>八、聽CD中的短文或對話，選出最佳答案</h2><p class="meta">30分，每題3分</p>
+    <audio controls src="audio/test8/track8.mp3"></audio><div id="sec8"></div></section>
+
+  <a class="footer-link" href="index.html">← 回段考題庫總覽</a>
+</main>
+<script>
+function mc(container, items){
+  items.forEach((it,i)=>{
+    const q = document.createElement("div"); q.className="q";
+    const optsHtml = it.options.map((op,oi)=>`<div class="opt" data-correct="${oi===it.correct}"><span class="tag">(${String.fromCharCode(65+oi)})</span><span>${op}</span></div>`).join("");
+    q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q||""}</div><div class="opts">${optsHtml}</div>
+      ${it.script ? `<div class="script-toggle"><button>顯示逐字稿</button></div><div class="script">${it.script}</div>`:""}`;
+    q.querySelectorAll(".opt").forEach(o=>o.addEventListener("click", ()=>{
+      if(q.dataset.answered==="true") return; q.dataset.answered="true";
+      q.querySelectorAll(".opt").forEach(x=>{x.classList.add("disabled"); if(x.dataset.correct==="true") x.classList.add("correct");});
+      if(o.dataset.correct!=="true") o.classList.add("wrong");
+      const correctOptEl = q.querySelector('.opt[data-correct="true"]');
+      q.dataset.studentAnswer = o.textContent.trim();
+      q.dataset.correctAnswer = correctOptEl ? correctOptEl.textContent.trim() : "";
+      q.dataset.isCorrect = (o.dataset.correct==="true") ? "true" : "false";
+    }));
+    const tbtn = q.querySelector(".script-toggle button");
+    if(tbtn) tbtn.addEventListener("click", ()=>q.querySelector(".script").classList.toggle("show"));
+    container.appendChild(q);
+  });
+}
+function blank(container, items){
+  items.forEach((it,i)=>{
+    const q = document.createElement("div"); q.className="q";
+    q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q} <input type="text" class="blank" data-answer="${it.answer}"><span class="feedback"></span></div>`;
+    const input = q.querySelector("input");
+    input.addEventListener("input", ()=>{
+      const fb = q.querySelector(".feedback"); const val = input.value.trim().toLowerCase();
+      if(!val){fb.textContent=""; delete q.dataset.studentAnswer; return;}
+      if(val===it.answer.toLowerCase()){fb.textContent="✓";fb.className="feedback ok";}
+      else{fb.textContent="✗";fb.className="feedback no";}
+      q.dataset.studentAnswer = input.value.trim();
+      q.dataset.correctAnswer = it.answer;
+      q.dataset.isCorrect = (val===it.answer.toLowerCase()) ? "true" : "false";
+    });
+    container.appendChild(q);
+  });
+}
+function tf(container, items){
+  items.forEach((it,i)=>{
+    const q = document.createElement("div"); q.className="q";
+    q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>圖片描述：${it.desc}</div>
+      <div class="opts">
+        <div class="opt" data-correct="${it.answer==='T'}"><span class="tag">T</span><span>符合圖意</span></div>
+        <div class="opt" data-correct="${it.answer==='F'}"><span class="tag">F</span><span>不符合圖意</span></div>
+      </div>`;
+    q.querySelectorAll(".opt").forEach(o=>o.addEventListener("click", ()=>{
+      if(q.dataset.answered==="true") return; q.dataset.answered="true";
+      q.querySelectorAll(".opt").forEach(x=>{x.classList.add("disabled"); if(x.dataset.correct==="true") x.classList.add("correct");});
+      if(o.dataset.correct!=="true") o.classList.add("wrong");
+      const correctOptEl = q.querySelector('.opt[data-correct="true"]');
+      q.dataset.studentAnswer = o.textContent.trim();
+      q.dataset.correctAnswer = correctOptEl ? correctOptEl.textContent.trim() : "";
+      q.dataset.isCorrect = (o.dataset.correct==="true") ? "true" : "false";
+    }));
+    container.appendChild(q);
+  });
+}
+
+mc(document.getElementById("sec1"), [
+  {options:["runner","rice","race"], correct:2, script:"Who can join the running race with me?"},
+  {options:["bowl","batter","bottle"], correct:1, script:"Mom is mixing everything together to make the batter."},
+  {options:["give","miss","mix"], correct:1, script:"I really miss my family in the USA."},
+  {options:["pan","piece","plate"], correct:0, script:"Heat up a pan for 30 seconds and put some eggs in it."},
+  {options:["when","away","until"], correct:2, script:"He doesn't walk into the classroom until 8 o'clock."}
+]);
+
+blank(document.getElementById("sec2"), [
+  {q:"The pancakes are ____.", answer:"delicious"},
+  {q:"My birthday and my brother's are both in ____.", answer:"November"},
+  {q:"Please put some ____ in this bowl.", answer:"flour"},
+  {q:"How many ____ of cake do you need?", answer:"pieces"},
+  {q:"Is next Friday your second ____ with Tom?", answer:"date"}
+]);
+
+tf(document.getElementById("sec3"), [
+  {desc:"今天是10月12日，是Owen的生日", answer:"T"},
+  {desc:"Jeff晚餐吃鬆餅", answer:"F"},
+  {desc:"Tina正在照顧她的寵物狗", answer:"T"},
+  {desc:"棒球比賽還有兩週", answer:"T"},
+  {desc:"Eva是比賽的第二名跑者", answer:"F"}
+]);
+
+mc(document.getElementById("sec4"), [
+  {q:"What role do you play in your family?", options:["I'm a father and also a mother to my sons.","I can play badminton.","I know that tennis player."], correct:0},
+  {q:"There's a toy under the bed. Whose is it?", options:["I want my toy now.","It's mine. Thanks.","Wow. You have lots of toys."], correct:1},
+  {q:"We have rice and noodles. Which do you want?", options:["Rice, please.","Which do you like?","Both ideas are great."], correct:0},
+  {q:"How much juice do you want?", options:["There are two plates.","No, I'm not hungry.","I want two glasses of juice."], correct:2},
+  {q:"Can I have a bag of flour?", options:["Of course. It's hard.","Thanks for your help.","Sure. Here you are."], correct:2}
+]);
+
+mc(document.getElementById("sec5"), [
+  {options:["Peter is having a plate of noodles for lunch.","（圖片B）","（圖片C）"], correct:0},
+  {options:["（圖片A）","The meeting is on December 5th.","（圖片C）"], correct:1},
+  {options:["（圖片A）","（圖片B）","The math homework is very difficult for John."], correct:2},
+  {options:["First, put some butter in a pan.","（圖片B）","（圖片C）"], correct:0},
+  {options:["Jerry is eating a bowl of rice.","（圖片B）","（圖片C）"], correct:0}
+]);
+
+mc(document.getElementById("sec6"), [
+  {q:"What does the runner want now?", options:["A bottle of milk.","A piece of pie.","A glass of water."], correct:2},
+  {q:"When is the race?", options:["It's on October 3rd.","It's on August 30th.","It's on September 13th."], correct:0},
+  {q:"Is the woman doing the dishes?", options:["No, she is making pancakes.","Yes, she is doing the dishes.","No, she is taking care of her son."], correct:2},
+  {q:"How much flour does the man need?", options:["He needs one bowl of flour.","He needs one bag of flour.","He needs two bags of flour."], correct:1},
+  {q:"What is the boy doing?", options:["He is heating up the pan.","He is mixing juice with milk.","He is adding milk to the pan."], correct:0}
+]);
+
+mc(document.getElementById("sec7"), [
+  {q:"What can the boy eat now?", options:["Some hot dogs.","Some pieces of pie.","Some pieces of cake."], correct:2,
+   script:"B: Mom, can I eat the hot dogs on the table?\nW: No, they are very hot now. You need to wait until they are cold.\nB: But I'm hungry now."},
+  {q:"What is the problem?", options:["The food isn't yummy.","The plates at home are old.","They don't have enough plates."], correct:2,
+   script:"W: Sam's birthday party is at twelve. Is everything ready?\nM: Yes. We have a lot of food and juice.\nW: Do we have enough cups and plates for the 12 boys?\nM: We have twenty cups, but we only have 6 plates at home.\nW: Oh, no. We need some new plates."},
+  {q:"Is the woman good at making pancakes?", options:["Yes, she is.","No, she isn't.","No, but she is a great cook."], correct:1,
+   script:"W: How is the pancake? This is my first time making it.\nM: Well... it's not delicious. There is salt in it.\nW: Really?\nM: Yeah, and this side is not brown enough.\nW: Oh, I'm sorry. I can make you a new one."},
+  {q:"Whose idea is it to get Dad a smartphone?", options:["The girl's.","The boy's.","The boy and the girl's mother's."], correct:0,
+   script:"G: Dad's birthday is coming next month. Let's have a party for him.\nB: But Dad doesn't like parties.\nG: What about giving him a new T-shirt?\nB: That's not a good idea, either. He doesn't need T-shirts, but he needs a new smartphone.\nG: OK, let's get him a smartphone. He must be happy about it."},
+  {q:"How many children does the woman have?", options:["One.","Two.","Three."], correct:0,
+   script:"W: I'm Jessie, a nurse, and I work from 6 a.m. to 8 p.m. My husband works at home and takes care of our son. He takes him to school, and does the housework too. He prepares breakfast and dinner for us, and he's a great dad to our son, and a good husband to me. We love him very much."}
+]);
+
+mc(document.getElementById("sec8"), [
+  {q:"Who is Ms. Yang?", options:["She's the boy's mom.","She's the girl's teacher.","She's the boy's aunt."], correct:1,
+   script:"G: What's the date today?\nB: It's September 28th, Teacher's Day.\nB: Ms. Yang is a nice teacher. I really like her.\nG: I like her, too. We can make a small cake for her. What cake does she like?\nB: She likes fruit cakes.\nG: That's a great idea! We can make one now."},
+  {q:"What's the date today?", options:["It's October 28th.","It's September 18th.","It's September 28th."], correct:2},
+  {q:"What is right?", options:["The boy and the girl want to make a cake for their teacher.","The boy wants a birthday cake from his parents.","The boy and the girl can both make fruit cakes."], correct:0},
+  {q:"What's the date of the race?", options:["April 5th.","May 4th.","April 6th."], correct:2,
+   script:"W: Where are you going, John?\nM: I'm going to the park to practice running. There is a running race next week.\nW: Is it on April 5th?\nM: No, it's on April 6th. Do you want to join me?\nW: Sure. We can run together. It must be fun. But you need to get up at 5:30. Can you do that?\nM: Of course. It's easy."},
+  {q:"Which is true?", options:["The man is running in the park now.","The woman wants to join the race next week.","The woman can't get up at 5:30 a.m."], correct:1},
+  {q:"What does the woman want?", options:["A bottle of juice.","A bag of flour.","A box of eggs."], correct:1,
+   script:"W: We don't have any flour or milk at home. Can you go get one bag of flour and a bottle of milk for me?\nM: Of course. Do we have enough eggs?\nW: Yes, we still have some.\nM: What do you want to make?\nW: Pies. Wayne's birthday is three days away. He loves pies.\nM: Mike's birthday is in January, too. Maybe they can have a birthday party together this weekend.\nW: That's a good idea! Their classmates can come to our home and have fun together."},
+  {q:"Which is true about Wayne?", options:["Wayne is two years old.","Wayne likes pies.","Wayne's birthday is in December."], correct:1},
+  {q:"Which is the man's idea?", options:["Wayne and Mike can have a birthday party together.","Wayne and Mike can study in the library together.","Wayne and Mike can do the housework with their classmates together."], correct:0},
+  {q:"Who is Kevin?", options:["He's Benny's cousin.","He's Benny's uncle.","He's Benny's brother."], correct:0,
+   script:"M: I'm Benny. I'm studying in the USA now. Uncle Sam and Aunt Sheila are very nice to me. Their son, Kevin, is my classmate. He's my cousin, and he's a great friend, too. We play soccer after school every day. We're the players on the school team. Uncle Sam and Aunt Sheila take good care of us. They are like my parents in the USA. My life here is very good, but I still miss my family in Taiwan."},
+  {q:"What is the boy doing in the USA?", options:["He's taking care of his uncle there.","He's joining a running race there.","He's studying there."], correct:2}
+]);
+</script>
+<script>window.EXAM_META = {version:"A卷", examLabel:"第8次"};</script>
+<script src="sync.js"></script>
+</body>
+</html>

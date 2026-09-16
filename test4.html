@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>段考題庫｜第4次平時考 - 聽力一（Lesson 1～2）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@500;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#faf6ec; --paper-line:#e3dcc8; --ink:#26332b; --ink-soft:#5b6b5f;
+    --chalk-green:#2f4538; --chalk-green-2:#3d5a48; --pen-red:#b8433a; --pen-red-soft:#f4dedb;
+    --ok-green:#3f7d52; --ok-green-soft:#dfeee1; --gold:#b5842a; --radius:10px;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:"Noto Sans TC",sans-serif;line-height:1.7;}
+  header.hero{background:var(--chalk-green);color:#eef2ea;padding:28px 20px 40px;position:relative;}
+  header.hero::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:14px;
+    background:repeating-linear-gradient(90deg,var(--paper) 0 18px, transparent 18px 20px);}
+  .hero-inner{max-width:880px;margin:0 auto;}
+  .breadcrumb a{color:#cfe0d1;text-decoration:none;font-size:14px;}
+  h1{font-family:"Noto Serif TC",serif;font-weight:700;font-size:clamp(24px,4vw,34px);margin:10px 0 6px;}
+  .subtitle{color:#cfe0d1;font-size:15px;margin:0;}
+  main{max-width:880px;margin:0 auto;padding:28px 20px 80px;}
+
+  .notice{
+    background:#fdf3e3;border:1px solid #ecd9ab;border-left:5px solid var(--gold);
+    border-radius:var(--radius);padding:14px 18px;margin-bottom:22px;font-size:13.5px;color:#6b5424;
+  }
+
+  section.block{background:#fff;border:1px solid var(--paper-line);border-radius:var(--radius);padding:22px 22px 26px;margin-bottom:20px;}
+  .block h2{font-family:"Noto Serif TC",serif;font-size:19px;margin:0 0 4px;color:var(--chalk-green);}
+  .block .meta{color:var(--ink-soft);font-size:13px;margin:0 0 14px;}
+
+  audio{width:100%;margin-bottom:18px;}
+
+  .q{margin-bottom:18px;padding-bottom:16px;border-bottom:1px dashed var(--paper-line);}
+  .q:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0;}
+  .q-text{font-size:15.5px;margin-bottom:8px;}
+  .q-num{color:var(--gold);font-weight:700;margin-right:4px;}
+
+  .opts{display:grid;gap:8px;}
+  .opt{display:flex;gap:8px;align-items:flex-start;border:1.5px solid var(--paper-line);border-radius:8px;
+    padding:9px 12px;cursor:pointer;font-size:14.5px;background:#fffdf8;}
+  .opt:hover{border-color:var(--chalk-green-2);}
+  .opt.correct{border-color:var(--ok-green);background:var(--ok-green-soft);}
+  .opt.wrong{border-color:var(--pen-red);background:var(--pen-red-soft);}
+  .opt .tag{font-weight:700;color:var(--ink-soft);}
+  .opt.correct .tag{color:var(--ok-green);}
+  .opt.wrong .tag{color:var(--pen-red);}
+  .opt.disabled{cursor:default;}
+
+  input.blank{font-family:"Noto Sans TC",sans-serif;border:none;border-bottom:2px solid var(--chalk-green-2);
+    background:transparent;font-size:15px;padding:2px 4px;width:150px;}
+  .feedback{font-size:13.5px;font-weight:700;margin-left:6px;}
+  .feedback.ok{color:var(--ok-green);}
+  .feedback.no{color:var(--pen-red);}
+
+  .script-toggle{margin-top:6px;}
+  .script-toggle button{background:none;border:1px solid var(--ink-soft);color:var(--ink-soft);
+    border-radius:6px;padding:5px 12px;font-size:12.5px;cursor:pointer;}
+  .script{display:none;margin-top:8px;font-size:13.5px;color:var(--ink-soft);
+    background:#f5f2e8;border-radius:6px;padding:10px 14px;white-space:pre-line;}
+  .script.show{display:block;}
+
+  .footer-link{display:block;text-align:center;margin-top:30px;color:var(--chalk-green);text-decoration:none;font-weight:700;font-size:14px;}
+  .footer-link:hover{text-decoration:underline;}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="breadcrumb"><a href="https://jenlin2002.github.io/">🏠 回總目錄</a> ／ <a href="index.html" style="color:#cfe0d1;">段考題庫</a></div>
+    <h1>第4次平時考・聽力一</h1>
+    <p class="subtitle">Lesson 1～2｜康軒版七年級英語（二）Ａ卷</p>
+  </div>
+</header>
+
+<main>
+  <div class="notice">
+    🎧 這一份的音檔為對照 CD 音軌 1～8。第1～5大題內容已核對過考卷逐字稿；第6～8大題（看圖選答、對話理解）掃描時排版較複雜，答案已盡量核對，但建議聽完後再對照一次考卷確認題號順序，之後有需要我可以再修正。
+  </div>
+
+  <section class="block">
+    <h2>一、聽CD中的句子，選出聽到的字詞</h2>
+    <p class="meta">10分，每題2分</p>
+    <audio controls src="audio/test4/track1.mp3"></audio>
+    <div id="sec1"></div>
+  </section>
+
+  <section class="block">
+    <h2>二、聽CD中的句子，寫出空格中的單字</h2>
+    <p class="meta">10分，每題2分</p>
+    <audio controls src="audio/test4/track2.mp3"></audio>
+    <div id="sec2"></div>
+  </section>
+
+  <section class="block">
+    <h2>三、聽CD中的句子，若敘述符合圖意則寫T，不符則寫F</h2>
+    <p class="meta">10分，每題2分（原考卷為看圖題，此處以文字描述取代圖片）</p>
+    <audio controls src="audio/test4/track3.mp3"></audio>
+    <div id="sec3"></div>
+  </section>
+
+  <section class="block">
+    <h2>四、聽CD中的問句或直述句，選出一個最佳的回應</h2>
+    <p class="meta">10分，每題2分【仿會考】【仿英檢】</p>
+    <audio controls src="audio/test4/track4.mp3"></audio>
+    <div id="sec4"></div>
+  </section>
+
+  <section class="block">
+    <h2>五、聽CD中的句子，選出適當的圖片</h2>
+    <p class="meta">10分，每題2分【仿會考】（原考卷為三選一圖片，此處以文字描述取代）</p>
+    <audio controls src="audio/test4/track5.mp3"></audio>
+    <div id="sec5"></div>
+  </section>
+
+  <section class="block">
+    <h2>六、聽CD播放問題，選出與圖片最符合的敘述</h2>
+    <p class="meta">10分，每題2分【仿英檢】</p>
+    <audio controls src="audio/test4/track6.mp3"></audio>
+    <div id="sec6"></div>
+  </section>
+
+  <section class="block">
+    <h2>七、聽CD中的短文或對話，選出最佳答案</h2>
+    <p class="meta">10分，每題2分【仿會考】</p>
+    <audio controls src="audio/test4/track7.mp3"></audio>
+    <div id="sec7"></div>
+  </section>
+
+  <section class="block">
+    <h2>八、聽CD中的短文或對話，選出最佳答案</h2>
+    <p class="meta">30分，每題3分</p>
+    <audio controls src="audio/test4/track8.mp3"></audio>
+    <div id="sec8"></div>
+  </section>
+
+  <a class="footer-link" href="index.html">← 回段考題庫總覽</a>
+</main>
+
+<script>
+function mc(container, items, withScript){
+  items.forEach((it,i)=>{
+    const q = document.createElement("div");
+    q.className = "q";
+    const optsHtml = it.options.map((op,oi)=>`
+      <div class="opt" data-correct="${oi===it.correct}"><span class="tag">(${String.fromCharCode(65+oi)})</span><span>${op}</span></div>`).join("");
+    q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q||""}</div><div class="opts">${optsHtml}</div>
+      ${it.script ? `<div class="script-toggle"><button>顯示逐字稿</button></div><div class="script">${it.script}</div>`:""}`;
+    q.querySelectorAll(".opt").forEach(o=>o.addEventListener("click", ()=>{
+      if(q.dataset.answered==="true") return;
+      q.dataset.answered="true";
+      q.querySelectorAll(".opt").forEach(x=>{x.classList.add("disabled"); if(x.dataset.correct==="true") x.classList.add("correct");});
+      if(o.dataset.correct!=="true") o.classList.add("wrong");
+      const correctOptEl = q.querySelector('.opt[data-correct="true"]');
+      q.dataset.studentAnswer = o.textContent.trim();
+      q.dataset.correctAnswer = correctOptEl ? correctOptEl.textContent.trim() : "";
+      q.dataset.isCorrect = (o.dataset.correct==="true") ? "true" : "false";
+    }));
+    const tbtn = q.querySelector(".script-toggle button");
+    if(tbtn) tbtn.addEventListener("click", ()=>q.querySelector(".script").classList.toggle("show"));
+    container.appendChild(q);
+  });
+}
+function blank(container, items){
+  items.forEach((it,i)=>{
+    const q = document.createElement("div");
+    q.className = "q";
+    q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q} <input type="text" class="blank" data-answer="${it.answer}"><span class="feedback"></span></div>`;
+    const input = q.querySelector("input");
+    input.addEventListener("input", ()=>{
+      const fb = q.querySelector(".feedback");
+      const val = input.value.trim().toLowerCase();
+      if(!val){fb.textContent=""; delete q.dataset.studentAnswer; return;}
+      if(val===it.answer.toLowerCase()){fb.textContent="✓";fb.className="feedback ok";}
+      else{fb.textContent="✗";fb.className="feedback no";}
+      q.dataset.studentAnswer = input.value.trim();
+      q.dataset.correctAnswer = it.answer;
+      q.dataset.isCorrect = (val===it.answer.toLowerCase()) ? "true" : "false";
+    });
+    container.appendChild(q);
+  });
+}
+function tf(container, items){
+  items.forEach((it,i)=>{
+    const q = document.createElement("div");
+    q.className = "q";
+    q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>圖片描述：${it.desc}</div>
+      <div class="opts">
+        <div class="opt" data-correct="${it.answer==='T'}"><span class="tag">T</span><span>符合圖意</span></div>
+        <div class="opt" data-correct="${it.answer==='F'}"><span class="tag">F</span><span>不符合圖意</span></div>
+      </div>`;
+    q.querySelectorAll(".opt").forEach(o=>o.addEventListener("click", ()=>{
+      if(q.dataset.answered==="true") return;
+      q.dataset.answered="true";
+      q.querySelectorAll(".opt").forEach(x=>{x.classList.add("disabled"); if(x.dataset.correct==="true") x.classList.add("correct");});
+      if(o.dataset.correct!=="true") o.classList.add("wrong");
+      const correctOptEl = q.querySelector('.opt[data-correct="true"]');
+      q.dataset.studentAnswer = o.textContent.trim();
+      q.dataset.correctAnswer = correctOptEl ? correctOptEl.textContent.trim() : "";
+      q.dataset.isCorrect = (o.dataset.correct==="true") ? "true" : "false";
+    }));
+    container.appendChild(q);
+  });
+}
+
+// 一、選出聽到的字詞
+mc(document.getElementById("sec1"), [
+  {q:"", options:["players","tickets","dollars"], correct:1, script:"I have two tickets for the tennis game."},
+  {q:"", options:["times","sometimes","anytime"], correct:2, script:"You and your brother can come to our house anytime."},
+  {q:"", options:["clean","mop","move"], correct:0, script:"How often do you clean your room?"},
+  {q:"", options:["either","never","then"], correct:0, script:"I don't like math, and Penny doesn't like it, either."},
+  {q:"", options:["tennis","practice","studies"], correct:1, script:"The basketball practice is really hard."}
+]);
+
+// 二、寫出空格中的單字
+blank(document.getElementById("sec2"), [
+  {q:"It's 10 p.m. You ____ go to bed now.", answer:"must"},
+  {q:"Mike is playing ____ with Henry.", answer:"badminton"},
+  {q:"Allen ____ goes to his grandparents' house on Mondays.", answer:"seldom"},
+  {q:"Can you see the ____ on your fingers?", answer:"germs"},
+  {q:"Who ____ with you after school every day?", answer:"exercises"}
+]);
+
+// 三、T/F
+tf(document.getElementById("sec3"), [
+  {desc:"一個男孩在刷牙", answer:"F"},
+  {desc:"一件T恤標價NT$300", answer:"T"},
+  {desc:"Kevin和Alan在打網球", answer:"T"},
+  {desc:"計分板 Elephant 79 - Tiger 35", answer:"F"},
+  {desc:"Kitty和朋友們一起打籃球，開心地互動", answer:"F"}
+]);
+
+// 四、最佳回應
+mc(document.getElementById("sec4"), [
+  {q:"Is Mark always late for school?", options:["No, he isn't in the classroom.","No, he walks to school every day.","Yes. That's a bad habit."], correct:2},
+  {q:"What days do you do the dishes?", options:["I study every day.","It's fun for me.","On Fridays and Sundays."], correct:2},
+  {q:"I don't see Mindy at school today.", options:["I can follow you.","I don't, either. I worry about her.","I like Mindy, too."], correct:1},
+  {q:"Does your brother practice tennis every day?", options:["Yes, and he really enjoys it.","Yes, he's always late.","Yes, he's good at baseball."], correct:0},
+  {q:"Who mops the floor?", options:["Your room is dirty.","Three days a week.","My sister does."], correct:2}
+]);
+
+// 五、選圖片（文字描述取代）
+mc(document.getElementById("sec5"), [
+  {q:"", options:["Sally is making breakfast for her family.","（圖片B）","（圖片C）"], correct:0},
+  {q:"", options:["（圖片A）","（圖片B）","Penny practices soccer twice a month."], correct:2},
+  {q:"", options:["Peter gets up at 6:30 every morning.","（圖片B）","（圖片C）"], correct:0},
+  {q:"", options:["The streets in my city are always clean.","（圖片B）","（圖片C）"], correct:0},
+  {q:"", options:["（圖片A）","The boy doesn't want to enjoy the cake with his sister.","（圖片C）"], correct:1}
+]);
+
+// 六、看圖選答（不確定順序，建議核對）
+mc(document.getElementById("sec6"), [
+  {q:"What are the man and the woman doing?", options:["They are doing the housework.","They are exercising.","They are studying."], correct:1},
+  {q:"How often does Fernando practice baseball?", options:["Five times a week.","Twice a week.","Once a week."], correct:1},
+  {q:"What school team is Olivia on?", options:["She's on the soccer team.","She's on the basketball team.","She's on the badminton team."], correct:1},
+  {q:"What does Yuki do after school every day?", options:["She does homework.","She exercises.","She plays video games."], correct:2},
+  {q:"What are there on the toilet?", options:["There are lots of mops on it.","There are lots of teeth on it.","There are lots of germs on it."], correct:2}
+]);
+
+// 七、短文對話（一題一問）
+mc(document.getElementById("sec7"), [
+  {q:"Can the boy watch the baseball game with the girl this Thursday?", options:["No, he has a lot of homework on that day.","No, he isn't free on that day.","Yes, he can."], correct:1,
+   script:"G: Martin, I have two tickets for a baseball game this Thursday night. Do you want to go with me?\nB: I can't go with you. I have tennis classes on Tuesday and Thursday. I'm sorry.\nG: That's OK."},
+  {q:"How much is one ticket to the baseball game?", options:["NT$100.","NT$115.","NT$150."], correct:2,
+   script:"M: Good morning. What can I do for you?\nW: I want four tickets for the baseball game at 1 p.m. this Saturday.\nM: OK. NT$150 for one ticket.\nW: I see. Here is $600.\nM: Here are your tickets."},
+  {q:"What might the man do now?", options:["Get out of the house.","Kill the mouse.","Open the kitchen door."], correct:2,
+   script:"W: (scream) There is a big mouse in our kitchen. It's eating the apple on the table!\nM: Don't do that! Open the kitchen door, and it can get out of our house.\nW: OK."},
+  {q:"What is the boy doing now?", options:["Having dinner with his classmate at home.","Waiting for his mom at school.","Practicing badminton at school."], correct:1,
+   script:"B: Mom, this is Ken. Are you at home or are you going to my school gate?\nW: I'm on my way. By the way, my classmate, Jimmy, is here with me. He's going to the gym, too. Can we take him with us? After our badminton class, he can have dinner with us."},
+  {q:"How much is the toy car?", options:["It's NT$500.","It's NT$400.","It's NT$900."], correct:0,
+   script:"W: It's my son's toy robot dog.\nM: How much is that robot dog?\nW: It's NT$700.\nM: But I only have NT$500 with me today. How about your toy car?\nW: It's NT$500 this week.\nM: Wow, it's very cool! OK, I want this one. Thank you."}
+]);
+
+// 八、較長短文對話
+mc(document.getElementById("sec8"), [
+  {q:"Who is sleeping?", options:["Meg.","Meg's brother.","Meg's sister."], correct:1,
+   script:"[A] Hi, I'm Meg. I get up at 6:40 every day. It's 7 a.m. on Saturday now. I'm chatting with my sister, Jane, on the smartphone. She is in the USA. It's 6 p.m. in her city. She's having dinner with her classmates. My parents and my brother, Leo, are sleeping now. They get up at 9 o'clock on weekends. I make breakfast for my family on Saturdays and Sundays."},
+  {q:"What time is it in Jane's city?", options:["It's 7 a.m.","It's 6 p.m.","It's 6 a.m."], correct:1},
+  {q:"What is right?", options:["Meg is using her smartphone.","Meg gets up at 9 o'clock on weekends.","Meg is talking with her mother in the kitchen."], correct:0},
+  {q:"How is Lynn?", options:["She is sad.","She is happy.","She is energetic."], correct:0,
+   script:"[B] M: Lynn, are you OK?\nG: No. She doesn't talk to me. She doesn't walk home with me after school, either. She doesn't like me.\nM: Oh, it must be hard for you. Let's go to her house tonight, and we can talk to her together. You two can be good friends again.\nG: Thank you, Dad."},
+  {q:"What is right?", options:["Lynn and Kiki don't talk at school now.","Lynn's dad is not happy about Kiki.","Lynn and Kiki are sisters."], correct:0},
+  {q:"What's the boy's problem?", options:["He doesn't like basketball.","He doesn't practice a lot.","He doesn't have time to study."], correct:2,
+   script:"[C] B: I practice basketball every day. I don't have time to study, and my math and English grades are terrible. My parents are not happy about that.\nG: Really? What can I do for you?\nB: Let's study together in the library."},
+  {q:"Can the girl go to the library on Thursdays?", options:["No, she plays soccer with her friends on Thursdays.","Yes, she is free on Thursday nights.","No, she has basketball practice on Thursdays."], correct:0,
+   script:"G: I can go to the library on Thursdays. I play soccer with my friends after school every Thursday, and Fridays. What about Wednesdays?\nB: OK."},
+  {q:"What is right about the girl and the boy?", options:["They are on the basketball team.","The practice is hard only for the boy.","Their school grades are good."], correct:0},
+  {q:"Who is Simon?", options:["The boy's brother.","The girl's brother.","The boy's cousin."], correct:2,
+   script:"[D] G: Simon is really a great person. Everyone likes him.\nB: Yeah, he's nice and warm to everyone around him. His school grades are good, and he's good at different sports, too. At home, he prepares dinner for me and does the dishes every day.\nG: Wait! Isn't he your cousin?\nB: No, he's my big brother.\nG: Really? You must like him very much.\nB: Yeah, you're right. We chat every day, and I really enjoy the time with him."},
+  {q:"What is right?", options:["The girl doesn't like Simon.","Simon is not nice to people.","The boy enjoys talking with Simon."], correct:2}
+]);
+</script>
+<script>window.EXAM_META = {version:"A卷", examLabel:"第4次"};</script>
+<script src="sync.js"></script>
+</body>
+</html>
