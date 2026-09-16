@@ -47,6 +47,31 @@
     });
   }
 
+  window.revealExamAnswers = function(){
+    window.examAnswersRevealed = true;
+    document.querySelectorAll(".q").forEach(q=>{
+      if(q.dataset.studentAnswer === undefined) return;
+      const opts = q.querySelectorAll(".opt");
+      if(opts.length){
+        opts.forEach(o=>{ if(o.dataset.correct==="true") o.classList.add("correct"); });
+        const chosen = q.querySelector(".opt.selected");
+        if(chosen && chosen.dataset.correct!=="true") chosen.classList.add("wrong");
+        const ex = q.querySelector(".explain");
+        if(ex) ex.classList.add("show");
+      }
+      const blank = q.querySelector("input.blank");
+      if(blank){
+        const fb = blank.parentElement.querySelector(".feedback");
+        if(fb){
+          const ok = q.dataset.isCorrect === "true";
+          fb.textContent = ok ? "✓" : "✗";
+          fb.className = "feedback " + (ok ? "ok" : "no");
+        }
+      }
+    });
+    if(typeof window.updateScore === "function") window.updateScore();
+  };
+
   window.submitExamResults = function(){
     const student = document.getElementById("examStudentSelect").value;
     const statusEl = document.getElementById("examSyncStatus");
@@ -110,6 +135,7 @@
       if(typeof window.unlockPrintMode === "function"){
         window.unlockPrintMode();
       }
+      window.revealExamAnswers();
       document.querySelectorAll(".script-toggle button").forEach(b=>{
         b.disabled = false;
         b.textContent = "顯示逐字稿";

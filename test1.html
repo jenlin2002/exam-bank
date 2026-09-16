@@ -136,6 +136,7 @@
     background:#fffdf8;
   }
   .opt:hover{border-color:var(--chalk-green-2);}
+  .opt.selected{border-color:var(--chalk-green-2);background:#eef3ea;}
   .opt.correct{border-color:var(--ok-green);background:var(--ok-green-soft);}
   .opt.wrong{border-color:var(--pen-red);background:var(--pen-red-soft);}
   .opt .tag{font-weight:700;color:var(--ink-soft);}
@@ -372,6 +373,7 @@ function buildTabs(){
 function render(){
   buildTabs();
   window.EXAM_META = { version: currentVersion + "卷", examLabel: "第1次" };
+  window.examAnswersRevealed = false;
   const data = DATA[currentVersion];
   if(!data){
     contentEl.innerHTML = `<div class="coming-soon">📄 ${currentVersion}卷內容整理中，之後會陸續加入題庫。</div>`;
@@ -498,13 +500,8 @@ function selectOption(qEl, optEl){
   if(currentMode!=="quiz") return;
   if(qEl.dataset.answered==="true") return;
   qEl.dataset.answered = "true";
-  qEl.querySelectorAll(".opt").forEach(o=>{
-    o.classList.add("disabled");
-    if(o.dataset.correct==="true") o.classList.add("correct");
-  });
-  if(optEl.dataset.correct!=="true") optEl.classList.add("wrong");
-  const ex = qEl.querySelector(".explain");
-  if(ex) ex.classList.add("show");
+  qEl.querySelectorAll(".opt").forEach(o=>o.classList.add("disabled"));
+  optEl.classList.add("selected");
   const correctOpt = qEl.querySelector('.opt[data-correct="true"]');
   qEl.dataset.studentAnswer = optEl.textContent.trim();
   qEl.dataset.correctAnswer = correctOpt ? correctOpt.textContent.trim() : "";
@@ -515,11 +512,8 @@ function selectOption(qEl, optEl){
 function checkBlank(input){
   const val = input.value.trim().toLowerCase();
   const ans = input.dataset.answer.trim().toLowerCase();
-  const fb = input.parentElement.querySelector(".feedback");
   const qEl = input.closest(".q");
-  if(val.length===0){ fb.textContent=""; if(qEl) delete qEl.dataset.studentAnswer; return; }
-  if(val===ans){ fb.textContent="✓"; fb.className="feedback ok"; }
-  else { fb.textContent="✗"; fb.className="feedback no"; }
+  if(val.length===0){ if(qEl) delete qEl.dataset.studentAnswer; updateScore(); return; }
   if(qEl){
     qEl.dataset.studentAnswer = input.value.trim();
     qEl.dataset.correctAnswer = input.dataset.answer;
@@ -529,25 +523,23 @@ function checkBlank(input){
 }
 
 function updateScore(){
-  let total = 0, correct = 0;
+  let total = 0, answered = 0, correct = 0;
   contentEl.querySelectorAll(".q").forEach(q=>{
-    const opts = q.querySelectorAll(".opt");
-    if(opts.length){
-      total++;
-      if(q.dataset.answered==="true" && q.querySelector(".opt.correct.wrong")===null){
-        const chosenWrong = q.querySelector(".opt.wrong");
-        if(!chosenWrong) correct++;
-      }
-      return;
-    }
-    const blank = q.querySelector("input.blank");
-    if(blank){
-      total++;
-      if(blank.value.trim().toLowerCase()===blank.dataset.answer.trim().toLowerCase() && blank.value.trim().length>0) correct++;
+    const gradable = q.querySelector(".opts") || q.querySelector("input.blank");
+    if(!gradable) return;
+    total++;
+    if(q.dataset.studentAnswer !== undefined){
+      answered++;
+      if(q.dataset.isCorrect === "true") correct++;
     }
   });
-  scoreText.textContent = `${correct} / ${total}`;
+  if(window.examAnswersRevealed){
+    scoreText.textContent = `${correct} / ${total}`;
+  } else {
+    scoreText.textContent = `已作答 ${answered} / ${total} 題`;
+  }
 }
+window.updateScore = updateScore;
 
 document.getElementById("resetBtn").addEventListener("click", render);
 document.getElementById("quizModeBtn").addEventListener("click", ()=>{
@@ -573,4 +565,3 @@ render();
 <script src="sync.js"></script>
 </body>
 </html>
- 

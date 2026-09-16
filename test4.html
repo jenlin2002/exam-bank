@@ -43,6 +43,7 @@
   .opt{display:flex;gap:8px;align-items:flex-start;border:1.5px solid var(--paper-line);border-radius:8px;
     padding:9px 12px;cursor:pointer;font-size:14.5px;background:#fffdf8;}
   .opt:hover{border-color:var(--chalk-green-2);}
+  .opt.selected{border-color:var(--chalk-green-2);background:#eef3ea;}
   .opt.correct{border-color:var(--ok-green);background:var(--ok-green-soft);}
   .opt.wrong{border-color:var(--pen-red);background:var(--pen-red-soft);}
   .opt .tag{font-weight:700;color:var(--ink-soft);}
@@ -154,8 +155,8 @@ function mc(container, items, withScript){
     q.querySelectorAll(".opt").forEach(o=>o.addEventListener("click", ()=>{
       if(q.dataset.answered==="true") return;
       q.dataset.answered="true";
-      q.querySelectorAll(".opt").forEach(x=>{x.classList.add("disabled"); if(x.dataset.correct==="true") x.classList.add("correct");});
-      if(o.dataset.correct!=="true") o.classList.add("wrong");
+      q.querySelectorAll(".opt").forEach(x=>x.classList.add("disabled"));
+      o.classList.add("selected");
       const correctOptEl = q.querySelector('.opt[data-correct="true"]');
       q.dataset.studentAnswer = o.textContent.trim();
       q.dataset.correctAnswer = correctOptEl ? correctOptEl.textContent.trim() : "";
@@ -173,11 +174,8 @@ function blank(container, items){
     q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q} <input type="text" class="blank" data-answer="${it.answer}"><span class="feedback"></span></div>`;
     const input = q.querySelector("input");
     input.addEventListener("input", ()=>{
-      const fb = q.querySelector(".feedback");
       const val = input.value.trim().toLowerCase();
-      if(!val){fb.textContent=""; delete q.dataset.studentAnswer; return;}
-      if(val===it.answer.toLowerCase()){fb.textContent="✓";fb.className="feedback ok";}
-      else{fb.textContent="✗";fb.className="feedback no";}
+      if(!val){ delete q.dataset.studentAnswer; return; }
       q.dataset.studentAnswer = input.value.trim();
       q.dataset.correctAnswer = it.answer;
       q.dataset.isCorrect = (val===it.answer.toLowerCase()) ? "true" : "false";
@@ -197,8 +195,8 @@ function tf(container, items){
     q.querySelectorAll(".opt").forEach(o=>o.addEventListener("click", ()=>{
       if(q.dataset.answered==="true") return;
       q.dataset.answered="true";
-      q.querySelectorAll(".opt").forEach(x=>{x.classList.add("disabled"); if(x.dataset.correct==="true") x.classList.add("correct");});
-      if(o.dataset.correct!=="true") o.classList.add("wrong");
+      q.querySelectorAll(".opt").forEach(x=>x.classList.add("disabled"));
+      o.classList.add("selected");
       const correctOptEl = q.querySelector('.opt[data-correct="true"]');
       q.dataset.studentAnswer = o.textContent.trim();
       q.dataset.correctAnswer = correctOptEl ? correctOptEl.textContent.trim() : "";
