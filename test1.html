@@ -84,6 +84,7 @@
     color:var(--chalk-green);cursor:pointer;font-family:"Noto Sans TC",sans-serif;
   }
   .mode-toggle button.active{background:var(--gold);color:#fff;}
+  .mode-toggle button:disabled{opacity:.4;cursor:not-allowed;}
 
   .score-bar{
     display:none;
@@ -214,7 +215,7 @@
     <div class="tabs" id="versionTabs" role="tablist"></div>
     <div class="mode-toggle">
       <button id="quizModeBtn" class="active">✏️ 測驗模式</button>
-      <button id="printModeBtn">🖨️ 完整題目與解答</button>
+      <button id="printModeBtn" disabled title="完成測驗並送出成績後才能查看">🖨️ 完整題目與解答（送出成績後解鎖）</button>
     </div>
   </div>
 
@@ -238,7 +239,7 @@ const DATA = {
         title: "一、文意字彙",
         meta: "20分，每題2分",
         items: [
-          {q:"Sorry. I can't go to your party. I'm m____t study at home today.", answer:"must"},
+          {q:"Sorry. I can't go to your party. I m___t study at home today.", answer:"must"},
           {q:"There are a h_____d and ten students in our school—sixty girls and fifty boys.", answer:"hundred"},
           {q:"There are too many people here. Stand by my s___e and don't run around.", answer:"side"},
           {q:"My grandfather gets up at 5:00 and eats b____t at 5:30 every morning.", answer:"breakfast"},
@@ -556,14 +557,20 @@ document.getElementById("quizModeBtn").addEventListener("click", ()=>{
   render();
 });
 document.getElementById("printModeBtn").addEventListener("click", ()=>{
+  if(document.getElementById("printModeBtn").disabled) return;
   currentMode = "print";
   document.getElementById("printModeBtn").classList.add("active");
   document.getElementById("quizModeBtn").classList.remove("active");
   render();
 });
 
+window.unlockPrintMode = function(){
+  document.getElementById("printModeBtn").disabled = false;
+};
+
 render();
 </script>
 <script src="sync.js"></script>
 </body>
 </html>
+ 
