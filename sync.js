@@ -79,7 +79,7 @@
     if(typeof window.updateScore === "function") window.updateScore();
   };
 
-  window.submitExamResults = function(){
+  window.submitExamResults = async function(){
     const student = document.getElementById("examStudentSelect").value;
     const statusEl = document.getElementById("examSyncStatus");
     if(!student){ alert("請先在右下角選擇學生身分"); return; }
@@ -102,7 +102,12 @@
     const date = nowStr();
     let sections = 0;
 
-    document.querySelectorAll("section.block").forEach(block=>{
+    statusEl.textContent = "送出中...";
+
+    // 逐一依序送出（不要同時平行送出多個單元），
+    // 避免多個請求同時打到 Apps Script 造成寫入衝突、漏掉部分列。
+    const blocks = Array.from(document.querySelectorAll("section.block"));
+    for(const block of blocks){
       const h2 = block.querySelector("h2");
       const sectionTitle = h2 ? h2.textContent.trim() : "";
       const items = [];
@@ -124,7 +129,8 @@
       });
       if(items.length){
         sections++;
-        sendToSheet({
+        statusEl.textContent = `送出中...（第 ${sections} 個單元）`;
+        await sendToSheet({
           date, student,
           version: window.EXAM_META.version,
           examLabel: window.EXAM_META.examLabel,
@@ -132,8 +138,11 @@
           items,
           summary: { score, total }
         });
+        // 每個單元之間留一點間隔，讓 Apps Script 那邊有時間把上一筆寫完，
+        // 進一步降低並發衝突的機率。
+        await new Promise(r=>setTimeout(r, 400));
       }
-    });
+    }
 
     if(sections === 0){
       statusEl.textContent = "尚未作答任何題目";
