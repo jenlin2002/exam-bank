@@ -439,9 +439,11 @@ function renderSection(sec, si){
       q.className = "q";
       const prompt = sec.type==="guided" ? `${it.prompt} <em style="color:var(--ink-soft);font-style:normal;">${it.hint}</em>` : it.zh;
       q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${prompt}</div>
-        <input type="text" class="line-answer" placeholder="請輸入英文句子">
+        <input type="text" class="line-answer" data-answer="${it.answer}" placeholder="請輸入英文句子">
         <div class="check-row"><button class="mini-btn secondary reveal-btn" style="display:none;">對答案</button></div>
         <div class="answer-reveal">正解：${it.answer}</div>`;
+      const lineInput = q.querySelector("input.line-answer");
+      lineInput.addEventListener("input", ()=>checkLineAnswer(lineInput));
       q.querySelector(".reveal-btn").addEventListener("click", (e)=>{
         q.querySelector(".answer-reveal").classList.add("show");
       });
@@ -509,6 +511,22 @@ function selectOption(qEl, optEl){
   updateScore();
 }
 
+function normalizeAnswer(s){
+  return s.trim().toLowerCase().replace(/[.!?]+$/,"").replace(/\s+/g," ");
+}
+
+function checkLineAnswer(input){
+  const val = input.value.trim();
+  const qEl = input.closest(".q");
+  if(val.length===0){ if(qEl) delete qEl.dataset.studentAnswer; updateScore(); return; }
+  if(qEl){
+    qEl.dataset.studentAnswer = val;
+    qEl.dataset.correctAnswer = input.dataset.answer;
+    qEl.dataset.isCorrect = (normalizeAnswer(val) === normalizeAnswer(input.dataset.answer)) ? "true" : "false";
+  }
+  updateScore();
+}
+
 function checkBlank(input){
   const val = input.value.trim().toLowerCase();
   const ans = input.dataset.answer.trim().toLowerCase();
@@ -525,7 +543,7 @@ function checkBlank(input){
 function updateScore(){
   let total = 0, answered = 0, correct = 0;
   contentEl.querySelectorAll(".q").forEach(q=>{
-    const gradable = q.querySelector(".opts") || q.querySelector("input.blank");
+    const gradable = q.querySelector(".opts") || q.querySelector("input.blank") || q.querySelector("input.line-answer");
     if(!gradable) return;
     total++;
     if(q.dataset.studentAnswer !== undefined){

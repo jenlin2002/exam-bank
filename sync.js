@@ -88,7 +88,7 @@
     // 檢查所有可判斷對錯的題目是否都已作答
     const unanswered = [];
     document.querySelectorAll("section.block .q").forEach(q=>{
-      const gradable = q.querySelector(".opts") || q.querySelector("input.blank");
+      const gradable = q.querySelector(".opts") || q.querySelector("input.blank") || q.querySelector("input.line-answer");
       if(gradable && q.dataset.studentAnswer === undefined){
         unanswered.push(q);
       }
