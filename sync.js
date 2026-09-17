@@ -42,9 +42,24 @@
       localStorage.setItem("examBankStudent", e.target.value);
     });
 
-    document.getElementById("examSubmitBtn").addEventListener("click", ()=>{
+    document.getElementById("examSubmitBtn").addEventListener("click", (e)=>{
+      if(e.target.disabled) return; // 防止重複點擊、重複送出
       window.submitExamResults();
     });
+
+    // 如果頁面上有「重新作答」按鈕，點下去時把送出按鈕的鎖定狀態也一併重置
+    const resetBtn = document.getElementById("resetBtn");
+    if(resetBtn){
+      resetBtn.addEventListener("click", ()=>{
+        const btn = document.getElementById("examSubmitBtn");
+        const status = document.getElementById("examSyncStatus");
+        btn.disabled = false;
+        btn.style.opacity = "";
+        btn.style.cursor = "";
+        btn.textContent = "送出成績";
+        if(status) status.textContent = "";
+      });
+    }
   }
 
   window.revealExamAnswers = function(){
@@ -99,6 +114,11 @@
       return;
     }
 
+    const submitBtn = document.getElementById("examSubmitBtn");
+    submitBtn.disabled = true;
+    submitBtn.style.opacity = "0.6";
+    submitBtn.style.cursor = "not-allowed";
+
     const date = nowStr();
     let sections = 0;
 
@@ -146,8 +166,14 @@
 
     if(sections === 0){
       statusEl.textContent = "尚未作答任何題目";
+      // 沒有真的送出任何資料，把按鈕解鎖讓學生可以再試一次
+      submitBtn.disabled = false;
+      submitBtn.style.opacity = "";
+      submitBtn.style.cursor = "";
     } else {
       statusEl.textContent = `已送出 ${sections} 個單元的成績！`;
+      submitBtn.textContent = "已送出成績";
+      // 成功送出後按鈕維持鎖住，避免手滑重複點擊造成同一份成績送出兩次
       if(typeof window.unlockPrintMode === "function"){
         window.unlockPrintMode();
       }
