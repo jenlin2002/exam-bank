@@ -1,6 +1,6 @@
 /* 段考題庫 - 共用的 Google Sheet 回傳邏輯 (exam-bank/sync.js) */
 (function(){
-  const SHEET_ENDPOINT = "https://script.google.com/macros/s/AKfycbxAHs05hVkOrjz36ZBZ5gDugcTOJSCDNOBAmDMwXiEpyoGxV-1Wm5sT3G8SK04e2w5m/exec";
+  const SHEET_ENDPOINT = "https://script.google.com/macros/s/AKfycbxO7EkmhoM2Bex59yRrBJrvY9nXEHCpUGykEP0YdkvCvtSYZ4lhDPB2N6uDHO2y3uCu/exec";
 
   function pad(n){ return n.toString().padStart(2,"0"); }
   function nowStr(){
