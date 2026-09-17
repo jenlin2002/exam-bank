@@ -69,6 +69,13 @@
         }
       }
     });
+    // 依提示作答／翻譯題：送出成績後自動顯示正解，按鈕維持隱藏
+    document.querySelectorAll(".answer-reveal").forEach(el=>{
+      el.classList.add("show");
+    });
+    document.querySelectorAll(".reveal-btn").forEach(btn=>{
+      btn.style.display = "none";
+    });
     if(typeof window.updateScore === "function") window.updateScore();
   };
 
