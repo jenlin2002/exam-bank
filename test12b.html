@@ -65,7 +65,7 @@
 <main>
   <div class="notice">🎧 對應 CD 音軌 31～33。內容已對照PDF逐字稿核對，音軌長度也與題數相符。</div>
 
-  <section class="block"><h2>一、辨識句意</h2><p class="meta">選出符合句子描述的圖片・20分，每題4分（原考卷為圖片題，此處以文字描述取代）</p>
+  <section class="block"><h2>一、辨識句意</h2><p class="meta">選出符合句子描述的圖片・20分，每題4分</p>
     <audio controls src="audio/test12b/track1.mp3"></audio><div id="sec1"></div></section>
 
   <section class="block"><h2>二、基本問答</h2><p class="meta">選出最適合的回答，完成對話・40分，每題4分</p>
@@ -81,7 +81,9 @@ function mc(container, items){
   items.forEach((it,i)=>{
     const q = document.createElement("div"); q.className="q";
     const optsHtml = it.options.map((op,oi)=>`<div class="opt" data-correct="${oi===it.correct}"><span class="tag">(${String.fromCharCode(65+oi)})</span><span>${op}</span></div>`).join("");
-    q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q||""}</div><div class="opts">${optsHtml}</div>
+    q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q||""}</div>
+      ${it.image ? `<img src="${it.image}" alt="第${i+1}題圖片" style="width:100%;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">`:""}
+      <div class="opts">${optsHtml}</div>
       ${it.script ? `<div class="script-toggle"><button disabled title="送出成績後解鎖">🔒 顯示逐字稿</button></div><div class="script">${it.script}</div>`:""}`;
     q.querySelectorAll(".opt").forEach(o=>o.addEventListener("click", ()=>{
       if(q.dataset.answered==="true") return; q.dataset.answered="true";
@@ -99,11 +101,11 @@ function mc(container, items){
 }
 
 mc(document.getElementById("sec1"), [
-  {q:"", options:["（圖片A）","（圖片B）","The kids are having a lot of fun at the beach."], correct:2},
-  {q:"", options:["My son joined a science camp last August.","（圖片B）","（圖片C）"], correct:0},
-  {q:"", options:["（圖片A）","Matt eats snacks all the time. That's not good.","（圖片C）"], correct:1},
-  {q:"", options:["（圖片A）","Two years ago, there was a hospital next to the river.","（圖片C）"], correct:1},
-  {q:"", options:["Sally went hiking in the mountains the day before yesterday.","（圖片B）","（圖片C）"], correct:0}
+  {q:"", image:"images/test12b/sec1_q1.png", options:["","",""], correct:2},
+  {q:"", image:"images/test12b/sec1_q2.png", options:["","",""], correct:0},
+  {q:"", image:"images/test12b/sec1_q3.png", options:["","",""], correct:1},
+  {q:"", image:"images/test12b/sec1_q4.png", options:["","",""], correct:1},
+  {q:"", image:"images/test12b/sec1_q5.png", options:["","",""], correct:0}
 ]);
 
 mc(document.getElementById("sec2"), [
