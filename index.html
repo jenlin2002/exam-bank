@@ -36,6 +36,11 @@
     background:var(--chalk-green);color:#eef2ea;border:1px solid var(--chalk-green);
   }
   .ver-btn:hover{background:var(--gold);border-color:var(--gold);}
+  @media (max-width:520px){
+    .card{flex-direction:column;align-items:flex-start;}
+    .versions{width:100%;}
+    .ver-btn{flex:1;text-align:center;padding:7px 8px;}
+  }
   .footer-link{display:block;text-align:center;margin-top:34px;color:var(--chalk-green);text-decoration:none;font-weight:700;font-size:14px;}
   .footer-link:hover{text-decoration:underline;}
 </style>
@@ -52,18 +57,18 @@
   <div class="grid" id="examGrid"></div>
   <script>
     const EXAMS = [
-      {n:1, lesson:"Lesson 1", title:"Alan Plays Basketball Every Day", type:"筆試", href:"test1.html", hrefB:"test1b.html"},
-      {n:2, lesson:"Lesson 2", title:"How Often Do You Clean Your Room?", type:"筆試", href:"test2.html", hrefB:"test2b.html"},
-      {n:3, lesson:"Review 1", title:"Lesson 1～2 總複習", type:"筆試", href:"test3.html", hrefB:"test3b.html"},
-      {n:4, lesson:"Lesson 1～2", title:"聽力測驗一", type:"聽力", href:"test4.html", hrefB:"test4b.html"},
-      {n:5, lesson:"Lesson 3", title:"What's the Date Today?", type:"筆試", href:"test5.html", hrefB:"test5b.html"},
-      {n:6, lesson:"Lesson 4", title:"How Much Cake Do You Want?", type:"筆試", href:"test6.html", hrefB:"test6b.html"},
-      {n:7, lesson:"Review 2", title:"Lesson 3～4 總複習", type:"筆試", href:"test7.html", hrefB:"test7b.html"},
-      {n:8, lesson:"Lesson 3～4", title:"聽力測驗二", type:"聽力", href:"test8.html", hrefB:"test8b.html"},
-      {n:9, lesson:"Lesson 5", title:"You Helped Me a Lot", type:"筆試", href:"test9.html", hrefB:"test9b.html"},
-      {n:10, lesson:"Lesson 6", title:"They Got Lots of People Together and Cleaned Up Bali's Beaches", type:"筆試", href:"test10.html", hrefB:"test10b.html"},
-      {n:11, lesson:"Review 3", title:"Lesson 5～6 總複習", type:"筆試", href:"test11.html", hrefB:"test11b.html"},
-      {n:12, lesson:"Lesson 5～6", title:"聽力測驗三", type:"聽力", href:"test12.html", hrefB:"test12b.html"}
+      {n:1, lesson:"Lesson 1", title:"Alan Plays Basketball Every Day", type:"筆試", href:"test1.html", hrefB:"test1b.html", hrefC:"test1c.html"},
+      {n:2, lesson:"Lesson 2", title:"How Often Do You Clean Your Room?", type:"筆試", href:"test2.html", hrefB:"test2b.html", hrefC:"test2c.html"},
+      {n:3, lesson:"Review 1", title:"Lesson 1～2 總複習", type:"筆試", href:"test3.html", hrefB:"test3b.html", hrefC:"test3c.html"},
+      {n:4, lesson:"Lesson 1～2", title:"聽力測驗一", type:"聽力", href:"test4.html", hrefB:"test4b.html", hrefC:"test4c.html"},
+      {n:5, lesson:"Lesson 3", title:"What's the Date Today?", type:"筆試", href:"test5.html", hrefB:"test5b.html", hrefC:"test5c.html"},
+      {n:6, lesson:"Lesson 4", title:"How Much Cake Do You Want?", type:"筆試", href:"test6.html", hrefB:"test6b.html", hrefC:"test6c.html"},
+      {n:7, lesson:"Review 2", title:"Lesson 3～4 總複習", type:"筆試", href:"test7.html", hrefB:"test7b.html", hrefC:"test7c.html"},
+      {n:8, lesson:"Lesson 3～4", title:"聽力測驗二", type:"聽力", href:"test8.html", hrefB:"test8b.html", hrefC:"test8c.html"},
+      {n:9, lesson:"Lesson 5", title:"You Helped Me a Lot", type:"筆試", href:"test9.html", hrefB:"test9b.html", hrefC:"test9c.html"},
+      {n:10, lesson:"Lesson 6", title:"They Got Lots of People Together and Cleaned Up Bali's Beaches", type:"筆試", href:"test10.html", hrefB:"test10b.html", hrefC:"test10c.html"},
+      {n:11, lesson:"Review 3", title:"Lesson 5～6 總複習", type:"筆試", href:"test11.html", hrefB:"test11b.html", hrefC:"test11c.html"},
+      {n:12, lesson:"Lesson 5～6", title:"聽力測驗三", type:"聽力", href:"test12.html", hrefB:"test12b.html", hrefC:"test12c.html"}
     ];
     const grid = document.getElementById("examGrid");
     EXAMS.forEach(ex=>{
@@ -77,6 +82,7 @@
         <div class="versions">
           <a class="ver-btn" href="${ex.href}">A卷</a>
           <a class="ver-btn" href="${ex.hrefB}">B卷</a>
+          <a class="ver-btn" href="${ex.hrefC}">C卷</a>
         </div>`;
       grid.appendChild(el);
     });
