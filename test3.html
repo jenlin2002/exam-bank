@@ -440,7 +440,7 @@ function renderSection(sec, si){
       const prompt = sec.type==="guided" ? `${it.prompt} <em style="color:var(--ink-soft);font-style:normal;">${it.hint}</em>` : it.zh;
       q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${prompt}</div>
         <input type="text" class="line-answer" placeholder="請輸入英文句子">
-        <div class="check-row"><button class="mini-btn secondary reveal-btn">對答案</button></div>
+        <div class="check-row"><button class="mini-btn secondary reveal-btn" style="display:none;">對答案</button></div>
         <div class="answer-reveal">正解：${it.answer}</div>`;
       q.querySelector(".reveal-btn").addEventListener("click", (e)=>{
         q.querySelector(".answer-reveal").classList.add("show");
@@ -483,7 +483,9 @@ function renderSection(sec, si){
           <div class="opt" data-idx="${oi}" data-correct="${oi===it.correct}">
             <span class="tag">(${String.fromCharCode(65+oi)})</span><span>${op}</span>
           </div>`).join("");
-        q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q}</div><div class="opts">${optsHtml}</div>`;
+        q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q}</div>
+          ${it.image ? `<img src="${it.image}" alt="題目附圖" style="width:100%;max-width:500px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">`:""}
+          <div class="opts">${optsHtml}</div>`;
         q.querySelectorAll(".opt").forEach(optEl=>{
           if(optEl.dataset.correct==="true") optEl.classList.add("is-correct");
           optEl.addEventListener("click", ()=>selectOption(q, optEl));

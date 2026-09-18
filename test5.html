@@ -440,7 +440,7 @@ function renderSection(sec, si){
       const prompt = sec.type==="guided" ? `${it.prompt} <em style="color:var(--ink-soft);font-style:normal;">${it.hint}</em>` : it.zh;
       q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${prompt}</div>
         <input type="text" class="line-answer" placeholder="請輸入英文句子">
-        <div class="check-row"><button class="mini-btn secondary reveal-btn">對答案</button></div>
+        <div class="check-row"><button class="mini-btn secondary reveal-btn" style="display:none;">對答案</button></div>
         <div class="answer-reveal">正解：${it.answer}</div>`;
       q.querySelector(".reveal-btn").addEventListener("click", (e)=>{
         q.querySelector(".answer-reveal").classList.add("show");
