@@ -74,7 +74,8 @@
     border-radius:999px 999px 0 0;
     cursor:pointer;
   }
-  .tab-btn[aria-selected="true"]{background:var(--chalk-green);color:#fff;}
+  .tab-btn[aria-selected="true"], .tab-btn.active-static{background:var(--chalk-green);color:#fff;}
+  a.tab-btn{text-decoration:none;display:inline-block;}
   .tab-btn[disabled]{
     opacity:.45;cursor:not-allowed;border-color:var(--ink-soft);color:var(--ink-soft);
   }
@@ -213,7 +214,10 @@
 
 <main>
   <div class="controls">
-    <div class="tabs" id="versionTabs" role="tablist"></div>
+    <div class="tabs" id="versionTabs" role="tablist">
+      <span class="tab-btn active-static">A卷</span>
+      <a class="tab-btn" href="test1b.html">B卷</a>
+    </div>
     <div class="mode-toggle">
       <button id="quizModeBtn" class="active">✏️ 測驗模式</button>
       <button id="printModeBtn" disabled title="完成測驗並送出成績後才能查看">🖨️ 完整題目與解答（送出成績後解鎖）</button>
@@ -351,27 +355,11 @@ const DATA = {
 let currentVersion = "A";
 let currentMode = "quiz"; // quiz | print
 
-const tabsEl = document.getElementById("versionTabs");
 const contentEl = document.getElementById("content");
 const scoreBar = document.getElementById("scoreBar");
 const scoreText = document.getElementById("scoreText");
 
-function buildTabs(){
-  tabsEl.innerHTML = "";
-  ["A","B","C"].forEach(v=>{
-    const btn = document.createElement("button");
-    btn.className = "tab-btn";
-    btn.textContent = v + "卷" + (DATA[v] ? "" : "（即將推出）");
-    btn.setAttribute("role","tab");
-    btn.setAttribute("aria-selected", v===currentVersion ? "true":"false");
-    if(!DATA[v]) btn.disabled = true;
-    btn.addEventListener("click", ()=>{ currentVersion = v; render(); });
-    tabsEl.appendChild(btn);
-  });
-}
-
 function render(){
-  buildTabs();
   window.EXAM_META = { version: currentVersion + "卷", examLabel: "第1次" };
   window.examAnswersRevealed = false;
   const data = DATA[currentVersion];
@@ -440,7 +428,7 @@ function renderSection(sec, si){
       const prompt = sec.type==="guided" ? `${it.prompt} <em style="color:var(--ink-soft);font-style:normal;">${it.hint}</em>` : it.zh;
       q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${prompt}</div>
         <input type="text" class="line-answer" placeholder="請輸入英文句子">
-        <div class="check-row"><button class="mini-btn secondary reveal-btn">對答案</button></div>
+        <div class="check-row"><button class="mini-btn secondary reveal-btn" style="display:none;">對答案</button></div>
         <div class="answer-reveal">正解：${it.answer}</div>`;
       q.querySelector(".reveal-btn").addEventListener("click", (e)=>{
         q.querySelector(".answer-reveal").classList.add("show");

@@ -23,19 +23,19 @@
   main{max-width:820px;margin:0 auto;padding:28px 20px 70px;}
   .grid{display:grid;gap:14px;}
   .card{
-    display:flex;justify-content:space-between;align-items:center;
+    display:flex;justify-content:space-between;align-items:center;gap:14px;
     background:#fff;border:1px solid var(--paper-line);border-radius:10px;
     padding:18px 20px;text-decoration:none;color:var(--ink);
   }
-  .card.active:hover{border-color:var(--chalk-green);}
   .card .name{font-family:"Noto Serif TC",serif;font-weight:700;font-size:17px;margin:0 0 4px;}
   .card .desc{font-size:13.5px;color:var(--ink-soft);margin:0;}
-  .card .arrow{color:var(--gold);font-size:20px;}
-  .card.disabled{opacity:.5;}
-  .badge{
-    display:inline-block;font-size:12px;background:var(--gold);color:#fff;
-    padding:2px 9px;border-radius:999px;margin-left:8px;vertical-align:middle;
+  .versions{display:flex;gap:8px;flex-shrink:0;}
+  .ver-btn{
+    display:inline-block;font-family:"Noto Serif TC",serif;font-weight:700;font-size:13.5px;
+    padding:7px 16px;border-radius:999px;text-decoration:none;
+    background:var(--chalk-green);color:#eef2ea;border:1px solid var(--chalk-green);
   }
+  .ver-btn:hover{background:var(--gold);border-color:var(--gold);}
   .footer-link{display:block;text-align:center;margin-top:34px;color:var(--chalk-green);text-decoration:none;font-weight:700;font-size:14px;}
   .footer-link:hover{text-decoration:underline;}
 </style>
@@ -52,31 +52,32 @@
   <div class="grid" id="examGrid"></div>
   <script>
     const EXAMS = [
-      {n:1, lesson:"Lesson 1", title:"Alan Plays Basketball Every Day", type:"筆試", href:"test1.html", status:"done"},
-      {n:2, lesson:"Lesson 2", title:"How Often Do You Clean Your Room?", type:"筆試", href:"test2.html", status:"done"},
-      {n:3, lesson:"Review 1", title:"Lesson 1～2 總複習", type:"筆試", href:"test3.html", status:"done"},
-      {n:4, lesson:"Lesson 1～2", title:"聽力測驗一", type:"聽力", href:"test4.html", status:"done"},
-      {n:5, lesson:"Lesson 3", title:"What's the Date Today?", type:"筆試", href:"test5.html", status:"done"},
-      {n:6, lesson:"Lesson 4", title:"How Much Cake Do You Want?", type:"筆試", href:"test6.html", status:"done"},
-      {n:7, lesson:"Review 2", title:"Lesson 3～4 總複習", type:"筆試", href:"test7.html", status:"done"},
-      {n:8, lesson:"Lesson 3～4", title:"聽力測驗二", type:"聽力", href:"test8.html", status:"done"},
-      {n:9, lesson:"Lesson 5", title:"You Helped Me a Lot", type:"筆試", href:"test9.html", status:"done"},
-      {n:10, lesson:"Lesson 6", title:"They Got Lots of People Together and Cleaned Up Bali's Beaches", type:"筆試", href:"test10.html", status:"done"},
-      {n:11, lesson:"Review 3", title:"Lesson 5～6 總複習", type:"筆試", href:"test11.html", status:"done"},
-      {n:12, lesson:"Lesson 5～6", title:"聽力測驗三", type:"聽力", href:"test12.html", status:"done"}
+      {n:1, lesson:"Lesson 1", title:"Alan Plays Basketball Every Day", type:"筆試", href:"test1.html", hrefB:"test1b.html"},
+      {n:2, lesson:"Lesson 2", title:"How Often Do You Clean Your Room?", type:"筆試", href:"test2.html", hrefB:"test2b.html"},
+      {n:3, lesson:"Review 1", title:"Lesson 1～2 總複習", type:"筆試", href:"test3.html", hrefB:"test3b.html"},
+      {n:4, lesson:"Lesson 1～2", title:"聽力測驗一", type:"聽力", href:"test4.html", hrefB:"test4b.html"},
+      {n:5, lesson:"Lesson 3", title:"What's the Date Today?", type:"筆試", href:"test5.html", hrefB:"test5b.html"},
+      {n:6, lesson:"Lesson 4", title:"How Much Cake Do You Want?", type:"筆試", href:"test6.html", hrefB:"test6b.html"},
+      {n:7, lesson:"Review 2", title:"Lesson 3～4 總複習", type:"筆試", href:"test7.html", hrefB:"test7b.html"},
+      {n:8, lesson:"Lesson 3～4", title:"聽力測驗二", type:"聽力", href:"test8.html", hrefB:"test8b.html"},
+      {n:9, lesson:"Lesson 5", title:"You Helped Me a Lot", type:"筆試", href:"test9.html", hrefB:"test9b.html"},
+      {n:10, lesson:"Lesson 6", title:"They Got Lots of People Together and Cleaned Up Bali's Beaches", type:"筆試", href:"test10.html", hrefB:"test10b.html"},
+      {n:11, lesson:"Review 3", title:"Lesson 5～6 總複習", type:"筆試", href:"test11.html", hrefB:"test11b.html"},
+      {n:12, lesson:"Lesson 5～6", title:"聽力測驗三", type:"聽力", href:"test12.html", hrefB:"test12b.html"}
     ];
     const grid = document.getElementById("examGrid");
     EXAMS.forEach(ex=>{
-      const done = ex.status==="done";
-      const el = document.createElement(done ? "a" : "div");
-      el.className = "card" + (done ? " active" : " disabled");
-      if(done) el.href = ex.href;
+      const el = document.createElement("div");
+      el.className = "card active";
       el.innerHTML = `
         <div>
-          <p class="name">第${ex.n}次平時考・${ex.lesson}${done ? '<span class="badge">A卷</span>' : ''}</p>
-          <p class="desc">${ex.title}｜${ex.type}${done ? "" : "・整理中"}</p>
+          <p class="name">第${ex.n}次平時考・${ex.lesson}</p>
+          <p class="desc">${ex.title}｜${ex.type}</p>
         </div>
-        <div class="arrow">${done ? "→" : "…"}</div>`;
+        <div class="versions">
+          <a class="ver-btn" href="${ex.href}">A卷</a>
+          <a class="ver-btn" href="${ex.hrefB}">B卷</a>
+        </div>`;
       grid.appendChild(el);
     });
   </script>
