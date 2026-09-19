@@ -3,130 +3,79 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Branden & Melissa 英文成長園地</title>
+<title>國中題庫｜總目錄</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Kalam:wght@400;700&family=Noto+Sans+TC:wght@400;500;700;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@500;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
   :root{
-    --bg: #1B3A2F;
-    --bg2: #163026;
-    --paper: #F7F3E8;
-    --paper2: #EFE9D8;
-    --yellow: #E8B94A;
-    --green: #7FB69A;
-    --red: #D97A6C;
-    --brown: #B08B5A;
-    --line: #2A4A3C;
+    --paper:#faf6ec; --ink:#26332b; --ink-soft:#5b6b5f;
+    --chalk-green:#2f4538; --gold:#b5842a; --paper-line:#e3dcc8;
   }
-  *{box-sizing:border-box; margin:0; padding:0;}
-  body{
-    background:var(--bg); color:var(--paper);
-    font-family:'Noto Sans TC', sans-serif;
-    min-height:100vh;
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:"Noto Sans TC",sans-serif;line-height:1.7;}
+  header{background:var(--chalk-green);color:#eef2ea;padding:30px 20px 42px;position:relative;}
+  header::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:14px;
+    background:repeating-linear-gradient(90deg,var(--paper) 0 18px, transparent 18px 20px);}
+  .inner{max-width:860px;margin:0 auto;}
+  .breadcrumb a{color:#cfe0d1;text-decoration:none;font-size:14px;}
+  h1{font-family:"Noto Serif TC",serif;font-size:clamp(24px,4vw,32px);margin:10px 0 6px;}
+  .sub{color:#cfe0d1;font-size:15px;margin:0;}
+  main{max-width:860px;margin:0 auto;padding:28px 20px 70px;}
+  .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;}
+  @media (max-width:640px){.grid{grid-template-columns:repeat(2,1fr);}}
+  @media (max-width:420px){.grid{grid-template-columns:1fr;}}
+  .card{
+    display:block;background:#fff;border:1px solid var(--paper-line);border-radius:12px;
+    padding:22px 18px;text-decoration:none;color:var(--ink);text-align:center;
+    transition:transform .15s,border-color .15s;
   }
-  header{
-    padding:50px 24px 30px; text-align:center;
-    border-bottom:1px solid var(--line);
+  a.card:hover{transform:translateY(-3px);border-color:var(--gold);}
+  .card .icon{font-size:30px;margin-bottom:8px;}
+  .card .name{font-family:"Noto Serif TC",serif;font-weight:700;font-size:18px;margin:0 0 4px;}
+  .card .desc{font-size:12.5px;color:var(--ink-soft);margin:0;}
+  .card.disabled{opacity:.5;cursor:default;}
+  .badge{
+    display:inline-block;font-family:"Noto Sans TC",sans-serif;font-size:11px;font-weight:700;
+    padding:2px 10px;border-radius:999px;margin-top:10px;
   }
-  .eyebrow{
-    font-family:'Space Mono', monospace; font-size:12px; letter-spacing:4px;
-    color:var(--yellow); font-weight:700; margin-bottom:8px;
-  }
-  h1{ font-family:'Kalam', cursive; font-size:34px; margin-bottom:8px; }
-  .sub{ font-size:14px; color:#9AA89C; }
-
-  main{ max-width:1280px; margin:0 auto; padding:40px 20px 80px; }
-
-  .section-title{
-    font-family:'Space Mono', monospace; font-size:12px; letter-spacing:2px;
-    color:var(--green); margin:0 0 20px; padding-bottom:8px; border-bottom:1px solid var(--line);
-  }
-
-  .grid{
-    display:grid; grid-template-columns:repeat(4, 1fr);
-    gap:16px;
-  }
-  @media (max-width:1000px){ .grid{ grid-template-columns:repeat(2, 1fr); } }
-  @media (max-width:560px){ .grid{ grid-template-columns:1fr; } }
-
-  a.project-card{
-    display:flex; flex-direction:column;
-    background:var(--bg2); border:1px solid var(--line); border-radius:16px;
-    padding:22px 20px; text-decoration:none; color:var(--paper);
-    transition:transform 0.15s, border-color 0.15s;
-  }
-  a.project-card:hover{ transform:translateY(-3px); border-color:var(--yellow); }
-
-  .card-icon{ font-size:26px; margin-bottom:10px; }
-  .card-title{ font-family:'Kalam', cursive; font-size:18px; margin-bottom:6px; line-height:1.3; }
-  .card-desc{ font-size:12.5px; color:#9AA89C; line-height:1.6; margin-bottom:14px; flex-grow:1; }
-  .card-tag{
-    display:inline-block; font-family:'Space Mono', monospace; font-size:11px;
-    padding:3px 10px; border-radius:12px; letter-spacing:1px; align-self:flex-start;
-  }
-  .tag-grammar{ background:rgba(232,185,74,0.15); color:var(--yellow); }
-  .tag-reading{ background:rgba(127,182,154,0.15); color:var(--green); }
-  .tag-listening{ background:rgba(217,122,108,0.15); color:var(--red); }
-  .tag-exam{ background:rgba(176,139,90,0.18); color:var(--brown); }
-
-  .placeholder-card{
-    display:flex; align-items:center; justify-content:center;
-    background:transparent; border:2px dashed var(--line); border-radius:16px;
-    padding:24px 20px; color:#5B6B60; font-size:13px; text-align:center; min-height:140px;
-  }
-
-  footer{
-    text-align:center; padding:24px; font-size:12px; color:#5B6B60;
-    border-top:1px solid var(--line);
-  }
+  .badge.ready{background:rgba(181,132,42,0.15);color:var(--gold);}
+  .badge.soon{background:rgba(91,107,95,0.12);color:var(--ink-soft);}
+  .footer-link{display:block;text-align:center;margin-top:34px;color:var(--chalk-green);text-decoration:none;font-weight:700;font-size:14px;}
+  .footer-link:hover{text-decoration:underline;}
 </style>
 </head>
 <body>
-
 <header>
-  <div class="eyebrow">GROWING UP WITH ENGLISH</div>
-  <h1>Branden &amp; Melissa 英文成長園地</h1>
-  <div class="sub">所有自製英文學習網站的入口，點卡片進入各個子網站</div>
-</header>
-
-<main>
-  <div class="section-title">所有子網站</div>
-  <div class="grid">
-    <a class="project-card" href="https://jenlin2002.github.io/english-quiz/" target="_blank">
-      <div class="card-icon">✏️</div>
-      <div class="card-title">English Quiz｜文法課程總目錄</div>
-      <div class="card-desc">18週完整文法課程：教案、投影片（含語音播放）、互動測驗，涵蓋時態、句型、關係代名詞等主題。</div>
-      <span class="card-tag tag-grammar">18 WEEKS</span>
-    </a>
-
-    <a class="project-card" href="https://jenlin2002.github.io/nat-geo-reading/" target="_blank">
-      <div class="card-icon">🗺️</div>
-      <div class="card-title">Nat-Geo Reading｜國家地理風閱讀課程</div>
-      <div class="card-desc">10週國家地理風格閱讀教材，簡化版與進階版雙難度，含單字卡、克漏字、聽力與閱讀測驗。</div>
-      <span class="card-tag tag-reading">10 WEEKS · 2 LEVELS</span>
-    </a>
-
-    <a class="project-card" href="https://jenlin2002.github.io/daily_life_listening/" target="_blank">
-      <div class="card-icon">🎧</div>
-      <div class="card-title">英文聽力高頻句練習</div>
-      <div class="card-desc">16個生活主題單元，含原創高頻對話句與情境對話，每句都能單獨播放語音，也可以整段對話一起聽。</div>
-      <span class="card-tag tag-listening">16 UNITS</span>
-    </a>
-
-    <a class="project-card" href="https://jenlin2002.github.io/exam-bank/" target="_blank">
-      <div class="card-icon">📝</div>
-      <div class="card-title">國中模擬題庫｜Exam Bank</div>
-      <div class="card-desc">康軒版七年級英語（二）平時考題庫，互動測驗＋完整題目與解答，涵蓋筆試與聽力，陸續加入各次段考內容。</div>
-      <span class="card-tag tag-exam">A / B / C 卷 · 陸續更新</span>
-    </a>
-
-    <div class="placeholder-card">
-      在這裡新增下一個子網站的卡片
-    </div>
+  <div class="inner">
+    <div class="breadcrumb"><a href="https://jenlin2002.github.io/">🏠 回總目錄</a></div>
+    <h1>國中題庫</h1>
+    <p class="sub">選擇科目，進入該科的段考練習卷</p>
   </div>
+</header>
+<main>
+  <div class="grid" id="subjectGrid"></div>
+  <script>
+    const SUBJECTS = [
+      {icon:"📘", name:"英語", href:"english.html"},
+      {icon:"🔢", name:"數學", href:null},
+      {icon:"📖", name:"國文", href:null},
+      {icon:"🌍", name:"社會", href:null},
+      {icon:"🔬", name:"自然", href:null}
+    ];
+    const grid = document.getElementById("subjectGrid");
+    SUBJECTS.forEach(s=>{
+      const ready = !!s.href;
+      const el = document.createElement(ready ? "a" : "div");
+      el.className = "card" + (ready ? "" : " disabled");
+      if(ready) el.href = s.href;
+      el.innerHTML = `
+        <div class="icon">${s.icon}</div>
+        <p class="name">${s.name}</p>
+        <span class="badge ${ready ? "ready" : "soon"}">${ready ? "已上線" : "即將推出"}</span>`;
+      grid.appendChild(el);
+    });
+  </script>
+  <a class="footer-link" href="https://jenlin2002.github.io/">← 回總目錄</a>
 </main>
-
-<footer>持續建置中，之後每完成一個新網站就會加進對應的分類裡。</footer>
-
 </body>
 </html>

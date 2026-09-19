@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>國中題庫｜英語科總目錄</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@500;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#faf6ec; --ink:#26332b; --ink-soft:#5b6b5f;
+    --chalk-green:#2f4538; --gold:#b5842a; --paper-line:#e3dcc8;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:"Noto Sans TC",sans-serif;line-height:1.7;}
+  header{background:var(--chalk-green);color:#eef2ea;padding:30px 20px 42px;position:relative;}
+  header::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:14px;
+    background:repeating-linear-gradient(90deg,var(--paper) 0 18px, transparent 18px 20px);}
+  .inner{max-width:860px;margin:0 auto;}
+  .breadcrumb a{color:#cfe0d1;text-decoration:none;font-size:14px;}
+  h1{font-family:"Noto Serif TC",serif;font-size:clamp(24px,4vw,32px);margin:10px 0 6px;}
+  .sub{color:#cfe0d1;font-size:15px;margin:0;}
+  main{max-width:860px;margin:0 auto;padding:28px 20px 70px;}
+  .section-title{
+    font-family:"Noto Serif TC",serif;font-weight:700;font-size:18px;color:var(--chalk-green);
+    margin:32px 0 12px;padding-bottom:6px;border-bottom:1px solid var(--paper-line);
+  }
+  .section-title:first-of-type{margin-top:0;}
+  .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;}
+  @media (max-width:640px){.grid{grid-template-columns:1fr;}}
+  .card{
+    display:block;background:#fff;border:1px solid var(--paper-line);border-radius:10px;
+    padding:16px 18px;text-decoration:none;color:var(--ink);transition:transform .15s,border-color .15s;
+  }
+  a.card:hover{transform:translateY(-2px);border-color:var(--gold);}
+  .card .name{font-family:"Noto Serif TC",serif;font-weight:700;font-size:16px;margin:0 0 4px;}
+  .card .desc{font-size:12.5px;color:var(--ink-soft);margin:0;}
+  .card.disabled{opacity:.5;cursor:default;}
+  .badge{
+    display:inline-block;font-family:"Noto Sans TC",sans-serif;font-size:11px;font-weight:700;
+    padding:2px 9px;border-radius:999px;margin-top:8px;
+  }
+  .badge.ready{background:rgba(181,132,42,0.15);color:var(--gold);}
+  .badge.soon{background:rgba(91,107,95,0.12);color:var(--ink-soft);}
+  .footer-link{display:block;text-align:center;margin-top:34px;color:var(--chalk-green);text-decoration:none;font-weight:700;font-size:14px;}
+  .footer-link:hover{text-decoration:underline;}
+</style>
+</head>
+<body>
+<header>
+  <div class="inner">
+    <div class="breadcrumb"><a href="https://jenlin2002.github.io/">🏠 回總目錄</a> ／ <a href="index.html" style="color:#cfe0d1;">國中題庫</a></div>
+    <h1>英語科</h1>
+    <p class="sub">依年級、學期、版本分類，點卡片進入該冊的段考練習卷</p>
+  </div>
+</header>
+<main>
+  <div id="bookGrid"></div>
+  <script>
+    const BOOKS = [
+      {grade:"國中一上", items:[
+        {pub:"康軒", href:null},
+        {pub:"翰林", href:null},
+        {pub:"南一", href:null}
+      ]},
+      {grade:"國中一下", items:[
+        {pub:"康軒", href:"kangxuan-g7-2.html"},
+        {pub:"翰林", href:null},
+        {pub:"南一", href:null}
+      ]},
+      {grade:"國中二上", items:[
+        {pub:"康軒", href:null},
+        {pub:"翰林", href:null},
+        {pub:"南一", href:null}
+      ]},
+      {grade:"國中二下", items:[
+        {pub:"康軒", href:null},
+        {pub:"翰林", href:null},
+        {pub:"南一", href:null}
+      ]},
+      {grade:"國中三上", items:[
+        {pub:"康軒", href:null},
+        {pub:"翰林", href:null},
+        {pub:"南一", href:null}
+      ]},
+      {grade:"國中三下", items:[
+        {pub:"康軒", href:null},
+        {pub:"翰林", href:null},
+        {pub:"南一", href:null}
+      ]}
+    ];
+    const container = document.getElementById("bookGrid");
+    BOOKS.forEach(section=>{
+      const title = document.createElement("div");
+      title.className = "section-title";
+      title.textContent = section.grade;
+      container.appendChild(title);
+
+      const grid = document.createElement("div");
+      grid.className = "grid";
+      section.items.forEach(it=>{
+        const ready = !!it.href;
+        const el = document.createElement(ready ? "a" : "div");
+        el.className = "card" + (ready ? "" : " disabled");
+        if(ready) el.href = it.href;
+        el.innerHTML = `
+          <p class="name">${section.grade}・${it.pub}</p>
+          <p class="desc">${it.pub}版英語段考題庫</p>
+          <span class="badge ${ready ? "ready" : "soon"}">${ready ? "已上線" : "即將推出"}</span>`;
+        grid.appendChild(el);
+      });
+      container.appendChild(grid);
+    });
+  </script>
+  <a class="footer-link" href="index.html">← 回國中題庫總目錄</a>
+</main>
+</body>
+</html>
