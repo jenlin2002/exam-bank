@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>段考題庫｜第12回 - Review 3（二）（C卷）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@500;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#faf6ec;
+    --paper-line:#e3dcc8;
+    --ink:#26332b;
+    --ink-soft:#5b6b5f;
+    --chalk-green:#2f4538;
+    --chalk-green-2:#3d5a48;
+    --pen-red:#b8433a;
+    --pen-red-soft:#f4dedb;
+    --ok-green:#3f7d52;
+    --ok-green-soft:#dfeee1;
+    --gold:#b5842a;
+    --radius:10px;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:"Noto Sans TC",sans-serif;
+    line-height:1.7;
+  }
+  header.hero{
+    background:var(--chalk-green);
+    color:#eef2ea;
+    padding:28px 20px 40px;
+    position:relative;
+  }
+  header.hero::after{
+    content:"";
+    position:absolute;
+    left:0; right:0; bottom:-1px;
+    height:14px;
+    background:repeating-linear-gradient(90deg,var(--paper) 0 18px, transparent 18px 20px);
+  }
+  .hero-inner{max-width:880px;margin:0 auto;}
+  .breadcrumb a{color:#cfe0d1;text-decoration:none;font-size:14px;}
+  .breadcrumb a:hover{text-decoration:underline;}
+  h1{
+    font-family:"Noto Serif TC",serif;
+    font-weight:700;
+    font-size:clamp(24px,4vw,34px);
+    margin:10px 0 6px;
+  }
+  .subtitle{color:#cfe0d1;font-size:15px;margin:0;}
+  main{max-width:880px;margin:0 auto;padding:28px 20px 80px;}
+
+  .controls{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:22px;
+  }
+  .mode-toggle{display:flex;border:2px solid var(--chalk-green);border-radius:999px;overflow:hidden;}
+  .mode-toggle button{
+    background:transparent;border:none;padding:8px 16px;font-size:14px;font-weight:700;
+    color:var(--chalk-green);cursor:pointer;font-family:"Noto Sans TC",sans-serif;
+  }
+  .mode-toggle button.active{background:var(--gold);color:#fff;}
+  .mode-toggle button:disabled{opacity:.4;cursor:not-allowed;}
+
+  .score-bar{
+    display:none;
+    align-items:center;
+    justify-content:space-between;
+    background:#fff;
+    border:1px solid var(--paper-line);
+    border-left:5px solid var(--gold);
+    border-radius:var(--radius);
+    padding:12px 18px;
+    margin-bottom:22px;
+    font-size:14px;
+  }
+  .score-bar.show{display:flex;}
+  .score-bar strong{font-size:18px;color:var(--gold);}
+  .score-bar button{
+    background:none;border:1px solid var(--ink-soft);color:var(--ink-soft);
+    border-radius:6px;padding:6px 12px;font-size:13px;cursor:pointer;
+  }
+
+  section.block{
+    background:#fff;
+    border:1px solid var(--paper-line);
+    border-radius:var(--radius);
+    padding:22px 22px 26px;
+    margin-bottom:20px;
+  }
+  .block h2{
+    font-family:"Noto Serif TC",serif;
+    font-size:19px;
+    margin:0 0 4px;
+    color:var(--chalk-green);
+  }
+  .block .meta{color:var(--ink-soft);font-size:13px;margin:0 0 16px;}
+
+  .q{margin-bottom:18px;padding-bottom:16px;border-bottom:1px dashed var(--paper-line);}
+  .q:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0;}
+  .q-text{font-size:15.5px;margin-bottom:8px;}
+  .q-num{color:var(--gold);font-weight:700;margin-right:4px;}
+
+  .opts{display:grid;gap:8px;}
+  .opt{
+    display:flex;gap:8px;align-items:flex-start;
+    border:1.5px solid var(--paper-line);
+    border-radius:8px;
+    padding:9px 12px;
+    cursor:pointer;
+    font-size:14.5px;
+    background:#fffdf8;
+  }
+  .opt:hover{border-color:var(--chalk-green-2);}
+  .opt.selected{border-color:var(--chalk-green-2);background:#eef3ea;}
+  .opt.correct{border-color:var(--ok-green);background:var(--ok-green-soft);}
+  .opt.wrong{border-color:var(--pen-red);background:var(--pen-red-soft);}
+  .opt .tag{font-weight:700;color:var(--ink-soft);}
+  .opt.correct .tag{color:var(--ok-green);}
+  .opt.wrong .tag{color:var(--pen-red);}
+  .opt.disabled{cursor:default;}
+
+  .passage{
+    background:#f5f2e8;border-radius:8px;padding:14px 16px;margin-bottom:14px;
+    font-size:14.5px;white-space:pre-line;
+  }
+  .passage-label{font-weight:700;color:var(--chalk-green);margin-bottom:4px;display:block;}
+
+  .footer-link{
+    display:block;text-align:center;margin-top:30px;color:var(--chalk-green);
+    text-decoration:none;font-weight:700;font-size:14px;
+  }
+  .footer-link:hover{text-decoration:underline;}
+
+  @media print{
+    header.hero, .controls, .score-bar, .mini-btn, .footer-link{display:none !important;}
+    body{background:#fff;}
+    section.block{border:none;box-shadow:none;padding:8px 0;margin-bottom:14px;}
+    .opt.correct{background:none;border:none;font-weight:700;}
+    .opt.correct::after{content:" ← 正解";color:var(--pen-red);}
+    .opt{border:none;padding:2px 0;}
+    main{max-width:100%;padding:0 24px;}
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="breadcrumb"><a href="https://jenlin2002.github.io/">🏠 回總目錄</a> ／ <a href="../kangxuan-g7-1.html" style="color:#cfe0d1;">段考題庫</a></div>
+    <h1>第12回・Review 3（二）</h1>
+    <p class="subtitle">Review 3（二）｜康軒版七年級英語（一）Ｃ卷</p>
+  </div>
+</header>
+
+<main>
+  <div class="controls">
+    <div class="mode-toggle">
+      <button id="quizModeBtn" class="active">✏️ 測驗模式</button>
+      <button id="printModeBtn" disabled title="完成測驗並送出成績後才能查看">🖨️ 完整題目與解答（送出成績後解鎖）</button>
+    </div>
+  </div>
+
+  <div class="score-bar" id="scoreBar">
+    <div>目前得分：<strong id="scoreText">0 / 0</strong>（僅計算選擇題與字彙填空）</div>
+    <button id="resetBtn">重新作答</button>
+  </div>
+
+  <div id="content"></div>
+
+  <a class="footer-link" href="../kangxuan-g7-1.html">← 回段考題庫總覽</a>
+</main>
+
+<script>
+
+window.EXAM_META = { version: "C卷", examLabel: "第12回" };
+const DATA = {
+  sections: [
+    {
+      type:"mc",
+      title:"第一部分",
+      meta:"題號1~20，請依據題意選出一個正確或最佳的答案。每題2分，共40分",
+      items:[
+        {q:"There are a lot of books in the ___. I read there all the time.",options:["group","library","playground","basketball court"],correct:1},
+        {q:"A: Robert, don't stand in front of the door. B: No ___.",options:["problem","building","party","meeting"],correct:0},
+        {q:"A: Time for school. Hurry up! What are you doing? B: I'm ___ my watch. Where is it?",options:["looking on","looking to","looking for","looking at"],correct:2},
+        {q:"A: What day is today? B: ___",options:["It's on Thursday.","It's at 8 p.m.","It's Monday.","It's seven ten."],correct:2},
+        {q:"A: Are the girls ___ in the kitchen? B: No, they are not. They are ___ birthday cards.",options:["cook; make","cook; making","cooking; making","cooking; make"],correct:2},
+        {q:"Don't ___ a word（字）. It's a secret（秘密）.",options:["say","chat","make","join"],correct:0},
+        {q:"A: ___ is the movie? B: It's at six thirty.",options:["What time","How","What day","What"],correct:0},
+        {q:"There is a ___ near my house. I can run there.",options:["sports field","gate","restroom","swing"],correct:0},
+        {q:"A: What time is it? B: It's eight o'clock ___ the morning.",options:["on","of","at","in"],correct:3},
+        {q:"It's Sunday evening. Eric is having ___ with his family.",options:["dinner","meeting","problem","weekend"],correct:0},
+        {q:"There aren't ___ special animals around here.",options:["a","no","any","some"],correct:2},
+        {q:"A: Is there a playground at your school? B: ___ There is one playground at our school.",options:["No, it isn't.","Yes, there is.","No, there aren't.","Yes, it is."],correct:1},
+        {q:"This book is ___ a special zebra in Tokyo.",options:["about","in","at","of"],correct:0},
+        {q:"The test（考試）is ___ Sunday morning. Peter is ___ for it.",options:["on; preparing","in; preparing","in; prepare","on; prepare"],correct:0},
+        {q:"A: ___ near your house? B: Yes, there are two.",options:["Can a park","Is it a park","Are there any parks","Where are parks"],correct:2},
+        {q:"I'm ___. Let's eat lunch now.",options:["large","hungry","friendly","quiet"],correct:1},
+        {q:"A: I have a group chat with my classmates tonight. B: Can I ___ it? I want to talk to your classmates.",options:["join","worry","prepare","wear"],correct:0},
+        {q:"A: Are there ___ birds in the tree? B: Yes, there are a lot of birds in the tree.",options:["no","a","any","an"],correct:2},
+        {q:"A: ___ B: It's eight o'clock.",options:["What time is your PE class?","Is your class at eight a.m.?","What time is it?","Is it time for bed?"],correct:2},
+        {q:"Our class is not on the weekend. It's on Monday, ___, and Friday.",options:["week","Tuesday","Saturday","tonight"],correct:1}
+      ]
+    },
+    {
+      type:"reading",
+      title:"第二部分",
+      meta:"題號21~40，四個題組，請依據所附選文或圖表資料，選出一個正確或最佳的答案。每題3分，共60分",
+      passages:[
+        {
+          label:"【21～25】",
+          text:"David: I'm home, Mom. ___21___\nMom: I'm cooking. Aunt Susan is coming for dinner tonight.\nDavid: ___22___ Sam and Amanda coming, too?\nMom: Yes, they are.\nDavid: Great! I can play games with them after dinner.\nMom: ___23___, don't put your socks on the chair. Put them in the basket. Be a good boy.\nDavid: OK, Mom.\nMom: ___24___ is your brother?\nDavid: He is chatting with Mrs. Wu in front of the house.\nMom: I see. What time is it now?\nDavid: It's ___25___ six thirty.\nMom: Oh, no, they're coming. I need to hurry.\n\n【字詞】after 在……之後　sock 襪子　need to 必須",
+          items:[
+            {q:"21.",options:["Where is Aunt Susan?","What are you doing?","Who is the woman on TV?","Are you preparing dinner?"],correct:1},
+            {q:"22.",options:["Am","Is","Are","Be"],correct:2},
+            {q:"23.",options:["By the way","That's OK","Don't worry","Wake up"],correct:0},
+            {q:"24.",options:["Who","What","Where","How"],correct:2},
+            {q:"25.",options:["in","at","on","×"],correct:3}
+          ]
+        },
+        {
+          label:"【26～30】",
+          text:"This is a big park. It's beautiful. Laura is running around the park. Mark is reading a book on a bench. Paul and Tina are dancing behind a bench. Scott is looking for his dog. It is sleeping near the lake. No wonder Scott can't find it.\nLook! There are four people under the tree. They are Sam, Betty, Eric, and Richard. Eric and Betty are chatting. Sam is playing with his robot. Richard is eating his lunch. They are very happy. Oh, look over there. Ben is having sandwiches with his brother, Andy.\n\n【字詞】bench 長椅　lake 湖　over there 那邊",
+          items:[
+            {q:"26. Who is chatting?",options:["Paul.","Tina.","Betty.","Mark."],correct:2},
+            {q:"27. Who is running around the park?",options:["Scott.","Laura.","Betty.","Mark."],correct:1},
+            {q:"28. What is \"it\"（畫線部分，指 Scott's dog）?",options:["Sam's robot.","The lake.","Mark's book.","Scott's dog."],correct:3},
+            {q:"29. Who is NOT under the tree?",options:["Laura.","Eric.","Richard.","Betty."],correct:0},
+            {q:"30. Which is true?",options:["Richard is eating his dinner.","Andy and Ben are brothers.","Sam is playing with his robot on a bench.","Mark is dancing in front of a bench."],correct:1}
+          ]
+        },
+        {
+          label:"【31～35】",
+          text:"Vicky: My house is in a big city. There are a lot of tall buildings there.\nEmily: Are there a lot of cars?\nVicky: Yes, there are. There are a lot of people, too. Life there is very busy.\nEmily: Are there a lot of stores in the city?\nVicky: Yes, there are. What about your house?\nEmily: I live in the mountains. There are a lot of trees around my house. There are lots of birds, too.\nVicky: That's great! I like birds. However, there are no birds in the city. By the way, is there a lake near your house?\nEmily: Yes, there is. And there is a playground next to the lake.\nVicky: Wow, that's cool. Are there any stores around your house?\nEmily: No, there are not. But I still have fun in the mountains.\nVicky: Great!\n\n【字詞】busy 忙碌的　store 商店　live 住　mountain 山　lake 湖　fun 樂趣",
+          items:[
+            {q:"31. What AREN'T there in the city?",options:["Cars.","Birds.","People.","Buildings."],correct:1},
+            {q:"32. What is beside the lake?",options:["A gym.","A library.","A tall building.","A playground."],correct:3},
+            {q:"33. Where is Emily's house?",options:["In a big city.","Next to a lake.","In the mountains.","Behind Vicky's house."],correct:2},
+            {q:"34. What is NOT true about the city?",options:["Life is busy there.","The buildings there are not tall.","A lot of people live there.","There are lots of stores there."],correct:1},
+            {q:"35. Which is true?",options:["Emily isn't happy in the mountains.","The playground is near Vicky's house.","There are no trees around Emily's house.","There aren't any stores around Emily's house."],correct:3}
+          ]
+        },
+        {
+          label:"【36～40】",
+          text:"This is Maggie's new house. It's big and beautiful. There is a garden in front of the house. There are some tall trees and red flowers in it. Look! Her brother, Andy, is playing with a cat there. Its name is Ryan. It is cute! There are also two dogs, Lily and Amy, at Maggie's home. They are jumping around Andy. They are hungry.\nWhere is Maggie? Oh, she is in her bedroom. She is reading a book. Her schoolbag is on the desk. Her smartphone and watch are next to her schoolbag. Her pencil box is between the smartphone and the watch. Her room is clean.\nMaggie's dad, David, is sleeping in his room. Maggie's mom, Amanda, is cooking now. Her dishes are good. She is a great cook! Bob is sitting on the chair. He's Maggie's brother, too. He is watching his favorite TV show.\n\n【字詞】flower 花　schoolbag 書包　clean 乾淨的　dish 菜肴　favorite 最喜愛的　show 節目",
+          items:[
+            {q:"36. What is Maggie doing?",options:["She is sleeping.","She is cooking.","She is watching TV.","She is reading."],correct:3},
+            {q:"37. Who is in the kitchen?",options:["Maggie.","Maggie's dad.","Maggie's mom.","Maggie's brothers."],correct:2},
+            {q:"38. \"They\" refers to ___.",options:["Lily and Amy","Andy and Ryan","trees and flowers","David and Amanda"],correct:0},
+            {q:"39. Which is true about Maggie?",options:["Her room is not clean.","Her father is a great cook.","Her watch is in the schoolbag.","Her new house is big and beautiful."],correct:3},
+            {q:"40. Which is true?",options:["The TV show is Andy's favorite show.","There are five people in Maggie's family.","Maggie's pencil box is under her schoolbag.","There is a garden behind Maggie's house."],correct:1}
+          ]
+        }
+      ]
+    }
+
+  ]
+};
+
+let currentMode = "quiz"; // quiz | print
+
+const contentEl = document.getElementById("content");
+const scoreBar = document.getElementById("scoreBar");
+const scoreText = document.getElementById("scoreText");
+
+function render(){
+  window.examAnswersRevealed = false;
+  contentEl.innerHTML = "";
+  DATA.sections.forEach((sec, si)=> contentEl.appendChild(renderSection(sec, si)));
+  if(currentMode==="quiz"){
+    scoreBar.classList.add("show");
+    updateScore();
+  } else {
+    scoreBar.classList.remove("show");
+    contentEl.querySelectorAll(".opt").forEach(o=>o.classList.add("disabled"));
+    contentEl.querySelectorAll(".opt.is-correct").forEach(o=>o.classList.add("correct"));
+  }
+}
+
+function renderSection(sec, si){
+  const block = document.createElement("section");
+  block.className = "block";
+  block.innerHTML = `<h2>${sec.title}</h2><p class="meta">${sec.meta}</p>`;
+
+  if(sec.type==="mc"){
+    sec.items.forEach((it,i)=>{
+      const q = document.createElement("div");
+      q.className = "q";
+      const optsHtml = it.options.map((op,oi)=>`
+        <div class="opt" data-idx="${oi}" data-correct="${oi===it.correct}">
+          <span class="tag">(${String.fromCharCode(65+oi)})</span><span>${op}</span>
+        </div>`).join("");
+      q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q}</div>
+        <div class="opts">${optsHtml}</div>`;
+      q.querySelectorAll(".opt").forEach(optEl=>{
+        if(optEl.dataset.correct==="true") optEl.classList.add("is-correct");
+        optEl.addEventListener("click", ()=>selectOption(q, optEl));
+      });
+      block.appendChild(q);
+    });
+  }
+
+  else if(sec.type==="reading"){
+    sec.passages.forEach(p=>{
+      const passageDiv = document.createElement("div");
+      passageDiv.className = "passage";
+      passageDiv.innerHTML = `<span class="passage-label">${p.label}</span>${p.text}`;
+      block.appendChild(passageDiv);
+      p.items.forEach((it,i)=>{
+        const q = document.createElement("div");
+        q.className = "q";
+        const optsHtml = it.options.map((op,oi)=>`
+          <div class="opt" data-idx="${oi}" data-correct="${oi===it.correct}">
+            <span class="tag">(${String.fromCharCode(65+oi)})</span><span>${op}</span>
+          </div>`).join("");
+        q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q}</div>
+          <div class="opts">${optsHtml}</div>`;
+        q.querySelectorAll(".opt").forEach(optEl=>{
+          if(optEl.dataset.correct==="true") optEl.classList.add("is-correct");
+          optEl.addEventListener("click", ()=>selectOption(q, optEl));
+        });
+        block.appendChild(q);
+      });
+    });
+  }
+
+  return block;
+}
+
+function selectOption(qEl, optEl){
+  if(currentMode!=="quiz") return;
+  if(qEl.dataset.answered==="true") return;
+  qEl.dataset.answered = "true";
+  qEl.querySelectorAll(".opt").forEach(o=>o.classList.add("disabled"));
+  optEl.classList.add("selected");
+  const correctOpt = qEl.querySelector('.opt[data-correct="true"]');
+  qEl.dataset.studentAnswer = optEl.textContent.trim();
+  qEl.dataset.correctAnswer = correctOpt ? correctOpt.textContent.trim() : "";
+  qEl.dataset.isCorrect = (optEl.dataset.correct==="true") ? "true" : "false";
+  updateScore();
+}
+
+function updateScore(){
+  let total = 0, answered = 0, correct = 0;
+  contentEl.querySelectorAll(".q").forEach(q=>{
+    const gradable = q.querySelector(".opts");
+    if(!gradable) return;
+    total++;
+    if(q.dataset.studentAnswer !== undefined){
+      answered++;
+      if(q.dataset.isCorrect === "true") correct++;
+    }
+  });
+  if(window.examAnswersRevealed){
+    scoreText.textContent = `${correct} / ${total}`;
+  } else {
+    scoreText.textContent = `已作答 ${answered} / ${total} 題`;
+  }
+}
+window.updateScore = updateScore;
+
+document.getElementById("resetBtn").addEventListener("click", render);
+document.getElementById("quizModeBtn").addEventListener("click", ()=>{
+  currentMode = "quiz";
+  document.getElementById("quizModeBtn").classList.add("active");
+  document.getElementById("printModeBtn").classList.remove("active");
+  render();
+});
+document.getElementById("printModeBtn").addEventListener("click", ()=>{
+  if(document.getElementById("printModeBtn").disabled) return;
+  currentMode = "print";
+  document.getElementById("printModeBtn").classList.add("active");
+  document.getElementById("quizModeBtn").classList.remove("active");
+  render();
+});
+
+window.unlockPrintMode = function(){
+  document.getElementById("printModeBtn").disabled = false;
+};
+
+render();
+</script>
+<script src="../sync.js"></script>
+</body>
+</html>

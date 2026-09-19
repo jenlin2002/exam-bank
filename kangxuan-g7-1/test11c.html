@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>段考題庫｜第11回 - Review 3（一）＊附聽力測驗（C卷）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@500;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#faf6ec;
+    --paper-line:#e3dcc8;
+    --ink:#26332b;
+    --ink-soft:#5b6b5f;
+    --chalk-green:#2f4538;
+    --chalk-green-2:#3d5a48;
+    --pen-red:#b8433a;
+    --pen-red-soft:#f4dedb;
+    --ok-green:#3f7d52;
+    --ok-green-soft:#dfeee1;
+    --gold:#b5842a;
+    --radius:10px;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:"Noto Sans TC",sans-serif;
+    line-height:1.7;
+  }
+  header.hero{
+    background:var(--chalk-green);
+    color:#eef2ea;
+    padding:28px 20px 40px;
+    position:relative;
+  }
+  header.hero::after{
+    content:"";
+    position:absolute;
+    left:0; right:0; bottom:-1px;
+    height:14px;
+    background:repeating-linear-gradient(90deg,var(--paper) 0 18px, transparent 18px 20px);
+  }
+  .hero-inner{max-width:880px;margin:0 auto;}
+  .breadcrumb a{color:#cfe0d1;text-decoration:none;font-size:14px;}
+  .breadcrumb a:hover{text-decoration:underline;}
+  h1{
+    font-family:"Noto Serif TC",serif;
+    font-weight:700;
+    font-size:clamp(24px,4vw,34px);
+    margin:10px 0 6px;
+  }
+  .subtitle{color:#cfe0d1;font-size:15px;margin:0;}
+  main{max-width:880px;margin:0 auto;padding:28px 20px 80px;}
+
+  .controls{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:22px;
+  }
+  .mode-toggle{display:flex;border:2px solid var(--chalk-green);border-radius:999px;overflow:hidden;}
+  .mode-toggle button{
+    background:transparent;border:none;padding:8px 16px;font-size:14px;font-weight:700;
+    color:var(--chalk-green);cursor:pointer;font-family:"Noto Sans TC",sans-serif;
+  }
+  .mode-toggle button.active{background:var(--gold);color:#fff;}
+  .mode-toggle button:disabled{opacity:.4;cursor:not-allowed;}
+
+  .score-bar{
+    display:none;
+    align-items:center;
+    justify-content:space-between;
+    background:#fff;
+    border:1px solid var(--paper-line);
+    border-left:5px solid var(--gold);
+    border-radius:var(--radius);
+    padding:12px 18px;
+    margin-bottom:22px;
+    font-size:14px;
+  }
+  .score-bar.show{display:flex;}
+  .score-bar strong{font-size:18px;color:var(--gold);}
+  .score-bar button{
+    background:none;border:1px solid var(--ink-soft);color:var(--ink-soft);
+    border-radius:6px;padding:6px 12px;font-size:13px;cursor:pointer;
+  }
+
+  section.block{
+    background:#fff;
+    border:1px solid var(--paper-line);
+    border-radius:var(--radius);
+    padding:22px 22px 26px;
+    margin-bottom:20px;
+  }
+  .block h2{
+    font-family:"Noto Serif TC",serif;
+    font-size:19px;
+    margin:0 0 4px;
+    color:var(--chalk-green);
+  }
+  .block .meta{color:var(--ink-soft);font-size:13px;margin:0 0 16px;}
+
+  .q{margin-bottom:18px;padding-bottom:16px;border-bottom:1px dashed var(--paper-line);}
+  .q:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0;}
+  .q-text{font-size:15.5px;margin-bottom:8px;}
+  .q-num{color:var(--gold);font-weight:700;margin-right:4px;}
+
+  .opts{display:grid;gap:8px;}
+  .wordbank{display:flex;flex-wrap:wrap;gap:8px;background:#f5f2e8;border:1px solid var(--paper-line);
+    border-radius:8px;padding:12px 14px;margin-bottom:16px;}
+  .wb-word{font-family:"Noto Sans TC",sans-serif;font-size:14px;font-weight:700;color:var(--chalk-green);
+    background:#fff;border:1px solid var(--paper-line);border-radius:6px;padding:4px 12px;}
+  .opt{
+    display:flex;gap:8px;align-items:flex-start;
+    border:1.5px solid var(--paper-line);
+    border-radius:8px;
+    padding:9px 12px;
+    cursor:pointer;
+    font-size:14.5px;
+    background:#fffdf8;
+  }
+  .opt:hover{border-color:var(--chalk-green-2);}
+  .opt.selected{border-color:var(--chalk-green-2);background:#eef3ea;}
+  .opt.correct{border-color:var(--ok-green);background:var(--ok-green-soft);}
+  .opt.wrong{border-color:var(--pen-red);background:var(--pen-red-soft);}
+  .opt .tag{font-weight:700;color:var(--ink-soft);}
+  .opt.correct .tag{color:var(--ok-green);}
+  .opt.wrong .tag{color:var(--pen-red);}
+  .opt.disabled{cursor:default;}
+
+  input.blank, input.line-answer{
+    font-family:"Noto Sans TC",sans-serif;
+    border:none;border-bottom:2px solid var(--chalk-green-2);
+    background:transparent;font-size:15px;padding:2px 4px;
+    width:150px;
+  }
+  input.line-answer{width:100%;margin-top:4px;}
+  .check-row{display:flex;gap:8px;margin-top:6px;flex-wrap:wrap;align-items:center;}
+  .mini-btn{
+    background:var(--chalk-green);color:#fff;border:none;border-radius:6px;
+    padding:6px 14px;font-size:13px;cursor:pointer;font-family:"Noto Sans TC",sans-serif;
+  }
+  .mini-btn.secondary{background:transparent;color:var(--chalk-green);border:1.5px solid var(--chalk-green);}
+  .feedback{font-size:13.5px;font-weight:700;}
+  .feedback.ok{color:var(--ok-green);}
+  .feedback.no{color:var(--pen-red);}
+  .answer-reveal{
+    display:none;margin-top:6px;font-size:14px;color:var(--chalk-green-2);
+    background:#eef3ea;border-radius:6px;padding:8px 12px;
+  }
+  .answer-reveal.show{display:block;}
+
+  .passage{
+    background:#f5f2e8;border-radius:8px;padding:14px 16px;margin-bottom:14px;
+    font-size:14.5px;white-space:pre-line;
+  }
+  .passage-label{font-weight:700;color:var(--chalk-green);margin-bottom:4px;display:block;}
+
+  .footer-link{
+    display:block;text-align:center;margin-top:30px;color:var(--chalk-green);
+    text-decoration:none;font-weight:700;font-size:14px;
+  }
+  .footer-link:hover{text-decoration:underline;}
+
+  @media print{
+    header.hero, .controls, .score-bar, .check-row, .mini-btn, .footer-link{display:none !important;}
+    body{background:#fff;}
+    section.block{border:none;box-shadow:none;padding:8px 0;margin-bottom:14px;}
+    .opt.correct{background:none;border:none;font-weight:700;}
+    .opt.correct::after{content:" ← 正解";color:var(--pen-red);}
+    .opt{border:none;padding:2px 0;}
+    .answer-reveal{display:block !important;background:none;padding:2px 0;}
+    main{max-width:100%;padding:0 24px;}
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="breadcrumb"><a href="https://jenlin2002.github.io/">🏠 回總目錄</a> ／ <a href="../kangxuan-g7-1.html" style="color:#cfe0d1;">段考題庫</a></div>
+    <h1>第11回・Review 3（一）＊附聽力測驗</h1>
+    <p class="subtitle">Review 3（Lesson 5~6 總複習）｜康軒版七年級英語（一）Ｃ卷</p>
+  </div>
+</header>
+
+<main>
+  <div class="controls">
+    <div class="mode-toggle">
+      <button id="quizModeBtn" class="active">✏️ 測驗模式</button>
+      <button id="printModeBtn" disabled title="完成測驗並送出成績後才能查看">🖨️ 完整題目與解答（送出成績後解鎖）</button>
+    </div>
+  </div>
+
+  <div class="score-bar" id="scoreBar">
+    <div>目前得分：<strong id="scoreText">0 / 0</strong>（僅計算選擇題與字彙填空）</div>
+    <button id="resetBtn">重新作答</button>
+  </div>
+
+  <div id="content"></div>
+
+  <a class="footer-link" href="../kangxuan-g7-1.html">← 回段考題庫總覽</a>
+</main>
+
+<script>
+
+window.EXAM_META = { version: "C卷", examLabel: "第11回" };
+const DATA = {
+  sections: [
+    {
+      type:"mc",
+      title:"一、聽力測驗【A】",
+      meta:"聽CD中的句子，選出CD中的單字・CD:38",
+      audio:"audio/test11c/track1.mp3",
+      items:[
+        {q:"", options:["sun","slide","swing"], correct:2, script:"1. Look! There is a swing behind the tree."},
+        {q:"", options:["basketball","basket","building"], correct:1, script:"2. The girl is looking for her basket."},
+        {q:"", options:["o'clock","court","outside"], correct:0, script:"3. The class is at 6 o'clock."},
+        {q:"", options:["week","weekend","Wednesday"], correct:1, script:"4. Let's go to the zoo on the weekend."},
+        {q:"", options:["cities","problems","days"], correct:0, script:"5. Tokyo and Paris are big cities in the world."}
+      ]
+    },
+    {
+      type:"mc",
+      title:"一、聽力測驗【B】",
+      meta:"聽CD中的對話或短文及一個相關問題後，選出一個最適當的答案・CD:39",
+      audio:"audio/test11c/track2.mp3",
+      items:[
+        {q:"What is the man doing?", options:["He is talking to the woman on the smartphone.","He is looking for his smartphone.","He is thinking about the woman."], correct:1,
+         script:"W: What are you looking for?\nM: My smartphone. Where is it?\nW: Hey! There is a smartphone on the table. Isn't that your smartphone?\nM: No. That's Peter's smartphone.\nQ: What is the man doing?"},
+        {q:"Are there any apples on the table?", options:["No, there aren't.","Yes, there is one.","Yes, there are five."], correct:0,
+         script:"M: Are there five apples on the table?\nW: No, there aren't any apples on the table.\nQ: Are there any apples on the table?"},
+        {q:"What is Rick doing?", options:["He's sleeping.","He's reading.","He's watching TV."], correct:2,
+         script:"M: Ray is sleeping in his bedroom. What is Rick doing? Is he reading a book?\nW: No, he is watching TV in the living room.\nQ: What is Rick doing?"},
+        {q:"What is right about the group chat?", options:["It's in the afternoon.","It's at 7 a.m.","It's on Thursday."], correct:2,
+         script:"M: What day is the group chat with the students?\nW: It's on Thursday.\nM: What time is the group chat?\nW: It's at seven o'clock at night.\nQ: What is right about the group chat?"},
+        {q:"What time is it?", options:["It's 7 a.m.","It's 10 p.m.","It's about noon."], correct:2,
+         script:"W: Time for lunch. Mike, where is your brother?\nB: He is sleeping in the bedroom.\nW: What? Tony, wake up!\nQ: What time is it?"}
+      ]
+    },
+    {
+      type: "vocab",
+      title: "二、選字填空",
+      meta: "20分，每題2分（習作類題）",
+      wordbank: ["library","meeting","dinner","life","party","classmates","shelf","wake","playground","basketball"],
+      items: [
+        {q:"The ___ is at 11:00. It's about the students' grades（成績）!", answer:"meeting"},
+        {q:"I go to bed early, and I ___ up early in the morning, too.", answer:"wake"},
+        {q:"Those people are my friends. They are here for my birthday ___.", answer:"party"},
+        {q:"My daughters like sports. They like to watch ___ games on TV.", answer:"basketball"},
+        {q:"Vivian and I are in the same class. We are ___.", answer:"classmates"},
+        {q:"Don't let（讓）your dog see the cake. Put the cake on the ___, please.", answer:"shelf"},
+        {q:"A: It's 7 p.m. Time for ___. B: Let's eat sandwiches tonight.", answer:"dinner"},
+        {q:"Tina and her friends are playing on the slide in the ___.", answer:"playground"},
+        {q:"A: How is your school ___? B: Great! I have a lot of friends at school.", answer:"life"},
+        {q:"I like the school ___. There are lots of great books in it.", answer:"library"}
+      ]
+    },
+    {
+      type:"mc",
+      title:"三、語法測驗",
+      meta:"20分，每題2分",
+      items:[
+        {q:"A: Is there a playground near here? B: No, ___.",options:["there is","it is","there isn't","it isn't"],correct:2},
+        {q:"___ any juice in that cup. The cup is empty（空的）.",options:["There is","There isn't","There have","There are"],correct:1},
+        {q:"A: ___ Humphrey dancing with Jessica? B: Yes. She is his girlfriend.",options:["Is","Are","Who's","How's"],correct:0},
+        {q:"A: ___ are you doing? B: I'm ___ some books.",options:["What; read","What; reading","How; read","How; reading"],correct:1},
+        {q:"Amber's English class is ___ 10:20 a.m. ___ this Tuesday.",options:["at; on","×; ×","on; at","at; ×"],correct:3},
+        {q:"Look, ___ sheep there. They are cute.",options:["there is a","they are","there are","there have"],correct:2},
+        {q:"A: Where are Nick and Judy? B: They ___ with the dog in the garden now.",options:["play","are playing","is playing","playing"],correct:1},
+        {q:"There are ___ books in the library. My sister and I go there very often（時常）.",options:["any","one","lot of","a lot of"],correct:3},
+        {q:"A: ___ is the group chat? B: It's ___ tonight.",options:["What day; ×","What day; on","What time; on","What time; at"],correct:0},
+        {q:"It's PE class now. Everyone in my class ___ on the sports field.",options:["run","is running","am running","are running"],correct:1}
+      ]
+    },
+    {
+      type:"mc",
+      title:"四、完成句子與對話",
+      meta:"10分，每題2分",
+      items:[
+        {q:"A: There are no shelves here. Where can I put my bag? B: ___ You can put it on the desk.",options:["Oh, thanks.","Let's eat!","Don't worry.","That's great!"],correct:2},
+        {q:"A: ___ We're late. B: Sorry, let's run.",options:["Sit down!","Hurry up!","Take a rest.","No problem!"],correct:1},
+        {q:"A: ___ B: Isn't it at 3 p.m.?",options:["How's John?","What is John doing now?","What day is John's birthday?","What time is the meeting with John?"],correct:3},
+        {q:"A: It's 10 p.m. ___ B: Good night, Mom.",options:["It's time for bed.","It's time for school.","What is Dad doing?","Is your bed very hard?"],correct:0},
+        {q:"A: ___ B: That special tool. I can't find it anywhere.",options:["Isn't there a tool?","Where can I put my tool?","Are there any tools here?","What are you looking for?"],correct:3}
+      ]
+    },
+    {
+      type:"guided",
+      title:"五、依提示作答",
+      meta:"10分，每題2分",
+      items:[
+        {prompt:"Isn't the meeting about the students' school life?",hint:"（肯定詳答）",answer:"Yes, it is about the students' school life."},
+        {prompt:"Are there any tigers in that zoo?",hint:"（否定詳答）",answer:"No, there aren't any tigers in that zoo."},
+        {prompt:"Peter's birthday is on Saturday.",hint:"（依畫線部分造原問句：on Saturday）",answer:"What day is Peter's birthday?"},
+        {prompt:"There are eight oranges in the bag.",hint:"（改為單數句）",answer:"There is an orange in the bag."},
+        {prompt:"My PE class is at 4 p.m.",hint:"（依畫線部分造原問句：at 4 p.m.）",answer:"What time is your PE class?"}
+      ]
+    },
+    {
+      type:"guided-multi",
+      title:"六、引導式翻譯",
+      meta:"每格1分",
+      items:[
+        {zh:"那個運動場是大還是小？",lines:["Is the {{sports}} {{field}} big or small?"]},
+        {zh:"我們要遲到了。趕快！",lines:["We're going to be late. {{Hurry}} {{up}}!"]},
+        {zh:"團體談話是在星期四。",lines:["The {{group}} chat is on {{Thursday}}."]},
+        {zh:"順帶一提，我現在非常餓。我們去外面吃午餐吧。",lines:["{{By}} the way, I'm very {{hungry}} now. Let's go out for lunch."]},
+        {zh:"我正在思考這個符號的意義。",lines:["I am {{thinking}} about the {{meaning}} of the sign."]}
+      ]
+    },
+    {
+      type:"reading",
+      title:"七、閱讀測驗",
+      meta:"10分，每題2分",
+      passages:[
+        {
+          label:"",
+          text:"(Hank and Lydia are talking on the phone.)\nHank: Hey, Lydia. This is Hank. Ivy, Eden, and I are going to a park for a picnic. Can you join us?\nLydia: I'm afraid not.\nHank: Why not? What are you doing now?\nLydia: I'm preparing for my math and English tests next week at home now.\nHank: Come on! Today is Saturday, and it is a nice day for a picnic. There are a lot of beautiful flowers in the park. Let's have fun. I can go to the library with you on Sunday.\nLydia: OK.\nHank: Great! Let's meet in front of the gate of the park at 10 o'clock. I'm preparing apples, drinks, and hot dogs for us.\nLydia: Thank you, Hank.\n\n【字詞】picnic 野餐　Why not? 為何不？　test 考試　flower 花　fun 樂趣",
+          items:[
+            {q:"What is Lydia doing?",options:["Preparing lunch.","Walking to the park.","Preparing for the tests.","Chatting with Ivy and Eden."],correct:2},
+            {q:"What day is today?",options:["It's Friday.","It's Sunday.","It's Saturday.","It's Wednesday."],correct:2},
+            {q:"Where will Lydia meet her friends?",options:["In the library.","At Hank's house.","In front of the school gate.","In front of the gate of the park."],correct:3},
+            {q:"\"I'm afraid not.\" means ___.",options:["Lydia is not friendly","Lydia is hungry","Lydia can go with Hank","Lydia cannot go with Hank"],correct:3},
+            {q:"What is Hank NOT preparing?",options:["Drinks.","Apples.","Sandwiches.","Hot Dogs."],correct:2}
+          ]
+        }
+      ]
+    }
+
+  ]
+};
+
+let currentMode = "quiz"; // quiz | print
+
+const contentEl = document.getElementById("content");
+const scoreBar = document.getElementById("scoreBar");
+const scoreText = document.getElementById("scoreText");
+
+function render(){
+  window.examAnswersRevealed = false;
+  contentEl.innerHTML = "";
+  DATA.sections.forEach((sec, si)=> contentEl.appendChild(renderSection(sec, si)));
+  if(currentMode==="quiz"){
+    scoreBar.classList.add("show");
+    updateScore();
+  } else {
+    scoreBar.classList.remove("show");
+    contentEl.querySelectorAll(".answer-reveal").forEach(e=>e.classList.add("show"));
+    contentEl.querySelectorAll(".opt").forEach(o=>o.classList.add("disabled"));
+    contentEl.querySelectorAll(".opt.is-correct").forEach(o=>o.classList.add("correct"));
+  }
+}
+
+function renderSection(sec, si){
+  const block = document.createElement("section");
+  block.className = "block";
+  block.innerHTML = `<h2>${sec.title}</h2><p class="meta">${sec.meta}</p>`;
+
+  if(sec.audio){
+    const aud = document.createElement("audio");
+    aud.controls = true;
+    aud.src = sec.audio;
+    aud.style.width = "100%";
+    aud.style.marginBottom = "14px";
+    block.appendChild(aud);
+  }
+
+  if(sec.wordbank){
+    const wb = document.createElement("div");
+    wb.className = "wordbank";
+    wb.innerHTML = sec.wordbank.map(w=>`<span class="wb-word">${w}</span>`).join("");
+    block.appendChild(wb);
+  }
+
+  if(sec.type==="vocab"){
+    sec.items.forEach((it,i)=>{
+      const q = document.createElement("div");
+      q.className = "q";
+      q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q}
+        &nbsp; <input type="text" class="blank" data-answer="${it.answer}" placeholder="填入單字">
+        <span class="feedback"></span></div>
+        <div class="answer-reveal">正解：${it.answer}</div>`;
+      const input = q.querySelector("input");
+      input.addEventListener("input", ()=>checkBlank(input));
+      block.appendChild(q);
+    });
+  }
+
+  else if(sec.type==="mc"){
+    sec.items.forEach((it,i)=>{
+      const q = document.createElement("div");
+      q.className = "q";
+      const optsHtml = it.options.map((op,oi)=>`
+        <div class="opt" data-idx="${oi}" data-correct="${oi===it.correct}">
+          <span class="tag">(${String.fromCharCode(65+oi)})</span><span>${op}</span>
+        </div>`).join("");
+      q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q}</div>
+        <div class="opts">${optsHtml}</div>`;
+      q.querySelectorAll(".opt").forEach(optEl=>{
+        if(optEl.dataset.correct==="true") optEl.classList.add("is-correct");
+        optEl.addEventListener("click", ()=>selectOption(q, optEl));
+      });
+      block.appendChild(q);
+    });
+  }
+
+  else if(sec.type==="guided" || sec.type==="translation"){
+    sec.items.forEach((it,i)=>{
+      const q = document.createElement("div");
+      q.className = "q";
+      const prompt = sec.type==="guided" ? `${it.prompt} <em style="color:var(--ink-soft);font-style:normal;">${it.hint}</em>` : it.zh;
+      q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${prompt}</div>
+        <input type="text" class="line-answer" placeholder="請輸入英文句子">
+        <div class="check-row"><button class="mini-btn secondary reveal-btn" style="display:none;">對答案</button></div>
+        <div class="answer-reveal">正解：${it.answer}</div>`;
+      q.querySelector(".reveal-btn").addEventListener("click", (e)=>{
+        q.querySelector(".answer-reveal").classList.add("show");
+      });
+      block.appendChild(q);
+    });
+  }
+
+  else if(sec.type==="guided-multi"){
+    sec.items.forEach((it,i)=>{
+      const q = document.createElement("div");
+      q.className = "q";
+      const linesHtml = it.lines.map(line=>{
+        const parts = line.split(/\{\{(.*?)\}\}/g);
+        return parts.map((part,pi)=> pi%2===1
+          ? `<input type="text" class="micro-blank" data-answer="${part}" style="width:${Math.max(60,part.length*13)}px;">`
+          : part
+        ).join("");
+      }).join("<br>");
+      q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.zh ? it.zh+"<br>" : ""}${linesHtml}</div>
+        <div class="answer-reveal">正解：${it.lines.map(l=>l.replace(/\{\{(.*?)\}\}/g,"$1")).join("　")}</div>`;
+      q.querySelectorAll(".micro-blank").forEach(inp=>{
+        inp.addEventListener("input", ()=>checkMultiBlank(q));
+      });
+      block.appendChild(q);
+    });
+  }
+
+  else if(sec.type==="reading"){
+    sec.passages.forEach(p=>{
+      const passageDiv = document.createElement("div");
+      passageDiv.className = "passage";
+      passageDiv.innerHTML = `<span class="passage-label">${p.label}</span>${p.text}`;
+      block.appendChild(passageDiv);
+      p.items.forEach((it,i)=>{
+        const q = document.createElement("div");
+        q.className = "q";
+        const optsHtml = it.options.map((op,oi)=>`
+          <div class="opt" data-idx="${oi}" data-correct="${oi===it.correct}">
+            <span class="tag">(${String.fromCharCode(65+oi)})</span><span>${op}</span>
+          </div>`).join("");
+        q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q}</div>
+          <div class="opts">${optsHtml}</div>`;
+        q.querySelectorAll(".opt").forEach(optEl=>{
+          if(optEl.dataset.correct==="true") optEl.classList.add("is-correct");
+          optEl.addEventListener("click", ()=>selectOption(q, optEl));
+        });
+        block.appendChild(q);
+      });
+    });
+  }
+
+  return block;
+}
+
+function selectOption(qEl, optEl){
+  if(currentMode!=="quiz") return;
+  if(qEl.dataset.answered==="true") return;
+  qEl.dataset.answered = "true";
+  qEl.querySelectorAll(".opt").forEach(o=>o.classList.add("disabled"));
+  optEl.classList.add("selected");
+  const correctOpt = qEl.querySelector('.opt[data-correct="true"]');
+  qEl.dataset.studentAnswer = optEl.textContent.trim();
+  qEl.dataset.correctAnswer = correctOpt ? correctOpt.textContent.trim() : "";
+  qEl.dataset.isCorrect = (optEl.dataset.correct==="true") ? "true" : "false";
+  updateScore();
+}
+
+function checkBlank(input){
+  const val = input.value.trim().toLowerCase();
+  const ans = input.dataset.answer.trim().toLowerCase();
+  const qEl = input.closest(".q");
+  if(val.length===0){ if(qEl) delete qEl.dataset.studentAnswer; updateScore(); return; }
+  if(qEl){
+    qEl.dataset.studentAnswer = input.value.trim();
+    qEl.dataset.correctAnswer = input.dataset.answer;
+    qEl.dataset.isCorrect = (val===ans) ? "true" : "false";
+  }
+  updateScore();
+}
+
+function checkMultiBlank(qEl){
+  const inputs = Array.from(qEl.querySelectorAll(".micro-blank"));
+  const anyEmpty = inputs.some(inp=>inp.value.trim().length===0);
+  if(anyEmpty){ delete qEl.dataset.studentAnswer; updateScore(); return; }
+  const allCorrect = inputs.every(inp=> inp.value.trim().toLowerCase() === inp.dataset.answer.trim().toLowerCase());
+  qEl.dataset.studentAnswer = inputs.map(inp=>inp.value.trim()).join(" / ");
+  qEl.dataset.correctAnswer = inputs.map(inp=>inp.dataset.answer).join(" / ");
+  qEl.dataset.isCorrect = allCorrect ? "true" : "false";
+  updateScore();
+}
+
+function updateScore(){
+  let total = 0, answered = 0, correct = 0;
+  contentEl.querySelectorAll(".q").forEach(q=>{
+    const gradable = q.querySelector(".opts") || q.querySelector("input.blank") || q.querySelector("input.micro-blank");
+    if(!gradable) return;
+    total++;
+    if(q.dataset.studentAnswer !== undefined){
+      answered++;
+      if(q.dataset.isCorrect === "true") correct++;
+    }
+  });
+  if(window.examAnswersRevealed){
+    scoreText.textContent = `${correct} / ${total}`;
+  } else {
+    scoreText.textContent = `已作答 ${answered} / ${total} 題`;
+  }
+}
+window.updateScore = updateScore;
+
+document.getElementById("resetBtn").addEventListener("click", render);
+document.getElementById("quizModeBtn").addEventListener("click", ()=>{
+  currentMode = "quiz";
+  document.getElementById("quizModeBtn").classList.add("active");
+  document.getElementById("printModeBtn").classList.remove("active");
+  render();
+});
+document.getElementById("printModeBtn").addEventListener("click", ()=>{
+  if(document.getElementById("printModeBtn").disabled) return;
+  currentMode = "print";
+  document.getElementById("printModeBtn").classList.add("active");
+  document.getElementById("quizModeBtn").classList.remove("active");
+  render();
+});
+
+window.unlockPrintMode = function(){
+  document.getElementById("printModeBtn").disabled = false;
+};
+
+render();
+</script>
+<script src="../sync.js"></script>
+</body>
+</html>
