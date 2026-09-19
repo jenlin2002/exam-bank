@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>段考題庫｜第12回 - 聽力三（Lesson 5～6）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@500;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#faf6ec; --paper-line:#e3dcc8; --ink:#26332b; --ink-soft:#5b6b5f;
+    --chalk-green:#2f4538; --chalk-green-2:#3d5a48; --pen-red:#b8433a; --pen-red-soft:#f4dedb;
+    --ok-green:#3f7d52; --ok-green-soft:#dfeee1; --gold:#b5842a; --radius:10px;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:"Noto Sans TC",sans-serif;line-height:1.7;}
+  header.hero{background:var(--chalk-green);color:#eef2ea;padding:28px 20px 40px;position:relative;}
+  header.hero::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:14px;
+    background:repeating-linear-gradient(90deg,var(--paper) 0 18px, transparent 18px 20px);}
+  .hero-inner{max-width:880px;margin:0 auto;}
+  .breadcrumb a{color:#cfe0d1;text-decoration:none;font-size:14px;}
+  h1{font-family:"Noto Serif TC",serif;font-weight:700;font-size:clamp(24px,4vw,34px);margin:10px 0 6px;}
+  .subtitle{color:#cfe0d1;font-size:15px;margin:0;}
+  main{max-width:880px;margin:0 auto;padding:28px 20px 80px;}
+
+  section.block{background:#fff;border:1px solid var(--paper-line);border-radius:var(--radius);padding:22px 22px 26px;margin-bottom:20px;}
+  .block h2{font-family:"Noto Serif TC",serif;font-size:19px;margin:0 0 4px;color:var(--chalk-green);}
+  .block .meta{color:var(--ink-soft);font-size:13px;margin:0 0 14px;}
+
+  audio{width:100%;margin-bottom:18px;}
+
+  .q{margin-bottom:18px;padding-bottom:16px;border-bottom:1px dashed var(--paper-line);}
+  .q:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0;}
+  .q-text{font-size:15.5px;margin-bottom:8px;}
+  .q-num{color:var(--gold);font-weight:700;margin-right:4px;}
+
+  .opts{display:grid;gap:8px;}
+  .opt{display:flex;gap:8px;align-items:flex-start;border:1.5px solid var(--paper-line);border-radius:8px;
+    padding:9px 12px;cursor:pointer;font-size:14.5px;background:#fffdf8;}
+  .opt:hover{border-color:var(--chalk-green-2);}
+  .opt.selected{border-color:var(--chalk-green-2);background:#eef3ea;}
+  .opt.correct{border-color:var(--ok-green);background:var(--ok-green-soft);}
+  .opt.wrong{border-color:var(--pen-red);background:var(--pen-red-soft);}
+  .opt .tag{font-weight:700;color:var(--ink-soft);}
+  .opt.correct .tag{color:var(--ok-green);}
+  .opt.wrong .tag{color:var(--pen-red);}
+  .opt.disabled{cursor:default;}
+
+  input.blank{font-family:"Noto Sans TC",sans-serif;border:none;border-bottom:2px solid var(--chalk-green-2);
+    background:transparent;font-size:15px;padding:2px 4px;width:150px;}
+  .feedback{font-size:13.5px;font-weight:700;margin-left:6px;}
+  .feedback.ok{color:var(--ok-green);}
+  .feedback.no{color:var(--pen-red);}
+
+  .script-toggle{margin-top:6px;}
+  .script-toggle button{background:none;border:1px solid var(--ink-soft);color:var(--ink-soft);
+    border-radius:6px;padding:5px 12px;font-size:12.5px;cursor:pointer;}
+  .script-toggle button:disabled{opacity:.5;cursor:not-allowed;}
+  .script{display:none;margin-top:8px;font-size:13.5px;color:var(--ink-soft);
+    background:#f5f2e8;border-radius:6px;padding:10px 14px;white-space:pre-line;}
+  .script.show{display:block;}
+
+  .footer-link{display:block;text-align:center;margin-top:30px;color:var(--chalk-green);text-decoration:none;font-weight:700;font-size:14px;}
+  .footer-link:hover{text-decoration:underline;}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="breadcrumb"><a href="https://jenlin2002.github.io/">🏠 回總目錄</a> ／ <a href="../kangxuan-g7-1.html" style="color:#cfe0d1;">段考題庫</a></div>
+    <h1>第12回・聽力三</h1>
+    <p class="subtitle">Lesson 5～6｜康軒版七年級英語（一）Ａ卷</p>
+  </div>
+</header>
+
+<main>
+  <section class="block">
+    <h2>一、聽CD中的句子，選出聽到的字詞</h2>
+    <p class="meta">10分，每題2分</p>
+    <audio controls src="audio/test12/track1.mp3"></audio>
+    <div id="sec1"></div>
+  </section>
+
+  <section class="block">
+    <h2>二、聽CD中的句子，寫出空格中的單字</h2>
+    <p class="meta">10分，每題2分</p>
+    <audio controls src="audio/test12/track2.mp3"></audio>
+    <div id="sec2"></div>
+  </section>
+
+  <section class="block">
+    <h2>三、聽CD中的句子，若敘述符合圖意則寫T，不符則寫F</h2>
+    <p class="meta">10分，每題2分（原考卷為看圖題，此處以文字描述取代圖片）</p>
+    <audio controls src="audio/test12/track3.mp3"></audio>
+    <div id="sec3"></div>
+  </section>
+
+  <section class="block">
+    <h2>四、聽CD中的問句或直述句，選出一個最佳的回應</h2>
+    <p class="meta">10分，每題2分</p>
+    <audio controls src="audio/test12/track4.mp3"></audio>
+    <div id="sec4"></div>
+  </section>
+
+  <section class="block">
+    <h2>五、聽CD中的句子，選出適當的圖片</h2>
+    <p class="meta">10分，每題2分（原考卷為三選一圖片，此處以文字描述取代）</p>
+    <audio controls src="audio/test12/track5.mp3"></audio>
+    <div id="sec5"></div>
+  </section>
+
+  <section class="block">
+    <h2>六、聽CD播放一個和該題相關的問題，與A、B、C三個敘述後，選出與圖片最符合的答案</h2>
+    <p class="meta">10分，每題2分（原考卷為看圖題，此處以文字描述取代圖片）</p>
+    <audio controls src="audio/test12/track6.mp3"></audio>
+    <div id="sec6"></div>
+  </section>
+
+  <section class="block">
+    <h2>七、聽CD中的對話及一個相關的問題，選出一個正確或最佳的答案</h2>
+    <p class="meta">10分，每題2分</p>
+    <audio controls src="audio/test12/track7.mp3"></audio>
+    <div id="sec7"></div>
+  </section>
+
+  <section class="block">
+    <h2>八、聽CD中的短文或對話，選出一個正確或最佳的答案</h2>
+    <p class="meta">30分，每題3分</p>
+    <audio controls src="audio/test12/track8.mp3"></audio>
+    <div id="sec8"></div>
+  </section>
+
+  <a class="footer-link" href="../kangxuan-g7-1.html">← 回段考題庫總覽</a>
+</main>
+
+<script>
+function mc(container, items){
+  items.forEach((it,i)=>{
+    const q = document.createElement("div");
+    q.className = "q";
+    const optsHtml = it.options.map((op,oi)=>`
+      <div class="opt" data-correct="${oi===it.correct}"><span class="tag">(${String.fromCharCode(65+oi)})</span><span>${op}</span></div>`).join("");
+    q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q||""}</div><div class="opts">${optsHtml}</div>
+      ${it.script ? `<div class="script-toggle"><button disabled title="送出成績後解鎖">🔒 顯示逐字稿</button></div><div class="script">${it.script}</div>`:""}`;
+    q.querySelectorAll(".opt").forEach(o=>o.addEventListener("click", ()=>{
+      if(q.dataset.answered==="true") return;
+      q.dataset.answered="true";
+      q.querySelectorAll(".opt").forEach(x=>x.classList.add("disabled"));
+      o.classList.add("selected");
+      const correctOptEl = q.querySelector('.opt[data-correct="true"]');
+      q.dataset.studentAnswer = o.textContent.trim();
+      q.dataset.correctAnswer = correctOptEl ? correctOptEl.textContent.trim() : "";
+      q.dataset.isCorrect = (o.dataset.correct==="true") ? "true" : "false";
+    }));
+    const tbtn = q.querySelector(".script-toggle button");
+    if(tbtn) tbtn.addEventListener("click", ()=>q.querySelector(".script").classList.toggle("show"));
+    container.appendChild(q);
+  });
+}
+function blank(container, items){
+  items.forEach((it,i)=>{
+    const q = document.createElement("div");
+    q.className = "q";
+    q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q} <input type="text" class="blank" data-answer="${it.answer}"><span class="feedback"></span></div>`;
+    const input = q.querySelector("input");
+    input.addEventListener("input", ()=>{
+      const val = input.value.trim().toLowerCase();
+      if(!val){ delete q.dataset.studentAnswer; return; }
+      q.dataset.studentAnswer = input.value.trim();
+      q.dataset.correctAnswer = it.answer;
+      q.dataset.isCorrect = (val===it.answer.toLowerCase()) ? "true" : "false";
+    });
+    container.appendChild(q);
+  });
+}
+function tf(container, items){
+  items.forEach((it,i)=>{
+    const q = document.createElement("div");
+    q.className = "q";
+    q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>圖片描述：${it.desc}</div>
+      <div class="opts">
+        <div class="opt" data-correct="${it.answer==='T'}"><span class="tag">T</span><span>符合圖意</span></div>
+        <div class="opt" data-correct="${it.answer==='F'}"><span class="tag">F</span><span>不符合圖意</span></div>
+      </div>`;
+    q.querySelectorAll(".opt").forEach(o=>o.addEventListener("click", ()=>{
+      if(q.dataset.answered==="true") return;
+      q.dataset.answered="true";
+      q.querySelectorAll(".opt").forEach(x=>x.classList.add("disabled"));
+      o.classList.add("selected");
+      const correctOptEl = q.querySelector('.opt[data-correct="true"]');
+      q.dataset.studentAnswer = o.textContent.trim();
+      q.dataset.correctAnswer = correctOptEl ? correctOptEl.textContent.trim() : "";
+      q.dataset.isCorrect = (o.dataset.correct==="true") ? "true" : "false";
+    }));
+    container.appendChild(q);
+  });
+}
+
+// 一、選出聽到的字詞
+mc(document.getElementById("sec1"), [
+  {q:"", options:["gate","meeting","thing"], correct:1, script:"1. Don't be late for the meeting."},
+  {q:"", options:["Monday","Thursday","Friday"], correct:0, script:"2. Today is Sunday. Ben is preparing for the game on Monday."},
+  {q:"", options:["friendly","building","hungry"], correct:2, script:"3. I am hungry. Let's eat some cake."},
+  {q:"", options:["prepare","hurry","say"], correct:1, script:"4. Hurry up! We are late for school."},
+  {q:"", options:["wear","wake","worry"], correct:2, script:"5. I'm fine. Don't worry."}
+]);
+
+// 二、寫出空格中的單字
+blank(document.getElementById("sec2"), [
+  {q:"Jimmy is ____ for his watch in the house.", answer:"looking"},
+  {q:"The ____ is next to the gate.", answer:"library"},
+  {q:"There are seven days in a ____.", answer:"week"},
+  {q:"____ up! It's time to go to school.", answer:"Wake"},
+  {q:"Sam is my student. By the ____, he is only five years old.", answer:"way"}
+]);
+
+// 三、T/F
+tf(document.getElementById("sec3"), [
+  {desc:"一週行事曆，籃球圖示標在星期四", answer:"F"},
+  {desc:"車站前有兩個人", answer:"F"},
+  {desc:"三個人在餐廳用餐，其中一人是Ricky", answer:"F"},
+  {desc:"兩個女孩在盪鞦韆", answer:"T"},
+  {desc:"一個人在健身房舉重", answer:"T"}
+]);
+
+// 四、最佳回應
+mc(document.getElementById("sec4"), [
+  {q:"Are the boys on the basketball court?", options:["Yes, it is in the gym.","No, they are in the library.","The basketball court is big."], correct:1},
+  {q:"What day is today?", options:["Yes, it is.","It's four thirty.","Today is Wednesday."], correct:2},
+  {q:"What time is the PE class?", options:["It's 2 p.m. now.","It is at 2 p.m.","Everyone is standing here."], correct:1},
+  {q:"What is the woman doing in the park?", options:["She is talking to a man.","Yes, she is my student.","The man is next to the woman."], correct:0},
+  {q:"Are there any students in the library?", options:["No, there aren't.","Yes, I'm a student.","There are three students in the gym."], correct:0}
+]);
+
+// 五、選圖片（文字描述取代）
+mc(document.getElementById("sec5"), [
+  {q:"", options:["（圖片：蛋糕）","（圖片：鳳梨）","（圖片：珍珠奶茶）"], correct:0, script:"I'm hungry. Can I have the cake?"},
+  {q:"", options:["（圖片：一人用筆電）","（圖片：兩人用筆電）","（圖片：三人用筆電開會）"], correct:2, script:"There are only three people in the meeting."},
+  {q:"", options:["（圖片：安靜女孩獨自坐在長椅上）","（圖片：兩位女孩聊天）","（圖片：女孩在黑板前寫字）"], correct:0, script:"The quiet girl is sitting on the chair."},
+  {q:"", options:["（圖片：窗外夜晚，女孩站著，時鐘）","（圖片：窗外白天，時鐘）","（圖片：窗外夜晚，時鐘顯示12點）"], correct:2, script:"It is twelve o'clock now. Let's go to bed."},
+  {q:"", options:["（圖片：女孩和箱子旁的機器人）","（圖片：女孩把機器人放上書架）","（圖片：女孩和籃子裡的機器人）"], correct:1, script:"The girl is putting the robot on the shelf."}
+]);
+
+// 六、看圖選答
+mc(document.getElementById("sec6"), [
+  {q:"（圖1：一隻狗）Is there a pet in your house?", options:["Yes, there is. We have a dog.","Yes, there is. We have a mouse.","No, there aren't any pets in my house."], correct:0},
+  {q:"（圖2：男孩開心地讀書）What is the boy doing?", options:["He is dancing.","He is reading a book.","He is watching TV."], correct:1},
+  {q:"（圖3：爸爸在斥責兩個在屋內打排球的男孩）Where are these people?", options:["They are in the library.","They are in a restroom.","They are in the gym."], correct:2},
+  {q:"（圖4：時鐘顯示9點40分）What time is it now?", options:["It's nine forty.","It's ten twenty.","It's nine o eight."], correct:0},
+  {q:"（圖5：書名為Friends，封面有兩隻貓）What is the book about?", options:["It is about three boys.","It is about animals.","It is about Lily's family."], correct:1}
+]);
+
+// 七、對話+問題
+mc(document.getElementById("sec7"), [
+  {q:"Where are the man and the woman?", options:["At Miranda's friend's house.","Around the gate.","In a library."], correct:1,
+   script:"W: Ken, what are you doing at the gate?\nM: Shhh... Don't talk! I am watching Miranda.\nW: You are watching your daughter, Miranda? How come?\nM: Look! A boy is talking to her. He is her boyfriend.\nW: No way! Miranda is only eight years old."},
+  {q:"Where is the girl's pen?", options:["It's between Mr. Lin and Nick.","It's in her mother's bag.","It's under the desk."], correct:2,
+   script:"M: Dena, don't make any noise in class, please.\nG: I'm sorry, Mr. Lin. I am looking for my pen.\nM: Is the pen under Nick's desk your pen?\nG: Oh, yes! That is my pen. It is from my mom."},
+  {q:"What time is the basketball game?", options:["At two o'clock.","At four thirty.","At three forty."], correct:1,
+   script:"W: There are a lot of people in front of the gym.\nM: They are here for the basketball game.\nW: What time is the basketball game?\nM: It's at 4:30."},
+  {q:"What is there in the boy's school?", options:["A playground.","A gym.","A library."], correct:2,
+   script:"G: Is your school a big school?\nB: No, it is not. It is small.\nG: Is there a library in your school?\nB: Yes, there is.\nG: Is there a gym or a playground?\nB: There isn't."},
+  {q:"Where are the boys?", options:["On the basketball court.","In the library.","In the restroom."], correct:0,
+   script:"M: It's so quiet in the school today. What day is today?\nW: Today is Sunday.\nM: I see. Look! There are some boys on the basketball court. They are playing basketball.\nW: Let's go there and take a look."}
+]);
+
+// 八、較長短文對話
+mc(document.getElementById("sec8"), [
+  {q:"Where are Helen and her friends?", options:["They are in the park.","They are at school.","They are in Helen's house."], correct:0,
+   script:"[A] Hi, I am Helen. My friends and I are in the park. Jim and I are playing with Jim's pet dog, Lucky. Sarah is reading books under the tree. There is a seesaw near the tree. Kelly and Rita are playing on it. They are happy. Wait! What time is it now? It is five forty-five. It is time for dinner. Let's go home."},
+  {q:"Who is reading books under the tree?", options:["Sarah and Helen.","Sarah.","Jim."], correct:1},
+  {q:"What is true?", options:["Kelly and Rita are preparing dinner.","Only Helen is playing with Lucky.","It is dinner time for Helen and her friends now."], correct:2},
+  {q:"Who is King?", options:["Gina's pet.","Gina's father.","Gina's brother."], correct:0,
+   script:"[B] Gina's house is next to a park. There is a garden behind Gina's house. There are a lot of rabbits in the garden. They are Gina's pets. They are very cute. Look! There is a big and black rabbit. Its name is King. It is beautiful! Gina and King are good friends."},
+  {q:"Where is Gina's house?", options:["It is behind a garden.","It is near a gym.","It is next to a park."], correct:2},
+  {q:"What is true?", options:["King is black.","There aren't any rabbits in the garden.","Gina and King are classmates."], correct:0},
+  {q:"Who is Mandy?", options:["The girl's cousin.","The boy's sister.","The boy and the girl's friend."], correct:0,
+   script:"[C] B: Who is the beautiful girl in the photo?\nG: She is my cousin, Mandy. She is in the USA.\nB: Cool. My brother, Eric, is in the USA, too. Is Mandy in New York City?\nG: Yes, she is. How old is your brother?\nB: He is fifteen.\nG: My cousin is fifteen, too.\nB: Look! The tall boy next to your cousin is my brother. They are classmates!\nG: What a small world!"},
+  {q:"What is true?", options:["Mandy is in Taiwan now.","Eric and Mandy are classmates.","Eric and Mandy are brother and sister."], correct:1},
+  {q:"What is Danny doing?", options:["He is reading a book in his mother's room.","He is looking for his dog.","He is sitting on the chair."], correct:1,
+   script:"[D] W: Danny, what are you doing under the chair?\nM: I am looking for my pet dog, Lucky.\nW: Isn't Lucky in your mother's room?\nM: No, the dog in my mother's room is Lucky's brother, Juice.\nW: Look! A dog is running out of the house!\nM: Oh, no! That is Lucky! Lucky, don't go!"},
+  {q:"What is true?", options:["Lucky is in the bedroom.","Lucky and Juice are brothers.","Juice is running out of the house."], correct:1}
+]);
+</script>
+<script>window.EXAM_META = {version:"A卷", examLabel:"第12回"};</script>
+<script src="../sync.js"></script>
+</body>
+</html>

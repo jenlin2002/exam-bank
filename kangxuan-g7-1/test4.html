@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>段考題庫｜第4回 - 聽力一（Lesson 1～2）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@500;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#faf6ec; --paper-line:#e3dcc8; --ink:#26332b; --ink-soft:#5b6b5f;
+    --chalk-green:#2f4538; --chalk-green-2:#3d5a48; --pen-red:#b8433a; --pen-red-soft:#f4dedb;
+    --ok-green:#3f7d52; --ok-green-soft:#dfeee1; --gold:#b5842a; --radius:10px;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:"Noto Sans TC",sans-serif;line-height:1.7;}
+  header.hero{background:var(--chalk-green);color:#eef2ea;padding:28px 20px 40px;position:relative;}
+  header.hero::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:14px;
+    background:repeating-linear-gradient(90deg,var(--paper) 0 18px, transparent 18px 20px);}
+  .hero-inner{max-width:880px;margin:0 auto;}
+  .breadcrumb a{color:#cfe0d1;text-decoration:none;font-size:14px;}
+  h1{font-family:"Noto Serif TC",serif;font-weight:700;font-size:clamp(24px,4vw,34px);margin:10px 0 6px;}
+  .subtitle{color:#cfe0d1;font-size:15px;margin:0;}
+  main{max-width:880px;margin:0 auto;padding:28px 20px 80px;}
+
+  .notice{
+    background:#fdf3e3;border:1px solid #ecd9ab;border-left:5px solid var(--gold);
+    border-radius:var(--radius);padding:14px 18px;margin-bottom:22px;font-size:13.5px;color:#6b5424;
+  }
+
+  section.block{background:#fff;border:1px solid var(--paper-line);border-radius:var(--radius);padding:22px 22px 26px;margin-bottom:20px;}
+  .block h2{font-family:"Noto Serif TC",serif;font-size:19px;margin:0 0 4px;color:var(--chalk-green);}
+  .block .meta{color:var(--ink-soft);font-size:13px;margin:0 0 14px;}
+
+  audio{width:100%;margin-bottom:18px;}
+
+  .q{margin-bottom:18px;padding-bottom:16px;border-bottom:1px dashed var(--paper-line);}
+  .q:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0;}
+  .q-text{font-size:15.5px;margin-bottom:8px;}
+  .q-num{color:var(--gold);font-weight:700;margin-right:4px;}
+
+  .opts{display:grid;gap:8px;}
+  .opt{display:flex;gap:8px;align-items:flex-start;border:1.5px solid var(--paper-line);border-radius:8px;
+    padding:9px 12px;cursor:pointer;font-size:14.5px;background:#fffdf8;}
+  .opt:hover{border-color:var(--chalk-green-2);}
+  .opt.selected{border-color:var(--chalk-green-2);background:#eef3ea;}
+  .opt.correct{border-color:var(--ok-green);background:var(--ok-green-soft);}
+  .opt.wrong{border-color:var(--pen-red);background:var(--pen-red-soft);}
+  .opt .tag{font-weight:700;color:var(--ink-soft);}
+  .opt.correct .tag{color:var(--ok-green);}
+  .opt.wrong .tag{color:var(--pen-red);}
+  .opt.disabled{cursor:default;}
+
+  input.blank{font-family:"Noto Sans TC",sans-serif;border:none;border-bottom:2px solid var(--chalk-green-2);
+    background:transparent;font-size:15px;padding:2px 4px;width:150px;}
+  .feedback{font-size:13.5px;font-weight:700;margin-left:6px;}
+  .feedback.ok{color:var(--ok-green);}
+  .feedback.no{color:var(--pen-red);}
+
+  .script-toggle{margin-top:6px;}
+  .script-toggle button{background:none;border:1px solid var(--ink-soft);color:var(--ink-soft);
+    border-radius:6px;padding:5px 12px;font-size:12.5px;cursor:pointer;}
+  .script-toggle button:disabled{opacity:.5;cursor:not-allowed;}
+  .script{display:none;margin-top:8px;font-size:13.5px;color:var(--ink-soft);
+    background:#f5f2e8;border-radius:6px;padding:10px 14px;white-space:pre-line;}
+  .script.show{display:block;}
+
+  .footer-link{display:block;text-align:center;margin-top:30px;color:var(--chalk-green);text-decoration:none;font-weight:700;font-size:14px;}
+  .footer-link:hover{text-decoration:underline;}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="breadcrumb"><a href="https://jenlin2002.github.io/">🏠 回總目錄</a> ／ <a href="../kangxuan-g7-1.html" style="color:#cfe0d1;">段考題庫</a></div>
+    <h1>第4回・聽力一</h1>
+    <p class="subtitle">Lesson 1～2｜康軒版七年級英語（一）Ａ卷</p>
+  </div>
+</header>
+
+<main>
+  <section class="block">
+    <h2>一、聽CD中的句子，選出聽到的字詞</h2>
+    <p class="meta">10分，每題2分</p>
+    <audio controls src="audio/test4/track1.mp3"></audio>
+    <div id="sec1"></div>
+  </section>
+
+  <section class="block">
+    <h2>二、聽CD中的句子，寫出空格中的單字</h2>
+    <p class="meta">10分，每題2分</p>
+    <audio controls src="audio/test4/track2.mp3"></audio>
+    <div id="sec2"></div>
+  </section>
+
+  <section class="block">
+    <h2>三、聽CD中的句子，若敘述符合圖意則寫T，不符則寫F</h2>
+    <p class="meta">10分，每題2分（原考卷為看圖題，此處以文字描述取代圖片）</p>
+    <audio controls src="audio/test4/track3.mp3"></audio>
+    <div id="sec3"></div>
+  </section>
+
+  <section class="block">
+    <h2>四、聽CD中的問句或直述句，選出一個最佳的回應</h2>
+    <p class="meta">10分，每題2分</p>
+    <audio controls src="audio/test4/track4.mp3"></audio>
+    <div id="sec4"></div>
+  </section>
+
+  <section class="block">
+    <h2>五、聽CD中的句子，選出適當的圖片</h2>
+    <p class="meta">10分，每題2分（原考卷為三選一圖片，此處以文字描述取代）</p>
+    <audio controls src="audio/test4/track5.mp3"></audio>
+    <div id="sec5"></div>
+  </section>
+
+  <section class="block">
+    <h2>六、聽CD播放一個和該題相關的問題，與A、B、C三個敘述後，選出與圖片最符合的答案</h2>
+    <p class="meta">10分，每題2分（原考卷為看圖題，此處以文字描述取代圖片）</p>
+    <audio controls src="audio/test4/track6.mp3"></audio>
+    <div id="sec6"></div>
+  </section>
+
+  <section class="block">
+    <h2>七、聽CD中的對話及一個相關的問題，選出一個正確或最佳的答案</h2>
+    <p class="meta">10分，每題2分</p>
+    <audio controls src="audio/test4/track7.mp3"></audio>
+    <div id="sec7"></div>
+  </section>
+
+  <section class="block">
+    <h2>八、聽CD中的短文或對話，選出一個正確或最佳的答案</h2>
+    <p class="meta">30分，每題3分</p>
+    <audio controls src="audio/test4/track8.mp3"></audio>
+    <div id="sec8"></div>
+  </section>
+
+  <a class="footer-link" href="../kangxuan-g7-1.html">← 回段考題庫總覽</a>
+</main>
+
+<script>
+function mc(container, items){
+  items.forEach((it,i)=>{
+    const q = document.createElement("div");
+    q.className = "q";
+    const optsHtml = it.options.map((op,oi)=>`
+      <div class="opt" data-correct="${oi===it.correct}"><span class="tag">(${String.fromCharCode(65+oi)})</span><span>${op}</span></div>`).join("");
+    q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q||""}</div><div class="opts">${optsHtml}</div>
+      ${it.script ? `<div class="script-toggle"><button disabled title="送出成績後解鎖">🔒 顯示逐字稿</button></div><div class="script">${it.script}</div>`:""}`;
+    q.querySelectorAll(".opt").forEach(o=>o.addEventListener("click", ()=>{
+      if(q.dataset.answered==="true") return;
+      q.dataset.answered="true";
+      q.querySelectorAll(".opt").forEach(x=>x.classList.add("disabled"));
+      o.classList.add("selected");
+      const correctOptEl = q.querySelector('.opt[data-correct="true"]');
+      q.dataset.studentAnswer = o.textContent.trim();
+      q.dataset.correctAnswer = correctOptEl ? correctOptEl.textContent.trim() : "";
+      q.dataset.isCorrect = (o.dataset.correct==="true") ? "true" : "false";
+    }));
+    const tbtn = q.querySelector(".script-toggle button");
+    if(tbtn) tbtn.addEventListener("click", ()=>q.querySelector(".script").classList.toggle("show"));
+    container.appendChild(q);
+  });
+}
+function blank(container, items){
+  items.forEach((it,i)=>{
+    const q = document.createElement("div");
+    q.className = "q";
+    q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q} <input type="text" class="blank" data-answer="${it.answer}"><span class="feedback"></span></div>`;
+    const input = q.querySelector("input");
+    input.addEventListener("input", ()=>{
+      const val = input.value.trim().toLowerCase();
+      if(!val){ delete q.dataset.studentAnswer; return; }
+      q.dataset.studentAnswer = input.value.trim();
+      q.dataset.correctAnswer = it.answer;
+      q.dataset.isCorrect = (val===it.answer.toLowerCase()) ? "true" : "false";
+    });
+    container.appendChild(q);
+  });
+}
+function tf(container, items){
+  items.forEach((it,i)=>{
+    const q = document.createElement("div");
+    q.className = "q";
+    q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>圖片描述：${it.desc}</div>
+      <div class="opts">
+        <div class="opt" data-correct="${it.answer==='T'}"><span class="tag">T</span><span>符合圖意</span></div>
+        <div class="opt" data-correct="${it.answer==='F'}"><span class="tag">F</span><span>不符合圖意</span></div>
+      </div>`;
+    q.querySelectorAll(".opt").forEach(o=>o.addEventListener("click", ()=>{
+      if(q.dataset.answered==="true") return;
+      q.dataset.answered="true";
+      q.querySelectorAll(".opt").forEach(x=>x.classList.add("disabled"));
+      o.classList.add("selected");
+      const correctOptEl = q.querySelector('.opt[data-correct="true"]');
+      q.dataset.studentAnswer = o.textContent.trim();
+      q.dataset.correctAnswer = correctOptEl ? correctOptEl.textContent.trim() : "";
+      q.dataset.isCorrect = (o.dataset.correct==="true") ? "true" : "false";
+    }));
+    container.appendChild(q);
+  });
+}
+
+// 一、選出聽到的字詞
+mc(document.getElementById("sec1"), [
+  {q:"", options:["horse","doctor","wife"], correct:2, script:"1. Abby is Jason's wife."},
+  {q:"", options:["elephants","tigers","monkeys"], correct:0, script:"2. Those elephants are energetic."},
+  {q:"", options:["daughter","cousin","lion"], correct:1, script:"3. My uncle's son is my cousin."},
+  {q:"", options:["people","women","parents"], correct:0, script:"4. The people in this picture are tall."},
+  {q:"", options:["aunt","doctor","nurse"], correct:2, script:"5. My sister is a nurse."}
+]);
+
+// 二、寫出空格中的單字
+blank(document.getElementById("sec2"), [
+  {q:"My brother is a good ____.", answer:"cook"},
+  {q:"The ____ are cute.", answer:"rabbits"},
+  {q:"Mary is in the movie ____.", answer:"theater"},
+  {q:"Are the ____ foxes?", answer:"animals"},
+  {q:"The young woman is ____.", answer:"beautiful"}
+]);
+
+// 三、T/F
+tf(document.getElementById("sec3"), [
+  {desc:"一位穿西裝的男士", answer:"F"},
+  {desc:"三隻綿羊，看起來很難過", answer:"T"},
+  {desc:"兩張圖卡，上面各自畫著貓和狗", answer:"T"},
+  {desc:"一隻老鼠", answer:"F"},
+  {desc:"一位女孩", answer:"F"}
+]);
+
+// 四、最佳回應
+mc(document.getElementById("sec4"), [
+  {q:"Who is that beautiful woman?", options:["She is thirty years old.","She is tall.","She is my aunt."], correct:2},
+  {q:"Are these your shoes?", options:["The shoes are blue.","Yes, they are.","No, it is not."], correct:1},
+  {q:"Is Jason a young man?", options:["No, he is not. He is old.","They are not tall.","Jason is my brother."], correct:0},
+  {q:"What are the animals in this picture?", options:["They are foxes.","This is my parents' picture.","No, they are not."], correct:0},
+  {q:"Hi, I'm Lisa. Nice to meet you.", options:["That's true.","I am Ken. Nice to meet you, too.","What are these?"], correct:1}
+]);
+
+// 五、選圖片（文字描述取代）
+mc(document.getElementById("sec5"), [
+  {q:"", options:["（圖片：狐狸）","（圖片：馬）","（圖片：熊）"], correct:1, script:"Julia's pet is a horse."},
+  {q:"", options:["（圖片：護理師）","（圖片：體育老師，拿著籃球）","（圖片：廚師）"], correct:1, script:"David's wife is a PE teacher."},
+  {q:"", options:["（圖片：兩隻老虎）","（圖片：兩隻熊）","（圖片：兩匹馬）"], correct:0, script:"These are not big cats. They're tigers."},
+  {q:"", options:["（圖片：拿教鞭的老師）","（圖片：扛著農具的農夫）","（圖片：揹書包的學生）"], correct:2, script:"Jim is a junior high school student."},
+  {q:"", options:["（圖片：兇惡的大狗）","（圖片：可愛的小狗）","（圖片：獅子）"], correct:0, script:"This big dog is not cute."}
+]);
+
+// 六、看圖選答
+mc(document.getElementById("sec6"), [
+  {q:"（圖1：斑馬）What is this?", options:["This is a bear.","This is a monkey.","This is a zebra."], correct:2},
+  {q:"（圖2：廚師）I am a nurse. What about you?", options:["I am a cook.","I am a doctor.","I am a farmer."], correct:0},
+  {q:"（圖3：全家福照片）What is this?", options:["A small and cute mouse.","A picture of my family.","A cute doll."], correct:1},
+  {q:"（圖4：兩隻綿羊）What are those?", options:["They are monkeys.","They are sheep.","They are mice."], correct:1},
+  {q:"（圖5：護理師與病患）Is the young man a doctor?", options:["No, he is a nurse.","Yes, he is.","Yes, he is a teacher."], correct:0}
+]);
+
+// 七、對話+問題
+mc(document.getElementById("sec7"), [
+  {q:"What is Kaka?", options:["A dog.","A horse.","A zebra."], correct:2,
+   script:"W: Is this your pet?\nM: Yes, it is my pet. Its name is Kaka.\nW: Is it a horse?\nM: No, it's not. It's a zebra."},
+  {q:"Who is a doctor?", options:["Only the man.","Only the woman.","The man and the woman."], correct:2,
+   script:"M: Hi, my name is Hank. Are you a nurse?\nW: No, I'm not. I am a doctor.\nM: Cool. I am a doctor, too. I am new here. Nice to meet you.\nW: Nice to meet you, too."},
+  {q:"Who is the tall boy?", options:["He is the woman's son.","He is the man's cousin.","He is the man's student."], correct:1,
+   script:"W: Is the tall boy your son?\nM: No, he is not. He is my uncle's son.\nW: How old is he?\nM: He is fourteen. He is a junior high school student."},
+  {q:"What is true about the woman's mother?", options:["She is the man's mother, too.","She is a cook.","She is short."], correct:1,
+   script:"M: Look at the picture. Who is the woman?\nW: She is my mother.\nM: She is tall and beautiful. Where is she in this picture?\nW: She is in the kitchen. She is a good cook."},
+  {q:"Who is not a nurse in the woman's family?", options:["The woman.","The woman's sisters.","The woman's parents."], correct:0,
+   script:"M: Are your sisters teachers?\nW: No, they are not. They are nurses.\nM: Are your parents nurses, too?\nW: Yes, they are.\nM: Cool. What about you?\nW: I am a cook."}
+]);
+
+// 八、較長短文對話
+mc(document.getElementById("sec8"), [
+  {q:"How old is Vicky's brother?", options:["Fifteen years old.","Seventeen years old.","Thirty-five years old."], correct:1,
+   script:"[A] Good morning, I'm Vicky. I'm from a big family. My father is Davis. He is a cook. My mother is May. She is a farmer. They are great parents. I have a brother, Brian. He is seventeen years old. My mother has a brother, too. His name is William. He is thirty-five years old. William's wife is Fiano, and their son is Mike. Mike is fifteen years old, and he is a tall and handsome boy."},
+  {q:"Who is William?", options:["He is Vicky's father.","He is Vicky's uncle.","He is Vicky's cousin."], correct:1},
+  {q:"What is right?", options:["Mike is a handsome boy.","Vicky's father is a farmer.","May is Vicky's aunt."], correct:0},
+  {q:"Who is a teacher?", options:["Mandy.","Cindy.","Wayne's mother."], correct:2,
+   script:"[B] Wayne is a teacher in a junior high school. His parents are teachers in that school, too. What about Wayne's sisters, Mandy and Cindy? They are cooks. They cook for the students in that school. Wayne's family like the students in that school. Those students like them, too!"},
+  {q:"What is right?", options:["Wayne's parents are cooks.","Wayne is a junior high school teacher.","Cindy and Mandy are junior high school teachers."], correct:1},
+  {q:"What is the woman's book from Jack about?", options:["Families.","Animals.","Doctors."], correct:1,
+   script:"[C] M: What is this?\nW: This is a book from my friend Jack.\nM: What is it about?\nW: It is about animals. Look, these are tigers.\nM: I like tigers. They are cool. And what are those?\nW: They are rabbits. They are cute.\nM: Yeah, they are cute."},
+  {q:"Who is Jack?", options:["The woman's brother.","The man's father.","The woman's friend."], correct:2},
+  {q:"What is right?", options:["The rabbits in the book are cute.","The woman's book is from the man.","The tigers in the book are not cool."], correct:0},
+  {q:"Who is Nick?", options:["The woman's brother.","The man's cousin.","The woman's teacher."], correct:0,
+   script:"[D] M: Who is that man?\nW: He is my brother Nick. I am from a big family. I have three brothers and two sisters.\nM: That is cool!\nW: I am a teacher, and Nick is a teacher, too. What about you?\nM: I am a doctor.\nW: My parents are doctors, too."},
+  {q:"Who is a doctor?", options:["The woman.","The man's brother.","The woman's mother."], correct:2}
+]);
+</script>
+<script>window.EXAM_META = {version:"A卷", examLabel:"第4回"};</script>
+<script src="../sync.js"></script>
+</body>
+</html>

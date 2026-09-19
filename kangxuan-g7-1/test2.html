@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>段考題庫｜第2回 - Lesson 2</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@500;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#faf6ec;
+    --paper-line:#e3dcc8;
+    --ink:#26332b;
+    --ink-soft:#5b6b5f;
+    --chalk-green:#2f4538;
+    --chalk-green-2:#3d5a48;
+    --pen-red:#b8433a;
+    --pen-red-soft:#f4dedb;
+    --ok-green:#3f7d52;
+    --ok-green-soft:#dfeee1;
+    --gold:#b5842a;
+    --radius:10px;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:"Noto Sans TC",sans-serif;
+    line-height:1.7;
+  }
+  header.hero{
+    background:var(--chalk-green);
+    color:#eef2ea;
+    padding:28px 20px 40px;
+    position:relative;
+  }
+  header.hero::after{
+    content:"";
+    position:absolute;
+    left:0; right:0; bottom:-1px;
+    height:14px;
+    background:repeating-linear-gradient(90deg,var(--paper) 0 18px, transparent 18px 20px);
+  }
+  .hero-inner{max-width:880px;margin:0 auto;}
+  .breadcrumb a{color:#cfe0d1;text-decoration:none;font-size:14px;}
+  .breadcrumb a:hover{text-decoration:underline;}
+  h1{
+    font-family:"Noto Serif TC",serif;
+    font-weight:700;
+    font-size:clamp(24px,4vw,34px);
+    margin:10px 0 6px;
+  }
+  .subtitle{color:#cfe0d1;font-size:15px;margin:0;}
+  main{max-width:880px;margin:0 auto;padding:28px 20px 80px;}
+
+  .controls{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:22px;
+  }
+  .mode-toggle{display:flex;border:2px solid var(--chalk-green);border-radius:999px;overflow:hidden;}
+  .mode-toggle button{
+    background:transparent;border:none;padding:8px 16px;font-size:14px;font-weight:700;
+    color:var(--chalk-green);cursor:pointer;font-family:"Noto Sans TC",sans-serif;
+  }
+  .mode-toggle button.active{background:var(--gold);color:#fff;}
+  .mode-toggle button:disabled{opacity:.4;cursor:not-allowed;}
+
+  .score-bar{
+    display:none;
+    align-items:center;
+    justify-content:space-between;
+    background:#fff;
+    border:1px solid var(--paper-line);
+    border-left:5px solid var(--gold);
+    border-radius:var(--radius);
+    padding:12px 18px;
+    margin-bottom:22px;
+    font-size:14px;
+  }
+  .score-bar.show{display:flex;}
+  .score-bar strong{font-size:18px;color:var(--gold);}
+  .score-bar button{
+    background:none;border:1px solid var(--ink-soft);color:var(--ink-soft);
+    border-radius:6px;padding:6px 12px;font-size:13px;cursor:pointer;
+  }
+
+  section.block{
+    background:#fff;
+    border:1px solid var(--paper-line);
+    border-radius:var(--radius);
+    padding:22px 22px 26px;
+    margin-bottom:20px;
+  }
+  .block h2{
+    font-family:"Noto Serif TC",serif;
+    font-size:19px;
+    margin:0 0 4px;
+    color:var(--chalk-green);
+  }
+  .block .meta{color:var(--ink-soft);font-size:13px;margin:0 0 16px;}
+
+  .q{margin-bottom:18px;padding-bottom:16px;border-bottom:1px dashed var(--paper-line);}
+  .q:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0;}
+  .q-text{font-size:15.5px;margin-bottom:8px;}
+  .q-num{color:var(--gold);font-weight:700;margin-right:4px;}
+
+  .opts{display:grid;gap:8px;}
+  .opt{
+    display:flex;gap:8px;align-items:flex-start;
+    border:1.5px solid var(--paper-line);
+    border-radius:8px;
+    padding:9px 12px;
+    cursor:pointer;
+    font-size:14.5px;
+    background:#fffdf8;
+  }
+  .opt:hover{border-color:var(--chalk-green-2);}
+  .opt.selected{border-color:var(--chalk-green-2);background:#eef3ea;}
+  .opt.correct{border-color:var(--ok-green);background:var(--ok-green-soft);}
+  .opt.wrong{border-color:var(--pen-red);background:var(--pen-red-soft);}
+  .opt .tag{font-weight:700;color:var(--ink-soft);}
+  .opt.correct .tag{color:var(--ok-green);}
+  .opt.wrong .tag{color:var(--pen-red);}
+  .opt.disabled{cursor:default;}
+
+  .explain{
+    margin-top:8px;font-size:13.5px;color:var(--ink-soft);
+    background:#f5f2e8;border-radius:6px;padding:8px 12px;display:none;
+  }
+  .explain.show{display:block;}
+
+  input.blank, input.line-answer{
+    font-family:"Noto Sans TC",sans-serif;
+    border:none;border-bottom:2px solid var(--chalk-green-2);
+    background:transparent;font-size:15px;padding:2px 4px;
+    width:150px;
+  }
+  input.line-answer{width:100%;margin-top:4px;}
+  .check-row{display:flex;gap:8px;margin-top:6px;flex-wrap:wrap;align-items:center;}
+  .mini-btn{
+    background:var(--chalk-green);color:#fff;border:none;border-radius:6px;
+    padding:6px 14px;font-size:13px;cursor:pointer;font-family:"Noto Sans TC",sans-serif;
+  }
+  .mini-btn.secondary{background:transparent;color:var(--chalk-green);border:1.5px solid var(--chalk-green);}
+  .feedback{font-size:13.5px;font-weight:700;}
+  .feedback.ok{color:var(--ok-green);}
+  .feedback.no{color:var(--pen-red);}
+  .answer-reveal{
+    display:none;margin-top:6px;font-size:14px;color:var(--chalk-green-2);
+    background:#eef3ea;border-radius:6px;padding:8px 12px;
+  }
+  .answer-reveal.show{display:block;}
+
+  .passage{
+    background:#f5f2e8;border-radius:8px;padding:14px 16px;margin-bottom:14px;
+    font-size:14.5px;white-space:pre-line;
+  }
+  .passage-label{font-weight:700;color:var(--chalk-green);margin-bottom:4px;display:block;}
+
+  .footer-link{
+    display:block;text-align:center;margin-top:30px;color:var(--chalk-green);
+    text-decoration:none;font-weight:700;font-size:14px;
+  }
+  .footer-link:hover{text-decoration:underline;}
+
+  @media print{
+    header.hero, .controls, .score-bar, .check-row, .mini-btn, .footer-link{display:none !important;}
+    body{background:#fff;}
+    section.block{border:none;box-shadow:none;padding:8px 0;margin-bottom:14px;}
+    .opt.correct{background:none;border:none;font-weight:700;}
+    .opt.correct::after{content:" ← 正解";color:var(--pen-red);}
+    .opt{border:none;padding:2px 0;}
+    .explain{display:block !important;background:none;padding:2px 0;}
+    .answer-reveal{display:block !important;background:none;padding:2px 0;}
+    main{max-width:100%;padding:0 24px;}
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="breadcrumb"><a href="https://jenlin2002.github.io/">🏠 回總目錄</a> ／ <a href="../kangxuan-g7-1.html" style="color:#cfe0d1;">段考題庫</a></div>
+    <h1>第2回・Lesson 2</h1>
+    <p class="subtitle">What Are These?｜康軒版七年級英語（一）Ａ卷</p>
+  </div>
+</header>
+
+<main>
+  <div class="controls">
+    <div class="mode-toggle">
+      <button id="quizModeBtn" class="active">✏️ 測驗模式</button>
+      <button id="printModeBtn" disabled title="完成測驗並送出成績後才能查看">🖨️ 完整題目與解答（送出成績後解鎖）</button>
+    </div>
+  </div>
+
+  <div class="score-bar" id="scoreBar">
+    <div>目前得分：<strong id="scoreText">0 / 0</strong>（僅計算選擇題與字彙填空）</div>
+    <button id="resetBtn">重新作答</button>
+  </div>
+
+  <div id="content"></div>
+
+  <a class="footer-link" href="../kangxuan-g7-1.html">← 回段考題庫總覽</a>
+</main>
+
+<script>
+
+window.EXAM_META = { version: "A卷", examLabel: "第2回" };
+const DATA = {
+  sections: [
+    {
+      type: "vocab",
+      title: "一、文意字彙",
+      meta: "20分，每題2分",
+      items: [
+        {q:"Annie's husband is very tall. He is about two m___rs tall.", answer:"meters"},
+        {q:"This is my new friend Roger. His C___e name is “羅傑”。", answer:"Chinese"},
+        {q:"Look at the e___t there! Its ears are big, and its nose is long.", answer:"elephant"},
+        {q:"Maggie's children are e___c. They like to run and play in the park.", answer:"energetic"},
+        {q:"Joseph isn't home. He's at the t___r for the movie, Little Women.", answer:"theater"},
+        {q:"Rita and Ann are sisters, but they're d___t. Rita is warm and nice, but Ann isn't.", answer:"different"},
+        {q:"Matthew is a s___t boy. He is good at math, English, and science（科學）.", answer:"smart"},
+        {q:"We o___y have ten toys. They aren't enough（足夠的）for the fifteen children.", answer:"only"},
+        {q:"Ellis: Who are the p___e in this picture? Paul: They are my students.", answer:"people"},
+        {q:"Harry: What are these a___ls? Bella: They are lions, tigers, and zebras.", answer:"animals"}
+      ]
+    },
+    {
+      type:"mc",
+      title:"二、語法測驗",
+      meta:"24分，每題2分",
+      items:[
+        {q:"George: Are these your students? Tina: Yes, ___ are my students.",options:["this","that","their","they"],correct:3},
+        {q:"Frank: Who is the beautiful woman? Lily: She is my ___ new English teacher.",options:["son","sons","a son's","sons'"],correct:3},
+        {q:"Peter and Doris are husband and wife. Johnny and Paddy are ___ sons.",options:["their","they","they are","they're"],correct:0},
+        {q:"Tony: ___ is the animal on TV? Eva: It's a rooster.",options:["Who","What","How","How old"],correct:1},
+        {q:"Ken: What ___ those in the bag? Ivy: They are apples and oranges.",options:["is","am","are","×"],correct:2},
+        {q:"Dora: Are ___ men teachers in your school? Tim: Yes, they are PE teachers in my school.",options:["this","that","here","those"],correct:3},
+        {q:"The farmer is great. His ___ are beautiful.",options:["mouse","sheep","tiger","rabbit"],correct:1},
+        {q:"Linda: Is Dan those ___ English teacher? Bob: Yes, he is their English teacher.",options:["girl","girls","girl's","girls'"],correct:3},
+        {q:"My grandma and grandpa are old, ___ they are healthy（健康的）.",options:["like","too","but","be"],correct:2},
+        {q:"Nick: Are you students in this school? Owen: Yes, ___.",options:["we are","I am","you are","they are"],correct:0},
+        {q:"Billy: Are those watches your gifts（禮物）? Vicky: No, they ___. They are my brother's gifts.",options:["are","aren't","is","isn't"],correct:1},
+        {q:"Those women are beautiful. They are my brothers' ___.",options:["a wife","wives","wife's","wives'"],correct:1}
+      ]
+    },
+    {
+      type:"mc",
+      title:"三、完成句子與對話",
+      meta:"6分，每題2分",
+      items:[
+        {q:"Tim: Lisa is a good friend. She is nice. Ken: ___ I like Lisa, too.",options:["It's cool.","That's true.","How old is it?","Who is he?"],correct:1},
+        {q:"Ryan: What is your father's name? Emma: His name is Jeff. Ryan: His name is Thomas.",options:["How is your father?","Is your name Thomas?","What's his animal sign?","What about your father?"],correct:3},
+        {q:"Jason: ___ May: Yes, they are my pets. Aren't they cute?",options:["Is this fox your pet?","What are your pets?","Are those rabbits your pets?","How old are your pet dogs?"],correct:2}
+      ]
+    },
+    {
+      type:"guided",
+      title:"四、依提示作答",
+      meta:"15分，每題3分",
+      items:[
+        {prompt:"The man is Amy's friend.",hint:"（改為複數句）",answer:"The men are Amy's friends."},
+        {prompt:"Anita is a warm person.<br>Kate is a warm person, too.",hint:"（用Anita and Kate開頭合併句子）",answer:"Anita and Kate are warm people."},
+        {prompt:"Are the animals in the picture goats?",hint:"（否定簡答）",answer:"No, they aren't."},
+        {prompt:"That is Joe's ox.",hint:"（改為複數句）",answer:"Those are Joe's oxen."},
+        {prompt:"No, those women aren't my sisters.",hint:"（依畫線部分造原問句）",answer:"Are those women your sisters?"}
+      ]
+    },
+    {
+      type:"translation",
+      title:"五、整句式翻譯",
+      meta:"15分，每題3分",
+      items:[
+        {zh:"那些斑馬和老虎在我父母的照片裡。",answer:"Those zebras and tigers are in my parents' picture(s)."},
+        {zh:"我妹妹 Maggie 是人緣好的人。",answer:"My sister Maggie is a people person."},
+        {zh:"我的出生年是1988。我屬龍。",answer:"My birth year is 1988. I am a dragon."},
+        {zh:"那間學校又大又漂亮。它是Tom和Sue的學校。",answer:"That school is big and beautiful. It is Tom and Sue's school."},
+        {zh:"那些小孩既聰明又充滿活力。",answer:"Those children are smart and energetic."}
+      ]
+    },
+    {
+      type:"cloze",
+      title:"六、克漏字測驗",
+      meta:"10分，每題2分",
+      passage:"Emma: Good morning, Dora.\nDora: Good morning, Emma. Welcome to my home.\nEmma: Hey! ___1___ under the chair?\nDora: It's my pet, Bobo.\nEmma: Is it a ___2___?\nDora: No, it's a dog. It eats a lot.\nEmma: ___3___\nDora: Yes, it's a fat dog. It's old, too.\nEmma: How old is Bobo?\nDora: It's twelve years old now.\nEmma: Wow! It's really old.\nDora: Yes. What are ___4___ in your bag?\nEmma: ___5___ gifts from my friends. Today is my birthday.\nDora: Happy birthday!\nEmma: Thank you, Dora.",
+      items:[
+        {options:["What are these","How is it","What is that","How old is it"],correct:0},
+        {options:["dog","pig","mice","elephant"],correct:1},
+        {options:["It's very thin.","What about you?","It's a good toy.","No wonder it is fat."],correct:3},
+        {options:["those","that","this","it"],correct:0},
+        {options:["It's","They're","Those","It"],correct:1}
+      ]
+    },
+    {
+      type:"reading",
+      title:"七、閱讀測驗",
+      meta:"10分，每題2分",
+      passages:[
+        {
+          label:"【A】",
+          text:"<div style=\"text-align:center;font-weight:700;font-family:'Noto Serif TC',serif;margin-bottom:10px;\">Elephants in Taipei Zoo</div><div style=\"display:grid;grid-template-columns:1fr 1fr;gap:10px;\"><div style=\"border:1px solid var(--paper-line);border-radius:8px;padding:10px 12px;background:#fff;\"><strong>Elephant One</strong><br>Name: Lin Wang<br>From: Myanmar<br>● He is Malan's husband.</div><div style=\"border:1px solid var(--paper-line);border-radius:8px;padding:10px 12px;background:#fff;\"><strong>Elephant Two</strong><br>Name: Malan<br>From: Myanmar<br>● She is Lin Wang's wife.</div><div style=\"border:1px solid var(--paper-line);border-radius:8px;padding:10px 12px;background:#fff;\"><strong>Elephant Three</strong><br>Name: Rambo<br>From: Africa<br>● His mother and father are from Africa.</div><div style=\"border:1px solid var(--paper-line);border-radius:8px;padding:10px 12px;background:#fff;\"><strong>Elephant Four</strong><br>Name: Chie<br>From: Africa<br>● Her mother and father are from Africa.</div></div>",
+          items:[
+            {q:"Who is a female elephant?",options:["Lin Wang.","Malan.","Rambo.","Chie's father."],correct:1},
+            {q:"Which is NOT true?",options:["Lin Wang is Malan's husband.","Lin Wang and Malan are from Myanmar.","Rambo's and Chie's parents are from Myanmar.","Rambo and Chie are elephants in Taipei Zoo."],correct:2}
+          ]
+        },
+        {
+          label:"【B】",
+          text:"Welcome to Happy Island. A lot of animal families are on this beautiful island. The Shimano family is a tiger family. Hobi is the son. He is a tall student. Hobi's sister is Hana. Hana is a cute tiger. She is a student, too. Their parents are Shimataro and Sakura. They are tigers, too. Shimataro is tall, and Sakura is beautiful. They're good parents. They are kind to their son and daughter.\nThe Midorihara family is a rabbit family. Mimi-lynne is the daughter. She is a beautiful rabbit. Her ears are long, and her eyes are red. She is a good student, too. Her parents are Souta and Renge. They are rabbits, too. Mimi-lynne and her parents like carrots.\nThe Sorano family is a bird family. Flappie is the son, and he is a green bird. His father is Torigoro. He is a bird and a baseball coach. Flappie's mother is Kanae. She is a baseball coach, too.",
+          items:[
+            {q:"Kind means ___.",options:["young.","true.","nice.","smart."],correct:2},
+            {q:"Who is Hobi and Hana's mother?",options:["Sakura.","Kanae.","Torigoro.","Souta."],correct:0},
+            {q:"Which is NOT true?",options:["Kanae's husband is a baseball coach.","Souta and Renge are green birds.","Hobi's sister is Hana.","Mimi-lynne is a beautiful rabbit."],correct:1}
+          ]
+        }
+      ]
+    }
+
+  ]
+};
+
+let currentMode = "quiz"; // quiz | print
+
+const contentEl = document.getElementById("content");
+const scoreBar = document.getElementById("scoreBar");
+const scoreText = document.getElementById("scoreText");
+
+function render(){
+  window.examAnswersRevealed = false;
+  contentEl.innerHTML = "";
+  DATA.sections.forEach((sec, si)=> contentEl.appendChild(renderSection(sec, si)));
+  if(currentMode==="quiz"){
+    scoreBar.classList.add("show");
+    updateScore();
+  } else {
+    scoreBar.classList.remove("show");
+    contentEl.querySelectorAll(".explain").forEach(e=>e.classList.add("show"));
+    contentEl.querySelectorAll(".answer-reveal").forEach(e=>e.classList.add("show"));
+    contentEl.querySelectorAll(".opt").forEach(o=>o.classList.add("disabled"));
+    contentEl.querySelectorAll(".opt.is-correct").forEach(o=>o.classList.add("correct"));
+  }
+}
+
+function renderSection(sec, si){
+  const block = document.createElement("section");
+  block.className = "block";
+  block.innerHTML = `<h2>${sec.title}</h2><p class="meta">${sec.meta}</p>`;
+
+  if(sec.type==="vocab"){
+    sec.items.forEach((it,i)=>{
+      const q = document.createElement("div");
+      q.className = "q";
+      q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q}
+        &nbsp; <input type="text" class="blank" data-answer="${it.answer}" placeholder="填入單字">
+        <span class="feedback"></span></div>
+        <div class="answer-reveal">正解：${it.answer}</div>`;
+      const input = q.querySelector("input");
+      input.addEventListener("input", ()=>checkBlank(input));
+      block.appendChild(q);
+    });
+  }
+
+  else if(sec.type==="mc"){
+    sec.items.forEach((it,i)=>{
+      const q = document.createElement("div");
+      q.className = "q";
+      const optsHtml = it.options.map((op,oi)=>`
+        <div class="opt" data-idx="${oi}" data-correct="${oi===it.correct}">
+          <span class="tag">(${String.fromCharCode(65+oi)})</span><span>${op}</span>
+        </div>`).join("");
+      q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q}</div>
+        <div class="opts">${optsHtml}</div>
+        ${it.explain ? `<div class="explain">${it.explain}</div>` : ""}`;
+      q.querySelectorAll(".opt").forEach(optEl=>{
+        if(optEl.dataset.correct==="true") optEl.classList.add("is-correct");
+        optEl.addEventListener("click", ()=>selectOption(q, optEl));
+      });
+      block.appendChild(q);
+    });
+  }
+
+  else if(sec.type==="guided" || sec.type==="translation"){
+    sec.items.forEach((it,i)=>{
+      const q = document.createElement("div");
+      q.className = "q";
+      const prompt = sec.type==="guided" ? `${it.prompt} <em style="color:var(--ink-soft);font-style:normal;">${it.hint}</em>` : it.zh;
+      q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${prompt}</div>
+        <input type="text" class="line-answer" placeholder="請輸入英文句子">
+        <div class="check-row"><button class="mini-btn secondary reveal-btn" style="display:none;">對答案</button></div>
+        <div class="answer-reveal">正解：${it.answer}</div>`;
+      q.querySelector(".reveal-btn").addEventListener("click", (e)=>{
+        q.querySelector(".answer-reveal").classList.add("show");
+      });
+      block.appendChild(q);
+    });
+  }
+
+  else if(sec.type==="cloze"){
+    const passageDiv = document.createElement("div");
+    passageDiv.className = "passage";
+    passageDiv.textContent = sec.passage;
+    block.appendChild(passageDiv);
+    sec.items.forEach((it,i)=>{
+      const q = document.createElement("div");
+      q.className = "q";
+      const optsHtml = it.options.map((op,oi)=>`
+        <div class="opt" data-idx="${oi}" data-correct="${oi===it.correct}">
+          <span class="tag">(${String.fromCharCode(65+oi)})</span><span>${op}</span>
+        </div>`).join("");
+      q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span></div><div class="opts">${optsHtml}</div>`;
+      q.querySelectorAll(".opt").forEach(optEl=>{
+        if(optEl.dataset.correct==="true") optEl.classList.add("is-correct");
+        optEl.addEventListener("click", ()=>selectOption(q, optEl));
+      });
+      block.appendChild(q);
+    });
+  }
+
+  else if(sec.type==="reading"){
+    sec.passages.forEach(p=>{
+      const passageDiv = document.createElement("div");
+      passageDiv.className = "passage";
+      passageDiv.innerHTML = `<span class="passage-label">${p.label}</span>${p.text}${p.image ? `<img src="${p.image}" alt="附圖" style="width:100%;max-width:520px;display:block;margin:10px auto 0;border-radius:8px;border:1px solid var(--paper-line);">`:""}`;
+      block.appendChild(passageDiv);
+      p.items.forEach((it,i)=>{
+        const q = document.createElement("div");
+        q.className = "q";
+        const optsHtml = it.options.map((op,oi)=>`
+          <div class="opt" data-idx="${oi}" data-correct="${oi===it.correct}">
+            <span class="tag">(${String.fromCharCode(65+oi)})</span><span>${op}</span>
+          </div>`).join("");
+        q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q}</div>
+          ${it.image ? `<img src="${it.image}" alt="題目附圖" style="width:100%;max-width:500px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">`:""}
+          <div class="opts">${optsHtml}</div>`;
+        q.querySelectorAll(".opt").forEach(optEl=>{
+          if(optEl.dataset.correct==="true") optEl.classList.add("is-correct");
+          optEl.addEventListener("click", ()=>selectOption(q, optEl));
+        });
+        block.appendChild(q);
+      });
+    });
+  }
+
+  return block;
+}
+
+function selectOption(qEl, optEl){
+  if(currentMode!=="quiz") return;
+  if(qEl.dataset.answered==="true") return;
+  qEl.dataset.answered = "true";
+  qEl.querySelectorAll(".opt").forEach(o=>o.classList.add("disabled"));
+  optEl.classList.add("selected");
+  const correctOpt = qEl.querySelector('.opt[data-correct="true"]');
+  qEl.dataset.studentAnswer = optEl.textContent.trim();
+  qEl.dataset.correctAnswer = correctOpt ? correctOpt.textContent.trim() : "";
+  qEl.dataset.isCorrect = (optEl.dataset.correct==="true") ? "true" : "false";
+  updateScore();
+}
+
+function checkBlank(input){
+  const val = input.value.trim().toLowerCase();
+  const ans = input.dataset.answer.trim().toLowerCase();
+  const qEl = input.closest(".q");
+  if(val.length===0){ if(qEl) delete qEl.dataset.studentAnswer; updateScore(); return; }
+  if(qEl){
+    qEl.dataset.studentAnswer = input.value.trim();
+    qEl.dataset.correctAnswer = input.dataset.answer;
+    qEl.dataset.isCorrect = (val===ans) ? "true" : "false";
+  }
+  updateScore();
+}
+
+function updateScore(){
+  let total = 0, answered = 0, correct = 0;
+  contentEl.querySelectorAll(".q").forEach(q=>{
+    const gradable = q.querySelector(".opts") || q.querySelector("input.blank");
+    if(!gradable) return;
+    total++;
+    if(q.dataset.studentAnswer !== undefined){
+      answered++;
+      if(q.dataset.isCorrect === "true") correct++;
+    }
+  });
+  if(window.examAnswersRevealed){
+    scoreText.textContent = `${correct} / ${total}`;
+  } else {
+    scoreText.textContent = `已作答 ${answered} / ${total} 題`;
+  }
+}
+window.updateScore = updateScore;
+
+document.getElementById("resetBtn").addEventListener("click", render);
+document.getElementById("quizModeBtn").addEventListener("click", ()=>{
+  currentMode = "quiz";
+  document.getElementById("quizModeBtn").classList.add("active");
+  document.getElementById("printModeBtn").classList.remove("active");
+  render();
+});
+document.getElementById("printModeBtn").addEventListener("click", ()=>{
+  if(document.getElementById("printModeBtn").disabled) return;
+  currentMode = "print";
+  document.getElementById("printModeBtn").classList.add("active");
+  document.getElementById("quizModeBtn").classList.remove("active");
+  render();
+});
+
+window.unlockPrintMode = function(){
+  document.getElementById("printModeBtn").disabled = false;
+};
+
+render();
+</script>
+<script src="../sync.js"></script>
+</body>
+</html>
