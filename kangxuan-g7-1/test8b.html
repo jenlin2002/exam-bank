@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>段考題庫｜第8回 - 聽力二（Lesson 3～4，B卷）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@500;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#faf6ec; --paper-line:#e3dcc8; --ink:#26332b; --ink-soft:#5b6b5f;
+    --chalk-green:#2f4538; --chalk-green-2:#3d5a48; --pen-red:#b8433a; --pen-red-soft:#f4dedb;
+    --ok-green:#3f7d52; --ok-green-soft:#dfeee1; --gold:#b5842a; --radius:10px;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:"Noto Sans TC",sans-serif;line-height:1.7;}
+  header.hero{background:var(--chalk-green);color:#eef2ea;padding:28px 20px 40px;position:relative;}
+  header.hero::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:14px;
+    background:repeating-linear-gradient(90deg,var(--paper) 0 18px, transparent 18px 20px);}
+  .hero-inner{max-width:880px;margin:0 auto;}
+  .breadcrumb a{color:#cfe0d1;text-decoration:none;font-size:14px;}
+  h1{font-family:"Noto Serif TC",serif;font-weight:700;font-size:clamp(24px,4vw,34px);margin:10px 0 6px;}
+  .subtitle{color:#cfe0d1;font-size:15px;margin:0;}
+  main{max-width:880px;margin:0 auto;padding:28px 20px 80px;}
+  .notice{
+    background:#fdf3e3;border:1px solid #ecd9ab;border-left:5px solid var(--gold);
+    border-radius:var(--radius);padding:14px 18px;margin-bottom:22px;font-size:13.5px;color:#6b5424;
+  }
+
+  section.block{background:#fff;border:1px solid var(--paper-line);border-radius:var(--radius);padding:22px 22px 26px;margin-bottom:20px;}
+  .block h2{font-family:"Noto Serif TC",serif;font-size:19px;margin:0 0 4px;color:var(--chalk-green);}
+  .block .meta{color:var(--ink-soft);font-size:13px;margin:0 0 14px;}
+
+  audio{width:100%;margin-bottom:18px;}
+
+  .q{margin-bottom:18px;padding-bottom:16px;border-bottom:1px dashed var(--paper-line);}
+  .q:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0;}
+  .q-text{font-size:15.5px;margin-bottom:8px;}
+  .q-num{color:var(--gold);font-weight:700;margin-right:4px;}
+
+  .opts{display:grid;gap:8px;}
+  .opt{display:flex;gap:8px;align-items:flex-start;border:1.5px solid var(--paper-line);border-radius:8px;
+    padding:9px 12px;cursor:pointer;font-size:14.5px;background:#fffdf8;}
+  .opt:hover{border-color:var(--chalk-green-2);}
+  .opt.selected{border-color:var(--chalk-green-2);background:#eef3ea;}
+  .opt.correct{border-color:var(--ok-green);background:var(--ok-green-soft);}
+  .opt.wrong{border-color:var(--pen-red);background:var(--pen-red-soft);}
+  .opt .tag{font-weight:700;color:var(--ink-soft);}
+  .opt.correct .tag{color:var(--ok-green);}
+  .opt.wrong .tag{color:var(--pen-red);}
+  .opt.disabled{cursor:default;}
+
+  .footer-link{display:block;text-align:center;margin-top:30px;color:var(--chalk-green);text-decoration:none;font-weight:700;font-size:14px;}
+  .footer-link:hover{text-decoration:underline;}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="breadcrumb"><a href="https://jenlin2002.github.io/">🏠 回總目錄</a> ／ <a href="../kangxuan-g7-1.html" style="color:#cfe0d1;">段考題庫</a></div>
+    <h1>第8回・聽力二</h1>
+    <p class="subtitle">Lesson 3～4｜康軒版七年級英語（一）Ｂ卷</p>
+  </div>
+</header>
+
+<main>
+  <div class="notice">🎧 B卷聽力題本沒有附逐字稿，此頁僅能作答對錯，無法顯示逐字稿內容。</div>
+
+  <section class="block">
+    <h2>一、辨識句意：選出符合句子描述的圖片</h2>
+    <p class="meta">20分，每題4分（原考卷為圖片選擇，此處以文字描述取代）</p>
+    <audio controls src="audio/test8b/track1.mp3"></audio>
+    <div id="sec1"></div>
+  </section>
+
+  <section class="block">
+    <h2>二、基本問答：選出最適合的回答，完成對話</h2>
+    <p class="meta">40分，每題4分</p>
+    <audio controls src="audio/test8b/track2.mp3"></audio>
+    <div id="sec2"></div>
+  </section>
+
+  <section class="block">
+    <h2>三、言談理解：請聽CD一段對話或短文及一個相關的問題後，選出一個最適合的答案</h2>
+    <p class="meta">40分，每題4分</p>
+    <audio controls src="audio/test8b/track3.mp3"></audio>
+    <div id="sec3"></div>
+  </section>
+
+  <a class="footer-link" href="../kangxuan-g7-1.html">← 回段考題庫總覽</a>
+</main>
+
+<script>
+function mc(container, items){
+  items.forEach((it,i)=>{
+    const q = document.createElement("div");
+    q.className = "q";
+    const optsHtml = it.options.map((op,oi)=>`
+      <div class="opt" data-correct="${oi===it.correct}"><span class="tag">(${String.fromCharCode(65+oi)})</span><span>${op}</span></div>`).join("");
+    q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q||""}</div><div class="opts">${optsHtml}</div>`;
+    q.querySelectorAll(".opt").forEach(o=>o.addEventListener("click", ()=>{
+      if(q.dataset.answered==="true") return;
+      q.dataset.answered="true";
+      q.querySelectorAll(".opt").forEach(x=>x.classList.add("disabled"));
+      o.classList.add("selected");
+      const correctOptEl = q.querySelector('.opt[data-correct="true"]');
+      q.dataset.studentAnswer = o.textContent.trim();
+      q.dataset.correctAnswer = correctOptEl ? correctOptEl.textContent.trim() : "";
+      q.dataset.isCorrect = (o.dataset.correct==="true") ? "true" : "false";
+    }));
+    container.appendChild(q);
+  });
+}
+
+// 一、辨識句意（圖片描述）
+mc(document.getElementById("sec1"), [
+  {q:"", options:["（圖：女孩刷牙）","（圖：女孩看電視）","（圖：媽媽端菜到餐桌）"], correct:2},
+  {q:"", options:["（圖：兩張畫／圖畫卡片）","（圖：兩支舊型手機）","（圖：兩支新型智慧型手機）"], correct:2},
+  {q:"", options:["（圖：塞車，車輛喇叭作響）","（圖：女孩打鼓）","（圖：老人使用助行器）"], correct:1},
+  {q:"", options:["（圖：椅子和兔子，椅子在前）","（圖：椅子和兔子並排）","（圖：椅子和兔子，兔子在椅子旁）"], correct:1},
+  {q:"", options:["（圖：男孩幫女孩畫肖像）","（圖：女孩跳芭蕾舞）","（圖：媽媽從烤箱拿出蛋糕）"], correct:1}
+]);
+
+// 二、基本問答
+mc(document.getElementById("sec2"), [
+  {q:"", options:["She is from Taiwan.","She is in the dining room.","No, she isn't here."], correct:1},
+  {q:"", options:["Oh, what's that?","Yes, it's a smart design.","That's a great idea!"], correct:2},
+  {q:"", options:["No, it's in the box.","Yes, it's behind the chair.","Yes, it's between the box and the desk."], correct:0},
+  {q:"", options:["Users can't download these apps.","It can warn people about oncoming cars.","You can check out this app."], correct:1},
+  {q:"", options:["Let's cross the road.","Come on, I can't wait.","Thank you. Your house is big."], correct:0},
+  {q:"", options:["But how?","Same here.","OK, let's drink some tea."], correct:2},
+  {q:"", options:["Ha! They're real phubbers.","Uh, where is my smartphone?","In fact, I can also write songs."], correct:0},
+  {q:"", options:["It's not our school bus.","The world is very big.","Oh! It's Leo's blanket."], correct:2},
+  {q:"", options:["Oh, I see.","That's a good question.","Step one, upload the photo."], correct:1},
+  {q:"", options:["Don't be sad.","I can listen to the song again.","Well... it's not really my style."], correct:2}
+]);
+
+// 三、言談理解
+mc(document.getElementById("sec3"), [
+  {q:"", options:["The book is on the card.","The card is in the book.","Mandy is the woman's friend."], correct:0},
+  {q:"", options:["In the man's house.","In the woman's bedroom.","In the woman's dining room."], correct:1},
+  {q:"", options:["Milk or juice.","Milk and juice.","Milk with juice."], correct:0},
+  {q:"", options:["It's on the desk.","It's in his schoolbag.","It's under the blanket."], correct:2},
+  {q:"", options:["Download photos.","Read some books.","Play games on their phones."], correct:1},
+  {q:"", options:["It is new and big.","It is small but new.","It is small but cute."], correct:2},
+  {q:"", options:["She can run.","She can walk.","She can stand."], correct:2},
+  {q:"", options:["Kate can read English.","Kate can read Chinese.","Kate can talk in English."], correct:1},
+  {q:"", options:["The card in Ann's bag is from Fanny.","The card on Ann's desk is from Larry.","The cards are from Ann's students."], correct:2},
+  {q:"", options:["She is in front of Andy.","She is between Andy and Lillian.","She is next to her parents."], correct:1}
+]);
+</script>
+<script>window.EXAM_META = {version:"B卷", examLabel:"第8回"};</script>
+<script src="../sync.js"></script>
+</body>
+</html>

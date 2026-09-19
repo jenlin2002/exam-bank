@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>段考題庫｜第4回 - 聽力一（Lesson 1～2，B卷）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@500;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#faf6ec; --paper-line:#e3dcc8; --ink:#26332b; --ink-soft:#5b6b5f;
+    --chalk-green:#2f4538; --chalk-green-2:#3d5a48; --pen-red:#b8433a; --pen-red-soft:#f4dedb;
+    --ok-green:#3f7d52; --ok-green-soft:#dfeee1; --gold:#b5842a; --radius:10px;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:"Noto Sans TC",sans-serif;line-height:1.7;}
+  header.hero{background:var(--chalk-green);color:#eef2ea;padding:28px 20px 40px;position:relative;}
+  header.hero::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:14px;
+    background:repeating-linear-gradient(90deg,var(--paper) 0 18px, transparent 18px 20px);}
+  .hero-inner{max-width:880px;margin:0 auto;}
+  .breadcrumb a{color:#cfe0d1;text-decoration:none;font-size:14px;}
+  h1{font-family:"Noto Serif TC",serif;font-weight:700;font-size:clamp(24px,4vw,34px);margin:10px 0 6px;}
+  .subtitle{color:#cfe0d1;font-size:15px;margin:0;}
+  main{max-width:880px;margin:0 auto;padding:28px 20px 80px;}
+  .notice{
+    background:#fdf3e3;border:1px solid #ecd9ab;border-left:5px solid var(--gold);
+    border-radius:var(--radius);padding:14px 18px;margin-bottom:22px;font-size:13.5px;color:#6b5424;
+  }
+
+  section.block{background:#fff;border:1px solid var(--paper-line);border-radius:var(--radius);padding:22px 22px 26px;margin-bottom:20px;}
+  .block h2{font-family:"Noto Serif TC",serif;font-size:19px;margin:0 0 4px;color:var(--chalk-green);}
+  .block .meta{color:var(--ink-soft);font-size:13px;margin:0 0 14px;}
+
+  audio{width:100%;margin-bottom:18px;}
+
+  .q{margin-bottom:18px;padding-bottom:16px;border-bottom:1px dashed var(--paper-line);}
+  .q:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0;}
+  .q-text{font-size:15.5px;margin-bottom:8px;}
+  .q-num{color:var(--gold);font-weight:700;margin-right:4px;}
+
+  .opts{display:grid;gap:8px;}
+  .opt{display:flex;gap:8px;align-items:flex-start;border:1.5px solid var(--paper-line);border-radius:8px;
+    padding:9px 12px;cursor:pointer;font-size:14.5px;background:#fffdf8;}
+  .opt:hover{border-color:var(--chalk-green-2);}
+  .opt.selected{border-color:var(--chalk-green-2);background:#eef3ea;}
+  .opt.correct{border-color:var(--ok-green);background:var(--ok-green-soft);}
+  .opt.wrong{border-color:var(--pen-red);background:var(--pen-red-soft);}
+  .opt .tag{font-weight:700;color:var(--ink-soft);}
+  .opt.correct .tag{color:var(--ok-green);}
+  .opt.wrong .tag{color:var(--pen-red);}
+  .opt.disabled{cursor:default;}
+
+  .footer-link{display:block;text-align:center;margin-top:30px;color:var(--chalk-green);text-decoration:none;font-weight:700;font-size:14px;}
+  .footer-link:hover{text-decoration:underline;}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="breadcrumb"><a href="https://jenlin2002.github.io/">🏠 回總目錄</a> ／ <a href="../kangxuan-g7-1.html" style="color:#cfe0d1;">段考題庫</a></div>
+    <h1>第4回・聽力一</h1>
+    <p class="subtitle">Lesson 1～2｜康軒版七年級英語（一）Ｂ卷</p>
+  </div>
+</header>
+
+<main>
+  <div class="notice">🎧 B卷聽力題本沒有附逐字稿，此頁僅能作答對錯，無法顯示逐字稿內容。</div>
+
+  <section class="block">
+    <h2>一、辨識句意：選出符合句子描述的圖片</h2>
+    <p class="meta">20分，每題4分（原考卷為圖片選擇，此處以文字描述取代）</p>
+    <audio controls src="audio/test4b/track1.mp3"></audio>
+    <div id="sec1"></div>
+  </section>
+
+  <section class="block">
+    <h2>二、基本問答：選出最適合的回答，完成對話</h2>
+    <p class="meta">40分，每題4分</p>
+    <audio controls src="audio/test4b/track2.mp3"></audio>
+    <div id="sec2"></div>
+  </section>
+
+  <section class="block">
+    <h2>三、言談理解：請聽CD一段對話或短文及一個相關的問題後，選出一個最適合的答案</h2>
+    <p class="meta">40分，每題4分</p>
+    <audio controls src="audio/test4b/track3.mp3"></audio>
+    <div id="sec3"></div>
+  </section>
+
+  <a class="footer-link" href="../kangxuan-g7-1.html">← 回段考題庫總覽</a>
+</main>
+
+<script>
+function mc(container, items){
+  items.forEach((it,i)=>{
+    const q = document.createElement("div");
+    q.className = "q";
+    const optsHtml = it.options.map((op,oi)=>`
+      <div class="opt" data-correct="${oi===it.correct}"><span class="tag">(${String.fromCharCode(65+oi)})</span><span>${op}</span></div>`).join("");
+    q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q||""}</div><div class="opts">${optsHtml}</div>`;
+    q.querySelectorAll(".opt").forEach(o=>o.addEventListener("click", ()=>{
+      if(q.dataset.answered==="true") return;
+      q.dataset.answered="true";
+      q.querySelectorAll(".opt").forEach(x=>x.classList.add("disabled"));
+      o.classList.add("selected");
+      const correctOptEl = q.querySelector('.opt[data-correct="true"]');
+      q.dataset.studentAnswer = o.textContent.trim();
+      q.dataset.correctAnswer = correctOptEl ? correctOptEl.textContent.trim() : "";
+      q.dataset.isCorrect = (o.dataset.correct==="true") ? "true" : "false";
+    }));
+    container.appendChild(q);
+  });
+}
+
+// 一、辨識句意（圖片描述）
+mc(document.getElementById("sec1"), [
+  {q:"", options:["（圖：胖胖的中年女性）","（圖：穿洋裝的年輕女性）","（圖：綁雙馬尾的小女孩）"], correct:1},
+  {q:"", options:["（圖：書桌抽屜，箭頭指向書）","（圖：書桌抽屜，箭頭指向兩枝筆）","（圖：書桌抽屜，箭頭指向立可帶）"], correct:2},
+  {q:"", options:["（圖：一群公雞）","（圖：一群大象）","（圖：一群熊）"], correct:2},
+  {q:"", options:["（圖：穿西裝的上班族男性）","（圖：揹書包的高中女生）","（圖：揹書包的國中男生）"], correct:0},
+  {q:"", options:["（圖：樹上猴子＋兩隻斑馬）","（圖：樹上猴子和老虎＋兩隻斑馬）","（圖：樹上猴子和老虎＋一隻斑馬）"], correct:0}
+]);
+
+// 二、基本問答
+mc(document.getElementById("sec2"), [
+  {q:"", options:["Thank you.","Nice to meet you, too.","He's my friend, Leo."], correct:1},
+  {q:"", options:["It is a desk.","They are chairs.","That's true."], correct:1},
+  {q:"", options:["You're different from me.","What about you?","That's good news!"], correct:2},
+  {q:"", options:["Rita is tall.","Yes, she is.","No, she is tall."], correct:1},
+  {q:"", options:["Yes, they are lions.","No, they aren't.","They're cute."], correct:1},
+  {q:"", options:["Oh! It's cute.","You're welcome.","Yes, it's my pet."], correct:2},
+  {q:"", options:["Yes. They're your sheep.","No. They aren't sheep.","No. My sheep are black."], correct:2},
+  {q:"", options:["Yes, it's short.","No, it's a short pencil.","No, it's a pen."], correct:2},
+  {q:"", options:["They're foxes.","They're pictures.","They're cooks."], correct:1},
+  {q:"", options:["No, she is not old.","She is young and tall.","She is thirteen."], correct:2}
+]);
+
+// 三、言談理解
+mc(document.getElementById("sec3"), [
+  {q:"", options:["The man's grandfather is a farmer.","The man's grandfather is a cook.","The man's grandfather is 80."], correct:0},
+  {q:"", options:["The man's uncle.","The woman's aunt.","The woman's uncle."], correct:2},
+  {q:"", options:["African lions and Asian lions aren't different.","African lions and Asian lions aren't the same size.","African lions and Asian lions are the same size."], correct:1},
+  {q:"", options:["She is Jerry's friend.","She is Peter's sister.","She is Jerry's sister."], correct:2},
+  {q:"", options:["The cake is from the woman's mother.","The woman's father is a cook.","The woman's mother is a cook."], correct:2},
+  {q:"", options:["The pet cats like fish.","The pet cats aren't cute.","The woman's pets are cats."], correct:2},
+  {q:"", options:["An ox.","A dragon.","A monkey."], correct:0},
+  {q:"", options:["She is the woman's sister.","She is the man's cousin.","She is the woman's cousin."], correct:2},
+  {q:"", options:["Mrs. Smith is a great teacher.","Mrs. Smith is from Taiwan.","Mrs. Smith is a math teacher."], correct:0},
+  {q:"", options:["Toby is a white dog.","Betty's grandfather is a cook.","Betty's brothers are teachers."], correct:1}
+]);
+</script>
+<script>window.EXAM_META = {version:"B卷", examLabel:"第4回"};</script>
+<script src="../sync.js"></script>
+</body>
+</html>

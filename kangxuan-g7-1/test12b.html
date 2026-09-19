@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>段考題庫｜第12回 - 聽力三（Lesson 5～6，B卷）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@500;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#faf6ec; --paper-line:#e3dcc8; --ink:#26332b; --ink-soft:#5b6b5f;
+    --chalk-green:#2f4538; --chalk-green-2:#3d5a48; --pen-red:#b8433a; --pen-red-soft:#f4dedb;
+    --ok-green:#3f7d52; --ok-green-soft:#dfeee1; --gold:#b5842a; --radius:10px;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:"Noto Sans TC",sans-serif;line-height:1.7;}
+  header.hero{background:var(--chalk-green);color:#eef2ea;padding:28px 20px 40px;position:relative;}
+  header.hero::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:14px;
+    background:repeating-linear-gradient(90deg,var(--paper) 0 18px, transparent 18px 20px);}
+  .hero-inner{max-width:880px;margin:0 auto;}
+  .breadcrumb a{color:#cfe0d1;text-decoration:none;font-size:14px;}
+  h1{font-family:"Noto Serif TC",serif;font-weight:700;font-size:clamp(24px,4vw,34px);margin:10px 0 6px;}
+  .subtitle{color:#cfe0d1;font-size:15px;margin:0;}
+  main{max-width:880px;margin:0 auto;padding:28px 20px 80px;}
+  .notice{
+    background:#fdf3e3;border:1px solid #ecd9ab;border-left:5px solid var(--gold);
+    border-radius:var(--radius);padding:14px 18px;margin-bottom:22px;font-size:13.5px;color:#6b5424;
+  }
+
+  section.block{background:#fff;border:1px solid var(--paper-line);border-radius:var(--radius);padding:22px 22px 26px;margin-bottom:20px;}
+  .block h2{font-family:"Noto Serif TC",serif;font-size:19px;margin:0 0 4px;color:var(--chalk-green);}
+  .block .meta{color:var(--ink-soft);font-size:13px;margin:0 0 14px;}
+
+  audio{width:100%;margin-bottom:18px;}
+
+  .q{margin-bottom:18px;padding-bottom:16px;border-bottom:1px dashed var(--paper-line);}
+  .q:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0;}
+  .q-text{font-size:15.5px;margin-bottom:8px;}
+  .q-num{color:var(--gold);font-weight:700;margin-right:4px;}
+
+  .opts{display:grid;gap:8px;}
+  .opt{display:flex;gap:8px;align-items:flex-start;border:1.5px solid var(--paper-line);border-radius:8px;
+    padding:9px 12px;cursor:pointer;font-size:14.5px;background:#fffdf8;}
+  .opt:hover{border-color:var(--chalk-green-2);}
+  .opt.selected{border-color:var(--chalk-green-2);background:#eef3ea;}
+  .opt.correct{border-color:var(--ok-green);background:var(--ok-green-soft);}
+  .opt.wrong{border-color:var(--pen-red);background:var(--pen-red-soft);}
+  .opt .tag{font-weight:700;color:var(--ink-soft);}
+  .opt.correct .tag{color:var(--ok-green);}
+  .opt.wrong .tag{color:var(--pen-red);}
+  .opt.disabled{cursor:default;}
+
+  .footer-link{display:block;text-align:center;margin-top:30px;color:var(--chalk-green);text-decoration:none;font-weight:700;font-size:14px;}
+  .footer-link:hover{text-decoration:underline;}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="breadcrumb"><a href="https://jenlin2002.github.io/">🏠 回總目錄</a> ／ <a href="../kangxuan-g7-1.html" style="color:#cfe0d1;">段考題庫</a></div>
+    <h1>第12回・聽力三</h1>
+    <p class="subtitle">Lesson 5～6｜康軒版七年級英語（一）Ｂ卷</p>
+  </div>
+</header>
+
+<main>
+  <div class="notice">🎧 B卷聽力題本沒有附逐字稿，此頁僅能作答對錯，無法顯示逐字稿內容。</div>
+
+  <section class="block">
+    <h2>一、辨識句意：選出符合句子描述的圖片</h2>
+    <p class="meta">20分，每題4分（原考卷為圖片選擇，此處以文字描述取代）</p>
+    <audio controls src="audio/test12b/track1.mp3"></audio>
+    <div id="sec1"></div>
+  </section>
+
+  <section class="block">
+    <h2>二、基本問答：選出最適合的回答，完成對話</h2>
+    <p class="meta">40分，每題4分</p>
+    <audio controls src="audio/test12b/track2.mp3"></audio>
+    <div id="sec2"></div>
+  </section>
+
+  <section class="block">
+    <h2>三、言談理解：請聽CD一段對話或短文及一個相關的問題後，選出一個最適合的答案</h2>
+    <p class="meta">40分，每題4分</p>
+    <audio controls src="audio/test12b/track3.mp3"></audio>
+    <div id="sec3"></div>
+  </section>
+
+  <a class="footer-link" href="../kangxuan-g7-1.html">← 回段考題庫總覽</a>
+</main>
+
+<script>
+function mc(container, items){
+  items.forEach((it,i)=>{
+    const q = document.createElement("div");
+    q.className = "q";
+    const optsHtml = it.options.map((op,oi)=>`
+      <div class="opt" data-correct="${oi===it.correct}"><span class="tag">(${String.fromCharCode(65+oi)})</span><span>${op}</span></div>`).join("");
+    q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q||""}</div><div class="opts">${optsHtml}</div>`;
+    q.querySelectorAll(".opt").forEach(o=>o.addEventListener("click", ()=>{
+      if(q.dataset.answered==="true") return;
+      q.dataset.answered="true";
+      q.querySelectorAll(".opt").forEach(x=>x.classList.add("disabled"));
+      o.classList.add("selected");
+      const correctOptEl = q.querySelector('.opt[data-correct="true"]');
+      q.dataset.studentAnswer = o.textContent.trim();
+      q.dataset.correctAnswer = correctOptEl ? correctOptEl.textContent.trim() : "";
+      q.dataset.isCorrect = (o.dataset.correct==="true") ? "true" : "false";
+    }));
+    container.appendChild(q);
+  });
+}
+
+// 一、辨識句意（圖片描述）
+mc(document.getElementById("sec1"), [
+  {q:"", options:["（圖：時鐘約7:35）","（圖：時鐘約12:05）","（圖：時鐘約2:10）"], correct:0},
+  {q:"", options:["（圖：遊樂場，鞦韆與翹翹板）","（圖：遊樂場，溜滑梯與單槓）","（圖：教室，黑板與課桌椅）"], correct:2},
+  {q:"", options:["（圖：日曆「星期一」）","（圖：日曆「星期三」）","（圖：日曆「星期六」）"], correct:1},
+  {q:"", options:["（圖：兩個女孩開心聊天）","（圖：女孩一個人開心）","（圖：女孩坐在書桌前拿著手機）"], correct:1},
+  {q:"", options:["（圖：室內展覽館，人們參觀）","（圖：捷運車廂內，乘客滑手機）","（圖：戶外跑道，許多人在跑步）"], correct:2}
+]);
+
+// 二、基本問答
+mc(document.getElementById("sec2"), [
+  {q:"", options:["Yes, it is.","Yes, there is.","Yes, they are."], correct:1},
+  {q:"", options:["It's at ten o'clock.","It's about animals.","It's on Thursday."], correct:2},
+  {q:"", options:["Really? Let's hurry up.","Right, the basketball game is next week.","The party is at eight p.m."], correct:0},
+  {q:"", options:["No, it's seven thirty.","Yes, it's at seven.","No, it's Saturday."], correct:0},
+  {q:"", options:["Have a nice day!","Where's the school gate?","Your school is very special."], correct:2},
+  {q:"", options:["She is late for school.","She is making a birthday card.","She isn't in the living room."], correct:1},
+  {q:"", options:["Let's say happy birthday to her!","Thanks. I like my birthday party.","Oh, she's still finding her feet."], correct:0},
+  {q:"", options:["Yes, he is watching TV.","No, he is reading.","He is a smart boy."], correct:1},
+  {q:"", options:["Yes, the gym is a blue building.","No, our school gym is new and big.","Yes, it is. The students can work out there."], correct:2},
+  {q:"", options:["Yes, they are friendly to me.","Sorry, I can't talk to you now.","Hello, everyone. Nice to meet you."], correct:2}
+]);
+
+// 三、言談理解
+mc(document.getElementById("sec3"), [
+  {q:"", options:["It's in the park.","It's behind the park.","It's in front of the woman's house."], correct:0},
+  {q:"", options:["It's at noon.","It's on Wednesday.","It's on Tuesday."], correct:2},
+  {q:"", options:["They're jumping.","They're eating apples.","They're sleeping."], correct:0},
+  {q:"", options:["The man is Vivian's teacher.","Vivian's classmates are friendly.","Vivian is thinking about her pet all the time."], correct:1},
+  {q:"", options:["The woman is closing the door.","There's a cat near the door.","A small dog is standing at the door."], correct:1},
+  {q:"", options:["It's at seven fifteen.","It's at seven fifty.","It's at seven twenty."], correct:2},
+  {q:"", options:["Two pens and an eraser.","A ruler and an eraser.","Two pens and a ruler."], correct:0},
+  {q:"", options:["The boy is looking for his hat.","There is a beautiful hat in the box.","The watch in the box is for Mom."], correct:1},
+  {q:"", options:["Eric is in New York City.","Ted is sleeping.","Leo is eating dinner."], correct:2},
+  {q:"", options:["She's playing cards.","She's dancing.","She's preparing drinks."], correct:2}
+]);
+</script>
+<script>window.EXAM_META = {version:"B卷", examLabel:"第12回"};</script>
+<script src="../sync.js"></script>
+</body>
+</html>
