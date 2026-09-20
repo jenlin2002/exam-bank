@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>段考題庫｜第8回 - 聽力二（Lesson 3～4，B卷）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@500;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#faf6ec; --paper-line:#e3dcc8; --ink:#26332b; --ink-soft:#5b6b5f;
+    --chalk-green:#2f4538; --chalk-green-2:#3d5a48; --pen-red:#b8433a; --pen-red-soft:#f4dedb;
+    --ok-green:#3f7d52; --ok-green-soft:#dfeee1; --gold:#b5842a; --radius:10px;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:"Noto Sans TC",sans-serif;line-height:1.7;}
+  header.hero{background:var(--chalk-green);color:#eef2ea;padding:28px 20px 40px;position:relative;}
+  header.hero::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:14px;
+    background:repeating-linear-gradient(90deg,var(--paper) 0 18px, transparent 18px 20px);}
+  .hero-inner{max-width:880px;margin:0 auto;}
+  .breadcrumb a{color:#cfe0d1;text-decoration:none;font-size:14px;}
+  h1{font-family:"Noto Serif TC",serif;font-weight:700;font-size:clamp(24px,4vw,34px);margin:10px 0 6px;}
+  .subtitle{color:#cfe0d1;font-size:15px;margin:0;}
+  main{max-width:880px;margin:0 auto;padding:28px 20px 80px;}
+
+  .notice{
+    background:#fdf3e3;border:1px solid #ecd9ab;border-left:5px solid var(--gold);
+    border-radius:var(--radius);padding:14px 18px;margin-bottom:22px;font-size:13.5px;color:#6b5424;
+  }
+
+  section.block{background:#fff;border:1px solid var(--paper-line);border-radius:var(--radius);padding:22px 22px 26px;margin-bottom:20px;}
+  .block h2{font-family:"Noto Serif TC",serif;font-size:19px;margin:0 0 4px;color:var(--chalk-green);}
+  .block .meta{color:var(--ink-soft);font-size:13px;margin:0 0 14px;}
+
+  audio{width:100%;margin-bottom:18px;}
+  .grid-img{width:100%;max-width:560px;display:block;margin:0 auto 16px;border-radius:8px;border:1px solid var(--paper-line);}
+
+  .q{margin-bottom:18px;padding-bottom:16px;border-bottom:1px dashed var(--paper-line);}
+  .q:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0;}
+  .q-text{font-size:15.5px;margin-bottom:8px;}
+  .q-num{color:var(--gold);font-weight:700;margin-right:4px;}
+
+  .opts{display:grid;gap:8px;}
+  .opt{display:flex;gap:8px;align-items:flex-start;border:1.5px solid var(--paper-line);border-radius:8px;
+    padding:9px 12px;cursor:pointer;font-size:14.5px;background:#fffdf8;}
+  .opt:hover{border-color:var(--chalk-green-2);}
+  .opt.selected{border-color:var(--chalk-green-2);background:#eef3ea;}
+  .opt.correct{border-color:var(--ok-green);background:var(--ok-green-soft);}
+  .opt.wrong{border-color:var(--pen-red);background:var(--pen-red-soft);}
+  .opt .tag{font-weight:700;color:var(--ink-soft);}
+  .opt.correct .tag{color:var(--ok-green);}
+  .opt.wrong .tag{color:var(--pen-red);}
+  .opt.disabled{cursor:default;}
+
+  .footer-link{display:block;text-align:center;margin-top:30px;color:var(--chalk-green);text-decoration:none;font-weight:700;font-size:14px;}
+  .footer-link:hover{text-decoration:underline;}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="breadcrumb"><a href="https://jenlin2002.github.io/">🏠 回總目錄</a> ／ <a href="../kangxuan-g8-1.html" style="color:#cfe0d1;">段考題庫</a></div>
+    <h1>第8回・聽力二</h1>
+    <p class="subtitle">Lesson 3～4｜康軒版八年級英語（三）Ｂ卷</p>
+  </div>
+</header>
+
+<main>
+  <div class="notice">🎧 B卷聽力題本沒有附逐字稿，此頁僅能作答對錯，無法顯示逐字稿內容。</div>
+
+  <section class="block">
+    <h2>一、辨識句意：選出符合句子描述的圖片</h2>
+    <p class="meta">20分，每題4分</p>
+    <audio controls src="audio/test8b/track1.mp3"></audio>
+    <img class="grid-img" src="images/test8b/sec1_grid.png" alt="題目附圖">
+    <div id="sec1"></div>
+  </section>
+
+  <section class="block">
+    <h2>二、基本問答：選出最適合的回答，完成對話</h2>
+    <p class="meta">40分，每題4分</p>
+    <audio controls src="audio/test8b/track2.mp3"></audio>
+    <div id="sec2"></div>
+  </section>
+
+  <section class="block">
+    <h2>三、言談理解：請聽CD一段對話或短文及一個相關的問題後，選出一個最適合的答案</h2>
+    <p class="meta">40分，每題4分</p>
+    <audio controls src="audio/test8b/track3.mp3"></audio>
+    <div id="sec3"></div>
+  </section>
+
+  <a class="footer-link" href="../kangxuan-g8-1.html">← 回段考題庫總覽</a>
+</main>
+
+<script>
+function mc(container, items){
+  items.forEach((it,i)=>{
+    const q = document.createElement("div");
+    q.className = "q";
+    const optsHtml = it.options.map((op,oi)=>`
+      <div class="opt" data-correct="${oi===it.correct}"><span class="tag">(${String.fromCharCode(65+oi)})</span><span>${op}</span></div>`).join("");
+    q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q||""}</div><div class="opts">${optsHtml}</div>`;
+    q.querySelectorAll(".opt").forEach(o=>o.addEventListener("click", ()=>{
+      if(q.dataset.answered==="true") return;
+      q.dataset.answered="true";
+      q.querySelectorAll(".opt").forEach(x=>x.classList.add("disabled"));
+      o.classList.add("selected");
+      const correctOptEl = q.querySelector('.opt[data-correct="true"]');
+      q.dataset.studentAnswer = o.textContent.trim();
+      q.dataset.correctAnswer = correctOptEl ? correctOptEl.textContent.trim() : "";
+      q.dataset.isCorrect = (o.dataset.correct==="true") ? "true" : "false";
+    }));
+    container.appendChild(q);
+  });
+}
+
+// 一、辨識句意（見上方附圖 1~5）
+mc(document.getElementById("sec1"), [
+  {q:"圖1", options:["A","B","C"], correct:0},
+  {q:"圖2", options:["A","B","C"], correct:2},
+  {q:"圖3", options:["A","B","C"], correct:0},
+  {q:"圖4", options:["A","B","C"], correct:1},
+  {q:"圖5", options:["A","B","C"], correct:1}
+]);
+
+// 二、基本問答
+mc(document.getElementById("sec2"), [
+  {options:["I called him last night.","He was playing the computer game.","We were talking about the new game."], correct:1},
+  {options:["She went to the library first.","She visited the USA in 2019.","She saw her grandma last weekend."], correct:0},
+  {options:["She made noodles for dinner.","She wasn't hungry tonight.","She did the dishes."], correct:1},
+  {options:["She wants to be a writer.","She is a famous actress.","She is a teenager."], correct:0},
+  {options:["On the other hand, I like walking.","Good job! I'm proud of you.","Sure. Let's sit on the rock over there."], correct:2},
+  {options:["No, it's a quarter to ten.","No, it's a chicken.","No, it's a bad plan."], correct:0},
+  {options:["He cried before he asked people for help.","Shouting at people is not nice.","He is a famous TV star."], correct:0},
+  {options:["Because they kept talking in class.","Because they enjoyed history class a lot.","Because they practiced dancing after school."], correct:2},
+  {options:["He has two kids.","He likes their beaks.","He is proud of them."], correct:2},
+  {options:["She had some cake in the afternoon.","She doesn't have money with her.","She has to close all the doors."], correct:2}
+]);
+
+// 三、言談理解
+mc(document.getElementById("sec3"), [
+  {options:["A map.","A camera.","A jar."], correct:0},
+  {options:["After he went home.","When his mom got home.","Before he played games on the cellphone."], correct:1},
+  {options:["An actress.","A singer.","A waitress."], correct:0},
+  {options:["It was terrible.","It was a dream.","It was about his future."], correct:2},
+  {options:["It's interesting.","It's terrible.","It's sad."], correct:1},
+  {options:["At half past 7.","At a quarter to 8.","At a quarter past 8."], correct:2},
+  {options:["They're making plans.","They're surfing the Internet.","They're checking out the museum."], correct:2},
+  {options:["Training for the race.","Joining a camp in summer.","Teaming up with their friends."], correct:1},
+  {options:["It is exciting for him to finally be a teenager.","It is fun for him to have a birthday party with his family.","It is important for him to play video games with his friends."], correct:2},
+  {options:["She is a cook.","She is a housewife.","She works at a market."], correct:1}
+]);
+</script>
+<script>window.EXAM_META = {version:"B卷", examLabel:"第8回"};</script>
+<script src="../sync.js"></script>
+</body>
+</html>
