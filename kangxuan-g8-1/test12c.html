@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>段考題庫｜第12回 - Review 3（二）（C卷）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@500;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#faf6ec;
+    --paper-line:#e3dcc8;
+    --ink:#26332b;
+    --ink-soft:#5b6b5f;
+    --chalk-green:#2f4538;
+    --chalk-green-2:#3d5a48;
+    --pen-red:#b8433a;
+    --pen-red-soft:#f4dedb;
+    --ok-green:#3f7d52;
+    --ok-green-soft:#dfeee1;
+    --gold:#b5842a;
+    --radius:10px;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:"Noto Sans TC",sans-serif;
+    line-height:1.7;
+  }
+  header.hero{
+    background:var(--chalk-green);
+    color:#eef2ea;
+    padding:28px 20px 40px;
+    position:relative;
+  }
+  header.hero::after{
+    content:"";
+    position:absolute;
+    left:0; right:0; bottom:-1px;
+    height:14px;
+    background:repeating-linear-gradient(90deg,var(--paper) 0 18px, transparent 18px 20px);
+  }
+  .hero-inner{max-width:880px;margin:0 auto;}
+  .breadcrumb a{color:#cfe0d1;text-decoration:none;font-size:14px;}
+  .breadcrumb a:hover{text-decoration:underline;}
+  h1{
+    font-family:"Noto Serif TC",serif;
+    font-weight:700;
+    font-size:clamp(24px,4vw,34px);
+    margin:10px 0 6px;
+  }
+  .subtitle{color:#cfe0d1;font-size:15px;margin:0;}
+  main{max-width:880px;margin:0 auto;padding:28px 20px 80px;}
+
+  .controls{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:22px;
+  }
+  .mode-toggle{display:flex;border:2px solid var(--chalk-green);border-radius:999px;overflow:hidden;}
+  .mode-toggle button{
+    background:transparent;border:none;padding:8px 16px;font-size:14px;font-weight:700;
+    color:var(--chalk-green);cursor:pointer;font-family:"Noto Sans TC",sans-serif;
+  }
+  .mode-toggle button.active{background:var(--gold);color:#fff;}
+  .mode-toggle button:disabled{opacity:.4;cursor:not-allowed;}
+
+  .score-bar{
+    display:none;
+    align-items:center;
+    justify-content:space-between;
+    background:#fff;
+    border:1px solid var(--paper-line);
+    border-left:5px solid var(--gold);
+    border-radius:var(--radius);
+    padding:12px 18px;
+    margin-bottom:22px;
+    font-size:14px;
+  }
+  .score-bar.show{display:flex;}
+  .score-bar strong{font-size:18px;color:var(--gold);}
+  .score-bar button{
+    background:none;border:1px solid var(--ink-soft);color:var(--ink-soft);
+    border-radius:6px;padding:6px 12px;font-size:13px;cursor:pointer;
+  }
+
+  section.block{
+    background:#fff;
+    border:1px solid var(--paper-line);
+    border-radius:var(--radius);
+    padding:22px 22px 26px;
+    margin-bottom:20px;
+  }
+  .block h2{
+    font-family:"Noto Serif TC",serif;
+    font-size:19px;
+    margin:0 0 4px;
+    color:var(--chalk-green);
+  }
+  .block .meta{color:var(--ink-soft);font-size:13px;margin:0 0 16px;}
+
+  .q{margin-bottom:18px;padding-bottom:16px;border-bottom:1px dashed var(--paper-line);}
+  .q:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0;}
+  .q-text{font-size:15.5px;margin-bottom:8px;}
+  .q-num{color:var(--gold);font-weight:700;margin-right:4px;}
+
+  .opts{display:grid;gap:8px;}
+  .opt{
+    display:flex;gap:8px;align-items:flex-start;
+    border:1.5px solid var(--paper-line);
+    border-radius:8px;
+    padding:9px 12px;
+    cursor:pointer;
+    font-size:14.5px;
+    background:#fffdf8;
+  }
+  .opt:hover{border-color:var(--chalk-green-2);}
+  .opt.selected{border-color:var(--chalk-green-2);background:#eef3ea;}
+  .opt.correct{border-color:var(--ok-green);background:var(--ok-green-soft);}
+  .opt.wrong{border-color:var(--pen-red);background:var(--pen-red-soft);}
+  .opt .tag{font-weight:700;color:var(--ink-soft);}
+  .opt.correct .tag{color:var(--ok-green);}
+  .opt.wrong .tag{color:var(--pen-red);}
+  .opt.disabled{cursor:default;}
+
+  .passage{
+    background:#f5f2e8;border-radius:8px;padding:14px 16px;margin-bottom:14px;
+    font-size:14.5px;white-space:pre-line;
+  }
+  .passage-label{font-weight:700;color:var(--chalk-green);margin-bottom:4px;display:block;}
+  .data-table{width:100%;border-collapse:collapse;margin-top:10px;font-size:13px;background:#fff;}
+  .data-table th, .data-table td{border:1px solid var(--paper-line);padding:6px 6px;text-align:center;}
+  .data-table th{background:#eef3ea;color:var(--chalk-green);}
+
+  .footer-link{
+    display:block;text-align:center;margin-top:30px;color:var(--chalk-green);
+    text-decoration:none;font-weight:700;font-size:14px;
+  }
+  .footer-link:hover{text-decoration:underline;}
+
+  @media print{
+    header.hero, .controls, .score-bar, .mini-btn, .footer-link{display:none !important;}
+    body{background:#fff;}
+    section.block{border:none;box-shadow:none;padding:8px 0;margin-bottom:14px;}
+    .opt.correct{background:none;border:none;font-weight:700;}
+    .opt.correct::after{content:" ← 正解";color:var(--pen-red);}
+    .opt{border:none;padding:2px 0;}
+    main{max-width:100%;padding:0 24px;}
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="breadcrumb"><a href="https://jenlin2002.github.io/">🏠 回總目錄</a> ／ <a href="../kangxuan-g8-1.html" style="color:#cfe0d1;">段考題庫</a></div>
+    <h1>第12回・Review 3（二）</h1>
+    <p class="subtitle">Review 3（Lesson 5~6 總複習）｜康軒版八年級英語（三）Ｃ卷</p>
+  </div>
+</header>
+
+<main>
+  <div class="controls">
+    <div class="mode-toggle">
+      <button id="quizModeBtn" class="active">✏️ 測驗模式</button>
+      <button id="printModeBtn" disabled title="完成測驗並送出成績後才能查看">🖨️ 完整題目與解答（送出成績後解鎖）</button>
+    </div>
+  </div>
+
+  <div class="score-bar" id="scoreBar">
+    <div>目前得分：<strong id="scoreText">0 / 0</strong>（僅計算選擇題與字彙填空）</div>
+    <button id="resetBtn">重新作答</button>
+  </div>
+
+  <div id="content"></div>
+
+  <a class="footer-link" href="../kangxuan-g8-1.html">← 回段考題庫總覽</a>
+</main>
+
+<script>
+
+window.EXAM_META = { version: "C卷", examLabel: "第12回" };
+const DATA = {
+  sections: [
+    {
+      type:"mc",
+      title:"第一部分",
+      meta:"題號1~20，請依據題意選出一個正確或最佳的答案。每題2分，共40分",
+      items:[
+        {q:"Tina decided to go to the ___ by taxi.",image:"images/test12c/q1_store.png",options:["post office","train station","bakery","department store"],correct:3},
+        {q:"Ken had to stop by the ___ to buy some beef for dinner after work.",options:["church","flower shop","bookstore","supermarket"],correct:3},
+        {q:"The road along the park is only for ___, so you can't drive on it.",options:["bikes","hotels","pockets","mistakes"],correct:0},
+        {q:"Dogs are Vivian's ___ animals. She wants to keep three pet dogs in the future.",options:["favorite","wonderful","own","low"],correct:0},
+        {q:"We need to ___ left at the next corner. Just keep going straight here.",options:["cross","turn","fly","row"],correct:1},
+        {q:"Harry went to the country ___ truck because he had to bring many things there.",options:["by","on","as","with"],correct:0},
+        {q:"Tanya spent three hours ___ for her boyfriend's birthday gift.",options:["shop","shops","shopping","to shop"],correct:2},
+        {q:"Ivan is washing his clothes now because it is going to rain ___.",options:["yesterday","tomorrow","last night","an hour ago"],correct:1},
+        {q:"___ to turn off（關掉）your smartphone when you are watching a movie.",options:["Leave","Decide","Ride","Remember"],correct:3},
+        {q:"Tommy didn't want to be late for his date, so he ___ home 30 minutes early（早地）.",options:["lived","crossed","left","paid"],correct:2},
+        {q:"It takes time ___ to swim. You also need to practice a lot.",options:["learn","learns","learning","to learn"],correct:3},
+        {q:"A: ___ will Leo visit his grandparents this weekend? B: He will take a train.",options:["Where","How","How long","How much"],correct:1},
+        {q:"A: How much did the new smartphone ___ you? B: About nine thousand dollars.",options:["pay","cost","spend","take"],correct:1},
+        {q:"This restaurant ___ open until next month. For now, we have to wait.",options:["is","does","isn't going","won't be"],correct:3},
+        {q:"Jeffery will take the ___ to Green Island because he doesn't like being on a boat.",options:["plane","scooter","motorcycle","nature"],correct:0},
+        {q:"This bookstore is very popular with students because the books are ___ here.",options:["broken","convenient","cheap","local"],correct:2},
+        {q:"Ella lives only three blocks away from the gym, so she usually goes there ___ foot.",options:["as","with","by","on"],correct:3},
+        {q:"The new app is very ___. You can find parking spaces with it on your smartphone.",options:["straight","south","convenient","favorite"],correct:2},
+        {q:"I can show you my work right now. It should only ___ a minute to start my computer.",options:["spend","take","pay","cost"],correct:1},
+        {q:"A: ___ will James stay in the USA? B: Two years. He will study there.",options:["How","When","How long","How often"],correct:2}
+      ]
+    },
+    {
+      type:"reading",
+      title:"第二部分",
+      meta:"題號21~35，四個題組，請依據所附選文或圖表資料，選出一個正確或最佳的答案。每題4分，共60分",
+      passages:[
+        {
+          label:"【21～24】",
+          text:"James and Magi were husband and wife with little money. It was almost Christmas. \"I don't have much money, but on Christmas Day, I still want to give James a Christmas gift,\" Magi thought.\nShe only had three days before Christmas Day came. All the gifts in stores were so expensive. Magi had an idea. She ___21___ to sell her beautiful long hair. Magi tried to find a shop, but no one wanted to pay much ___22___ her hair. Finally on Christmas Day, she found one and asked the person to cut her hair. Magi told the people there, \"After this, I ___23___ buy my husband a beautiful band to go with his favorite watch!\"\nAt home, when James saw Magi, he was surprised. He took out his gift for Magi. It was a comb for women's long hair! Magi didn't need it because her hair was short. She said, \"It's OK. I can keep my hair long again! But, ___24___?\" James answered, \"It didn't cost me any money. I paid with my watch.\"\n\n【字詞】cut 剪　band 錶帶　surprised 驚訝的　comb 梳子",
+          items:[
+            {q:"21.",options:["rowed","decided","shook","paid"],correct:1},
+            {q:"22.",options:["for","to","with","as"],correct:0},
+            {q:"23.",options:["am","did","was","am going to"],correct:3},
+            {q:"24.",options:["how did you go to the department store","how long did it take you to get home","how often do you use your watch","how much did you spend on it"],correct:3}
+          ]
+        },
+        {
+          label:"【25～28】",
+          text:"KS Department Store will open this weekend! It is very exciting because it is the tallest building in the country. There will be restaurants on the 45th floor, and a famous Japanese bakery will also be on the same floor. Many people can't wait to have a cup of nice tea with a piece of yummy cake and enjoy the view of the city up there. You can even get to the 89th floor and watch planes fly over the building.\nIf you are a toy fan, you can't miss the good deal on the opening weekend! All the toys will only cost you half of the price, and you can only find them on the first floor! As for book lovers, there is a big bookstore on the fifth floor. You can spend all day looking for your favorite one or two because it's \"buy one and get one free\" on the first day! To get to KS Department Store, you can take the metro and get off at \"KS Street Station\" because finding a parking space is going to be very hard!\n\n【字詞】tallest 最高的　view 景色　if 如果　lover 愛好者",
+          items:[
+            {q:"25. Which is true about KS Department Store?",options:["The toys are expensive there.","You can take a plane on the 89th floor.","It is the tallest building in the country.","It will be open next month."],correct:2},
+            {q:"26. According to the reading, how should people go to KS Department Store?",options:["By car.","By metro.","By scooter.","By plane."],correct:1},
+            {q:"27. What does \"good deal\" mean?",options:["Something safe.","Something cheap.","Something healthy.","Something convenient."],correct:1},
+            {q:"28. Which might be the picture of KS Department Store?",image:"images/test12c/q28_floors.png",options:["A.","B.","C.","D."],correct:0}
+          ]
+        },
+        {
+          label:"【29～31】",
+          text:"Peter: Hi, I live on the fifth floor. I just moved in last weekend.\nGrace: Welcome! I live across from you. You can ask me questions about this neighborhood.\nPeter: In fact, I'm going to buy some fruit and vegetables later. Where should I go?\nGrace: There's a market two blocks away from here. Turn left when you are on the street in front of the apartment. Then, go straight and turn right at the corner of the breakfast shop. The food there is usually cheap.\nPeter: Great! I love markets. But is it open in the afternoon?\nGrace: Most people leave at around two o'clock in the afternoon. But there's a supermarket across from the breakfast shop.\nPeter: Wow, that's so convenient!\nGrace: It is. I love this area.\nPeter: One more question. Is there a metro station around here? I want to take the metro to work.\nGrace: It takes about ten minutes to get to the metro station on foot. Where do you work?\nPeter: I work in the west; that's the other side of the city.\nGrace: You can try the bus. Walk past the park next to the apartment and then turn left at the corner. You'll have to cross the street and wait for the buses to the west there.\nPeter: I'll try it on Monday for sure. Thank you so much!\n\n【字詞】neighborhood 街坊　apartment 公寓　area 區域",
+          items:[
+            {q:"29. What do we know about Peter and Grace?",options:["They work together.","Peter's apartment is across from Grace's.","Grace met Peter at the supermarket.","They took the metro together this morning."],correct:1},
+            {q:"30. Which is true about Peter?",options:["He will move this weekend.","He doesn't like taking the bus.","He lives in the east side of the city.","He spends ten minutes walking to work."],correct:2},
+            {q:"31. Look at the map. Which is the supermarket?",image:"images/test12c/q31_map.png",options:["①.","②.","③.","④."],correct:1}
+          ]
+        },
+        {
+          label:"【32～35】",
+          text:"Here are two tables of the City Metro. This train starts from the zoo and goes south.\n\n【字詞】table 表格",
+          table:{
+            title:"票價表（Station From／To）",
+            head:["From／To","Zoo","Computer Market","ABC Department Store","ABC Junior High School"],
+            rows:[
+              ["Zoo","－","NT$25","NT$30","NT$35"],
+              ["Computer Market","NT$25","－","NT$25","NT$30"],
+              ["ABC Department Store","NT$30","NT$25","－","NT$25"],
+              ["ABC Junior High School","NT$35","NT$30","NT$25","－"]
+            ],
+            note:""
+          },
+          table2:{
+            title:"時刻表（Train）",
+            head:["Train","Zoo","Computer Market","ABC Department Store","ABC Junior High School"],
+            rows:[
+              ["1","06:00","06:12","06:23","06:37"],
+              ["2","06:30","06:42","06:53","07:07"],
+              ["3","07:00","07:12","07:23","07:37"],
+              ["4","07:15","07:27","07:38","07:52"],
+              ["5","07:30","07:42","07:53","08:07"]
+            ],
+            note:""
+          },
+          items:[
+            {q:"32. Tia and Jonas are at the zoo. They want to go to ABC Junior High School in the afternoon. How much will they have to pay?",options:["NT$25.","NT$50.","NT$60.","NT$70."],correct:3},
+            {q:"33. How long does it take to go from Computer Market to ABC Department Store?",options:["11 minutes.","12 minutes.","14 minutes.","25 minutes."],correct:0},
+            {q:"34. Mr. Samuel lives around Computer Market. He is going to have a meeting at ABC Junior High School at 7 a.m. on Friday. Which train will he take?",options:["1.","2.","4.","5."],correct:0},
+            {q:"35. Which is true?",options:["It takes about 40 minutes to go from the first to the last stop by metro.","ABC Junior High School is to the north of the zoo.","It costs $25 to go from the zoo to the department store.","There are only two metro trains before 8."],correct:0}
+          ]
+        }
+      ]
+    }
+
+  ]
+};
+
+let currentMode = "quiz"; // quiz | print
+
+const contentEl = document.getElementById("content");
+const scoreBar = document.getElementById("scoreBar");
+const scoreText = document.getElementById("scoreText");
+
+function render(){
+  window.examAnswersRevealed = false;
+  contentEl.innerHTML = "";
+  DATA.sections.forEach((sec, si)=> contentEl.appendChild(renderSection(sec, si)));
+  if(currentMode==="quiz"){
+    scoreBar.classList.add("show");
+    updateScore();
+  } else {
+    scoreBar.classList.remove("show");
+    contentEl.querySelectorAll(".opt").forEach(o=>o.classList.add("disabled"));
+    contentEl.querySelectorAll(".opt.is-correct").forEach(o=>o.classList.add("correct"));
+  }
+}
+
+function renderTable(t){
+  if(!t) return "";
+  const headHtml = `<tr>${t.head.map(h=>`<th>${h}</th>`).join("")}</tr>`;
+  const rowsHtml = t.rows.map(r=>`<tr>${r.map((c,ci)=>ci===0?`<th>${c}</th>`:`<td>${c}</td>`).join("")}</tr>`).join("");
+  return `${t.title ? `<div style="font-weight:700;text-align:center;color:var(--chalk-green);margin-bottom:6px;">${t.title}</div>`:""}
+    <table class="data-table"><thead>${headHtml}</thead><tbody>${rowsHtml}</tbody></table>
+    ${t.note ? `<div style="margin-top:8px;color:var(--ink-soft);font-size:13px;">${t.note}</div>` : ""}`;
+}
+
+function renderSection(sec, si){
+  const block = document.createElement("section");
+  block.className = "block";
+  block.innerHTML = `<h2>${sec.title}</h2><p class="meta">${sec.meta}</p>`;
+
+  if(sec.type==="mc"){
+    sec.items.forEach((it,i)=>{
+      const q = document.createElement("div");
+      q.className = "q";
+      const optsHtml = it.options.map((op,oi)=>`
+        <div class="opt" data-idx="${oi}" data-correct="${oi===it.correct}">
+          <span class="tag">(${String.fromCharCode(65+oi)})</span><span>${op}</span>
+        </div>`).join("");
+      q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q}</div>
+        ${it.image ? `<img src="${it.image}" alt="題目附圖" style="width:100%;max-width:280px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">`:""}
+        <div class="opts">${optsHtml}</div>`;
+      q.querySelectorAll(".opt").forEach(optEl=>{
+        if(optEl.dataset.correct==="true") optEl.classList.add("is-correct");
+        optEl.addEventListener("click", ()=>selectOption(q, optEl));
+      });
+      block.appendChild(q);
+    });
+  }
+
+  else if(sec.type==="reading"){
+    sec.passages.forEach(p=>{
+      const passageDiv = document.createElement("div");
+      passageDiv.className = "passage";
+      passageDiv.innerHTML = `${p.label ? `<span class="passage-label">${p.label}</span>`:""}${p.text}${p.table ? renderTable(p.table) : ""}${p.table2 ? renderTable(p.table2) : ""}`;
+      block.appendChild(passageDiv);
+      p.items.forEach((it,i)=>{
+        const q = document.createElement("div");
+        q.className = "q";
+        const optsHtml = it.options.map((op,oi)=>`
+          <div class="opt" data-idx="${oi}" data-correct="${oi===it.correct}">
+            <span class="tag">(${String.fromCharCode(65+oi)})</span><span>${op}</span>
+          </div>`).join("");
+        q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q}</div>
+          ${it.image ? `<img src="${it.image}" alt="題目附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">`:""}
+          <div class="opts">${optsHtml}</div>`;
+        q.querySelectorAll(".opt").forEach(optEl=>{
+          if(optEl.dataset.correct==="true") optEl.classList.add("is-correct");
+          optEl.addEventListener("click", ()=>selectOption(q, optEl));
+        });
+        block.appendChild(q);
+      });
+    });
+  }
+
+  return block;
+}
+
+function selectOption(qEl, optEl){
+  if(currentMode!=="quiz") return;
+  if(qEl.dataset.answered==="true") return;
+  qEl.dataset.answered = "true";
+  qEl.querySelectorAll(".opt").forEach(o=>o.classList.add("disabled"));
+  optEl.classList.add("selected");
+  const correctOpt = qEl.querySelector('.opt[data-correct="true"]');
+  qEl.dataset.studentAnswer = optEl.textContent.trim();
+  qEl.dataset.correctAnswer = correctOpt ? correctOpt.textContent.trim() : "";
+  qEl.dataset.isCorrect = (optEl.dataset.correct==="true") ? "true" : "false";
+  updateScore();
+}
+
+function updateScore(){
+  let total = 0, answered = 0, correct = 0;
+  contentEl.querySelectorAll(".q").forEach(q=>{
+    const gradable = q.querySelector(".opts");
+    if(!gradable) return;
+    total++;
+    if(q.dataset.studentAnswer !== undefined){
+      answered++;
+      if(q.dataset.isCorrect === "true") correct++;
+    }
+  });
+  if(window.examAnswersRevealed){
+    scoreText.textContent = `${correct} / ${total}`;
+  } else {
+    scoreText.textContent = `已作答 ${answered} / ${total} 題`;
+  }
+}
+window.updateScore = updateScore;
+
+document.getElementById("resetBtn").addEventListener("click", render);
+document.getElementById("quizModeBtn").addEventListener("click", ()=>{
+  currentMode = "quiz";
+  document.getElementById("quizModeBtn").classList.add("active");
+  document.getElementById("printModeBtn").classList.remove("active");
+  render();
+});
+document.getElementById("printModeBtn").addEventListener("click", ()=>{
+  if(document.getElementById("printModeBtn").disabled) return;
+  currentMode = "print";
+  document.getElementById("printModeBtn").classList.add("active");
+  document.getElementById("quizModeBtn").classList.remove("active");
+  render();
+});
+
+window.unlockPrintMode = function(){
+  document.getElementById("printModeBtn").disabled = false;
+};
+
+render();
+</script>
+<script src="../sync.js"></script>
+</body>
+</html>
