@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>段考題庫｜第4回 - Review 1（二）（C卷）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@500;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#faf6ec;
+    --paper-line:#e3dcc8;
+    --ink:#26332b;
+    --ink-soft:#5b6b5f;
+    --chalk-green:#2f4538;
+    --chalk-green-2:#3d5a48;
+    --pen-red:#b8433a;
+    --pen-red-soft:#f4dedb;
+    --ok-green:#3f7d52;
+    --ok-green-soft:#dfeee1;
+    --gold:#b5842a;
+    --radius:10px;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:"Noto Sans TC",sans-serif;
+    line-height:1.7;
+  }
+  header.hero{
+    background:var(--chalk-green);
+    color:#eef2ea;
+    padding:28px 20px 40px;
+    position:relative;
+  }
+  header.hero::after{
+    content:"";
+    position:absolute;
+    left:0; right:0; bottom:-1px;
+    height:14px;
+    background:repeating-linear-gradient(90deg,var(--paper) 0 18px, transparent 18px 20px);
+  }
+  .hero-inner{max-width:880px;margin:0 auto;}
+  .breadcrumb a{color:#cfe0d1;text-decoration:none;font-size:14px;}
+  .breadcrumb a:hover{text-decoration:underline;}
+  h1{
+    font-family:"Noto Serif TC",serif;
+    font-weight:700;
+    font-size:clamp(24px,4vw,34px);
+    margin:10px 0 6px;
+  }
+  .subtitle{color:#cfe0d1;font-size:15px;margin:0;}
+  main{max-width:880px;margin:0 auto;padding:28px 20px 80px;}
+
+  .controls{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:22px;
+  }
+  .mode-toggle{display:flex;border:2px solid var(--chalk-green);border-radius:999px;overflow:hidden;}
+  .mode-toggle button{
+    background:transparent;border:none;padding:8px 16px;font-size:14px;font-weight:700;
+    color:var(--chalk-green);cursor:pointer;font-family:"Noto Sans TC",sans-serif;
+  }
+  .mode-toggle button.active{background:var(--gold);color:#fff;}
+  .mode-toggle button:disabled{opacity:.4;cursor:not-allowed;}
+
+  .score-bar{
+    display:none;
+    align-items:center;
+    justify-content:space-between;
+    background:#fff;
+    border:1px solid var(--paper-line);
+    border-left:5px solid var(--gold);
+    border-radius:var(--radius);
+    padding:12px 18px;
+    margin-bottom:22px;
+    font-size:14px;
+  }
+  .score-bar.show{display:flex;}
+  .score-bar strong{font-size:18px;color:var(--gold);}
+  .score-bar button{
+    background:none;border:1px solid var(--ink-soft);color:var(--ink-soft);
+    border-radius:6px;padding:6px 12px;font-size:13px;cursor:pointer;
+  }
+
+  section.block{
+    background:#fff;
+    border:1px solid var(--paper-line);
+    border-radius:var(--radius);
+    padding:22px 22px 26px;
+    margin-bottom:20px;
+  }
+  .block h2{
+    font-family:"Noto Serif TC",serif;
+    font-size:19px;
+    margin:0 0 4px;
+    color:var(--chalk-green);
+  }
+  .block .meta{color:var(--ink-soft);font-size:13px;margin:0 0 16px;}
+
+  .q{margin-bottom:18px;padding-bottom:16px;border-bottom:1px dashed var(--paper-line);}
+  .q:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0;}
+  .q-text{font-size:15.5px;margin-bottom:8px;}
+  .q-num{color:var(--gold);font-weight:700;margin-right:4px;}
+
+  .opts{display:grid;gap:8px;}
+  .opt{
+    display:flex;gap:8px;align-items:flex-start;
+    border:1.5px solid var(--paper-line);
+    border-radius:8px;
+    padding:9px 12px;
+    cursor:pointer;
+    font-size:14.5px;
+    background:#fffdf8;
+  }
+  .opt:hover{border-color:var(--chalk-green-2);}
+  .opt.selected{border-color:var(--chalk-green-2);background:#eef3ea;}
+  .opt.correct{border-color:var(--ok-green);background:var(--ok-green-soft);}
+  .opt.wrong{border-color:var(--pen-red);background:var(--pen-red-soft);}
+  .opt .tag{font-weight:700;color:var(--ink-soft);}
+  .opt.correct .tag{color:var(--ok-green);}
+  .opt.wrong .tag{color:var(--pen-red);}
+  .opt.disabled{cursor:default;}
+
+  .passage{
+    background:#f5f2e8;border-radius:8px;padding:14px 16px;margin-bottom:14px;
+    font-size:14.5px;white-space:pre-line;
+  }
+  .passage-label{font-weight:700;color:var(--chalk-green);margin-bottom:4px;display:block;}
+
+  .footer-link{
+    display:block;text-align:center;margin-top:30px;color:var(--chalk-green);
+    text-decoration:none;font-weight:700;font-size:14px;
+  }
+  .footer-link:hover{text-decoration:underline;}
+
+  @media print{
+    header.hero, .controls, .score-bar, .mini-btn, .footer-link{display:none !important;}
+    body{background:#fff;}
+    section.block{border:none;box-shadow:none;padding:8px 0;margin-bottom:14px;}
+    .opt.correct{background:none;border:none;font-weight:700;}
+    .opt.correct::after{content:" ← 正解";color:var(--pen-red);}
+    .opt{border:none;padding:2px 0;}
+    main{max-width:100%;padding:0 24px;}
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="breadcrumb"><a href="https://jenlin2002.github.io/">🏠 回總目錄</a> ／ <a href="../kangxuan-g8-1.html" style="color:#cfe0d1;">段考題庫</a></div>
+    <h1>第4回・Review 1（二）</h1>
+    <p class="subtitle">Review 1（二）｜康軒版八年級英語（三）Ｃ卷</p>
+  </div>
+</header>
+
+<main>
+  <div class="controls">
+    <div class="mode-toggle">
+      <button id="quizModeBtn" class="active">✏️ 測驗模式</button>
+      <button id="printModeBtn" disabled title="完成測驗並送出成績後才能查看">🖨️ 完整題目與解答（送出成績後解鎖）</button>
+    </div>
+  </div>
+
+  <div class="score-bar" id="scoreBar">
+    <div>目前得分：<strong id="scoreText">0 / 0</strong>（僅計算選擇題與字彙填空）</div>
+    <button id="resetBtn">重新作答</button>
+  </div>
+
+  <div id="content"></div>
+
+  <a class="footer-link" href="../kangxuan-g8-1.html">← 回段考題庫總覽</a>
+</main>
+
+<script>
+
+window.EXAM_META = { version: "C卷", examLabel: "第4回" };
+const DATA = {
+  sections: [
+    {
+      type:"mc",
+      title:"第一部分",
+      meta:"題號1~20，請依據題意選出一個正確或最佳的答案。每題2分，共40分",
+      items:[
+        {q:"Look at the picture. The girl is holding（捧著）her ___.",image:"images/test4c/q1_girl.png",options:["hand","head","stomach","leg"],correct:1},
+        {q:"It rained this morning. I was all wet because I didn't bring a(n) ___.",options:["mask","shoulder","umbrella","fisherman"],correct:2},
+        {q:"___ had a lot of rain last week. It was very wet.",options:["We","There","It","The weather"],correct:0},
+        {q:"A: ___ the weather like today? B: It's still rainy and hot.",options:["How","How's","What's","What"],correct:2},
+        {q:"Andy took a rest under the tree for ten minutes because he didn't ___ well（健康的）.",options:["treat","feel","call","speak"],correct:1},
+        {q:"___ might be rain today. Let's not go to the beach.",options:["There","We","That","It"],correct:0},
+        {q:"Sarah didn't go to work because she got ___.",options:["serious","strong","safe","sick"],correct:3},
+        {q:"My favorite（最喜愛的）___ is fall. The weather is always cool and nice then.",options:["season","country","report","message"],correct:0},
+        {q:"Phil might be old, but he is still very ___. He goes to the gym three times a week.",options:["healthy","afraid","safe","heavy"],correct:0},
+        {q:"It is cold and ___ in winter here. Everything is white on the street.",options:["rainy","serious","snowy","heavy"],correct:2},
+        {q:"___ is raining now, so we can't play soccer in the park.",options:["There","It","We","The weather"],correct:1},
+        {q:"___ fall, we can fly kites（風箏）in a park because it's always windy.",options:["With","From","In","On"],correct:2},
+        {q:"A: ___ did you put on the coat? B: I put it on because I felt cold.",options:["What","When","Whose","Why"],correct:3},
+        {q:"The dog ate all the food ___ it was hungry.",options:["because","so","and","or"],correct:0},
+        {q:"Jamie bought a birthday cake ___ Jim last week.",options:["to","as","for","of"],correct:2},
+        {q:"My brother got a dog yesterday, and he is ___ a dog house for it now.",options:["reporting","treating","becoming","building"],correct:3},
+        {q:"Alan really wants to ___ a great baseball player. He practices every day.",options:["hurt","become","try","fix"],correct:1},
+        {q:"Kim got wet because of the rain last night. She ___ a cold the next day.",options:["tried","stayed","treated","caught"],correct:3},
+        {q:"Miranda was late, so she sent a message ___ her son to let him know.",options:["to","with","for","of"],correct:0},
+        {q:"Tina wanted some ice cream. ___, the restaurant（餐廳）didn't have it.",options:["Because","However","Maybe","Also"],correct:1}
+      ]
+    },
+    {
+      type:"reading",
+      title:"第二部分",
+      meta:"題號21~35，四個題組，請依據所附選文或圖表資料，選出一個正確或最佳的答案。每題4分，共60分",
+      passages:[
+        {
+          label:"【21～24】",
+          text:"Ralph: Did you watch the late-night news yesterday?\nPatty: No, I didn't. I went to bed at nine last night.\nRalph: At nine? How nice! I didn't get much sleep.\nPatty: ___21___\nRalph: Did you know about the big fire two days ago? It happened near my house.\nPatty: Oh, no! I'm sorry about that.\nRalph: It killed a family, and some people ___22___, too.\nPatty: That's terrible! Do you know those people?\nRalph: One of them was my friend. We went to the same junior high school.\nPatty: It must be very hard for you.\nRalph: Right. We always studied, exercised, and played video games together before. I had a lot of fun with him.\nPatty: ___23___ we can do something to help his family.\nRalph: Yes! I can meet up with our old classmates and ___24___ a photo album for his family.\nPatty: That's a great idea! This way, you can let them know you miss him.\n\n【字詞】fire 火災　something 一些事　album 相冊",
+          items:[
+            {q:"21.",options:["What happened?","Bless you.","I love it!","Not really."],correct:0},
+            {q:"22.",options:["felt safe","got hurt","stayed there","had a fever"],correct:1},
+            {q:"23.",options:["However","All","Maybe","Because"],correct:2},
+            {q:"24.",options:["give","show","send","make"],correct:3}
+          ]
+        },
+        {
+          label:"【25～28】",
+          text:"Laura: Winter is coming. Let's go shopping. I need a new coat.\nPat: Your mom bought a coat for you last winter. And your aunt made you one two years ago. What's wrong with the old ones?\nLaura: Don't you know that? I went for a run with both of them last winter. They were so heavy, but I still felt cold!\nPat: You don't need more coats. You need gloves for running in winter so your hands can stay warm.\nLaura: Maybe I can get a coat and some gloves!\nPat: No, I didn't mean that! That's not true because you don't have enough space in your room.\nLaura: I didn't think of that. What should I do?\nPat: How about giving some clothes to people in need? Last year, I gave away some of my old ones and sent them to poor families.\nLaura: That's a good idea. This way, I can help people at the same time!\n\n【字詞】shop 購物　mean 意指　space 空間",
+          items:[
+            {q:"25. Why does Laura want to go shopping?",options:["She wants a new coat.","She likes shopping with Pat.","She has too many old clothes.","She needs a coat for her grandma."],correct:0},
+            {q:"26. What's wrong with Laura's old coats?",options:["They are too small for her now.","They don't keep her warm.","They are out of style.","They are too dirty."],correct:1},
+            {q:"27. Which is a picture of \"gloves\"?",image:"images/test4c/gloves.png",options:["A.","B.","C.","D."],correct:2},
+            {q:"28. What did Pat do with some of his old clothes last year?",options:["He gave them to Laura.","He took them out as trash.","He sent them to poor families.","He brought them to a hospital."],correct:2}
+          ]
+        },
+        {
+          label:"【29～32】",
+          text:"Good morning, students. As you know, many people get sick in this season. Last September, 108 students at our school didn't feel well. Some had a fever and went home early. Some had a headache and rested in my office for the day. We even sent some to the hospital because their stomachs hurt. Let me tell all of you again. Make sure you wash your hands before eating. Put on more clothes or bring a coat with you because winter is coming. Keep your body warm, and you don't get sick easily. Also, eat healthy food every day. Have an apple or an orange a day. The vitamins in them are good for your health. If you are under the weather, stay home and let your parents call your teacher. Rest at home for a day and drink lots of water. If you go to the doctor, listen to the doctor and take the medicine on time. If you have more questions, you are welcome to speak with me anytime!\n\n【字詞】well 健康的　office 辦公室　tell 告訴　easily 容易地　vitamin 維他命　if 如果",
+          items:[
+            {q:"29. Who might give this talk?",options:["A parent.","A sick student.","A school nurse.","A doctor from a hospital."],correct:2},
+            {q:"30. According to the reading, what happened last September?",options:["108 students got sick.","Some teachers had a fever.","The school gave everyone an apple.","The doctors at the hospital were hurt."],correct:0},
+            {q:"31. What DOESN'T the speaker ask the students to do?",options:["Keep their hands clean.","Eat an orange every day.","Put on a coat on a cold day.","Go to school when they are sick."],correct:3},
+            {q:"32. Why did some students rest in the office?",options:["They had a fever.","They had a headache.","They had a sore throat.","They had a stomachache."],correct:1}
+          ]
+        },
+        {
+          label:"【33～35】",
+          text:"",
+          image:"images/test4c/weather_table.png",
+          items:[
+            {q:"33. Joseph is on a trip to City C this weekend. What might he need?",image:"images/test4c/travel_items.png",options:["A.","B.","C.","D."],correct:2},
+            {q:"34. It's windy on Tuesday and Wednesday this week. Which city is it?",options:["City A.","City B.","City C.","City D."],correct:1},
+            {q:"35. <div style=\"background:#fff;border:1px solid var(--paper-line);border-radius:8px;padding:10px 14px;font-style:italic;margin-bottom:8px;\">Lisa: What's the weather like today?<br>Joey: It's rainy.<br>Lisa: Again? How about tomorrow?<br>Joey: There's no rain tomorrow.<br>Lisa: That's great!</div>Which city are Lisa and Joey in?",options:["City A.","City B.","City C.","City D."],correct:0}
+          ]
+        }
+      ]
+    }
+
+  ]
+};
+
+let currentMode = "quiz"; // quiz | print
+
+const contentEl = document.getElementById("content");
+const scoreBar = document.getElementById("scoreBar");
+const scoreText = document.getElementById("scoreText");
+
+function render(){
+  window.examAnswersRevealed = false;
+  contentEl.innerHTML = "";
+  DATA.sections.forEach((sec, si)=> contentEl.appendChild(renderSection(sec, si)));
+  if(currentMode==="quiz"){
+    scoreBar.classList.add("show");
+    updateScore();
+  } else {
+    scoreBar.classList.remove("show");
+    contentEl.querySelectorAll(".opt").forEach(o=>o.classList.add("disabled"));
+    contentEl.querySelectorAll(".opt.is-correct").forEach(o=>o.classList.add("correct"));
+  }
+}
+
+function renderSection(sec, si){
+  const block = document.createElement("section");
+  block.className = "block";
+  block.innerHTML = `<h2>${sec.title}</h2><p class="meta">${sec.meta}</p>`;
+
+  if(sec.type==="mc"){
+    sec.items.forEach((it,i)=>{
+      const q = document.createElement("div");
+      q.className = "q";
+      const optsHtml = it.options.map((op,oi)=>`
+        <div class="opt" data-idx="${oi}" data-correct="${oi===it.correct}">
+          <span class="tag">(${String.fromCharCode(65+oi)})</span><span>${op}</span>
+        </div>`).join("");
+      q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q}</div>
+        ${it.image ? `<img src="${it.image}" alt="題目附圖" style="width:100%;max-width:280px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">`:""}
+        <div class="opts">${optsHtml}</div>`;
+      q.querySelectorAll(".opt").forEach(optEl=>{
+        if(optEl.dataset.correct==="true") optEl.classList.add("is-correct");
+        optEl.addEventListener("click", ()=>selectOption(q, optEl));
+      });
+      block.appendChild(q);
+    });
+  }
+
+  else if(sec.type==="reading"){
+    sec.passages.forEach(p=>{
+      const passageDiv = document.createElement("div");
+      passageDiv.className = "passage";
+      passageDiv.innerHTML = `${p.label ? `<span class="passage-label">${p.label}</span>`:""}${p.text}${p.image ? `<img src="${p.image}" alt="附圖" style="width:100%;max-width:520px;display:block;margin:10px auto 0;border-radius:8px;border:1px solid var(--paper-line);">`:""}`;
+      block.appendChild(passageDiv);
+      p.items.forEach((it,i)=>{
+        const q = document.createElement("div");
+        q.className = "q";
+        const optsHtml = it.options.map((op,oi)=>`
+          <div class="opt" data-idx="${oi}" data-correct="${oi===it.correct}">
+            <span class="tag">(${String.fromCharCode(65+oi)})</span><span>${op}</span>
+          </div>`).join("");
+        q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q}</div>
+          ${it.image ? `<img src="${it.image}" alt="題目附圖" style="width:100%;max-width:500px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">`:""}
+          <div class="opts">${optsHtml}</div>`;
+        q.querySelectorAll(".opt").forEach(optEl=>{
+          if(optEl.dataset.correct==="true") optEl.classList.add("is-correct");
+          optEl.addEventListener("click", ()=>selectOption(q, optEl));
+        });
+        block.appendChild(q);
+      });
+    });
+  }
+
+  return block;
+}
+
+function selectOption(qEl, optEl){
+  if(currentMode!=="quiz") return;
+  if(qEl.dataset.answered==="true") return;
+  qEl.dataset.answered = "true";
+  qEl.querySelectorAll(".opt").forEach(o=>o.classList.add("disabled"));
+  optEl.classList.add("selected");
+  const correctOpt = qEl.querySelector('.opt[data-correct="true"]');
+  qEl.dataset.studentAnswer = optEl.textContent.trim();
+  qEl.dataset.correctAnswer = correctOpt ? correctOpt.textContent.trim() : "";
+  qEl.dataset.isCorrect = (optEl.dataset.correct==="true") ? "true" : "false";
+  updateScore();
+}
+
+function updateScore(){
+  let total = 0, answered = 0, correct = 0;
+  contentEl.querySelectorAll(".q").forEach(q=>{
+    const gradable = q.querySelector(".opts");
+    if(!gradable) return;
+    total++;
+    if(q.dataset.studentAnswer !== undefined){
+      answered++;
+      if(q.dataset.isCorrect === "true") correct++;
+    }
+  });
+  if(window.examAnswersRevealed){
+    scoreText.textContent = `${correct} / ${total}`;
+  } else {
+    scoreText.textContent = `已作答 ${answered} / ${total} 題`;
+  }
+}
+window.updateScore = updateScore;
+
+document.getElementById("resetBtn").addEventListener("click", render);
+document.getElementById("quizModeBtn").addEventListener("click", ()=>{
+  currentMode = "quiz";
+  document.getElementById("quizModeBtn").classList.add("active");
+  document.getElementById("printModeBtn").classList.remove("active");
+  render();
+});
+document.getElementById("printModeBtn").addEventListener("click", ()=>{
+  if(document.getElementById("printModeBtn").disabled) return;
+  currentMode = "print";
+  document.getElementById("printModeBtn").classList.add("active");
+  document.getElementById("quizModeBtn").classList.remove("active");
+  render();
+});
+
+window.unlockPrintMode = function(){
+  document.getElementById("printModeBtn").disabled = false;
+};
+
+render();
+</script>
+<script src="../sync.js"></script>
+</body>
+</html>
