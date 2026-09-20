@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>段考題庫｜第8回 - Review 2（二）（C卷）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@500;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#faf6ec;
+    --paper-line:#e3dcc8;
+    --ink:#26332b;
+    --ink-soft:#5b6b5f;
+    --chalk-green:#2f4538;
+    --chalk-green-2:#3d5a48;
+    --pen-red:#b8433a;
+    --pen-red-soft:#f4dedb;
+    --ok-green:#3f7d52;
+    --ok-green-soft:#dfeee1;
+    --gold:#b5842a;
+    --radius:10px;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:"Noto Sans TC",sans-serif;
+    line-height:1.7;
+  }
+  header.hero{
+    background:var(--chalk-green);
+    color:#eef2ea;
+    padding:28px 20px 40px;
+    position:relative;
+  }
+  header.hero::after{
+    content:"";
+    position:absolute;
+    left:0; right:0; bottom:-1px;
+    height:14px;
+    background:repeating-linear-gradient(90deg,var(--paper) 0 18px, transparent 18px 20px);
+  }
+  .hero-inner{max-width:880px;margin:0 auto;}
+  .breadcrumb a{color:#cfe0d1;text-decoration:none;font-size:14px;}
+  .breadcrumb a:hover{text-decoration:underline;}
+  h1{
+    font-family:"Noto Serif TC",serif;
+    font-weight:700;
+    font-size:clamp(24px,4vw,34px);
+    margin:10px 0 6px;
+  }
+  .subtitle{color:#cfe0d1;font-size:15px;margin:0;}
+  main{max-width:880px;margin:0 auto;padding:28px 20px 80px;}
+
+  .controls{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:22px;
+  }
+  .mode-toggle{display:flex;border:2px solid var(--chalk-green);border-radius:999px;overflow:hidden;}
+  .mode-toggle button{
+    background:transparent;border:none;padding:8px 16px;font-size:14px;font-weight:700;
+    color:var(--chalk-green);cursor:pointer;font-family:"Noto Sans TC",sans-serif;
+  }
+  .mode-toggle button.active{background:var(--gold);color:#fff;}
+  .mode-toggle button:disabled{opacity:.4;cursor:not-allowed;}
+
+  .score-bar{
+    display:none;
+    align-items:center;
+    justify-content:space-between;
+    background:#fff;
+    border:1px solid var(--paper-line);
+    border-left:5px solid var(--gold);
+    border-radius:var(--radius);
+    padding:12px 18px;
+    margin-bottom:22px;
+    font-size:14px;
+  }
+  .score-bar.show{display:flex;}
+  .score-bar strong{font-size:18px;color:var(--gold);}
+  .score-bar button{
+    background:none;border:1px solid var(--ink-soft);color:var(--ink-soft);
+    border-radius:6px;padding:6px 12px;font-size:13px;cursor:pointer;
+  }
+
+  section.block{
+    background:#fff;
+    border:1px solid var(--paper-line);
+    border-radius:var(--radius);
+    padding:22px 22px 26px;
+    margin-bottom:20px;
+  }
+  .block h2{
+    font-family:"Noto Serif TC",serif;
+    font-size:19px;
+    margin:0 0 4px;
+    color:var(--chalk-green);
+  }
+  .block .meta{color:var(--ink-soft);font-size:13px;margin:0 0 16px;}
+
+  .q{margin-bottom:18px;padding-bottom:16px;border-bottom:1px dashed var(--paper-line);}
+  .q:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0;}
+  .q-text{font-size:15.5px;margin-bottom:8px;}
+  .q-num{color:var(--gold);font-weight:700;margin-right:4px;}
+
+  .opts{display:grid;gap:8px;}
+  .opt{
+    display:flex;gap:8px;align-items:flex-start;
+    border:1.5px solid var(--paper-line);
+    border-radius:8px;
+    padding:9px 12px;
+    cursor:pointer;
+    font-size:14.5px;
+    background:#fffdf8;
+  }
+  .opt:hover{border-color:var(--chalk-green-2);}
+  .opt.selected{border-color:var(--chalk-green-2);background:#eef3ea;}
+  .opt.correct{border-color:var(--ok-green);background:var(--ok-green-soft);}
+  .opt.wrong{border-color:var(--pen-red);background:var(--pen-red-soft);}
+  .opt .tag{font-weight:700;color:var(--ink-soft);}
+  .opt.correct .tag{color:var(--ok-green);}
+  .opt.wrong .tag{color:var(--pen-red);}
+  .opt.disabled{cursor:default;}
+
+  .passage{
+    background:#f5f2e8;border-radius:8px;padding:14px 16px;margin-bottom:14px;
+    font-size:14.5px;white-space:pre-line;
+  }
+  .passage-label{font-weight:700;color:var(--chalk-green);margin-bottom:4px;display:block;}
+  .data-table{width:100%;border-collapse:collapse;margin-top:10px;font-size:13.5px;background:#fff;}
+  .data-table th, .data-table td{border:1px solid var(--paper-line);padding:6px 8px;text-align:center;}
+  .data-table th{background:#eef3ea;color:var(--chalk-green);}
+
+  .footer-link{
+    display:block;text-align:center;margin-top:30px;color:var(--chalk-green);
+    text-decoration:none;font-weight:700;font-size:14px;
+  }
+  .footer-link:hover{text-decoration:underline;}
+
+  @media print{
+    header.hero, .controls, .score-bar, .mini-btn, .footer-link{display:none !important;}
+    body{background:#fff;}
+    section.block{border:none;box-shadow:none;padding:8px 0;margin-bottom:14px;}
+    .opt.correct{background:none;border:none;font-weight:700;}
+    .opt.correct::after{content:" ← 正解";color:var(--pen-red);}
+    .opt{border:none;padding:2px 0;}
+    main{max-width:100%;padding:0 24px;}
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="breadcrumb"><a href="https://jenlin2002.github.io/">🏠 回總目錄</a> ／ <a href="../kangxuan-g8-1.html" style="color:#cfe0d1;">段考題庫</a></div>
+    <h1>第8回・Review 2（二）</h1>
+    <p class="subtitle">Review 2（二）｜康軒版八年級英語（三）Ｃ卷</p>
+  </div>
+</header>
+
+<main>
+  <div class="controls">
+    <div class="mode-toggle">
+      <button id="quizModeBtn" class="active">✏️ 測驗模式</button>
+      <button id="printModeBtn" disabled title="完成測驗並送出成績後才能查看">🖨️ 完整題目與解答（送出成績後解鎖）</button>
+    </div>
+  </div>
+
+  <div class="score-bar" id="scoreBar">
+    <div>目前得分：<strong id="scoreText">0 / 0</strong>（僅計算選擇題與字彙填空）</div>
+    <button id="resetBtn">重新作答</button>
+  </div>
+
+  <div id="content"></div>
+
+  <a class="footer-link" href="../kangxuan-g8-1.html">← 回段考題庫總覽</a>
+</main>
+
+<script>
+
+window.EXAM_META = { version: "C卷", examLabel: "第8回" };
+const DATA = {
+  sections: [
+    {
+      type:"mc",
+      title:"第一部分",
+      meta:"題號1~20，請依據題意選出一個正確或最佳的答案。每題2分，共40分",
+      items:[
+        {q:"Look at the picture. There is a ___ under the tree.",image:"images/test8c/q1_bench.png",options:["rock","chicken","jar","drum"],correct:2},
+        {q:"Students, don't ___ in the library. Please be quiet.",options:["shout","fly","dream","plan"],correct:0},
+        {q:"Joanne took her family on vacation（度假）___ she had enough money.",options:["so","until","when","before"],correct:2},
+        {q:"Ian is good at ___. He wants to be a singer when he grows up（長大）.",options:["music","plans","stars","money"],correct:0},
+        {q:"Tommy and his brother ___ when their mom went into the room.",options:["fights","fight","fighting","were fighting"],correct:3},
+        {q:"Look! There are some birds ___ above（在……之上）the lake.",options:["training","dropping","flying","reaching"],correct:2},
+        {q:"Sue needed ___ home and take care of her sick son yesterday.",options:["stay","stayed","to stay","staying"],correct:2},
+        {q:"___ we bought the tickets, we joined everyone and enjoyed the game.",options:["After","Before","When","So"],correct:0},
+        {q:"After Ray tried many times, he ___ opened the heavy door and got into the house.",options:["sadly","finally","still","however"],correct:1},
+        {q:"Everyone shouted the ___ actor's name when he walked out of the car.",options:["clear","middle","exciting","famous"],correct:3},
+        {q:"It's five ___ twelve. However, my watch says it's 11:55.",options:["past","to","until","from"],correct:0},
+        {q:"After we took a seat in the restaurant（餐廳）, the ___ brought the menu to us.",options:["secretary","mailman","housewife","waiter"],correct:3},
+        {q:"Mr. Brown's two sons are ___. They go to the same junior high school.",options:["quarters","teenagers","dreams","cameras"],correct:1},
+        {q:"Ann's son kept ___, but Ann didn't say anything.",options:["cried","cry","crying","to cry"],correct:2},
+        {q:"John always likes helping people. He even wants to be a nurse in the ___.",options:["future","forest","camera","map"],correct:0},
+        {q:"The writer ___ to write a story about his hometown（家鄉）. Everyone can't wait to read it.",options:["plans","thinks","finishes","enjoys"],correct:0},
+        {q:"___ up late every night is bad for your health.",options:["To staying","Staying","Stay","Stays"],correct:1},
+        {q:"Penny had to ___ care of her sisters because her parents were not home.",options:["took","take","takes","taking"],correct:1},
+        {q:"It is important ___ a lot of water when you are sick.",options:["drink","to drinking","to drink","drinks"],correct:2},
+        {q:"Tina wanted to join her friend for camping. ___, she needed to train with her team.",options:["Finally","Because","Maybe","On the other hand"],correct:3}
+      ]
+    },
+    {
+      type:"reading",
+      title:"第二部分",
+      meta:"題號21~35，四個題組，請依據所附選文或圖表資料，選出一個正確或最佳的答案。每題4分，共60分",
+      passages:[
+        {
+          label:"【21～24】",
+          text:"Jon: Ada, do you want to make a time capsule with me?\nAda: What's that?\nJon: We write down things on a piece of paper and put it in a capsule before we put the capsule away.\nAda: That's cool. What do we write about?\nJon: Usually, it is about our future. Then, we can open it later to find out if it comes true.\nAda: I see. We can see if our ___21___ come true.\nJon: That's right. So, what do you want to do in ten years?\nAda: I plan ___22___ a restaurant for my family.\nJon: Right, your father is a great cook! I miss his dishes.\nAda: Yes, we are all very proud ___23___ him. And I want to be like him one day! What about you?\nJon: I want to be a writer. I enjoy ___24___, and I want to start writing good stories.\nAda: Maybe you can write a story about me, and we can both be famous!\nJon: Good idea! Let's write that down in our time capsules!\n\n【字詞】time capsule 時光膠囊　paper 紙　if 是否　restaurant 餐廳",
+          items:[
+            {q:"21.",options:["dreams","gifts","skies","rocks"],correct:0},
+            {q:"22.",options:["open","opening","to open","to opening"],correct:2},
+            {q:"23.",options:["of","at","as","with"],correct:0},
+            {q:"24.",options:["read","to read","reading","to reading"],correct:2}
+          ]
+        },
+        {
+          label:"【25～28】",
+          text:"Cindy: Look at the actress on TV. I want to be a star one day in the future, too.\nMay: Why is that?\nCindy: Actresses are always so beautiful, and they can wear pretty clothes all the time.\nMay: Do you know about their life?\nCindy: What do you mean?\nMay: I have a friend, Yuki. To be a singer, she has to take a lot of different classes.\nCindy: Doesn't she like those classes?\nMay: She does, but it's a lot of work.\nCindy: What is it like?\nMay: Let's ask her on LINE.\n\n【字詞】pretty 漂亮的　mean 意指",
+          table:{
+            title:"",
+            head:["","Cindy and May's Day","Yuki's Day"],
+            rows:[
+              ["16:00~18:00","Do homework","Go to the singing class"],
+              ["18:00~20:00","Eat dinner and watch TV","Go to the dancing class"],
+              ["20:00~22:00","Play video games","Practice singing and dancing"]
+            ],
+            note:""
+          },
+          items:[
+            {q:"25. What does Cindy want to be in the future?",options:["A police officer.","A reporter.","A teacher.","A star."],correct:3},
+            {q:"26. What was Yuki doing when Cindy and May played video games last night?",options:["She was having dinner.","She was doing her homework.","She was practicing singing and dancing.","She was playing video games with them."],correct:2},
+            {q:"27. What did Cindy and May do before they played video games?",options:["They tried on beautiful clothes.","They watched TV.","They danced.","They sang."],correct:1},
+            {q:"28. What can we learn from the dialogue?",options:["Yuki isn't popular.","It is exciting for May to be on TV.","It is not easy to be a star.","Yuki needs a lot of money to take classes."],correct:2}
+          ]
+        },
+        {
+          label:"【29～31】",
+          text:"Dr. John Dolittle loved animals. He liked to find all kinds of animals around the world and keep them at home. However, people were afraid of his animals, so there were always few patients at his hospital.\n\"Why don't you take care of us?\" said a voice. \"Who said that?\" \"It's me, Polynesia,\" said one of his birds. \"I can teach you animal languages.\" After Polynesia taught Dr. Dolittle, he could speak with every animal. He learned many new things about them. For example, dogs talked to one another with their noses. Also, pigs sometimes sang when they were hungry. So, he started to work as a vet to treat sick animals. He was famous all over the world and finally made some money.\nOne day, some monkeys in Africa needed Dr. Dolittle's help. They were very sick, so he had to go to Africa right away. However, it wasn't easy to get there. Dr. Dolittle tried to find a way to help the sick monkeys. What happened to Dr. Dolittle next? Learn more in the book The Story of Doctor Dolittle.\n\n【字詞】patient 病人　language 語言　vet 獸醫",
+          items:[
+            {q:"29. What do we know about Dr. Dolittle?",options:["He always made a lot of money.","He was a reporter in Africa.","He trained his animals to talk.","He could speak animal languages."],correct:3},
+            {q:"30. When did Dr. Dolittle learn animal languages?",options:["When he was a little kid.","After a bird talked to him.","When he moved to Africa.","Before he was a doctor."],correct:1},
+            {q:"31. Which is NOT true according to the reading?",options:["Pigs fought when they were hungry.","Dr. Dolittle made little money before he was a vet.","Dogs could talk to one another with their noses.","Dr. Dolittle planned to treat the sick monkeys."],correct:0}
+          ]
+        },
+        {
+          label:"【32～35】",
+          text:"Steam is a popular video game platform. It has a lot of users because people can find many video games on it. However, when it first started in 2003, it was a very new idea.\nBefore Gabe Newell started Steam, people bought games at stores. Newell believed online games would be the future, so he had the idea to build an online game platform.\nNow, it is easy for everyone to buy and play video games on Steam. Also, the Steam app is free, and it keeps all of your games online. You don't need to worry about losing them because your games are all in the \"cloud.\" Even big companies use Steam. For example, Microsoft began putting Xbox games on Steam in 2014. If you are looking for a place to start playing games, take a look at Steam!\n\n【字詞】platform 平臺　store 商店　online 線上的　would 將　company 公司　if 如果",
+          items:[
+            {q:"32. What is the reading about?",options:["A new computer game.","An exciting Xbox game.","A famous video game player.","A popular online game platform."],correct:3},
+            {q:"33. Which is NOT true about Steam?",options:["It keeps games on your computer.","Big companies use it.","Buying games on it is easy.","It first started in 2003."],correct:0},
+            {q:"34. Why was Gabe Newell so important to Steam?",options:["He was good at Steam's games.","He was very young in the company.","He knew the future of online games.","He bought a lot of games on Steam."],correct:2},
+            {q:"35. Who might be a user of Steam?",options:["Tanya. She loves listening to music.","Andrew. He plays computer games all the time.","Maria. She practices writing every day.","Kyle. He is learning to make videos."],correct:1}
+          ]
+        }
+      ]
+    }
+
+  ]
+};
+
+let currentMode = "quiz"; // quiz | print
+
+const contentEl = document.getElementById("content");
+const scoreBar = document.getElementById("scoreBar");
+const scoreText = document.getElementById("scoreText");
+
+function render(){
+  window.examAnswersRevealed = false;
+  contentEl.innerHTML = "";
+  DATA.sections.forEach((sec, si)=> contentEl.appendChild(renderSection(sec, si)));
+  if(currentMode==="quiz"){
+    scoreBar.classList.add("show");
+    updateScore();
+  } else {
+    scoreBar.classList.remove("show");
+    contentEl.querySelectorAll(".opt").forEach(o=>o.classList.add("disabled"));
+    contentEl.querySelectorAll(".opt.is-correct").forEach(o=>o.classList.add("correct"));
+  }
+}
+
+function renderTable(t){
+  if(!t) return "";
+  const headHtml = `<tr>${t.head.map(h=>`<th>${h}</th>`).join("")}</tr>`;
+  const rowsHtml = t.rows.map(r=>`<tr>${r.map((c,ci)=>ci===0?`<th>${c}</th>`:`<td>${c}</td>`).join("")}</tr>`).join("");
+  return `${t.title ? `<div style="font-weight:700;text-align:center;color:var(--chalk-green);margin-bottom:6px;">${t.title}</div>`:""}
+    <table class="data-table"><thead>${headHtml}</thead><tbody>${rowsHtml}</tbody></table>
+    ${t.note ? `<div style="margin-top:8px;color:var(--ink-soft);font-size:13px;">${t.note}</div>` : ""}`;
+}
+
+function renderSection(sec, si){
+  const block = document.createElement("section");
+  block.className = "block";
+  block.innerHTML = `<h2>${sec.title}</h2><p class="meta">${sec.meta}</p>`;
+
+  if(sec.type==="mc"){
+    sec.items.forEach((it,i)=>{
+      const q = document.createElement("div");
+      q.className = "q";
+      const optsHtml = it.options.map((op,oi)=>`
+        <div class="opt" data-idx="${oi}" data-correct="${oi===it.correct}">
+          <span class="tag">(${String.fromCharCode(65+oi)})</span><span>${op}</span>
+        </div>`).join("");
+      q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q}</div>
+        ${it.image ? `<img src="${it.image}" alt="題目附圖" style="width:100%;max-width:280px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">`:""}
+        <div class="opts">${optsHtml}</div>`;
+      q.querySelectorAll(".opt").forEach(optEl=>{
+        if(optEl.dataset.correct==="true") optEl.classList.add("is-correct");
+        optEl.addEventListener("click", ()=>selectOption(q, optEl));
+      });
+      block.appendChild(q);
+    });
+  }
+
+  else if(sec.type==="reading"){
+    sec.passages.forEach(p=>{
+      const passageDiv = document.createElement("div");
+      passageDiv.className = "passage";
+      passageDiv.innerHTML = `${p.label ? `<span class="passage-label">${p.label}</span>`:""}${p.text}${p.table ? renderTable(p.table) : ""}`;
+      block.appendChild(passageDiv);
+      p.items.forEach((it,i)=>{
+        const q = document.createElement("div");
+        q.className = "q";
+        const optsHtml = it.options.map((op,oi)=>`
+          <div class="opt" data-idx="${oi}" data-correct="${oi===it.correct}">
+            <span class="tag">(${String.fromCharCode(65+oi)})</span><span>${op}</span>
+          </div>`).join("");
+        q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q}</div>
+          <div class="opts">${optsHtml}</div>`;
+        q.querySelectorAll(".opt").forEach(optEl=>{
+          if(optEl.dataset.correct==="true") optEl.classList.add("is-correct");
+          optEl.addEventListener("click", ()=>selectOption(q, optEl));
+        });
+        block.appendChild(q);
+      });
+    });
+  }
+
+  return block;
+}
+
+function selectOption(qEl, optEl){
+  if(currentMode!=="quiz") return;
+  if(qEl.dataset.answered==="true") return;
+  qEl.dataset.answered = "true";
+  qEl.querySelectorAll(".opt").forEach(o=>o.classList.add("disabled"));
+  optEl.classList.add("selected");
+  const correctOpt = qEl.querySelector('.opt[data-correct="true"]');
+  qEl.dataset.studentAnswer = optEl.textContent.trim();
+  qEl.dataset.correctAnswer = correctOpt ? correctOpt.textContent.trim() : "";
+  qEl.dataset.isCorrect = (optEl.dataset.correct==="true") ? "true" : "false";
+  updateScore();
+}
+
+function updateScore(){
+  let total = 0, answered = 0, correct = 0;
+  contentEl.querySelectorAll(".q").forEach(q=>{
+    const gradable = q.querySelector(".opts");
+    if(!gradable) return;
+    total++;
+    if(q.dataset.studentAnswer !== undefined){
+      answered++;
+      if(q.dataset.isCorrect === "true") correct++;
+    }
+  });
+  if(window.examAnswersRevealed){
+    scoreText.textContent = `${correct} / ${total}`;
+  } else {
+    scoreText.textContent = `已作答 ${answered} / ${total} 題`;
+  }
+}
+window.updateScore = updateScore;
+
+document.getElementById("resetBtn").addEventListener("click", render);
+document.getElementById("quizModeBtn").addEventListener("click", ()=>{
+  currentMode = "quiz";
+  document.getElementById("quizModeBtn").classList.add("active");
+  document.getElementById("printModeBtn").classList.remove("active");
+  render();
+});
+document.getElementById("printModeBtn").addEventListener("click", ()=>{
+  if(document.getElementById("printModeBtn").disabled) return;
+  currentMode = "print";
+  document.getElementById("printModeBtn").classList.add("active");
+  document.getElementById("quizModeBtn").classList.remove("active");
+  render();
+});
+
+window.unlockPrintMode = function(){
+  document.getElementById("printModeBtn").disabled = false;
+};
+
+render();
+</script>
+<script src="../sync.js"></script>
+</body>
+</html>
