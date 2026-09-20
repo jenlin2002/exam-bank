@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>段考題庫｜第7回 - Review 2</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@500;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#faf6ec;
+    --paper-line:#e3dcc8;
+    --ink:#26332b;
+    --ink-soft:#5b6b5f;
+    --chalk-green:#2f4538;
+    --chalk-green-2:#3d5a48;
+    --pen-red:#b8433a;
+    --pen-red-soft:#f4dedb;
+    --ok-green:#3f7d52;
+    --ok-green-soft:#dfeee1;
+    --gold:#b5842a;
+    --radius:10px;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:"Noto Sans TC",sans-serif;
+    line-height:1.7;
+  }
+  header.hero{
+    background:var(--chalk-green);
+    color:#eef2ea;
+    padding:28px 20px 40px;
+    position:relative;
+  }
+  header.hero::after{
+    content:"";
+    position:absolute;
+    left:0; right:0; bottom:-1px;
+    height:14px;
+    background:repeating-linear-gradient(90deg,var(--paper) 0 18px, transparent 18px 20px);
+  }
+  .hero-inner{max-width:880px;margin:0 auto;}
+  .breadcrumb a{color:#cfe0d1;text-decoration:none;font-size:14px;}
+  .breadcrumb a:hover{text-decoration:underline;}
+  h1{
+    font-family:"Noto Serif TC",serif;
+    font-weight:700;
+    font-size:clamp(24px,4vw,34px);
+    margin:10px 0 6px;
+  }
+  .subtitle{color:#cfe0d1;font-size:15px;margin:0;}
+  main{max-width:880px;margin:0 auto;padding:28px 20px 80px;}
+
+  .controls{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:22px;
+  }
+  .mode-toggle{display:flex;border:2px solid var(--chalk-green);border-radius:999px;overflow:hidden;}
+  .mode-toggle button{
+    background:transparent;border:none;padding:8px 16px;font-size:14px;font-weight:700;
+    color:var(--chalk-green);cursor:pointer;font-family:"Noto Sans TC",sans-serif;
+  }
+  .mode-toggle button.active{background:var(--gold);color:#fff;}
+  .mode-toggle button:disabled{opacity:.4;cursor:not-allowed;}
+
+  .score-bar{
+    display:none;
+    align-items:center;
+    justify-content:space-between;
+    background:#fff;
+    border:1px solid var(--paper-line);
+    border-left:5px solid var(--gold);
+    border-radius:var(--radius);
+    padding:12px 18px;
+    margin-bottom:22px;
+    font-size:14px;
+  }
+  .score-bar.show{display:flex;}
+  .score-bar strong{font-size:18px;color:var(--gold);}
+  .score-bar button{
+    background:none;border:1px solid var(--ink-soft);color:var(--ink-soft);
+    border-radius:6px;padding:6px 12px;font-size:13px;cursor:pointer;
+  }
+
+  section.block{
+    background:#fff;
+    border:1px solid var(--paper-line);
+    border-radius:var(--radius);
+    padding:22px 22px 26px;
+    margin-bottom:20px;
+  }
+  .block h2{
+    font-family:"Noto Serif TC",serif;
+    font-size:19px;
+    margin:0 0 4px;
+    color:var(--chalk-green);
+  }
+  .block .meta{color:var(--ink-soft);font-size:13px;margin:0 0 16px;}
+
+  .q{margin-bottom:18px;padding-bottom:16px;border-bottom:1px dashed var(--paper-line);}
+  .q:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0;}
+  .q-text{font-size:15.5px;margin-bottom:8px;}
+  .q-num{color:var(--gold);font-weight:700;margin-right:4px;}
+
+  .opts{display:grid;gap:8px;}
+  .opt{
+    display:flex;gap:8px;align-items:flex-start;
+    border:1.5px solid var(--paper-line);
+    border-radius:8px;
+    padding:9px 12px;
+    cursor:pointer;
+    font-size:14.5px;
+    background:#fffdf8;
+  }
+  .opt:hover{border-color:var(--chalk-green-2);}
+  .opt.selected{border-color:var(--chalk-green-2);background:#eef3ea;}
+  .opt.correct{border-color:var(--ok-green);background:var(--ok-green-soft);}
+  .opt.wrong{border-color:var(--pen-red);background:var(--pen-red-soft);}
+  .opt .tag{font-weight:700;color:var(--ink-soft);}
+  .opt.correct .tag{color:var(--ok-green);}
+  .opt.wrong .tag{color:var(--pen-red);}
+  .opt.disabled{cursor:default;}
+
+  .explain{
+    margin-top:8px;font-size:13.5px;color:var(--ink-soft);
+    background:#f5f2e8;border-radius:6px;padding:8px 12px;display:none;
+  }
+  .explain.show{display:block;}
+
+  input.blank, input.line-answer{
+    font-family:"Noto Sans TC",sans-serif;
+    border:none;border-bottom:2px solid var(--chalk-green-2);
+    background:transparent;font-size:15px;padding:2px 4px;
+    width:150px;
+  }
+  input.line-answer{width:100%;margin-top:4px;}
+  .check-row{display:flex;gap:8px;margin-top:6px;flex-wrap:wrap;align-items:center;}
+  .mini-btn{
+    background:var(--chalk-green);color:#fff;border:none;border-radius:6px;
+    padding:6px 14px;font-size:13px;cursor:pointer;font-family:"Noto Sans TC",sans-serif;
+  }
+  .mini-btn.secondary{background:transparent;color:var(--chalk-green);border:1.5px solid var(--chalk-green);}
+  .feedback{font-size:13.5px;font-weight:700;}
+  .feedback.ok{color:var(--ok-green);}
+  .feedback.no{color:var(--pen-red);}
+  .answer-reveal{
+    display:none;margin-top:6px;font-size:14px;color:var(--chalk-green-2);
+    background:#eef3ea;border-radius:6px;padding:8px 12px;
+  }
+  .answer-reveal.show{display:block;}
+
+  .passage{
+    background:#f5f2e8;border-radius:8px;padding:14px 16px;margin-bottom:14px;
+    font-size:14.5px;white-space:pre-line;
+  }
+  .passage-label{font-weight:700;color:var(--chalk-green);margin-bottom:4px;display:block;}
+  .data-table{width:100%;border-collapse:collapse;margin-top:10px;font-size:13.5px;background:#fff;}
+  .data-table th, .data-table td{border:1px solid var(--paper-line);padding:6px 8px;text-align:center;}
+  .data-table th{background:#eef3ea;color:var(--chalk-green);}
+
+  .footer-link{
+    display:block;text-align:center;margin-top:30px;color:var(--chalk-green);
+    text-decoration:none;font-weight:700;font-size:14px;
+  }
+  .footer-link:hover{text-decoration:underline;}
+
+  @media print{
+    header.hero, .controls, .score-bar, .check-row, .mini-btn, .footer-link{display:none !important;}
+    body{background:#fff;}
+    section.block{border:none;box-shadow:none;padding:8px 0;margin-bottom:14px;}
+    .opt.correct{background:none;border:none;font-weight:700;}
+    .opt.correct::after{content:" ← 正解";color:var(--pen-red);}
+    .opt{border:none;padding:2px 0;}
+    .explain{display:block !important;background:none;padding:2px 0;}
+    .answer-reveal{display:block !important;background:none;padding:2px 0;}
+    main{max-width:100%;padding:0 24px;}
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="breadcrumb"><a href="https://jenlin2002.github.io/">🏠 回總目錄</a> ／ <a href="../kangxuan-g8-1.html" style="color:#cfe0d1;">段考題庫</a></div>
+    <h1>第7回・Review 2</h1>
+    <p class="subtitle">Lesson 3~4 總複習｜康軒版八年級英語（三）Ａ卷</p>
+  </div>
+</header>
+
+<main>
+  <div class="controls">
+    <div class="mode-toggle">
+      <button id="quizModeBtn" class="active">✏️ 測驗模式</button>
+      <button id="printModeBtn" disabled title="完成測驗並送出成績後才能查看">🖨️ 完整題目與解答（送出成績後解鎖）</button>
+    </div>
+  </div>
+
+  <div class="score-bar" id="scoreBar">
+    <div>目前得分：<strong id="scoreText">0 / 0</strong>（僅計算選擇題與字彙填空）</div>
+    <button id="resetBtn">重新作答</button>
+  </div>
+
+  <div id="content"></div>
+
+  <a class="footer-link" href="../kangxuan-g8-1.html">← 回段考題庫總覽</a>
+</main>
+
+<script>
+
+window.EXAM_META = { version: "A卷", examLabel: "第7回" };
+const DATA = {
+  sections: [
+    {
+      type: "vocab",
+      title: "一、文意字彙",
+      meta: "20分，每題2分",
+      items: [
+        {q:"The young a___s played the role of an old lady（女士）in that movie.", answer:"actress"},
+        {q:"Don't take pictures in the show. Please put down your c___a.", answer:"camera"},
+        {q:"After a 10-hour drive（車程）, we f___y got home at 2:00 a.m.", answer:"finally"},
+        {q:"\"This cake is for me? Thank you very much! I love it!\" the woman s___ted with joy.", answer:"shouted"},
+        {q:"Our parents always take good care of us. They are very i___t people in our lives.", answer:"important"},
+        {q:"It's four now, and the gym is 15 minutes away. Let's meet there at a q___r past four.", answer:"quarter"},
+        {q:"Emily: What did you have for dinner today? Kevin: I had c___n rice. It was yummy.", answer:"chicken"},
+        {q:"Kelly works as a s___y. Every day, she has to send a lot of letters and answer many calls.", answer:"secretary"},
+        {q:"This m___n sometimes puts our letters in wrong places, so we can't find them.", answer:"mailman"},
+        {q:"There are some t___rs playing basketball at the park. They are about fifteen or sixteen years old.", answer:"teenagers"}
+      ]
+    },
+    {
+      type:"mc",
+      title:"二、語法測驗",
+      meta:"24分，每題2分",
+      items:[
+        {q:"It's half ___ seven. We need to get to school before eight. Let's hurry!",options:["to","past","of","at"],correct:1},
+        {q:"I'm learning to play basketball, but ___ not easy for me to be a great player like Mike.",options:["it's","that's","I'm","you're"],correct:0},
+        {q:"Bad habits like staying up late may lead ___ some health problems. For example, we may get fat.",options:["with","on","to","for"],correct:2},
+        {q:"My sister was taking a shower ___ I walked into the bathroom. We both shouted.",options:["before","when","after","until"],correct:1},
+        {q:"Al and I want to do more exercise, so we plan ___ playing basketball together after school every day.",options:["to practice","practicing","practiced","to practicing"],correct:0},
+        {q:"Just when Dad was ready for work, it started ___. He took an umbrella and went out.",options:["rained","rain","raining","to raining"],correct:2},
+        {q:"Ann is very good ___ cooking. She will（將）be a great cook in the future for sure!",options:["by","for","on","at"],correct:3},
+        {q:"I always heat up the milk ___ I drink it because I like hot milk.",options:["after","before","so","however"],correct:1},
+        {q:"Ken finished ___ the book and gave it back to me this morning. Then we talked about it the whole（整個的）day.",options:["reading","to read","read","reads"],correct:0},
+        {q:"___ healthy food is necessary（必要的）, and I enjoy ___ for my family.",options:["Eat; cooking","Eating; to cook","Eating; cooking","Eat; to cook"],correct:2},
+        {q:"Some people love ___ at home on weekends, but some want ___ out and have fun.",options:["staying; to go","to stay; going","staying; going","stay; to go"],correct:0},
+        {q:"Jason ___ his report at 12 a.m. However, he still couldn't finish it before class.",options:["still does","still did","is still doing","was still doing"],correct:3}
+      ]
+    },
+    {
+      type:"mc",
+      title:"三、完成句子與對話",
+      meta:"6分，每題2分",
+      items:[
+        {q:"Son: Dad, I made this chair with paper（紙）. Dad: Wow! ___",options:["What can we do now?","You did a good job!","That's not important.","Together we can do anything!"],correct:1},
+        {q:"Eve: Being a famous singer is my dream. Bob: You need to think about it again. ___ Eve: Well, you never know until you try.",options:["You don't have a gift for it.","By the way, isn't that a funny dream?","You can be very popular in the future.","Without the first step, a dream is just a dream."],correct:0},
+        {q:"Ted: Where are my glasses? I just put them on the table. Ed: ___ They're on your head!",options:["That's right!","Good job!","Are you serious?","Just wait and see."],correct:2}
+      ]
+    },
+    {
+      type:"guided",
+      title:"四、依提示作答",
+      meta:"15分，每題3分",
+      items:[
+        {prompt:"James took a shower at 7 a.m. James ate breakfast at 8 a.m.",hint:"（用...after...合併句子）",answer:"James ate breakfast after he took a shower."},
+        {prompt:"Ed read books before he went to bed yesterday.",hint:"（依畫線部分造原問句：read books）",answer:"What did Ed do before he went to bed yesterday?"},
+        {prompt:"I took your book. I'm sorry for that.",hint:"（用I'm...開頭合併句子）",answer:"I'm sorry for taking your book."},
+        {prompt:"Sandy plays the guitar every day. Sandy practices it.",hint:"（合併句子）",answer:"Sandy practices playing the guitar every day."},
+        {prompt:"Writing in English is not difficult for John.",hint:"（用虛主詞It開頭改寫句子）",answer:"It is not difficult for John to write in English."}
+      ]
+    },
+    {
+      type:"translation",
+      title:"五、整句式翻譯",
+      meta:"15分，每題3分",
+      items:[
+        {zh:"當那些雞走進森林時，那些鳥飛回了樹上。（When...）",answer:"When the / those chickens walked into the forest, the / those birds flew back to the tree(s)."},
+        {zh:"Vivian 非常聰明，所以她的雙親以她為榮。",answer:"Vivian is very smart, so her parents are proud of her."},
+        {zh:"Ed 昨天必須在一點半前完成他的作業。（... half...）",answer:"Ed had to finish his homework before half past one yesterday."},
+        {zh:"養寵物很棒；另一方面，照顧牠們並不容易。（Having...）",answer:"Having pets is great, on the other hand, taking care of them is not easy."},
+        {zh:"Jane 以前計畫成為一位歌手，但現在她只為好玩而練唱。",answer:"Jane planned to be a singer before, but now she only practices singing for fun."}
+      ]
+    },
+    {
+      type:"cloze",
+      title:"六、克漏字測驗",
+      meta:"10分，每題2分",
+      passage:"What does your mother do? Is she a housewife? Usually, housewives are \"housekeepers,\" and they \"work\" at home. A housekeeper gets paid, but ___1___, a housewife doesn't! Her day starts in the morning before the whole family gets up. She prepares breakfast and does the cleaning after her kids and husband go to school or work. ___2___ In the afternoon, she has to go shopping for food and get back to cook dinner before everybody comes home. Some housewives also need to take their kids to school, get them back, and help them with their homework after dinner. When everyone goes to bed, a day goes by. What a life!\nNow, some fathers stay home and try to do a housewife's work. They learn to take care of everything at home. By ___3___ roles with their wives, these \"house husbands\" finally find out: It's not easy ___4___ a full-time housekeeper without getting paid. In fact, our moms or many wives usually don't get anything. ___5___ thank you to them may just make their day. Let's do it together from now on!\n\n【字詞】housekeeper 管家　get paid 獲得給薪　whole 整個的　shopping 購物　full-time 全職的",
+      items:[
+        {options:["finally","for example","sadly","however"],correct:2},
+        {options:["Later, she can play with her kids in the playground.","At noon, she may make a small lunch and eat it.","After that, she can stay in bed all day.","Then, she needs to cook lunch for her family."],correct:3},
+        {options:["change","to change","they change","changing"],correct:3},
+        {options:["to be","be","to being","for being"],correct:0},
+        {options:["Say","Saying","Said","To saying"],correct:1}
+      ]
+    },
+    {
+      type:"reading",
+      title:"七、閱讀測驗",
+      meta:"10分，每題2分",
+      passages:[
+        {
+          label:"【A】",
+          text:"WANTED\nLike to eat? Love to drink?\nAlways try something new?\nWrite it down and send it to us!\nYoung or old, new or pro,\nput pen to paper with a gift for words.\nWe welcome you with open arms!\n\n【字詞】paper 紙　word 文字",
+          items:[
+            {q:"What job might it be in the ad?",options:["A police officer.","A writer.","An actor.","A waiter."],correct:1},
+            {q:"What does the ad say about writing?",options:["Writing is difficult.","Writing is only for young people.","Everyone can try writing.","Writing needs special gifts."],correct:2}
+          ]
+        },
+        {
+          label:"【B】",
+          text:"Dear Diary,\nToday, I saw a little boy on my way home. He was sitting on a bench in the park, and there were no other people around him. Therefore, I stopped and walked to him. He was singing and playing with a toy car in his hand when I got near. \"He might be lost,\" I thought at first. However, how could a four- or five-year-old little boy act so bravely when he couldn't find his mom or dad? Before I opened my mouth to ask his name, the boy began to speak like he was talking to himself. \"Hello, my name is Tony. Don't worry about me. I'm not lost. I'm just waiting for Robbie to come back here. Mommy wants me to walk him in the park, but I don't like to run around with him. I sit here with my toy car and wait for him until he comes and finds me. By the way, four people asked me the same question in the past hour, and you might be the fifth!\"\nThe whole thing was really funny, and the little boy was really smart! :) Good night!\nSophia\n\n【字詞】diary 日記　bench 長椅　lost 迷路的　himself 他自己　whole 整個的",
+          items:[
+            {q:"What does \"bravely\" mean here?",options:["Not afraid.","Sorry.","Sad.","Not sure."],correct:0},
+            {q:"Why did the boy speak like he was talking to himself?",options:["He was practicing speaking.","He answered the same question many times.","He had problems speaking and needed help.","He liked to talk a lot."],correct:1},
+            {q:"What is true about the reading?",options:["This is a letter to a friend of Sophia's.","Sophia wrote the diary in the morning.","The little boy was with his mom in the park.","Robbie might be the little boy's pet dog."],correct:3}
+          ]
+        }
+      ]
+    }
+
+  ]
+};
+
+let currentMode = "quiz"; // quiz | print
+
+const contentEl = document.getElementById("content");
+const scoreBar = document.getElementById("scoreBar");
+const scoreText = document.getElementById("scoreText");
+
+function render(){
+  window.examAnswersRevealed = false;
+  contentEl.innerHTML = "";
+  DATA.sections.forEach((sec, si)=> contentEl.appendChild(renderSection(sec, si)));
+  if(currentMode==="quiz"){
+    scoreBar.classList.add("show");
+    updateScore();
+  } else {
+    scoreBar.classList.remove("show");
+    contentEl.querySelectorAll(".explain").forEach(e=>e.classList.add("show"));
+    contentEl.querySelectorAll(".answer-reveal").forEach(e=>e.classList.add("show"));
+    contentEl.querySelectorAll(".opt").forEach(o=>o.classList.add("disabled"));
+    contentEl.querySelectorAll(".opt.is-correct").forEach(o=>o.classList.add("correct"));
+  }
+}
+
+function renderTable(t){
+  if(!t) return "";
+  const headHtml = `<tr>${t.head.map(h=>`<th>${h}</th>`).join("")}</tr>`;
+  const rowsHtml = t.rows.map(r=>`<tr>${r.map((c,ci)=>ci===0?`<th>${c}</th>`:`<td>${c}</td>`).join("")}</tr>`).join("");
+  return `<div style="font-weight:700;text-align:center;color:var(--chalk-green);margin-bottom:6px;">${t.title}</div>
+    <table class="data-table"><thead>${headHtml}</thead><tbody>${rowsHtml}</tbody></table>
+    ${t.note ? `<div style="margin-top:8px;color:var(--ink-soft);font-size:13px;">${t.note}</div>` : ""}`;
+}
+
+function renderSection(sec, si){
+  const block = document.createElement("section");
+  block.className = "block";
+  block.innerHTML = `<h2>${sec.title}</h2><p class="meta">${sec.meta}</p>`;
+
+  if(sec.type==="vocab"){
+    sec.items.forEach((it,i)=>{
+      const q = document.createElement("div");
+      q.className = "q";
+      q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q}
+        &nbsp; <input type="text" class="blank" data-answer="${it.answer}" placeholder="填入單字">
+        <span class="feedback"></span></div>
+        <div class="answer-reveal">正解：${it.answer}</div>`;
+      const input = q.querySelector("input");
+      input.addEventListener("input", ()=>checkBlank(input));
+      block.appendChild(q);
+    });
+  }
+
+  else if(sec.type==="mc"){
+    sec.items.forEach((it,i)=>{
+      const q = document.createElement("div");
+      q.className = "q";
+      const optsHtml = it.options.map((op,oi)=>`
+        <div class="opt" data-idx="${oi}" data-correct="${oi===it.correct}">
+          <span class="tag">(${String.fromCharCode(65+oi)})</span><span>${op}</span>
+        </div>`).join("");
+      q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q}</div>
+        <div class="opts">${optsHtml}</div>
+        ${it.explain ? `<div class="explain">${it.explain}</div>` : ""}`;
+      q.querySelectorAll(".opt").forEach(optEl=>{
+        if(optEl.dataset.correct==="true") optEl.classList.add("is-correct");
+        optEl.addEventListener("click", ()=>selectOption(q, optEl));
+      });
+      block.appendChild(q);
+    });
+  }
+
+  else if(sec.type==="guided" || sec.type==="translation"){
+    sec.items.forEach((it,i)=>{
+      const q = document.createElement("div");
+      q.className = "q";
+      const prompt = sec.type==="guided" ? `${it.prompt} <em style="color:var(--ink-soft);font-style:normal;">${it.hint}</em>` : it.zh;
+      q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${prompt}</div>
+        <input type="text" class="line-answer" placeholder="請輸入英文句子">
+        <div class="check-row"><button class="mini-btn secondary reveal-btn" style="display:none;">對答案</button></div>
+        <div class="answer-reveal">正解：${it.answer}</div>`;
+      q.querySelector(".reveal-btn").addEventListener("click", (e)=>{
+        q.querySelector(".answer-reveal").classList.add("show");
+      });
+      block.appendChild(q);
+    });
+  }
+
+  else if(sec.type==="cloze"){
+    const passageDiv = document.createElement("div");
+    passageDiv.className = "passage";
+    passageDiv.textContent = sec.passage;
+    block.appendChild(passageDiv);
+    sec.items.forEach((it,i)=>{
+      const q = document.createElement("div");
+      q.className = "q";
+      const optsHtml = it.options.map((op,oi)=>`
+        <div class="opt" data-idx="${oi}" data-correct="${oi===it.correct}">
+          <span class="tag">(${String.fromCharCode(65+oi)})</span><span>${op}</span>
+        </div>`).join("");
+      q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span></div><div class="opts">${optsHtml}</div>`;
+      q.querySelectorAll(".opt").forEach(optEl=>{
+        if(optEl.dataset.correct==="true") optEl.classList.add("is-correct");
+        optEl.addEventListener("click", ()=>selectOption(q, optEl));
+      });
+      block.appendChild(q);
+    });
+  }
+
+  else if(sec.type==="reading"){
+    sec.passages.forEach(p=>{
+      const passageDiv = document.createElement("div");
+      passageDiv.className = "passage";
+      passageDiv.innerHTML = `${p.label ? `<span class="passage-label">${p.label}</span>`:""}${p.text}${p.image ? `<img src="${p.image}" alt="附圖" style="width:100%;max-width:520px;display:block;margin:10px auto 0;border-radius:8px;border:1px solid var(--paper-line);">`:""}${p.table ? renderTable(p.table) : ""}`;
+      block.appendChild(passageDiv);
+      p.items.forEach((it,i)=>{
+        const q = document.createElement("div");
+        q.className = "q";
+        const optsHtml = it.options.map((op,oi)=>`
+          <div class="opt" data-idx="${oi}" data-correct="${oi===it.correct}">
+            <span class="tag">(${String.fromCharCode(65+oi)})</span><span>${op}</span>
+          </div>`).join("");
+        q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q}</div>
+          ${it.image ? `<img src="${it.image}" alt="題目附圖" style="width:100%;max-width:500px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">`:""}
+          <div class="opts">${optsHtml}</div>`;
+        q.querySelectorAll(".opt").forEach(optEl=>{
+          if(optEl.dataset.correct==="true") optEl.classList.add("is-correct");
+          optEl.addEventListener("click", ()=>selectOption(q, optEl));
+        });
+        block.appendChild(q);
+      });
+    });
+  }
+
+  return block;
+}
+
+function selectOption(qEl, optEl){
+  if(currentMode!=="quiz") return;
+  if(qEl.dataset.answered==="true") return;
+  qEl.dataset.answered = "true";
+  qEl.querySelectorAll(".opt").forEach(o=>o.classList.add("disabled"));
+  optEl.classList.add("selected");
+  const correctOpt = qEl.querySelector('.opt[data-correct="true"]');
+  qEl.dataset.studentAnswer = optEl.textContent.trim();
+  qEl.dataset.correctAnswer = correctOpt ? correctOpt.textContent.trim() : "";
+  qEl.dataset.isCorrect = (optEl.dataset.correct==="true") ? "true" : "false";
+  updateScore();
+}
+
+function checkBlank(input){
+  const val = input.value.trim().toLowerCase();
+  const ans = input.dataset.answer.trim().toLowerCase();
+  const qEl = input.closest(".q");
+  if(val.length===0){ if(qEl) delete qEl.dataset.studentAnswer; updateScore(); return; }
+  if(qEl){
+    qEl.dataset.studentAnswer = input.value.trim();
+    qEl.dataset.correctAnswer = input.dataset.answer;
+    qEl.dataset.isCorrect = (val===ans) ? "true" : "false";
+  }
+  updateScore();
+}
+
+function updateScore(){
+  let total = 0, answered = 0, correct = 0;
+  contentEl.querySelectorAll(".q").forEach(q=>{
+    const gradable = q.querySelector(".opts") || q.querySelector("input.blank");
+    if(!gradable) return;
+    total++;
+    if(q.dataset.studentAnswer !== undefined){
+      answered++;
+      if(q.dataset.isCorrect === "true") correct++;
+    }
+  });
+  if(window.examAnswersRevealed){
+    scoreText.textContent = `${correct} / ${total}`;
+  } else {
+    scoreText.textContent = `已作答 ${answered} / ${total} 題`;
+  }
+}
+window.updateScore = updateScore;
+
+document.getElementById("resetBtn").addEventListener("click", render);
+document.getElementById("quizModeBtn").addEventListener("click", ()=>{
+  currentMode = "quiz";
+  document.getElementById("quizModeBtn").classList.add("active");
+  document.getElementById("printModeBtn").classList.remove("active");
+  render();
+});
+document.getElementById("printModeBtn").addEventListener("click", ()=>{
+  if(document.getElementById("printModeBtn").disabled) return;
+  currentMode = "print";
+  document.getElementById("printModeBtn").classList.add("active");
+  document.getElementById("quizModeBtn").classList.remove("active");
+  render();
+});
+
+window.unlockPrintMode = function(){
+  document.getElementById("printModeBtn").disabled = false;
+};
+
+render();
+</script>
+<script src="../sync.js"></script>
+</body>
+</html>

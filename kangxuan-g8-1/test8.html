@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>段考題庫｜第8回 - 聽力二（Lesson 3～4）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@500;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#faf6ec; --paper-line:#e3dcc8; --ink:#26332b; --ink-soft:#5b6b5f;
+    --chalk-green:#2f4538; --chalk-green-2:#3d5a48; --pen-red:#b8433a; --pen-red-soft:#f4dedb;
+    --ok-green:#3f7d52; --ok-green-soft:#dfeee1; --gold:#b5842a; --radius:10px;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:"Noto Sans TC",sans-serif;line-height:1.7;}
+  header.hero{background:var(--chalk-green);color:#eef2ea;padding:28px 20px 40px;position:relative;}
+  header.hero::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:14px;
+    background:repeating-linear-gradient(90deg,var(--paper) 0 18px, transparent 18px 20px);}
+  .hero-inner{max-width:880px;margin:0 auto;}
+  .breadcrumb a{color:#cfe0d1;text-decoration:none;font-size:14px;}
+  h1{font-family:"Noto Serif TC",serif;font-weight:700;font-size:clamp(24px,4vw,34px);margin:10px 0 6px;}
+  .subtitle{color:#cfe0d1;font-size:15px;margin:0;}
+  main{max-width:880px;margin:0 auto;padding:28px 20px 80px;}
+
+  .notice{
+    background:#fdf3e3;border:1px solid #ecd9ab;border-left:5px solid var(--gold);
+    border-radius:var(--radius);padding:14px 18px;margin-bottom:22px;font-size:13.5px;color:#6b5424;
+  }
+
+  section.block{background:#fff;border:1px solid var(--paper-line);border-radius:var(--radius);padding:22px 22px 26px;margin-bottom:20px;}
+  .block h2{font-family:"Noto Serif TC",serif;font-size:19px;margin:0 0 4px;color:var(--chalk-green);}
+  .block .meta{color:var(--ink-soft);font-size:13px;margin:0 0 14px;}
+
+  audio{width:100%;margin-bottom:18px;}
+  .grid-img{width:100%;max-width:560px;display:block;margin:0 auto 16px;border-radius:8px;border:1px solid var(--paper-line);}
+
+  .q{margin-bottom:18px;padding-bottom:16px;border-bottom:1px dashed var(--paper-line);}
+  .q:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0;}
+  .q-text{font-size:15.5px;margin-bottom:8px;}
+  .q-num{color:var(--gold);font-weight:700;margin-right:4px;}
+
+  .opts{display:grid;gap:8px;}
+  .opt{display:flex;gap:8px;align-items:flex-start;border:1.5px solid var(--paper-line);border-radius:8px;
+    padding:9px 12px;cursor:pointer;font-size:14.5px;background:#fffdf8;}
+  .opt:hover{border-color:var(--chalk-green-2);}
+  .opt.selected{border-color:var(--chalk-green-2);background:#eef3ea;}
+  .opt.correct{border-color:var(--ok-green);background:var(--ok-green-soft);}
+  .opt.wrong{border-color:var(--pen-red);background:var(--pen-red-soft);}
+  .opt .tag{font-weight:700;color:var(--ink-soft);}
+  .opt.correct .tag{color:var(--ok-green);}
+  .opt.wrong .tag{color:var(--pen-red);}
+  .opt.disabled{cursor:default;}
+
+  input.blank{font-family:"Noto Sans TC",sans-serif;border:none;border-bottom:2px solid var(--chalk-green-2);
+    background:transparent;font-size:15px;padding:2px 4px;width:150px;}
+  .feedback{font-size:13.5px;font-weight:700;margin-left:6px;}
+  .feedback.ok{color:var(--ok-green);}
+  .feedback.no{color:var(--pen-red);}
+
+  .footer-link{display:block;text-align:center;margin-top:30px;color:var(--chalk-green);text-decoration:none;font-weight:700;font-size:14px;}
+  .footer-link:hover{text-decoration:underline;}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="breadcrumb"><a href="https://jenlin2002.github.io/">🏠 回總目錄</a> ／ <a href="../kangxuan-g8-1.html" style="color:#cfe0d1;">段考題庫</a></div>
+    <h1>第8回・聽力二</h1>
+    <p class="subtitle">Lesson 3～4｜康軒版八年級英語（三）Ａ卷</p>
+  </div>
+</header>
+
+<main>
+  <section class="block">
+    <h2>一、聽CD中的句子，選出聽到的字詞</h2>
+    <p class="meta">10分，每題2分</p>
+    <audio controls src="audio/test8/track1.mp3"></audio>
+    <div id="sec1"></div>
+  </section>
+
+  <section class="block">
+    <h2>二、聽CD中的句子，寫出空格中的單字</h2>
+    <p class="meta">10分，每題2分</p>
+    <audio controls src="audio/test8/track2.mp3"></audio>
+    <div id="sec2"></div>
+  </section>
+
+  <section class="block">
+    <h2>三、聽CD中的句子，若敘述符合圖意則寫T，不符則寫F</h2>
+    <p class="meta">10分，每題2分</p>
+    <audio controls src="audio/test8/track3.mp3"></audio>
+    <img class="grid-img" src="images/test8/sec3_grid.png" alt="題目附圖">
+    <div id="sec3"></div>
+  </section>
+
+  <section class="block">
+    <h2>四、聽CD中的問句或直述句，選出一個最佳的回應</h2>
+    <p class="meta">10分，每題2分</p>
+    <audio controls src="audio/test8/track4.mp3"></audio>
+    <div id="sec4"></div>
+  </section>
+
+  <section class="block">
+    <h2>五、聽CD中的句子，選出適當的圖片</h2>
+    <p class="meta">10分，每題2分</p>
+    <audio controls src="audio/test8/track5.mp3"></audio>
+    <img class="grid-img" src="images/test8/sec5_grid.png" alt="題目附圖">
+    <div id="sec5"></div>
+  </section>
+
+  <section class="block">
+    <h2>六、聽CD播放一個和該題相關的問題，與A、B、C三個敘述後，選出與圖片最符合的答案</h2>
+    <p class="meta">10分，每題2分</p>
+    <audio controls src="audio/test8/track6.mp3"></audio>
+    <img class="grid-img" src="images/test8/sec6_grid.png" alt="題目附圖">
+    <div id="sec6"></div>
+  </section>
+
+  <section class="block">
+    <h2>七、聽CD中的對話及一個相關的問題，選出一個正確或最佳的答案</h2>
+    <p class="meta">10分，每題2分</p>
+    <audio controls src="audio/test8/track7.mp3"></audio>
+    <div id="sec7"></div>
+  </section>
+
+  <section class="block">
+    <h2>八、聽CD中的短文或對話，選出一個正確或最佳的答案</h2>
+    <p class="meta">30分，每題3分</p>
+    <audio controls src="audio/test8/track8.mp3"></audio>
+    <div id="sec8"></div>
+  </section>
+
+  <a class="footer-link" href="../kangxuan-g8-1.html">← 回段考題庫總覽</a>
+</main>
+
+<script>
+function mc(container, items){
+  items.forEach((it,i)=>{
+    const q = document.createElement("div");
+    q.className = "q";
+    const optsHtml = it.options.map((op,oi)=>`
+      <div class="opt" data-correct="${oi===it.correct}"><span class="tag">(${String.fromCharCode(65+oi)})</span><span>${op}</span></div>`).join("");
+    q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q||""}</div><div class="opts">${optsHtml}</div>`;
+    q.querySelectorAll(".opt").forEach(o=>o.addEventListener("click", ()=>{
+      if(q.dataset.answered==="true") return;
+      q.dataset.answered="true";
+      q.querySelectorAll(".opt").forEach(x=>x.classList.add("disabled"));
+      o.classList.add("selected");
+      const correctOptEl = q.querySelector('.opt[data-correct="true"]');
+      q.dataset.studentAnswer = o.textContent.trim();
+      q.dataset.correctAnswer = correctOptEl ? correctOptEl.textContent.trim() : "";
+      q.dataset.isCorrect = (o.dataset.correct==="true") ? "true" : "false";
+    }));
+    container.appendChild(q);
+  });
+}
+function blank(container, items){
+  items.forEach((it,i)=>{
+    const q = document.createElement("div");
+    q.className = "q";
+    q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q} <input type="text" class="blank" data-answer="${it.answer}"><span class="feedback"></span></div>`;
+    const input = q.querySelector("input");
+    input.addEventListener("input", ()=>{
+      const val = input.value.trim().toLowerCase();
+      if(!val){ delete q.dataset.studentAnswer; return; }
+      q.dataset.studentAnswer = input.value.trim();
+      q.dataset.correctAnswer = it.answer;
+      q.dataset.isCorrect = (val===it.answer.toLowerCase()) ? "true" : "false";
+    });
+    container.appendChild(q);
+  });
+}
+function tf(container, items){
+  items.forEach((it,i)=>{
+    const q = document.createElement("div");
+    q.className = "q";
+    q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>圖${i+1}</div>
+      <div class="opts">
+        <div class="opt" data-correct="${it.answer==='T'}"><span class="tag">T</span><span>符合圖意</span></div>
+        <div class="opt" data-correct="${it.answer==='F'}"><span class="tag">F</span><span>不符合圖意</span></div>
+      </div>`;
+    q.querySelectorAll(".opt").forEach(o=>o.addEventListener("click", ()=>{
+      if(q.dataset.answered==="true") return;
+      q.dataset.answered="true";
+      q.querySelectorAll(".opt").forEach(x=>x.classList.add("disabled"));
+      o.classList.add("selected");
+      const correctOptEl = q.querySelector('.opt[data-correct="true"]');
+      q.dataset.studentAnswer = o.textContent.trim();
+      q.dataset.correctAnswer = correctOptEl ? correctOptEl.textContent.trim() : "";
+      q.dataset.isCorrect = (o.dataset.correct==="true") ? "true" : "false";
+    }));
+    container.appendChild(q);
+  });
+}
+
+// 一、選出聽到的字詞
+mc(document.getElementById("sec1"), [
+  {options:["back","beak","rock"], correct:2},
+  {options:["housewife","waitress","money"], correct:0},
+  {options:["plan","dream","star"], correct:1},
+  {options:["other","teenager","future"], correct:1},
+  {options:["train","think","finish"], correct:2}
+]);
+
+// 二、寫出空格中的單字
+blank(document.getElementById("sec2"), [
+  {q:"You can see that at the ____ of the story.", answer:"beginning"},
+  {q:"Why are Gina's parents ____ of her?", answer:"proud"},
+  {q:"There are some ____ outside my house.", answer:"geese"},
+  {q:"They just looked at one ____ and didn't say anything.", answer:"another"},
+  {q:"Jimmy is a ____. He works hard every day.", answer:"mailman"}
+]);
+
+// 三、T/F（見上方附圖 1~5）
+tf(document.getElementById("sec3"), [
+  {answer:"F"},
+  {answer:"F"},
+  {answer:"T"},
+  {answer:"F"},
+  {answer:"T"}
+]);
+
+// 四、最佳回應
+mc(document.getElementById("sec4"), [
+  {options:["I was training my dog.","No, I wasn't.","Did you stay up last night?"], correct:0},
+  {options:["Just wait and see.","I'm so proud of her.","I'm ready to win."], correct:0},
+  {options:["She is popular.","She wants to be an actress.","She was reading a book."], correct:1},
+  {options:["I made a lot of funny videos.","I often stay up late.","Making videos is interesting to me."], correct:2},
+  {options:["We don't like the plan.","I am a famous song writer.","I like going camping."], correct:2}
+]);
+
+// 五、選圖片（見上方附圖 1~5）
+mc(document.getElementById("sec5"), [
+  {q:"圖1", options:["A","B","C"], correct:0},
+  {q:"圖2", options:["A","B","C"], correct:0},
+  {q:"圖3", options:["A","B","C"], correct:2},
+  {q:"圖4", options:["A","B","C"], correct:0},
+  {q:"圖5", options:["A","B","C"], correct:2}
+]);
+
+// 六、看圖選答（見上方附圖 1~5）
+mc(document.getElementById("sec6"), [
+  {q:"圖1", options:["A","B","C"], correct:1},
+  {q:"圖2", options:["A","B","C"], correct:2},
+  {q:"圖3", options:["A","B","C"], correct:0},
+  {q:"圖4", options:["A","B","C"], correct:0},
+  {q:"圖5", options:["A","B","C"], correct:2}
+]);
+
+// 七、對話+問題
+mc(document.getElementById("sec7"), [
+  {options:["Eat the chicken.","Sing a song.","Talk to his mom."], correct:0},
+  {options:["The man.","The man's sister.","The woman's mother."], correct:2},
+  {options:["11:10.","10:50.","10:45."], correct:2},
+  {options:["It's a book.","It's a song.","It's a movie."], correct:2},
+  {options:["Because A-fu teaches English in a special way.","Because A-fu is a famous YouTuber.","Because A-fu can tell many stories in English."], correct:0}
+]);
+
+// 八、較長短文對話
+mc(document.getElementById("sec8"), [
+  {q:"【A】What does Wendy want to be in the future?", options:["A singer.","A teacher.","A police officer."], correct:2},
+  {q:"Why does Nick help Wendy with her dream?", options:["He is her friend.","He had the same dream before.","He wants to join the camp with her."], correct:1},
+  {q:"Which is true?", options:["Nick plans to teach singing at the summer camp.","Nick is a famous singer.","Nick and Wendy are father and daughter."], correct:2},
+  {q:"【B】Where can people listen to Paul's songs?", options:["On the Internet.","In his books.","On TV."], correct:0},
+  {q:"What is NOT in Paul's songs?", options:["His classmates.","His pets.","Stories in picture books."], correct:1},
+  {q:"【C】What happened to the kid?", options:["She got some money from a man.","She was sick and had a serious headache.","A man took her away on her way home."], correct:2},
+  {q:"Which is true?", options:["The tall man is a police officer.","The woman wants to help the kid.","The kid's parents have no money."], correct:1},
+  {q:"【D】Who was talking with Mrs. Lee before dinner?", options:["The woman.","The man.","Mr. Lee."], correct:1},
+  {q:"Where is the phone?", options:["It is in the dining room.","It is in the living room.","It is in the bathroom."], correct:2},
+  {q:"Which is true?", options:["The man never lost his phone before.","The woman helped the man find his phone.","The woman saw the phone in the dining room when she came home."], correct:1}
+]);
+</script>
+<script>window.EXAM_META = {version:"A卷", examLabel:"第8回"};</script>
+<script src="../sync.js"></script>
+</body>
+</html>
