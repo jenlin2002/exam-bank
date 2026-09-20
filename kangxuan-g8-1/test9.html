@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>段考題庫｜第9回 - Lesson 5</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@500;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#faf6ec;
+    --paper-line:#e3dcc8;
+    --ink:#26332b;
+    --ink-soft:#5b6b5f;
+    --chalk-green:#2f4538;
+    --chalk-green-2:#3d5a48;
+    --pen-red:#b8433a;
+    --pen-red-soft:#f4dedb;
+    --ok-green:#3f7d52;
+    --ok-green-soft:#dfeee1;
+    --gold:#b5842a;
+    --radius:10px;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:"Noto Sans TC",sans-serif;
+    line-height:1.7;
+  }
+  header.hero{
+    background:var(--chalk-green);
+    color:#eef2ea;
+    padding:28px 20px 40px;
+    position:relative;
+  }
+  header.hero::after{
+    content:"";
+    position:absolute;
+    left:0; right:0; bottom:-1px;
+    height:14px;
+    background:repeating-linear-gradient(90deg,var(--paper) 0 18px, transparent 18px 20px);
+  }
+  .hero-inner{max-width:880px;margin:0 auto;}
+  .breadcrumb a{color:#cfe0d1;text-decoration:none;font-size:14px;}
+  .breadcrumb a:hover{text-decoration:underline;}
+  h1{
+    font-family:"Noto Serif TC",serif;
+    font-weight:700;
+    font-size:clamp(24px,4vw,34px);
+    margin:10px 0 6px;
+  }
+  .subtitle{color:#cfe0d1;font-size:15px;margin:0;}
+  main{max-width:880px;margin:0 auto;padding:28px 20px 80px;}
+
+  .controls{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:22px;
+  }
+  .mode-toggle{display:flex;border:2px solid var(--chalk-green);border-radius:999px;overflow:hidden;}
+  .mode-toggle button{
+    background:transparent;border:none;padding:8px 16px;font-size:14px;font-weight:700;
+    color:var(--chalk-green);cursor:pointer;font-family:"Noto Sans TC",sans-serif;
+  }
+  .mode-toggle button.active{background:var(--gold);color:#fff;}
+  .mode-toggle button:disabled{opacity:.4;cursor:not-allowed;}
+
+  .score-bar{
+    display:none;
+    align-items:center;
+    justify-content:space-between;
+    background:#fff;
+    border:1px solid var(--paper-line);
+    border-left:5px solid var(--gold);
+    border-radius:var(--radius);
+    padding:12px 18px;
+    margin-bottom:22px;
+    font-size:14px;
+  }
+  .score-bar.show{display:flex;}
+  .score-bar strong{font-size:18px;color:var(--gold);}
+  .score-bar button{
+    background:none;border:1px solid var(--ink-soft);color:var(--ink-soft);
+    border-radius:6px;padding:6px 12px;font-size:13px;cursor:pointer;
+  }
+
+  section.block{
+    background:#fff;
+    border:1px solid var(--paper-line);
+    border-radius:var(--radius);
+    padding:22px 22px 26px;
+    margin-bottom:20px;
+  }
+  .block h2{
+    font-family:"Noto Serif TC",serif;
+    font-size:19px;
+    margin:0 0 4px;
+    color:var(--chalk-green);
+  }
+  .block .meta{color:var(--ink-soft);font-size:13px;margin:0 0 16px;}
+
+  .q{margin-bottom:18px;padding-bottom:16px;border-bottom:1px dashed var(--paper-line);}
+  .q:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0;}
+  .q-text{font-size:15.5px;margin-bottom:8px;}
+  .q-num{color:var(--gold);font-weight:700;margin-right:4px;}
+
+  .opts{display:grid;gap:8px;}
+  .opt{
+    display:flex;gap:8px;align-items:flex-start;
+    border:1.5px solid var(--paper-line);
+    border-radius:8px;
+    padding:9px 12px;
+    cursor:pointer;
+    font-size:14.5px;
+    background:#fffdf8;
+  }
+  .opt:hover{border-color:var(--chalk-green-2);}
+  .opt.selected{border-color:var(--chalk-green-2);background:#eef3ea;}
+  .opt.correct{border-color:var(--ok-green);background:var(--ok-green-soft);}
+  .opt.wrong{border-color:var(--pen-red);background:var(--pen-red-soft);}
+  .opt .tag{font-weight:700;color:var(--ink-soft);}
+  .opt.correct .tag{color:var(--ok-green);}
+  .opt.wrong .tag{color:var(--pen-red);}
+  .opt.disabled{cursor:default;}
+
+  .explain{
+    margin-top:8px;font-size:13.5px;color:var(--ink-soft);
+    background:#f5f2e8;border-radius:6px;padding:8px 12px;display:none;
+  }
+  .explain.show{display:block;}
+
+  input.blank, input.line-answer{
+    font-family:"Noto Sans TC",sans-serif;
+    border:none;border-bottom:2px solid var(--chalk-green-2);
+    background:transparent;font-size:15px;padding:2px 4px;
+    width:150px;
+  }
+  input.line-answer{width:100%;margin-top:4px;}
+  .check-row{display:flex;gap:8px;margin-top:6px;flex-wrap:wrap;align-items:center;}
+  .mini-btn{
+    background:var(--chalk-green);color:#fff;border:none;border-radius:6px;
+    padding:6px 14px;font-size:13px;cursor:pointer;font-family:"Noto Sans TC",sans-serif;
+  }
+  .mini-btn.secondary{background:transparent;color:var(--chalk-green);border:1.5px solid var(--chalk-green);}
+  .feedback{font-size:13.5px;font-weight:700;}
+  .feedback.ok{color:var(--ok-green);}
+  .feedback.no{color:var(--pen-red);}
+  .answer-reveal{
+    display:none;margin-top:6px;font-size:14px;color:var(--chalk-green-2);
+    background:#eef3ea;border-radius:6px;padding:8px 12px;
+  }
+  .answer-reveal.show{display:block;}
+
+  .passage{
+    background:#f5f2e8;border-radius:8px;padding:14px 16px;margin-bottom:14px;
+    font-size:14.5px;white-space:pre-line;
+  }
+  .passage-label{font-weight:700;color:var(--chalk-green);margin-bottom:4px;display:block;}
+  .data-table{width:100%;border-collapse:collapse;margin-top:10px;font-size:13px;background:#fff;}
+  .data-table th, .data-table td{border:1px solid var(--paper-line);padding:5px 6px;text-align:center;}
+  .data-table th{background:#eef3ea;color:var(--chalk-green);}
+  .msg-box{background:#fff;border:1px solid var(--paper-line);border-radius:8px;padding:10px 14px;font-style:italic;margin-bottom:10px;}
+  .itin-table{width:100%;border-collapse:collapse;margin-top:6px;font-size:13.5px;background:#fff;}
+  .itin-table th, .itin-table td{border:1px solid var(--paper-line);padding:8px 10px;text-align:left;vertical-align:top;}
+  .itin-table th{background:#eef3ea;color:var(--chalk-green);width:70px;}
+
+  .footer-link{
+    display:block;text-align:center;margin-top:30px;color:var(--chalk-green);
+    text-decoration:none;font-weight:700;font-size:14px;
+  }
+  .footer-link:hover{text-decoration:underline;}
+
+  @media print{
+    header.hero, .controls, .score-bar, .check-row, .mini-btn, .footer-link{display:none !important;}
+    body{background:#fff;}
+    section.block{border:none;box-shadow:none;padding:8px 0;margin-bottom:14px;}
+    .opt.correct{background:none;border:none;font-weight:700;}
+    .opt.correct::after{content:" ← 正解";color:var(--pen-red);}
+    .opt{border:none;padding:2px 0;}
+    .explain{display:block !important;background:none;padding:2px 0;}
+    .answer-reveal{display:block !important;background:none;padding:2px 0;}
+    main{max-width:100%;padding:0 24px;}
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="breadcrumb"><a href="https://jenlin2002.github.io/">🏠 回總目錄</a> ／ <a href="../kangxuan-g8-1.html" style="color:#cfe0d1;">段考題庫</a></div>
+    <h1>第9回・Lesson 5</h1>
+    <p class="subtitle">How Long Will We Stay in Bangkok?｜康軒版八年級英語（三）Ａ卷</p>
+  </div>
+</header>
+
+<main>
+  <div class="controls">
+    <div class="mode-toggle">
+      <button id="quizModeBtn" class="active">✏️ 測驗模式</button>
+      <button id="printModeBtn" disabled title="完成測驗並送出成績後才能查看">🖨️ 完整題目與解答（送出成績後解鎖）</button>
+    </div>
+  </div>
+
+  <div class="score-bar" id="scoreBar">
+    <div>目前得分：<strong id="scoreText">0 / 0</strong>（僅計算選擇題與字彙填空）</div>
+    <button id="resetBtn">重新作答</button>
+  </div>
+
+  <div id="content"></div>
+
+  <a class="footer-link" href="../kangxuan-g8-1.html">← 回段考題庫總覽</a>
+</main>
+
+<script>
+
+window.EXAM_META = { version: "A卷", examLabel: "第9回" };
+const DATA = {
+  sections: [
+    {
+      type: "vocab",
+      title: "一、文意字彙",
+      meta: "20分，每題2分",
+      items: [
+        {q:"Don't use your cellphone d___g the test. It's forbidden（禁止的）.", answer:"during"},
+        {q:"Emily had much housework to do. She didn't l___e her house until 2 p.m.", answer:"leave"},
+        {q:"Our school has one t___d students. There are 320 boys and 680 girls in our school.", answer:"thousand"},
+        {q:"I must go to the s___t after work. I need some flour and eggs to make pancakes.", answer:"supermarket"},
+        {q:"It was a w___l birthday party. Everyone had a good time last night.", answer:"wonderful"},
+        {q:"Do you want to make dinner at home or go to a restaurant? You have to d___e now.", answer:"decide"},
+        {q:"We love this h___l because the room is big, and the views（風景）outside are beautiful.", answer:"hotel"},
+        {q:"My dad worked at the p___t office for over thirty years. He was a hard-working（勤奮的）mail carrier.", answer:"post"},
+        {q:"Ruby: Please r___r to buy some salt today. Tim: OK, I'll do that. Don't worry.", answer:"remember"},
+        {q:"My mom sometimes goes to the t___e near our house and prays（祈禱）for the family.", answer:"temple"}
+      ]
+    },
+    {
+      type:"mc",
+      title:"二、語法測驗",
+      meta:"24分，每題2分",
+      items:[
+        {q:"Ed: Are you going to visit your uncle tomorrow? Jo: Yes, I ___, but Ben ___. He has a date.",options:["am; isn't","am; is","do; doesn't","do; does"],correct:0},
+        {q:"This winter vacation, my family and I are going on a trip ___ Korea.",options:["at","on","to","with"],correct:2},
+        {q:"Lisa's going to hike Mt. Jade with her classmates ___. They can't wait to get close to nature.",options:["yesterday","two days ago","this weekend","last Saturday"],correct:2},
+        {q:"Jane is good at swimming. It only ___ her 30 seconds to swim 50 meters.",options:["spends","takes","uses","makes"],correct:1},
+        {q:"The heavy coat ___ Gigi NT$10,000. It was stylish（時髦的）but not cheap.",options:["took","spent","cost","paid"],correct:2},
+        {q:"Sally will go camping with her friends this weekend, but I ___.",options:["am not","will","don't","won't"],correct:3},
+        {q:"Jay spends a lot of time ___ video games. He never does housework.",options:["playing","plays","to play","play"],correct:0},
+        {q:"Mom: Ben, can you do the dishes now? Ben: I'm studying now, but I ___ it later.",options:["was doing","will do","do","is going to do"],correct:1},
+        {q:"It took Ann four hours ___ the small birthday cake. She will just buy one next time.",options:["to making","makes","make","to make"],correct:3},
+        {q:"Lu: ___ you upload your video to YouTube tonight? Jo: Yes, I ___. I want more people to see it.",options:["Will; will","Are; am","Will; won't","Were; was"],correct:0},
+        {q:"Eva and her sister ___ camp next Sunday, so they won't be home that day.",options:["were going to","are going to","will be","were to"],correct:1},
+        {q:"Tim: ___ will ___ take to walk to the park? Elsa: About twenty minutes.",options:["How often; you","How often; it","How much; you","How long; it"],correct:3}
+      ]
+    },
+    {
+      type:"mc",
+      title:"三、完成句子與對話",
+      meta:"6分，每題2分",
+      items:[
+        {q:"Albert: Can you help me move the box? Kurt: ___ Where do you plan to put it?",options:["No, I won't.","Oh, I see.","Sure, no problem.","You can take a look."],correct:2},
+        {q:"Al: I love this movie! Ivy: ___ It's interesting, and the actresses in it are all beautiful.",options:["I'm a fan of movies.","Same here.","Well, almost.","Good job!"],correct:1},
+        {q:"Felix: I'm going to Tokyo this winter vacation. Jill: ___ Four days or five days?",options:["How often do you visit there?","Who will go there with you?","How long will you stay there?","Why will you visit there?"],correct:2}
+      ]
+    },
+    {
+      type:"guided",
+      title:"四、依提示作答",
+      meta:"15分，每題3分",
+      items:[
+        {prompt:"Jane is going to sing a song tomorrow.",hint:"（用will改寫句子）",answer:"Jane will sing a song tomorrow."},
+        {prompt:"I spent NT$1,000 on the blanket.",hint:"（用虛主詞It開頭改寫句子）",answer:"It cost me NT$1,000 to buy the blanket."},
+        {prompt:"Lynn took a trip to the USA last month.",hint:"（將last改為next並改寫句子）",answer:"Lynn will / is going to take a trip to the USA next month."},
+        {prompt:"They will go to church this Sunday morning.",hint:"（改為否定疑問句）",answer:"Won't they go to church this Sunday morning?"},
+        {prompt:"Eddie spent three days reading the book.",hint:"（用虛主詞It開頭改寫句子）",answer:"It took Eddie three days to read the book."}
+      ]
+    },
+    {
+      type:"translation",
+      title:"五、整句式翻譯",
+      meta:"15分，每題3分",
+      items:[
+        {zh:"Maggie 的兒子今年九月將上小學。（... is...）",answer:"Maggie's son is going to (go to) elementary school this September."},
+        {zh:"在新年的第二天，我們會待在東京。（... will...）",answer:"On the second day of New Year, we will stay in Tokyo."},
+        {zh:"我現在在書店找一本書。我等等會回電話給你。（... will...）",answer:"I'm looking for a book in the bookstore now. I will call you back later."},
+        {zh:"我們明天下午四點將要前往日本。",answer:"We're going to leave for Japan at 4 p.m. tomorrow."},
+        {zh:"你一定要帶足夠的錢在身上。在那個有名的市場，你只能付現。",answer:"You must bring enough money with you. You can only pay in cash in that famous market."}
+      ]
+    },
+    {
+      type:"cloze",
+      title:"六、克漏字測驗",
+      meta:"10分，每題2分",
+      passage:"Cora: Hey, Irene! David, Linda, and I are going to the street market this Saturday morning. Can you join us?\nIrene: Sorry. My dad asked me to clean the house because my uncle ___1___ us this Sunday.\nCora: OK, I see. Well, then ___2___ will it take you to finish the cleaning?\nIrene: About 1.5 to 2 hours.\nCora: Then you can have lunch with us. After that, can you go to the ___3___ with me?\nIrene: What? You seldom go shopping. Let me guess. Hmm… Valentine's Day is on Sunday. ___4___ you going to buy something for Eddie?\nCora: No. My sister's eighteenth birthday is coming. I decided ___5___ a special gift for her.\nIrene: Nice. OK, I will go with you.\nCora: Great! Thank you. The lunch is on me!\n\n【字詞】Valentine's Day 情人節",
+      items:[
+        {options:["visit","visits","visited","will visit"],correct:3},
+        {options:["how often","how many","how long","how much"],correct:2},
+        {options:["department store","church","elementary school","bank"],correct:0},
+        {options:["Will","Are","Did","Can"],correct:1},
+        {options:["buy","buying","to buy","not buy"],correct:2}
+      ]
+    },
+    {
+      type:"reading",
+      title:"七、閱讀測驗",
+      meta:"10分，每題2分",
+      passages:[
+        {
+          label:"【A】",
+          text:"Jennifer's best friend, Melody, just moved to a new house in Church Town last month, and Jennifer plans to visit her this Saturday. She will take a train to Church Town, and Melody will pick her up at the station. Now, Jennifer is reading the timetable to check the trains from her town, Flower Town, to Church Town.",
+          table:{
+            title:"",
+            head:["Station / Train","101","201","102","202","203","104"],
+            rows:[
+              ["Flower Town","9:20","9:35","10:00","10:20","10:50","11:30"],
+              ["Moon Lake","-","10:15","-","11:00","11:30","-"],
+              ["New Town","10:20","10:40","-","11:25","11:55","12:30"],
+              ["Old Town","-","10:55","-","11:40","12:10","-"],
+              ["Star Pond","-","11:15","-","12:00","12:30","-"],
+              ["Church Town","10:50","11:35","11:20","12:20","12:50","13:00"]
+            ],
+            note:"【字詞】best 最好的　timetable 時刻表"
+          },
+          items:[
+            {q:"<div class=\"msg-box\">Hi, Melody. Can you pick me up at about 11:40? After I finish my English class at 9:40, I will go to the train station directly.<br>Jennifer</div>Which train does Jennifer plan to take?",options:["Train 101.","Train 202.","Train 102.","Train 201."],correct:2},
+            {q:"Melody's dad is at Star Pond Station, and he's going to Church Town Station. It's 11:10 now, and he's going to take the next train. How long will it take him to get to Church Town Station?",options:["About 40 minutes.","About 2 hours.","About 1.5 hours.","About 20 minutes."],correct:3},
+            {q:"Which is true?",options:["All trains stop at New Town Station.","Melody moved to Church Town one year ago.","Jennifer will go to Melody's place on the weekend.","There are two stations between Moon Lake Station and New Town Station."],correct:2}
+          ]
+        },
+        {
+          label:"【B】",
+          text:"Dear Grandma,\nHow are you doing? I always wanted to visit Kiki Island, but I never had a chance. Finally, I can realize my dream this coming long weekend. I will go there with my friend, Sara. We plan to stay on the island for three days. Here is my plan, and I can't wait to visit the beautiful island!\nSusan\n\n【字詞】chance 機會　sights 景點　whole 整個的　souvenir 紀念品",
+          table2:true,
+          items:[
+            {q:"What does \"realize\" mean here?",options:["To find a dream job.","To lose an important thing.","To learn some true facts.","To make one's dream come true."],correct:3},
+            {q:"Which is NOT true?",options:["It'll be Susan's first visit to Kiki Island.","Sara might enjoy hot springs during the trip.","There isn't a night market on Kiki Island.","Susan will go to the gift shops on the third day."],correct:2}
+          ]
+        }
+      ]
+    }
+
+  ]
+};
+
+let currentMode = "quiz"; // quiz | print
+
+const contentEl = document.getElementById("content");
+const scoreBar = document.getElementById("scoreBar");
+const scoreText = document.getElementById("scoreText");
+
+function render(){
+  window.examAnswersRevealed = false;
+  contentEl.innerHTML = "";
+  DATA.sections.forEach((sec, si)=> contentEl.appendChild(renderSection(sec, si)));
+  if(currentMode==="quiz"){
+    scoreBar.classList.add("show");
+    updateScore();
+  } else {
+    scoreBar.classList.remove("show");
+    contentEl.querySelectorAll(".explain").forEach(e=>e.classList.add("show"));
+    contentEl.querySelectorAll(".answer-reveal").forEach(e=>e.classList.add("show"));
+    contentEl.querySelectorAll(".opt").forEach(o=>o.classList.add("disabled"));
+    contentEl.querySelectorAll(".opt.is-correct").forEach(o=>o.classList.add("correct"));
+  }
+}
+
+function renderTable(t){
+  if(!t) return "";
+  const headHtml = `<tr>${t.head.map(h=>`<th>${h}</th>`).join("")}</tr>`;
+  const rowsHtml = t.rows.map(r=>`<tr>${r.map((c,ci)=>ci===0?`<th>${c}</th>`:`<td>${c}</td>`).join("")}</tr>`).join("");
+  return `${t.title ? `<div style="font-weight:700;text-align:center;color:var(--chalk-green);margin-bottom:6px;">${t.title}</div>`:""}
+    <table class="data-table"><thead>${headHtml}</thead><tbody>${rowsHtml}</tbody></table>
+    ${t.note ? `<div style="margin-top:8px;color:var(--ink-soft);font-size:13px;">${t.note}</div>` : ""}`;
+}
+
+function renderItinerary(){
+  return `<table class="itin-table">
+    <tr><th>Day 1</th><td>・take a boat to Kiki Island<br>・visit the famous sights<br>・go for a walk on the beach</td></tr>
+    <tr><th>Day 2</th><td>・spend the whole day playing at the beach<br>・enjoy hot springs in the evening<br>・go to the night market</td></tr>
+    <tr><th>Day 3</th><td>・buy some souvenirs at the gift shops<br>・go home by boat</td></tr>
+  </table>`;
+}
+
+function renderSection(sec, si){
+  const block = document.createElement("section");
+  block.className = "block";
+  block.innerHTML = `<h2>${sec.title}</h2><p class="meta">${sec.meta}</p>`;
+
+  if(sec.type==="vocab"){
+    sec.items.forEach((it,i)=>{
+      const q = document.createElement("div");
+      q.className = "q";
+      q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q}
+        &nbsp; <input type="text" class="blank" data-answer="${it.answer}" placeholder="填入單字">
+        <span class="feedback"></span></div>
+        <div class="answer-reveal">正解：${it.answer}</div>`;
+      const input = q.querySelector("input");
+      input.addEventListener("input", ()=>checkBlank(input));
+      block.appendChild(q);
+    });
+  }
+
+  else if(sec.type==="mc"){
+    sec.items.forEach((it,i)=>{
+      const q = document.createElement("div");
+      q.className = "q";
+      const optsHtml = it.options.map((op,oi)=>`
+        <div class="opt" data-idx="${oi}" data-correct="${oi===it.correct}">
+          <span class="tag">(${String.fromCharCode(65+oi)})</span><span>${op}</span>
+        </div>`).join("");
+      q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q}</div>
+        <div class="opts">${optsHtml}</div>
+        ${it.explain ? `<div class="explain">${it.explain}</div>` : ""}`;
+      q.querySelectorAll(".opt").forEach(optEl=>{
+        if(optEl.dataset.correct==="true") optEl.classList.add("is-correct");
+        optEl.addEventListener("click", ()=>selectOption(q, optEl));
+      });
+      block.appendChild(q);
+    });
+  }
+
+  else if(sec.type==="guided" || sec.type==="translation"){
+    sec.items.forEach((it,i)=>{
+      const q = document.createElement("div");
+      q.className = "q";
+      const prompt = sec.type==="guided" ? `${it.prompt} <em style="color:var(--ink-soft);font-style:normal;">${it.hint}</em>` : it.zh;
+      q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${prompt}</div>
+        <input type="text" class="line-answer" placeholder="請輸入英文句子">
+        <div class="check-row"><button class="mini-btn secondary reveal-btn" style="display:none;">對答案</button></div>
+        <div class="answer-reveal">正解：${it.answer}</div>`;
+      q.querySelector(".reveal-btn").addEventListener("click", (e)=>{
+        q.querySelector(".answer-reveal").classList.add("show");
+      });
+      block.appendChild(q);
+    });
+  }
+
+  else if(sec.type==="cloze"){
+    const passageDiv = document.createElement("div");
+    passageDiv.className = "passage";
+    passageDiv.textContent = sec.passage;
+    block.appendChild(passageDiv);
+    sec.items.forEach((it,i)=>{
+      const q = document.createElement("div");
+      q.className = "q";
+      const optsHtml = it.options.map((op,oi)=>`
+        <div class="opt" data-idx="${oi}" data-correct="${oi===it.correct}">
+          <span class="tag">(${String.fromCharCode(65+oi)})</span><span>${op}</span>
+        </div>`).join("");
+      q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span></div><div class="opts">${optsHtml}</div>`;
+      q.querySelectorAll(".opt").forEach(optEl=>{
+        if(optEl.dataset.correct==="true") optEl.classList.add("is-correct");
+        optEl.addEventListener("click", ()=>selectOption(q, optEl));
+      });
+      block.appendChild(q);
+    });
+  }
+
+  else if(sec.type==="reading"){
+    sec.passages.forEach(p=>{
+      const passageDiv = document.createElement("div");
+      passageDiv.className = "passage";
+      passageDiv.innerHTML = `${p.label ? `<span class="passage-label">${p.label}</span>`:""}${p.text}${p.image ? `<img src="${p.image}" alt="附圖" style="width:100%;max-width:520px;display:block;margin:10px auto 0;border-radius:8px;border:1px solid var(--paper-line);">`:""}${p.table ? renderTable(p.table) : ""}${p.table2 ? renderItinerary() : ""}`;
+      block.appendChild(passageDiv);
+      p.items.forEach((it,i)=>{
+        const q = document.createElement("div");
+        q.className = "q";
+        const optsHtml = it.options.map((op,oi)=>`
+          <div class="opt" data-idx="${oi}" data-correct="${oi===it.correct}">
+            <span class="tag">(${String.fromCharCode(65+oi)})</span><span>${op}</span>
+          </div>`).join("");
+        q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q}</div>
+          <div class="opts">${optsHtml}</div>`;
+        q.querySelectorAll(".opt").forEach(optEl=>{
+          if(optEl.dataset.correct==="true") optEl.classList.add("is-correct");
+          optEl.addEventListener("click", ()=>selectOption(q, optEl));
+        });
+        block.appendChild(q);
+      });
+    });
+  }
+
+  return block;
+}
+
+function selectOption(qEl, optEl){
+  if(currentMode!=="quiz") return;
+  if(qEl.dataset.answered==="true") return;
+  qEl.dataset.answered = "true";
+  qEl.querySelectorAll(".opt").forEach(o=>o.classList.add("disabled"));
+  optEl.classList.add("selected");
+  const correctOpt = qEl.querySelector('.opt[data-correct="true"]');
+  qEl.dataset.studentAnswer = optEl.textContent.trim();
+  qEl.dataset.correctAnswer = correctOpt ? correctOpt.textContent.trim() : "";
+  qEl.dataset.isCorrect = (optEl.dataset.correct==="true") ? "true" : "false";
+  updateScore();
+}
+
+function checkBlank(input){
+  const val = input.value.trim().toLowerCase();
+  const ans = input.dataset.answer.trim().toLowerCase();
+  const qEl = input.closest(".q");
+  if(val.length===0){ if(qEl) delete qEl.dataset.studentAnswer; updateScore(); return; }
+  if(qEl){
+    qEl.dataset.studentAnswer = input.value.trim();
+    qEl.dataset.correctAnswer = input.dataset.answer;
+    qEl.dataset.isCorrect = (val===ans) ? "true" : "false";
+  }
+  updateScore();
+}
+
+function updateScore(){
+  let total = 0, answered = 0, correct = 0;
+  contentEl.querySelectorAll(".q").forEach(q=>{
+    const gradable = q.querySelector(".opts") || q.querySelector("input.blank");
+    if(!gradable) return;
+    total++;
+    if(q.dataset.studentAnswer !== undefined){
+      answered++;
+      if(q.dataset.isCorrect === "true") correct++;
+    }
+  });
+  if(window.examAnswersRevealed){
+    scoreText.textContent = `${correct} / ${total}`;
+  } else {
+    scoreText.textContent = `已作答 ${answered} / ${total} 題`;
+  }
+}
+window.updateScore = updateScore;
+
+document.getElementById("resetBtn").addEventListener("click", render);
+document.getElementById("quizModeBtn").addEventListener("click", ()=>{
+  currentMode = "quiz";
+  document.getElementById("quizModeBtn").classList.add("active");
+  document.getElementById("printModeBtn").classList.remove("active");
+  render();
+});
+document.getElementById("printModeBtn").addEventListener("click", ()=>{
+  if(document.getElementById("printModeBtn").disabled) return;
+  currentMode = "print";
+  document.getElementById("printModeBtn").classList.add("active");
+  document.getElementById("quizModeBtn").classList.remove("active");
+  render();
+});
+
+window.unlockPrintMode = function(){
+  document.getElementById("printModeBtn").disabled = false;
+};
+
+render();
+</script>
+<script src="../sync.js"></script>
+</body>
+</html>
