@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>段考題庫｜歷史第6回 - 第3~4課總複習（A卷）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@500;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#faf6ec;
+    --paper-line:#e3dcc8;
+    --ink:#26332b;
+    --ink-soft:#5b6b5f;
+    --chalk-green:#2f4538;
+    --chalk-green-2:#3d5a48;
+    --pen-red:#b8433a;
+    --pen-red-soft:#f4dedb;
+    --ok-green:#3f7d52;
+    --ok-green-soft:#dfeee1;
+    --gold:#b5842a;
+    --radius:10px;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:"Noto Sans TC",sans-serif;
+    line-height:1.7;
+  }
+  header.hero{
+    background:var(--chalk-green);
+    color:#eef2ea;
+    padding:28px 20px 40px;
+    position:relative;
+  }
+  header.hero::after{
+    content:"";
+    position:absolute;
+    left:0; right:0; bottom:-1px;
+    height:14px;
+    background:repeating-linear-gradient(90deg,var(--paper) 0 18px, transparent 18px 20px);
+  }
+  .hero-inner{max-width:880px;margin:0 auto;}
+  .breadcrumb a{color:#cfe0d1;text-decoration:none;font-size:14px;}
+  .breadcrumb a:hover{text-decoration:underline;}
+  h1{
+    font-family:"Noto Serif TC",serif;
+    font-weight:700;
+    font-size:clamp(24px,4vw,34px);
+    margin:10px 0 6px;
+  }
+  .subtitle{color:#cfe0d1;font-size:15px;margin:0;}
+  main{max-width:880px;margin:0 auto;padding:28px 20px 80px;}
+
+  .controls{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:22px;
+  }
+  .mode-toggle{display:flex;border:2px solid var(--chalk-green);border-radius:999px;overflow:hidden;}
+  .mode-toggle button{
+    background:transparent;border:none;padding:8px 16px;font-size:14px;font-weight:700;
+    color:var(--chalk-green);cursor:pointer;font-family:"Noto Sans TC",sans-serif;
+  }
+  .mode-toggle button.active{background:var(--gold);color:#fff;}
+  .mode-toggle button:disabled{opacity:.4;cursor:not-allowed;}
+
+  .score-bar{
+    display:none;
+    align-items:center;
+    justify-content:space-between;
+    background:#fff;
+    border:1px solid var(--paper-line);
+    border-left:5px solid var(--gold);
+    border-radius:var(--radius);
+    padding:12px 18px;
+    margin-bottom:22px;
+    font-size:14px;
+  }
+  .score-bar.show{display:flex;}
+  .score-bar strong{font-size:18px;color:var(--gold);}
+  .score-bar button{
+    background:none;border:1px solid var(--ink-soft);color:var(--ink-soft);
+    border-radius:6px;padding:6px 12px;font-size:13px;cursor:pointer;
+  }
+
+  section.block{
+    background:#fff;
+    border:1px solid var(--paper-line);
+    border-radius:var(--radius);
+    padding:22px 22px 26px;
+    margin-bottom:20px;
+  }
+  .block h2{
+    font-family:"Noto Serif TC",serif;
+    font-size:19px;
+    margin:0 0 4px;
+    color:var(--chalk-green);
+  }
+  .block .meta{color:var(--ink-soft);font-size:13px;margin:0 0 16px;}
+
+  .q{margin-bottom:18px;padding-bottom:16px;border-bottom:1px dashed var(--paper-line);}
+  .q:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0;}
+  .q-text{font-size:15.5px;margin-bottom:8px;}
+  .q-num{color:var(--gold);font-weight:700;margin-right:4px;}
+
+  .opts{display:grid;gap:8px;}
+  .opt{
+    display:flex;gap:8px;align-items:flex-start;
+    border:1.5px solid var(--paper-line);
+    border-radius:8px;
+    padding:9px 12px;
+    cursor:pointer;
+    font-size:14.5px;
+    background:#fffdf8;
+  }
+  .opt:hover{border-color:var(--chalk-green-2);}
+  .opt.selected{border-color:var(--chalk-green-2);background:#eef3ea;}
+  .opt.correct{border-color:var(--ok-green);background:var(--ok-green-soft);}
+  .opt.wrong{border-color:var(--pen-red);background:var(--pen-red-soft);}
+  .opt .tag{font-weight:700;color:var(--ink-soft);}
+  .opt.correct .tag{color:var(--ok-green);}
+  .opt.wrong .tag{color:var(--pen-red);}
+  .opt.disabled{cursor:default;}
+
+  .passage{
+    background:#f5f2e8;border-radius:8px;padding:14px 16px;margin-bottom:14px;
+    font-size:14.5px;white-space:pre-line;
+  }
+  .passage-label{font-weight:700;color:var(--chalk-green);margin-bottom:4px;display:block;}
+
+  .footer-link{
+    display:block;text-align:center;margin-top:30px;color:var(--chalk-green);
+    text-decoration:none;font-weight:700;font-size:14px;
+  }
+  .footer-link:hover{text-decoration:underline;}
+
+  @media print{
+    header.hero, .controls, .score-bar, .mini-btn, .footer-link{display:none !important;}
+    body{background:#fff;}
+    section.block{border:none;box-shadow:none;padding:8px 0;margin-bottom:14px;}
+    .opt.correct{background:none;border:none;font-weight:700;}
+    .opt.correct::after{content:" ← 正解";color:var(--pen-red);}
+    .opt{border:none;padding:2px 0;}
+    main{max-width:100%;padding:0 24px;}
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="breadcrumb"><a href="https://jenlin2002.github.io/">🏠 回總目錄</a> ／ <a href="../kangxuan-social-g8-1.html" style="color:#cfe0d1;">段考題庫</a></div>
+    <h1>歷史・第6回</h1>
+    <p class="subtitle">第3~4課 總複習｜康軒版八年級社會（三）Ａ卷</p>
+  </div>
+</header>
+
+<main>
+  <div class="controls">
+    <div class="mode-toggle">
+      <button id="quizModeBtn" class="active">✏️ 測驗模式</button>
+      <button id="printModeBtn" disabled title="完成測驗並送出成績後才能查看">🖨️ 完整題目與解答（送出成績後解鎖）</button>
+    </div>
+  </div>
+
+  <div class="score-bar" id="scoreBar">
+    <div>目前得分：<strong id="scoreText">0 / 0</strong>（僅計算選擇題）</div>
+    <button id="resetBtn">重新作答</button>
+  </div>
+
+  <div id="content"></div>
+
+  <a class="footer-link" href="../kangxuan-social-g8-1.html">← 回段考題庫總覽</a>
+</main>
+
+<script>
+
+window.EXAM_META = { version: "A卷", examLabel: "歷史第6回" };
+const DATA = {
+  sections: [
+    {
+      type:"mc",
+      title:"一、單題",
+      meta:"72%，每題3分",
+      items:[
+        {q:"中國歷史上的草原民族幾乎沒有自己撰寫的歷史，都是鄰邦或敵人的紀錄。但下列何者不但自己創寫歷史，還是第一個統一全中國的草原民族？",options:["匈奴","鮮卑","女真","蒙古"],correct:3},
+        {q:"西元1264年，忽必烈將燕京定名為中都，之後在中都東北郊興築新都城與宮殿。1272年，中都改名為大都；元朝統治期間，大都是全國政治、經濟與文化中心，也是國際大城市。大都應為右圖中何地？",image:"images/hist6/q2.png",options:["甲","乙","丙","丁"],correct:0},
+        {q:"此為唐、宋、元、明初在各海港設立的管理海上對外貿易之政府單位，其主要職責為檢查入港海船之貨物及徵稅，相當於今日的海關。此政府單位為何？",options:["洋行","市舶司","驛站","巡撫衙門"],correct:1},
+        {q:"「唐朝時，他們到廣州經商與定居；宋朝時，他們大量移居泉州，並在當地蓋清真寺；元朝時，他們因具有經商專長而被任命為處理財政的官員。」上述最可能是描述哪個族群與中國政權的關係？",options:["日本人","大秦人","阿拉伯商人","漢人海商"],correct:2},
+        {q:"四位同學正在討論「澶淵之盟」，何人的說法有誤？",image:"images/hist6/q5.png",options:["A","B","C","D"],correct:3},
+        {q:"北宋為了奪回燕雲十六州，曾有兩次北伐，但均以失敗告終。北宋這麼積極奪回燕雲十六州的目的為何？",options:["北方邊防洞開，無險可守","水源不足欲開發灌溉水源","這塊土地有豐富礦產資源","燕雲十六州是祖先發源地"],correct:0},
+        {q:"明朝中期後，中國開始栽種番薯、玉米等作物，這些作物傳入後，對中國造成的影響應該為何？",options:["中國主要透過外銷這些作物賺取白銀","使中國經濟重心開始出現南移的現象","紓解人口增加所引發的糧食不足問題","這些作物取代稻米成為中國人民主食"],correct:2},
+        {q:"下圖為十五世紀初中國某場海外行動的路線圖：",image:"images/hist6/q8.png",options:["吸引各國來華進行朝貢貿易","促成西方科技知識傳入中國","建立橫跨歐、亞兩大洲的帝國","佛教因而傳入朝鮮半島和日本"],correct:0},
+        {q:"西元1601年，他到中國拜見明朝皇帝，並獻上《聖經》、天帝圖像、珍珠鑲嵌十字架、《萬國圖志》、西洋琴、自鳴鐘等。隔年，他與明朝官員合作完成一幅中文版的世界地圖《坤輿萬國全圖》，並獻給皇帝。地圖上不僅以漢字標記歐洲地名，也可找到中國各省的名稱。上述「他」的身分最可能為何？",options:["日本使者","耶穌會神父","阿拉伯商人","長老教會牧師"],correct:1},
+        {q:"嘉爾在報告中引用右圖來說明中國某一時期政治局勢。由圖中內容判斷，嘉爾的報告應與下列哪個朝代最有關？",image:"images/hist6/q10.png",options:["唐朝","元朝","明朝","清朝"],correct:3},
+        {q:"研究中國科技史的英國專家李約瑟曾說：「每當人們在中國文獻中查找任何一種具體的科技史料時，往往會發現它的主要焦點就在★朝。」他曾研究這個朝代火藥的溯源、成分和性能、使用火藥的兵器。★應指何者？",options:["唐","宋","明","清"],correct:1},
+        {q:"一位威尼斯商人曾記載十三世紀中國「大可汗」轄下的郵務設施——從四面八方通達京城的郵路不計其數，沿路每隔25到30哩即設有一「站赤」，天下通國總計有站赤2萬5千餘處。所有往來的郵使到站皆有極好的食宿招待，也供給上好的乘騎。上述商人所描述的情形最可能出現在下列哪一時期？",options:["漢代","唐代","宋代","元代"],correct:3},
+        {q:"某個歷史網站上，有一段如右列的記載。這段文字所述情景應與下列何者最有關？",image:"images/hist6/q13.png",options:["張騫奉派出使西域","唐太宗擊滅東突厥","宋朝簽訂澶淵之盟","成吉思汗發動西征"],correct:3},
+        {q:"岳飛〈滿江紅〉：「靖康恥，猶未雪。臣子恨，何時滅！駕長車，踏破賀蘭山缺。壯志飢餐胡虜肉，笑談渴飲匈奴血。待從頭、收拾舊山河，朝天闕。」上述岳飛所感懷的恥辱及憾恨，應為哪一事件所致？",options:["北宋簽訂澶淵之盟","女真攻陷宋朝首都","匈奴俘虜漢人皇帝","蒙古南下入侵宋朝"],correct:1},
+        {q:"日本有一人工島名為「出島」，是鎖國時期，日本唯一對西方開放港口所在地。今日的出島已成為著名觀光景點，島上有荷蘭商館等遺蹟。欲參觀此景點，須前往下列何處？",options:["京都","東京","長崎","廣島"],correct:2},
+        {q:"彩英在《漫畫中國史》中，看到下圖的對話：",image:"images/hist6/q16.png",options:["蒙古發動西征","北宋對外關係","南宋對外關係","明朝朝貢體制"],correct:1},
+        {q:"明朝初年，中國曾實施海禁政策，限制外國人到中國沿海地區通商，並禁止民間私自出海。當時實施此政策的背景因素最可能為下列何者？",options:["防範倭寇對中國沿海的侵擾","斷絕臺灣鄭氏政權經濟命脈","禁止外國商人和傳教士來華","避免臺灣成為漢人叛亂基地"],correct:0},
+        {q:"珍榮在《明史》中讀到右列的記載。以此判斷，這段文字所述應為哪項措施的實行？",image:"images/hist6/q18.png",options:["禁教政策","海禁政策","坊市制度","朝貢貿易"],correct:3},
+        {q:"明代書籍《廣東新語》提及：「閩、粵所流通的銀兩，大多來自海外貿易商船。海外有一地呂宋(今菲律賓)出產銀礦。來自西洋各地的銀兩，也會轉運至呂宋，貿易往來頻繁，閩、粵商人常將呂宋的白銀運至廣州。」上述內容的背景與下列何者的關聯最密切？",options:["伊斯蘭教擴張","新航路的發現","海禁政策廢除","開港通商實施"],correct:1},
+        {q:"玫君將畢業旅行其中一個景點做成紀錄如下：",image:"images/hist6/q20.png",options:["長崎","澳門","馬尼拉","巴達維亞"],correct:2},
+        {q:"西元2018年考古學家發現契丹族大型聚落遺址，共發掘兩處墓群、大型房址以及陶瓷、金銀、琥珀、玻璃等器物。上述這個民族在歷史上曾建立哪個國家？",options:["金國","遼國","元朝","北魏"],correct:1},
+        {q:"一本人物傳記的簡介中提到：「他曾在白鹿洞書院講學，同時整理文獻，廣注典籍，集宋代理學之大成。以往儒學重視經書，他特意提高『四書』的地位，並為其作注解，為當時學術界的創舉。」以此判斷，這本傳記的名稱應為下列何者？",options:["《中國科學名人堂：畢昇》","《穿梭中亞的使者：張騫》","《神鬼奇航：航海家鄭和》","《新儒學一代宗師：朱熹》"],correct:3},
+        {q:"下圖為十六至十八世紀某商品的流通路線：",image:"images/hist6/q23.png",options:["白銀","茶葉","絲綢","香料"],correct:0},
+        {q:"宋元時期因為貿易興盛，為因應龐大的貿易需要，普遍使用紙幣。明朝初年，仍印製明寶鈔流通。但到了明朝中葉，卻開始使用白銀為支付貨幣，其主要原因為何？",options:["明朝中葉後，挖掘出大量的銀礦","外國商人要求中國使用紙幣交易","明朝實行海禁政策後貿易量萎縮","大航海時代，白銀大量流入中國"],correct:3}
+      ]
+    },
+    {
+      type:"reading",
+      title:"二、題組",
+      meta:"28%，每題4分",
+      passages:[
+        {
+          label:"(一)",
+          text:"此朝代後期，因為皇帝昏庸，權臣專政，導致政局不穩，連年戰爭與建設，使得賦稅繁重。政府為彌補財政赤字，無節制印製寶鈔，導致物價飛漲；加上政府的貴族官員對漢人與其他民族的壓迫，加深民族矛盾。最終在這位漢人將領率軍起事下，此朝代統治瓦解。請回答下列問題：",
+          items:[
+            {q:"文中描述的朝代應指下列何者？",options:["唐朝","宋朝","元朝","明朝"],correct:2},
+            {q:"最後率軍起事，讓此朝代瓦解的將領應是下列何者？",options:["岳飛","朱元璋","趙匡胤","忽必烈"],correct:1}
+          ]
+        },
+        {
+          label:"(二)",
+          text:"以下為中國歷史上某場對外活動的相關文獻記載：\n\n資料一：「明成祖疑惠帝亡海外，欲覓蹤跡；且欲耀兵異域，示中國富強。永樂三年(西元1405年)六月，命通使西洋。」\n資料二：「上命○○等統領官兵，駕使海船四十八艘，往諸番國開讀賞賜。是歲秋九月，自太倉劉家港開船，十月到福建長樂太平港泊。十二月，福建五虎門開洋，張十二帆，順風十晝夜，至占城國。」",
+          items:[
+            {q:"文中○○應填入下列何者最適當？",options:["岳飛","張騫","鄭和","徐光啟"],correct:2},
+            {q:"文中這場對外活動歷次航行所經之地，應不包含下列何者？",options:["越南","印尼","印度","紐西蘭"],correct:3},
+            {q:"關於這場活動歷次航行造成的影響，下列何者正確？",options:["伊斯蘭教傳入中國社會","中國造紙術輸出至西方","耶穌會傳教士陸續東來","有助於朝貢貿易的拓展"],correct:3}
+          ]
+        },
+        {
+          label:"(三)",
+          text:"以下為中國史上某作物起源的紀錄。請回答下列問題：\n\n資料一：東粵多薯……番薯近自呂宋(位於菲律賓)來，種植最易，生葉可肥豬，根可釀酒，切為粒，蒸曝貯之，是曰薯簦。\n資料二：按番薯種出海外呂宋，明萬曆間閩人陳振龍貿易其地，得藤苗及栽種之法。",
+          items:[
+            {q:"文中此作物得以引進中國，應與哪一事件有關？",options:["張騫出使西域，促進作物之間交流","蒙古三次西征，大量作物移動他地","新航路的開通，美洲作物傳入中國","鄭和船隊出使，帶回南洋地區物產"],correct:2},
+            {q:"文中提及作物的原產地應為下列哪個地區？",options:["美洲","歐洲","南亞","西亞"],correct:0}
+          ]
+        }
+      ]
+    }
+
+  ]
+};
+
+let currentMode = "quiz"; // quiz | print
+
+const contentEl = document.getElementById("content");
+const scoreBar = document.getElementById("scoreBar");
+const scoreText = document.getElementById("scoreText");
+
+function render(){
+  window.examAnswersRevealed = false;
+  contentEl.innerHTML = "";
+  DATA.sections.forEach((sec, si)=> contentEl.appendChild(renderSection(sec, si)));
+  if(currentMode==="quiz"){
+    scoreBar.classList.add("show");
+    updateScore();
+  } else {
+    scoreBar.classList.remove("show");
+    contentEl.querySelectorAll(".opt").forEach(o=>o.classList.add("disabled"));
+    contentEl.querySelectorAll(".opt.is-correct").forEach(o=>o.classList.add("correct"));
+  }
+}
+
+function renderSection(sec, si){
+  const block = document.createElement("section");
+  block.className = "block";
+  block.innerHTML = `<h2>${sec.title}</h2><p class="meta">${sec.meta}</p>`;
+
+  if(sec.type==="mc"){
+    sec.items.forEach((it,i)=>{
+      const q = document.createElement("div");
+      q.className = "q";
+      const optsHtml = it.options.map((op,oi)=>`
+        <div class="opt" data-idx="${oi}" data-correct="${oi===it.correct}">
+          <span class="tag">(${String.fromCharCode(65+oi)})</span><span>${op}</span>
+        </div>`).join("");
+      q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q}</div>
+        ${it.image ? `<img src="${it.image}" alt="題目附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">`:""}
+        <div class="opts">${optsHtml}</div>`;
+      q.querySelectorAll(".opt").forEach(optEl=>{
+        if(optEl.dataset.correct==="true") optEl.classList.add("is-correct");
+        optEl.addEventListener("click", ()=>selectOption(q, optEl));
+      });
+      block.appendChild(q);
+    });
+  }
+
+  else if(sec.type==="reading"){
+    sec.passages.forEach(p=>{
+      const passageDiv = document.createElement("div");
+      passageDiv.className = "passage";
+      passageDiv.innerHTML = `${p.label ? `<span class="passage-label">${p.label}</span>`:""}${p.text}${p.image ? `<img src="${p.image}" alt="題組附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-top:10px;border:1px solid var(--paper-line);">`:""}`;
+      block.appendChild(passageDiv);
+      p.items.forEach((it,i)=>{
+        const q = document.createElement("div");
+        q.className = "q";
+        const optsHtml = it.options.map((op,oi)=>`
+          <div class="opt" data-idx="${oi}" data-correct="${oi===it.correct}">
+            <span class="tag">(${String.fromCharCode(65+oi)})</span><span>${op}</span>
+          </div>`).join("");
+        q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q}</div>
+          ${it.image ? `<img src="${it.image}" alt="題目附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">`:""}
+          <div class="opts">${optsHtml}</div>`;
+        q.querySelectorAll(".opt").forEach(optEl=>{
+          if(optEl.dataset.correct==="true") optEl.classList.add("is-correct");
+          optEl.addEventListener("click", ()=>selectOption(q, optEl));
+        });
+        block.appendChild(q);
+      });
+    });
+  }
+
+  return block;
+}
+
+function selectOption(qEl, optEl){
+  if(currentMode!=="quiz") return;
+  if(qEl.dataset.answered==="true") return;
+  qEl.dataset.answered = "true";
+  qEl.querySelectorAll(".opt").forEach(o=>o.classList.add("disabled"));
+  optEl.classList.add("selected");
+  const correctOpt = qEl.querySelector('.opt[data-correct="true"]');
+  qEl.dataset.studentAnswer = optEl.textContent.trim();
+  qEl.dataset.correctAnswer = correctOpt ? correctOpt.textContent.trim() : "";
+  qEl.dataset.isCorrect = (optEl.dataset.correct==="true") ? "true" : "false";
+  updateScore();
+}
+
+function updateScore(){
+  let total = 0, answered = 0, correct = 0;
+  contentEl.querySelectorAll(".q").forEach(q=>{
+    const gradable = q.querySelector(".opts");
+    if(!gradable) return;
+    total++;
+    if(q.dataset.studentAnswer !== undefined){
+      answered++;
+      if(q.dataset.isCorrect === "true") correct++;
+    }
+  });
+  if(window.examAnswersRevealed){
+    scoreText.textContent = `${correct} / ${total}`;
+  } else {
+    scoreText.textContent = `已作答 ${answered} / ${total} 題`;
+  }
+}
+window.updateScore = updateScore;
+
+document.getElementById("resetBtn").addEventListener("click", render);
+document.getElementById("quizModeBtn").addEventListener("click", ()=>{
+  currentMode = "quiz";
+  document.getElementById("quizModeBtn").classList.add("active");
+  document.getElementById("printModeBtn").classList.remove("active");
+  render();
+});
+document.getElementById("printModeBtn").addEventListener("click", ()=>{
+  if(document.getElementById("printModeBtn").disabled) return;
+  currentMode = "print";
+  document.getElementById("printModeBtn").classList.add("active");
+  document.getElementById("quizModeBtn").classList.remove("active");
+  render();
+});
+
+window.unlockPrintMode = function(){
+  document.getElementById("printModeBtn").disabled = false;
+};
+
+render();
+</script>
+<script src="../sync.js"></script>
+</body>
+</html>
