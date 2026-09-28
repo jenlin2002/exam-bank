@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>段考題庫｜歷史第5回 - 明清帝國與天朝體制（A卷）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@500;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#faf6ec;
+    --paper-line:#e3dcc8;
+    --ink:#26332b;
+    --ink-soft:#5b6b5f;
+    --chalk-green:#2f4538;
+    --chalk-green-2:#3d5a48;
+    --pen-red:#b8433a;
+    --pen-red-soft:#f4dedb;
+    --ok-green:#3f7d52;
+    --ok-green-soft:#dfeee1;
+    --gold:#b5842a;
+    --radius:10px;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:"Noto Sans TC",sans-serif;
+    line-height:1.7;
+  }
+  header.hero{
+    background:var(--chalk-green);
+    color:#eef2ea;
+    padding:28px 20px 40px;
+    position:relative;
+  }
+  header.hero::after{
+    content:"";
+    position:absolute;
+    left:0; right:0; bottom:-1px;
+    height:14px;
+    background:repeating-linear-gradient(90deg,var(--paper) 0 18px, transparent 18px 20px);
+  }
+  .hero-inner{max-width:880px;margin:0 auto;}
+  .breadcrumb a{color:#cfe0d1;text-decoration:none;font-size:14px;}
+  .breadcrumb a:hover{text-decoration:underline;}
+  h1{
+    font-family:"Noto Serif TC",serif;
+    font-weight:700;
+    font-size:clamp(24px,4vw,34px);
+    margin:10px 0 6px;
+  }
+  .subtitle{color:#cfe0d1;font-size:15px;margin:0;}
+  main{max-width:880px;margin:0 auto;padding:28px 20px 80px;}
+
+  .controls{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:22px;
+  }
+  .mode-toggle{display:flex;border:2px solid var(--chalk-green);border-radius:999px;overflow:hidden;}
+  .mode-toggle button{
+    background:transparent;border:none;padding:8px 16px;font-size:14px;font-weight:700;
+    color:var(--chalk-green);cursor:pointer;font-family:"Noto Sans TC",sans-serif;
+  }
+  .mode-toggle button.active{background:var(--gold);color:#fff;}
+  .mode-toggle button:disabled{opacity:.4;cursor:not-allowed;}
+
+  .score-bar{
+    display:none;
+    align-items:center;
+    justify-content:space-between;
+    background:#fff;
+    border:1px solid var(--paper-line);
+    border-left:5px solid var(--gold);
+    border-radius:var(--radius);
+    padding:12px 18px;
+    margin-bottom:22px;
+    font-size:14px;
+  }
+  .score-bar.show{display:flex;}
+  .score-bar strong{font-size:18px;color:var(--gold);}
+  .score-bar button{
+    background:none;border:1px solid var(--ink-soft);color:var(--ink-soft);
+    border-radius:6px;padding:6px 12px;font-size:13px;cursor:pointer;
+  }
+
+  section.block{
+    background:#fff;
+    border:1px solid var(--paper-line);
+    border-radius:var(--radius);
+    padding:22px 22px 26px;
+    margin-bottom:20px;
+  }
+  .block h2{
+    font-family:"Noto Serif TC",serif;
+    font-size:19px;
+    margin:0 0 4px;
+    color:var(--chalk-green);
+  }
+  .block .meta{color:var(--ink-soft);font-size:13px;margin:0 0 16px;}
+
+  .q{margin-bottom:18px;padding-bottom:16px;border-bottom:1px dashed var(--paper-line);}
+  .q:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0;}
+  .q-text{font-size:15.5px;margin-bottom:8px;}
+  .q-num{color:var(--gold);font-weight:700;margin-right:4px;}
+
+  .opts{display:grid;gap:8px;}
+  .opt{
+    display:flex;gap:8px;align-items:flex-start;
+    border:1.5px solid var(--paper-line);
+    border-radius:8px;
+    padding:9px 12px;
+    cursor:pointer;
+    font-size:14.5px;
+    background:#fffdf8;
+  }
+  .opt:hover{border-color:var(--chalk-green-2);}
+  .opt.selected{border-color:var(--chalk-green-2);background:#eef3ea;}
+  .opt.correct{border-color:var(--ok-green);background:var(--ok-green-soft);}
+  .opt.wrong{border-color:var(--pen-red);background:var(--pen-red-soft);}
+  .opt .tag{font-weight:700;color:var(--ink-soft);}
+  .opt.correct .tag{color:var(--ok-green);}
+  .opt.wrong .tag{color:var(--pen-red);}
+  .opt.disabled{cursor:default;}
+
+  .passage{
+    background:#f5f2e8;border-radius:8px;padding:14px 16px;margin-bottom:14px;
+    font-size:14.5px;white-space:pre-line;
+  }
+  .passage-label{font-weight:700;color:var(--chalk-green);margin-bottom:4px;display:block;}
+
+  .footer-link{
+    display:block;text-align:center;margin-top:30px;color:var(--chalk-green);
+    text-decoration:none;font-weight:700;font-size:14px;
+  }
+  .footer-link:hover{text-decoration:underline;}
+
+  @media print{
+    header.hero, .controls, .score-bar, .mini-btn, .footer-link{display:none !important;}
+    body{background:#fff;}
+    section.block{border:none;box-shadow:none;padding:8px 0;margin-bottom:14px;}
+    .opt.correct{background:none;border:none;font-weight:700;}
+    .opt.correct::after{content:" ← 正解";color:var(--pen-red);}
+    .opt{border:none;padding:2px 0;}
+    main{max-width:100%;padding:0 24px;}
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="breadcrumb"><a href="https://jenlin2002.github.io/">🏠 回總目錄</a> ／ <a href="../kangxuan-social-g8-1.html" style="color:#cfe0d1;">段考題庫</a></div>
+    <h1>歷史・第5回</h1>
+    <p class="subtitle">第4課 明清帝國與天朝體制｜康軒版八年級社會（三）Ａ卷</p>
+  </div>
+</header>
+
+<main>
+  <div class="controls">
+    <div class="mode-toggle">
+      <button id="quizModeBtn" class="active">✏️ 測驗模式</button>
+      <button id="printModeBtn" disabled title="完成測驗並送出成績後才能查看">🖨️ 完整題目與解答（送出成績後解鎖）</button>
+    </div>
+  </div>
+
+  <div class="score-bar" id="scoreBar">
+    <div>目前得分：<strong id="scoreText">0 / 0</strong>（僅計算選擇題）</div>
+    <button id="resetBtn">重新作答</button>
+  </div>
+
+  <div id="content"></div>
+
+  <a class="footer-link" href="../kangxuan-social-g8-1.html">← 回段考題庫總覽</a>
+</main>
+
+<script>
+
+window.EXAM_META = { version: "A卷", examLabel: "歷史第5回" };
+const DATA = {
+  sections: [
+    {
+      type:"mc",
+      title:"一、單題",
+      meta:"84%，每題3分",
+      items:[
+        {q:"早在東周時期就有長城的修築。今日所見的長城遺跡多是明朝時重新修築的，其結構更加堅固，使用磚石與灰漿，設有關隘等軍事設施。明朝主要為防禦何者而修築城牆？",options:["蒙古","女真","匈奴","突厥"],correct:0},
+        {q:"在這個時期，中國要求周邊的國家派人向天子朝貢禮物；天子會冊封該國為「藩屬國」，並送上厚禮給使團，透過禮尚往來的方式來確保雙方的和平。上述內容可看出當時中國的外交政策為何？",options:["平等互惠","以天朝上國自居","遠交近攻","尋求外國的資源"],correct:1},
+        {q:"承上題，文中的「這個時期」應指下列何者？",options:["秦漢時期","隋唐時期","宋元時期","明清時期"],correct:3},
+        {q:"右圖為中國史上某部著作的書影。由圖中內容判斷，此著作出現的背景，應與下列哪一史實最有關？",image:"images/hist5/q4.png",options:["宋元時期阿拉伯商人東來","明朝政府派船隊出使南亞","新航路開通後傳教士來華","美洲的耐旱作物傳入中國"],correct:2},
+        {q:"經濟史學家貢德・弗蘭克曾說：「當時的世界經濟秩序，名副其實是以中國為中心。以中國為中心的國際秩序，實際上構成了一個多邊的納貢貿易網。同時，中國還從這個貿易網以外獲得大量的白銀。」上述史學家所描述的時代應為下列何者？",options:["一世紀","七至八世紀","十三世紀","十六至十八世紀"],correct:3},
+        {q:"某書內容簡介如下：「十五世紀初，他以空前宏大的規模，完成七次下西洋的壯舉。不但肅清海盜、安定僑民，而且平定錫蘭之亂等，對後世的影響重大。」此書主要介紹何人的事蹟？",options:["張騫","玄奘","鄭和","利瑪竇"],correct:2},
+        {q:"小智正在閱讀一本歷史人物傳記，如右圖。他在書中最可能讀到以下何項敘述？",image:"images/hist5/q7.png",options:["擊滅東突厥，被尊為東亞國際盟主","親率軍隊征討遼國，訂立澶淵之盟","將臺灣、蒙古、西藏、新疆等納入版圖","擊敗群雄，建立新王朝，定都今日南京"],correct:3},
+        {q:"以下為十七世紀東亞世界的描述：「明清帝國對內行專制統治，對外則採朝貢體制；海商在東亞的貿易網絡遍布各地。隨著新航路開通，歐洲商人的加入使東亞海域更加熱絡蓬勃。」根據上述判斷，此一時期的臺灣應處於下列何種階段？",options:["新石器時代文化與島外互動頻繁","荷蘭、西班牙、鄭氏勢力的競逐","開港通商後，西方文化再度傳入","臺灣總督府建立嚴密的專制體制"],correct:1},
+        {q:"「大航海時代」又稱海權時代，指歐洲船隊發現新航路及新大陸後，開始以土地和勞動力的商品化為基礎，運用貨幣賺取最大利潤。上述事件對歷史所造成的影響，應不包含下列何者？",options:["伊斯蘭教傳入中國","日本實施通商限制","傳教士東來亞洲傳教","美洲新作物傳入中國"],correct:0},
+        {q:"右圖為明朝時期某勢力侵擾區域分布圖。面對此勢力的威脅，明朝採取何種政策作為因應？",image:"images/hist5/q10.png",options:["禁教政策","劃界封山","渡臺禁令","海禁政策"],correct:3},
+        {q:"一篇文章的序言提到：「鄭芝龍與荷蘭保持著合作又競爭的微妙關係。崇禎6年，荷蘭人意圖動用武力打開明朝的貿易，首先突襲廈門及鄭芝龍船隊。鄭芝龍很快的在料羅灣擊敗了荷蘭，以強大的武力和雄厚的資本稱霸國際市場，在與荷蘭、日本以及東南亞的競爭中勝出。」這篇文章的名稱最可能為下列何者？",options:["西方科學知識傳入中國的途徑","明清帝國的朝貢貿易及其互動","大航海時代漢人海商的貿易網絡","隋唐時代大將軍的海外擴張行動"],correct:2},
+        {q:"這個國家位於西太平洋，是東南亞一個多民族的群島國家。歷史上曾被西班牙、美國殖民統治過。上述的國家是指下列何國？",options:["菲律賓","越南","印尼","日本"],correct:0},
+        {q:"小芙正在玩日本鎖國時代的手遊，若她扮演的中國商人準備前往獲准合法貿易的城市，應傳送至右圖中何地？",image:"images/hist5/q13.png",options:["甲","乙","丙","丁"],correct:3},
+        {q:"小敏需要一張某朝代男性形象的圖片，她在AI網站輸入各項條件後，生成右列的圖片。從圖中內容判斷，小敏輸入的條件應包括下列哪個關鍵詞？",image:"images/hist5/q14.png",options:["明朝","清朝","唐朝","元朝"],correct:1},
+        {q:"下圖為十六至十八世紀某國貿易的路線圖：",image:"images/hist5/q15.png",options:["荷蘭","英國","美國","西班牙"],correct:3},
+        {q:"以下為中國文獻中有關番薯的記載：「按番薯種出海外呂宋(位於菲律賓)。明萬曆年間閩人陳振龍貿易其地，得藤苗及栽種之法入中國。」以此判斷，番薯的傳播與下列哪一事件最有關？",options:["蒙古族西征","明朝平倭寇","新航路開通","鄭和出使西洋"],correct:2},
+        {q:"右圖為某場演講主講者的投影片。由圖中內容判斷，這場演講的主題最可能為下列何者？",image:"images/hist5/q17.png",options:["叱吒草原蒙古帝國","女真族的崛起傳奇","鮮卑與漢民族文化","論笑談渴飲匈奴血"],correct:1},
+        {q:"吳三桂是中國歷史上極具爭議的人物，「他的作為」對時局造成莫大影響。清代以來，對吳三桂的評價多指向「負面」，且時間愈後，言詞愈激烈。上文中「他的作為」是指下列何項？",options:["帶領流寇進攻北京城","投降清朝讓清兵入關","發起民變拒清朝統治","組織倭寇侵擾沿海區"],correct:1},
+        {q:"史書記載：「康熙28年，上召徐日昇、張誠、白晉、安多等至內廷。諭以自後每日輪班至養心殿，以清語授講量法等西學。上萬幾之暇，專心學問，好量法、測算、天文。」上述徐日昇等人的身分最可能為何？",options:["日本學問僧","穆斯林使者","耶穌會傳教士","長老教會傳教士"],correct:2},
+        {q:"以下是某個政權對外的一系列政策：",image:"images/hist5/q20.png",options:["明朝的海禁政策","清朝的海禁政策","日本的貿易限制","清朝的禁教措施"],correct:2},
+        {q:"下列有關「朝貢貿易」的討論，何人的說法有誤？",options:["皮皮：受海禁影響而成為主要貿易方式","胖丁：前來進貢的國家須接受中國冊封","喵喵：因中國開放民間對外貿易而產生","傑尼：此貿易形式顯示天朝上國的心態"],correct:2},
+        {q:"南懷仁是清初來華的傳教士，他曾說：「天文學和所有數學相關學科，尤其是光學、算學及機械，在中國人的眼中是科學的精華……憑藉天文學華麗的外表，傳教士更容易在清廷的王公大臣那裡，宣講神聖的教義，而那些王公大臣也可庇護我們的教堂和傳教士。」由上述內容判斷，當時傳教士採取何種傳教手段？",options:["參與宮廷鬥爭以掌政","藉朝貢過程順利宣教","介紹西方知識予中國","傳入新作物以獲民心"],correct:2},
+        {q:"四位同學正在討論鄭和率領船隊出使的意義，以下何人的論述內容正確？",image:"images/hist5/q23.png",options:["A","B","C","D"],correct:1},
+        {q:"此朝代為少數民族政權，為穩固統治，對漢人知識分子的文字與思想嚴格審查，來防止反叛思想流傳，常有人因觸犯禁忌被處刑。此朝代為何？",options:["漢朝","唐朝","明朝","清朝"],correct:3},
+        {q:"《東西洋考》記載某時期中國的世界觀：東洋是指南海東部及附近諸島，包括呂宋、汶萊、日本及紅毛番；反之則稱西洋，包括交阯、舊港、柬埔寨、麻六甲等。以此判斷，這部書籍反映哪一時期的世界觀？",options:["西漢","唐代","元代","明代"],correct:3},
+        {q:"明清更迭之際天下大亂，發生以下重大事件：",image:"images/hist5/q26.png",options:["甲丙乙丁","乙甲丁丙","丙丁乙甲","丁丙甲乙"],correct:2},
+        {q:"明成祖即位後，蒙古族已大致分裂為瓦剌和韃靼，對明朝構成潛在威脅。長江岸邊的南京卻因距離北方邊陲過於遙遠，而有大臣提議遷都。明成祖考量立都北方可加強邊防，而採納建議，將首都遷至下列何地？",options:["北京","泉州","洛陽","長安"],correct:0},
+        {q:"清朝極盛時期開疆拓土，形成「秋海棠」形狀的近代中國疆域。下列何者最有可能是這塊「秋海棠」？",image:"images/hist5/q28.png",options:["A","B","C","D"],correct:3}
+      ]
+    },
+    {
+      type:"reading",
+      title:"二、題組",
+      meta:"16%，每題4分",
+      passages:[
+        {
+          label:"(一)",
+          text:"清初傳教士以科學知識獲得朝廷信任，天主教曾一度得到容許。然而，隨著教士活動的擴展，引起朝廷對其政治與社會影響的憂慮。再加上羅馬教廷要求中國信徒不得祭祖，造成中西文化衝突。清朝皇帝認為天主教破壞綱常倫理，恐影響統治穩定，於是下令全面禁止天主教傳播，驅逐外籍傳教士，封閉教堂。請回答下列問題：",
+          items:[
+            {q:"文中提及的「清朝皇帝」是指下列何者？",options:["康熙","雍正","乾隆","嘉慶"],correct:1},
+            {q:"此次事件造成後世歷史如何發展？",options:["清帝國開放港口通商以發展世界貿易","天主教從此後退出在亞洲的傳教事業","清朝實施鎖國政策以防止傳教士來華","中西交流中斷使中國科技漸落後西方"],correct:3}
+          ]
+        },
+        {
+          label:"(二)",
+          text:"以下為兩則關於歐洲中國熱的敘述。請根據內容回答問題：\n\n資料一：十七、十八世紀，法國興起所謂的「中國風」狂熱，成為當時歐洲社會的普遍時尚。法王路易十四甚至在凡爾賽宮身著中國式服裝，坐在中式大轎出場參加宴會。\n資料二：十八世紀末，英國外交官馬加爾尼在日記中提到：「整個歐洲都對中國著了迷。宮殿裡掛著中國圖案的裝飾布，就像天朝的雜貨舖。真貨價值千金，於是只好仿造。」",
+          items:[
+            {q:"文中兩則資料所述景象，應與下列何者最有關？",options:["傳教士促進中西文化交流","鄭和出使西洋聲威的遠播","海商叱吒南洋促使東學西傳","朝貢貿易發達歐洲遣使進貢"],correct:0},
+            {q:"文中受到歐洲著迷的中國商品應不包含下列何者？",options:["瓷器","絲綢","馬鈴薯","園林建築"],correct:2}
+          ]
+        }
+      ]
+    }
+
+  ]
+};
+
+let currentMode = "quiz"; // quiz | print
+
+const contentEl = document.getElementById("content");
+const scoreBar = document.getElementById("scoreBar");
+const scoreText = document.getElementById("scoreText");
+
+function render(){
+  window.examAnswersRevealed = false;
+  contentEl.innerHTML = "";
+  DATA.sections.forEach((sec, si)=> contentEl.appendChild(renderSection(sec, si)));
+  if(currentMode==="quiz"){
+    scoreBar.classList.add("show");
+    updateScore();
+  } else {
+    scoreBar.classList.remove("show");
+    contentEl.querySelectorAll(".opt").forEach(o=>o.classList.add("disabled"));
+    contentEl.querySelectorAll(".opt.is-correct").forEach(o=>o.classList.add("correct"));
+  }
+}
+
+function renderSection(sec, si){
+  const block = document.createElement("section");
+  block.className = "block";
+  block.innerHTML = `<h2>${sec.title}</h2><p class="meta">${sec.meta}</p>`;
+
+  if(sec.type==="mc"){
+    sec.items.forEach((it,i)=>{
+      const q = document.createElement("div");
+      q.className = "q";
+      const optsHtml = it.options.map((op,oi)=>`
+        <div class="opt" data-idx="${oi}" data-correct="${oi===it.correct}">
+          <span class="tag">(${String.fromCharCode(65+oi)})</span><span>${op}</span>
+        </div>`).join("");
+      q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q}</div>
+        ${it.image ? `<img src="${it.image}" alt="題目附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">`:""}
+        <div class="opts">${optsHtml}</div>`;
+      q.querySelectorAll(".opt").forEach(optEl=>{
+        if(optEl.dataset.correct==="true") optEl.classList.add("is-correct");
+        optEl.addEventListener("click", ()=>selectOption(q, optEl));
+      });
+      block.appendChild(q);
+    });
+  }
+
+  else if(sec.type==="reading"){
+    sec.passages.forEach(p=>{
+      const passageDiv = document.createElement("div");
+      passageDiv.className = "passage";
+      passageDiv.innerHTML = `${p.label ? `<span class="passage-label">${p.label}</span>`:""}${p.text}${p.image ? `<img src="${p.image}" alt="題組附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-top:10px;border:1px solid var(--paper-line);">`:""}`;
+      block.appendChild(passageDiv);
+      p.items.forEach((it,i)=>{
+        const q = document.createElement("div");
+        q.className = "q";
+        const optsHtml = it.options.map((op,oi)=>`
+          <div class="opt" data-idx="${oi}" data-correct="${oi===it.correct}">
+            <span class="tag">(${String.fromCharCode(65+oi)})</span><span>${op}</span>
+          </div>`).join("");
+        q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q}</div>
+          ${it.image ? `<img src="${it.image}" alt="題目附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">`:""}
+          <div class="opts">${optsHtml}</div>`;
+        q.querySelectorAll(".opt").forEach(optEl=>{
+          if(optEl.dataset.correct==="true") optEl.classList.add("is-correct");
+          optEl.addEventListener("click", ()=>selectOption(q, optEl));
+        });
+        block.appendChild(q);
+      });
+    });
+  }
+
+  return block;
+}
+
+function selectOption(qEl, optEl){
+  if(currentMode!=="quiz") return;
+  if(qEl.dataset.answered==="true") return;
+  qEl.dataset.answered = "true";
+  qEl.querySelectorAll(".opt").forEach(o=>o.classList.add("disabled"));
+  optEl.classList.add("selected");
+  const correctOpt = qEl.querySelector('.opt[data-correct="true"]');
+  qEl.dataset.studentAnswer = optEl.textContent.trim();
+  qEl.dataset.correctAnswer = correctOpt ? correctOpt.textContent.trim() : "";
+  qEl.dataset.isCorrect = (optEl.dataset.correct==="true") ? "true" : "false";
+  updateScore();
+}
+
+function updateScore(){
+  let total = 0, answered = 0, correct = 0;
+  contentEl.querySelectorAll(".q").forEach(q=>{
+    const gradable = q.querySelector(".opts");
+    if(!gradable) return;
+    total++;
+    if(q.dataset.studentAnswer !== undefined){
+      answered++;
+      if(q.dataset.isCorrect === "true") correct++;
+    }
+  });
+  if(window.examAnswersRevealed){
+    scoreText.textContent = `${correct} / ${total}`;
+  } else {
+    scoreText.textContent = `已作答 ${answered} / ${total} 題`;
+  }
+}
+window.updateScore = updateScore;
+
+document.getElementById("resetBtn").addEventListener("click", render);
+document.getElementById("quizModeBtn").addEventListener("click", ()=>{
+  currentMode = "quiz";
+  document.getElementById("quizModeBtn").classList.add("active");
+  document.getElementById("printModeBtn").classList.remove("active");
+  render();
+});
+document.getElementById("printModeBtn").addEventListener("click", ()=>{
+  if(document.getElementById("printModeBtn").disabled) return;
+  currentMode = "print";
+  document.getElementById("printModeBtn").classList.add("active");
+  document.getElementById("quizModeBtn").classList.remove("active");
+  render();
+});
+
+window.unlockPrintMode = function(){
+  document.getElementById("printModeBtn").disabled = false;
+};
+
+render();
+</script>
+<script src="../sync.js"></script>
+</body>
+</html>
