@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>段考題庫｜歷史第8回 - 晚清的社會文化變遷（A卷）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@500;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#faf6ec;
+    --paper-line:#e3dcc8;
+    --ink:#26332b;
+    --ink-soft:#5b6b5f;
+    --chalk-green:#2f4538;
+    --chalk-green-2:#3d5a48;
+    --pen-red:#b8433a;
+    --pen-red-soft:#f4dedb;
+    --ok-green:#3f7d52;
+    --ok-green-soft:#dfeee1;
+    --gold:#b5842a;
+    --radius:10px;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:"Noto Sans TC",sans-serif;
+    line-height:1.7;
+  }
+  header.hero{
+    background:var(--chalk-green);
+    color:#eef2ea;
+    padding:28px 20px 40px;
+    position:relative;
+  }
+  header.hero::after{
+    content:"";
+    position:absolute;
+    left:0; right:0; bottom:-1px;
+    height:14px;
+    background:repeating-linear-gradient(90deg,var(--paper) 0 18px, transparent 18px 20px);
+  }
+  .hero-inner{max-width:880px;margin:0 auto;}
+  .breadcrumb a{color:#cfe0d1;text-decoration:none;font-size:14px;}
+  .breadcrumb a:hover{text-decoration:underline;}
+  h1{
+    font-family:"Noto Serif TC",serif;
+    font-weight:700;
+    font-size:clamp(24px,4vw,34px);
+    margin:10px 0 6px;
+  }
+  .subtitle{color:#cfe0d1;font-size:15px;margin:0;}
+  main{max-width:880px;margin:0 auto;padding:28px 20px 80px;}
+
+  .controls{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:22px;
+  }
+  .mode-toggle{display:flex;border:2px solid var(--chalk-green);border-radius:999px;overflow:hidden;}
+  .mode-toggle button{
+    background:transparent;border:none;padding:8px 16px;font-size:14px;font-weight:700;
+    color:var(--chalk-green);cursor:pointer;font-family:"Noto Sans TC",sans-serif;
+  }
+  .mode-toggle button.active{background:var(--gold);color:#fff;}
+  .mode-toggle button:disabled{opacity:.4;cursor:not-allowed;}
+
+  .score-bar{
+    display:none;
+    align-items:center;
+    justify-content:space-between;
+    background:#fff;
+    border:1px solid var(--paper-line);
+    border-left:5px solid var(--gold);
+    border-radius:var(--radius);
+    padding:12px 18px;
+    margin-bottom:22px;
+    font-size:14px;
+  }
+  .score-bar.show{display:flex;}
+  .score-bar strong{font-size:18px;color:var(--gold);}
+  .score-bar button{
+    background:none;border:1px solid var(--ink-soft);color:var(--ink-soft);
+    border-radius:6px;padding:6px 12px;font-size:13px;cursor:pointer;
+  }
+
+  section.block{
+    background:#fff;
+    border:1px solid var(--paper-line);
+    border-radius:var(--radius);
+    padding:22px 22px 26px;
+    margin-bottom:20px;
+  }
+  .block h2{
+    font-family:"Noto Serif TC",serif;
+    font-size:19px;
+    margin:0 0 4px;
+    color:var(--chalk-green);
+  }
+  .block .meta{color:var(--ink-soft);font-size:13px;margin:0 0 16px;}
+
+  .q{margin-bottom:18px;padding-bottom:16px;border-bottom:1px dashed var(--paper-line);}
+  .q:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0;}
+  .q-text{font-size:15.5px;margin-bottom:8px;}
+  .q-num{color:var(--gold);font-weight:700;margin-right:4px;}
+
+  .opts{display:grid;gap:8px;}
+  .opt{
+    display:flex;gap:8px;align-items:flex-start;
+    border:1.5px solid var(--paper-line);
+    border-radius:8px;
+    padding:9px 12px;
+    cursor:pointer;
+    font-size:14.5px;
+    background:#fffdf8;
+  }
+  .opt:hover{border-color:var(--chalk-green-2);}
+  .opt.selected{border-color:var(--chalk-green-2);background:#eef3ea;}
+  .opt.correct{border-color:var(--ok-green);background:var(--ok-green-soft);}
+  .opt.wrong{border-color:var(--pen-red);background:var(--pen-red-soft);}
+  .opt .tag{font-weight:700;color:var(--ink-soft);}
+  .opt.correct .tag{color:var(--ok-green);}
+  .opt.wrong .tag{color:var(--pen-red);}
+  .opt.disabled{cursor:default;}
+
+  .passage{
+    background:#f5f2e8;border-radius:8px;padding:14px 16px;margin-bottom:14px;
+    font-size:14.5px;white-space:pre-line;
+  }
+  .passage-label{font-weight:700;color:var(--chalk-green);margin-bottom:4px;display:block;}
+
+  .footer-link{
+    display:block;text-align:center;margin-top:30px;color:var(--chalk-green);
+    text-decoration:none;font-weight:700;font-size:14px;
+  }
+  .footer-link:hover{text-decoration:underline;}
+
+  @media print{
+    header.hero, .controls, .score-bar, .mini-btn, .footer-link{display:none !important;}
+    body{background:#fff;}
+    section.block{border:none;box-shadow:none;padding:8px 0;margin-bottom:14px;}
+    .opt.correct{background:none;border:none;font-weight:700;}
+    .opt.correct::after{content:" ← 正解";color:var(--pen-red);}
+    .opt{border:none;padding:2px 0;}
+    main{max-width:100%;padding:0 24px;}
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="breadcrumb"><a href="https://jenlin2002.github.io/">🏠 回總目錄</a> ／ <a href="../kangxuan-social-g8-1.html" style="color:#cfe0d1;">段考題庫</a></div>
+    <h1>歷史・第8回</h1>
+    <p class="subtitle">第6課 晚清的社會文化變遷｜康軒版八年級社會（三）Ａ卷</p>
+  </div>
+</header>
+
+<main>
+  <div class="controls">
+    <div class="mode-toggle">
+      <button id="quizModeBtn" class="active">✏️ 測驗模式</button>
+      <button id="printModeBtn" disabled title="完成測驗並送出成績後才能查看">🖨️ 完整題目與解答（送出成績後解鎖）</button>
+    </div>
+  </div>
+
+  <div class="score-bar" id="scoreBar">
+    <div>目前得分：<strong id="scoreText">0 / 0</strong>（僅計算選擇題）</div>
+    <button id="resetBtn">重新作答</button>
+  </div>
+
+  <div id="content"></div>
+
+  <a class="footer-link" href="../kangxuan-social-g8-1.html">← 回段考題庫總覽</a>
+</main>
+
+<script>
+
+window.EXAM_META = { version: "A卷", examLabel: "歷史第8回" };
+const DATA = {
+  sections: [
+    {
+      type:"mc",
+      title:"一、單題",
+      meta:"88%，每題4分",
+      items:[
+        {q:"老師在課堂介紹清末開放的通商口岸，並詢問學生是否知道這些口岸的共同點。下列哪位學生的回答最正確？",options:["宥廷：容易接觸西方資訊","詠晴：大多位於內陸省分","品睿：傳統生活不易改變","慧妍：都被美國管理控制"],correct:0},
+        {q:"右圖為西元1906年出版的《繪圖女學修身教科書》，其內文修改自《女兒經》的文句。由圖中內容判斷，當時對於女子修身方面的概念，具有何種變化？",image:"images/hist8/q2.png",options:["認為纏足之人才可成為賢妻","描寫小腳姿態優美儀態萬千","主張三從四德是錯誤的觀念","以保健強種的思維鼓勵放足"],correct:3},
+        {q:"秋瑾在1907年曾寫下：「大好時光一剎過，雄心未遂恨如何？投鞭滄海橫流斷，倚劍重霄對月磨……粉身碎骨尋常事，但願犧牲保國家。」從上文推測，當時秋瑾的理想為何？",options:["宣揚三從四德重要性","跟男子一樣保衛國家","鼓吹世界共維護和平","保存傳統的中國文化"],correct:1},
+        {q:"英國人赫德是清末居住在上海租界的商人，關於當時赫德在中國生活的日常，下列何者最有可能發生？",options:["赫德的貨物只能從廣州進口中國","赫德因禁教而無法到教堂作禮拜","赫德假日，帶家人到西餐廳用餐","赫德犯罪被交由中國官府來審判"],correct:2},
+        {q:"中國傳統社會，因「男主外女主內」的觀念，女子教育為閨門內的家庭教育，要求女子「三從四德」、「女子無才便是德」。如此處境直到清末民初才逐漸有所改變，其改變原因不包括下列何者？",options:["女子教育的提倡","女權意識的抬頭","傳教士宣揚新思想","中國成為世界強權"],correct:3},
+        {q:"1908年2月，上海為提升城市形象並促進經濟發展，首度引進現代化「有軌電車」，因此奠定上海成為亞洲最早擁有現代公共交通系統的城市之一。這電車系統最可能為何者所設置？",options:["上海租界國","大清帝國","中華民國","中國富豪"],correct:0},
+        {q:"以下為西方人對中國社會現象的描述：",image:"images/hist8/q7.png",options:["婦女都具有持家的良好傳統","藉男女分工展現中國的智慧","纏足現象體現女性所受限制","政府規定婦女纏足否則嚴懲"],correct:2},
+        {q:"一位清末來華的英國傳教士說：「凡欲影響這個帝國的人必定要利用出版物。只有等到我們把中國人的思想開放起來，我們才能最終對中國的開放感到滿意。士大夫們充斥在帝國各地而且受到高度的尊敬，如果我們要影響整個中國，就必須從他們下手。」根據上述，這位傳教士在中國期間最可能有何種作為？",options:["主張扶清滅洋，參加宗教團體","支持革命運動，醞釀推翻滿清","投書報紙雜誌，介紹西方政治","報名科舉考試，謀得清廷官職"],correct:2},
+        {q:"培峰將清末民初中國某座城市的稱號，整理成右列。以此判斷，這座城市最可能為下列何者？",image:"images/hist8/q9.png",options:["北京","上海","西安","洛陽"],correct:1},
+        {q:"清末知識分子曾評論女子不學的影響：「女子不學則依靠男子供養。男女人口各半，一半的人不事生產，於經濟的發展極為不利。女子不事生產則國力貧弱，男女地位永遠不平等。此外，女學為保種之萌芽。十月懷胎，如婦女體魄強健，智慧發達，則所生子女筋力強壯，智慧更為發達。」根據上述判斷，這位知識分子對女學的立場應為下列何者？",options:["提倡女學，認為女學能保國強種","反對女學，主張女子無才便是德","支持女學，提倡受教育的女子才可參政","批判女學，指出女子受教育會擾亂綱紀"],correct:0},
+        {q:"清末上海曾有一份刊物，被形容為「首登中西互有裨益之事」，且「其內容宗旨，雖仍然不脫傳播基督教義，溝通教會消息，然亦負擔起推廣西學之責，於西洋科學知識，史事人物，國家現勢，均有涉及。」以此判斷，這份刊物最可能為下列何者？",image:"images/hist8/q11.png",options:["A","B","C","D"],correct:3},
+        {q:"西元1876年以前，外國人在租界只有土地的租賃使用權。後來，外國人在租界組織洋槍隊以維護租界安全。在人口不斷增加後，外國人設立常駐軍隊、警員、監獄和法庭，又有徵稅、審判、管理、教育、衛生等各項權力，租界形成類似政府的組織。上文應是在討論租界的發展存在下列何種問題？",options:["危害中國天朝上國地位","破壞中國領土主權完整","造成中國白銀大量外流","政府須耗時管理外國人"],correct:1},
+        {q:"一國在通商口岸劃定界限，租給外國人民居住、通商的區域稱為「租界」。中國本自認為天朝上國，但為清帝國「……」而開放租界，使租界成為中西交流的橋梁。「……」的內容應為何？",options:["主動提供土地租借","嚮往西方物質文明","在鴉片戰爭的失敗","準備進行立憲運動"],correct:2},
+        {q:"清朝同治年間，在湖北漢口就有自辦的報紙《昭文新報》，各地陸續有報紙面市，但一直不受民眾重視，直到甲午戰敗，人民才開始注意報紙的重要性，也興起一股辦報的風潮。關於上文，下列敘述何者正確？",options:["中國在二十世紀才有自辦的報紙","報業的興起和國家富強興盛有關","人們可在報中看到明朝滅亡報導","報業興起讓更多人了解社會發展"],correct:3},
+        {q:"右圖為清末民初上海電話公司刊登的一則廣告。由圖中資訊判斷，當時中國民眾的生活中應已出現下列何種轉變？",image:"images/hist8/q15.png",options:["中國科技實力大幅超越西方","中國女性受教育的比例提升","喝咖啡成為時尚生活表現","新設施引進使生活更便利"],correct:3},
+        {q:"西元1868年2月，英國傳教士傅蘭雅主編的《上海新報》有四個版面，其中第一、三、四版為商務公告，內容包括商品運輸和拍賣，推銷火輪船、種麥輪器，及家用器具等科學成果的業務廣告。上述反映當時社會上的何種現象？",options:["西方商品和科技已傳入中國","中國知識分子開始興辦報刊","女權抬頭，婦女角色出現變化","知識分子勇於表達對時局看法"],correct:0},
+        {q:"西元1872年7月《申報》刊載內容寫道：中外婦女各自相攜來看賽馬，甚至華人老婦也看到夕陽西下時。另外，也有中文報紙報導，因舉行賽馬，所以各領事衙門、銀行、海關皆關閉半日或全日。上述內容反映下列何者？",options:["賽馬盛行呈現多元的娛樂","賽馬是男性專有娛樂活動","賽馬是民國時期才興起的","賽馬活動在當時是違法的"],correct:0},
+        {q:"以下為梁啟超對國家發展所發表的言論：",image:"images/hist8/q18.png",options:["印度重視女學培育得以強大","興辦女學將導致革命風氣盛","女子教育會左右國家的強弱","中國積弱是因女性過度自由"],correct:2},
+        {q:"某學者對近代上海的發展有以下論述：「上海人很早便開始享受現代設施所帶來生活上的便利：西元1865年上海已有煤氣，1881年設立了最造的電話局，1882年起有了電燈，1884年開始供應自來水，1901年汽車首先由匈牙利人李恩時輸入上海。到二十世紀初期，上海的現代設施大體上已與世界先進城市同步。」根據上文，上海在當時可與世界城市同步發展，與其具有下列何種地位有關？",options:["清朝唯一開放的港埠","位居珠江流域出海口","上海有西方各國租界","清帝國的首都所在地"],correct:2},
+        {q:"清末民初是中國在政治、經濟與社會文化上劇變的時期。下列關於此時期的社會變遷，何項敘述有誤？",options:["「父母之命，媒妁之言」的婚姻型態受鼓吹","傳教士提倡女子教育，喚起婦女的權利意識","知識分子藉由報刊雜誌，表達對時局的看法","新的觀念思潮衝擊中國傳統家族倫理與秩序"],correct:0},
+        {q:"允兒搭乘時光機回到清帝國統治的某一時期，以下是她所記錄的生活要事：",image:"images/hist8/q21.png",options:["1842年，北京","1860年，四川","1874年，臺北","1905年，上海"],correct:3},
+        {q:"1885年《申報》11月一篇報導寫道：「本埠之有公家花園也，造之者西人，捐款則大半出自華人。西人於造成之後，名之曰公家花園，以見其大公無私之意。然名為公家，而其實則仍是私家。西人得以入園中游目聘懷，往來不禁，雖日本人、高麗人亦皆得公諸同好，聽其嬉遊，而獨於華人則嚴其厲禁，不得擅入……。」這篇報導最可能的訴求為何？",options:["感謝西方人士建造這座公園","抗議歧視華人使其不能入園","讚美公家花園的美麗與壯觀","要求嚴厲禁止華人進入公園"],correct:1}
+      ]
+    },
+    {
+      type:"reading",
+      title:"二、題組",
+      meta:"12%，每題3分",
+      passages:[
+        {
+          label:"(一)",
+          text:"以下為清末《新民叢報》創刊詞的部分敘述：",
+          image:"images/hist8/q23passage.png",
+          items:[
+            {q:"發表這篇創刊詞的人應為下列何者？",options:["利瑪竇","林則徐","李鴻章","梁啟超"],correct:3},
+            {q:"由文中內容判斷，《新民叢報》的創辦目的應與下列何者最有關？",options:["弘揚孔子傳統精神，重振中國儒家思想國粹","密謀推翻滿清政權，歌頌歐美民主政治優點","傳播新知識新觀念，兼論對政治時局的看法","鼓吹人民仇洋反教，抨擊洋人傳教手段卑劣"],correct:2}
+          ]
+        },
+        {
+          label:"(二)",
+          text:"《萬國公報》創刊於1868年，由美國傳教士在上海創辦。當時在戰爭後，清帝國與西方列強簽訂了一系列條約，包括開放通商口岸等，當時西方思想、科技與宗教開始流入中國。傳教士利用報刊作為傳播的工具，其中《萬國公報》便是最具影響力的刊物之一。請回答下列問題：",
+          items:[
+            {q:"文中提到的「戰爭」最可能為下列何者？",options:["英法聯軍","清法戰爭","甲午戰爭","八國聯軍"],correct:0},
+            {q:"根據文中內容判斷，《萬國公報》較不可能傳播下列何種內容？",options:["主張男女教育平等","推廣伊斯蘭教信仰","介紹西方思想文化","建議清朝進行改革"],correct:1}
+          ]
+        }
+      ]
+    }
+
+  ]
+};
+
+let currentMode = "quiz"; // quiz | print
+
+const contentEl = document.getElementById("content");
+const scoreBar = document.getElementById("scoreBar");
+const scoreText = document.getElementById("scoreText");
+
+function render(){
+  window.examAnswersRevealed = false;
+  contentEl.innerHTML = "";
+  DATA.sections.forEach((sec, si)=> contentEl.appendChild(renderSection(sec, si)));
+  if(currentMode==="quiz"){
+    scoreBar.classList.add("show");
+    updateScore();
+  } else {
+    scoreBar.classList.remove("show");
+    contentEl.querySelectorAll(".opt").forEach(o=>o.classList.add("disabled"));
+    contentEl.querySelectorAll(".opt.is-correct").forEach(o=>o.classList.add("correct"));
+  }
+}
+
+function renderSection(sec, si){
+  const block = document.createElement("section");
+  block.className = "block";
+  block.innerHTML = `<h2>${sec.title}</h2><p class="meta">${sec.meta}</p>`;
+
+  if(sec.type==="mc"){
+    sec.items.forEach((it,i)=>{
+      const q = document.createElement("div");
+      q.className = "q";
+      const optsHtml = it.options.map((op,oi)=>`
+        <div class="opt" data-idx="${oi}" data-correct="${oi===it.correct}">
+          <span class="tag">(${String.fromCharCode(65+oi)})</span><span>${op}</span>
+        </div>`).join("");
+      q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q}</div>
+        ${it.image ? `<img src="${it.image}" alt="題目附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">`:""}
+        <div class="opts">${optsHtml}</div>`;
+      q.querySelectorAll(".opt").forEach(optEl=>{
+        if(optEl.dataset.correct==="true") optEl.classList.add("is-correct");
+        optEl.addEventListener("click", ()=>selectOption(q, optEl));
+      });
+      block.appendChild(q);
+    });
+  }
+
+  else if(sec.type==="reading"){
+    sec.passages.forEach(p=>{
+      const passageDiv = document.createElement("div");
+      passageDiv.className = "passage";
+      passageDiv.innerHTML = `${p.label ? `<span class="passage-label">${p.label}</span>`:""}${p.text}${p.image ? `<img src="${p.image}" alt="題組附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-top:10px;border:1px solid var(--paper-line);">`:""}`;
+      block.appendChild(passageDiv);
+      p.items.forEach((it,i)=>{
+        const q = document.createElement("div");
+        q.className = "q";
+        const optsHtml = it.options.map((op,oi)=>`
+          <div class="opt" data-idx="${oi}" data-correct="${oi===it.correct}">
+            <span class="tag">(${String.fromCharCode(65+oi)})</span><span>${op}</span>
+          </div>`).join("");
+        q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q}</div>
+          ${it.image ? `<img src="${it.image}" alt="題目附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">`:""}
+          <div class="opts">${optsHtml}</div>`;
+        q.querySelectorAll(".opt").forEach(optEl=>{
+          if(optEl.dataset.correct==="true") optEl.classList.add("is-correct");
+          optEl.addEventListener("click", ()=>selectOption(q, optEl));
+        });
+        block.appendChild(q);
+      });
+    });
+  }
+
+  return block;
+}
+
+function selectOption(qEl, optEl){
+  if(currentMode!=="quiz") return;
+  if(qEl.dataset.answered==="true") return;
+  qEl.dataset.answered = "true";
+  qEl.querySelectorAll(".opt").forEach(o=>o.classList.add("disabled"));
+  optEl.classList.add("selected");
+  const correctOpt = qEl.querySelector('.opt[data-correct="true"]');
+  qEl.dataset.studentAnswer = optEl.textContent.trim();
+  qEl.dataset.correctAnswer = correctOpt ? correctOpt.textContent.trim() : "";
+  qEl.dataset.isCorrect = (optEl.dataset.correct==="true") ? "true" : "false";
+  updateScore();
+}
+
+function updateScore(){
+  let total = 0, answered = 0, correct = 0;
+  contentEl.querySelectorAll(".q").forEach(q=>{
+    const gradable = q.querySelector(".opts");
+    if(!gradable) return;
+    total++;
+    if(q.dataset.studentAnswer !== undefined){
+      answered++;
+      if(q.dataset.isCorrect === "true") correct++;
+    }
+  });
+  if(window.examAnswersRevealed){
+    scoreText.textContent = `${correct} / ${total}`;
+  } else {
+    scoreText.textContent = `已作答 ${answered} / ${total} 題`;
+  }
+}
+window.updateScore = updateScore;
+
+document.getElementById("resetBtn").addEventListener("click", render);
+document.getElementById("quizModeBtn").addEventListener("click", ()=>{
+  currentMode = "quiz";
+  document.getElementById("quizModeBtn").classList.add("active");
+  document.getElementById("printModeBtn").classList.remove("active");
+  render();
+});
+document.getElementById("printModeBtn").addEventListener("click", ()=>{
+  if(document.getElementById("printModeBtn").disabled) return;
+  currentMode = "print";
+  document.getElementById("printModeBtn").classList.add("active");
+  document.getElementById("quizModeBtn").classList.remove("active");
+  render();
+});
+
+window.unlockPrintMode = function(){
+  document.getElementById("printModeBtn").disabled = false;
+};
+
+render();
+</script>
+<script src="../sync.js"></script>
+</body>
+</html>
