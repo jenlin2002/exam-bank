@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>段考題庫｜歷史第2回 - 商周至隋唐的民族與文化（A卷）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@500;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#faf6ec;
+    --paper-line:#e3dcc8;
+    --ink:#26332b;
+    --ink-soft:#5b6b5f;
+    --chalk-green:#2f4538;
+    --chalk-green-2:#3d5a48;
+    --pen-red:#b8433a;
+    --pen-red-soft:#f4dedb;
+    --ok-green:#3f7d52;
+    --ok-green-soft:#dfeee1;
+    --gold:#b5842a;
+    --radius:10px;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:"Noto Sans TC",sans-serif;
+    line-height:1.7;
+  }
+  header.hero{
+    background:var(--chalk-green);
+    color:#eef2ea;
+    padding:28px 20px 40px;
+    position:relative;
+  }
+  header.hero::after{
+    content:"";
+    position:absolute;
+    left:0; right:0; bottom:-1px;
+    height:14px;
+    background:repeating-linear-gradient(90deg,var(--paper) 0 18px, transparent 18px 20px);
+  }
+  .hero-inner{max-width:880px;margin:0 auto;}
+  .breadcrumb a{color:#cfe0d1;text-decoration:none;font-size:14px;}
+  .breadcrumb a:hover{text-decoration:underline;}
+  h1{
+    font-family:"Noto Serif TC",serif;
+    font-weight:700;
+    font-size:clamp(24px,4vw,34px);
+    margin:10px 0 6px;
+  }
+  .subtitle{color:#cfe0d1;font-size:15px;margin:0;}
+  main{max-width:880px;margin:0 auto;padding:28px 20px 80px;}
+
+  .controls{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:22px;
+  }
+  .mode-toggle{display:flex;border:2px solid var(--chalk-green);border-radius:999px;overflow:hidden;}
+  .mode-toggle button{
+    background:transparent;border:none;padding:8px 16px;font-size:14px;font-weight:700;
+    color:var(--chalk-green);cursor:pointer;font-family:"Noto Sans TC",sans-serif;
+  }
+  .mode-toggle button.active{background:var(--gold);color:#fff;}
+  .mode-toggle button:disabled{opacity:.4;cursor:not-allowed;}
+
+  .score-bar{
+    display:none;
+    align-items:center;
+    justify-content:space-between;
+    background:#fff;
+    border:1px solid var(--paper-line);
+    border-left:5px solid var(--gold);
+    border-radius:var(--radius);
+    padding:12px 18px;
+    margin-bottom:22px;
+    font-size:14px;
+  }
+  .score-bar.show{display:flex;}
+  .score-bar strong{font-size:18px;color:var(--gold);}
+  .score-bar button{
+    background:none;border:1px solid var(--ink-soft);color:var(--ink-soft);
+    border-radius:6px;padding:6px 12px;font-size:13px;cursor:pointer;
+  }
+
+  section.block{
+    background:#fff;
+    border:1px solid var(--paper-line);
+    border-radius:var(--radius);
+    padding:22px 22px 26px;
+    margin-bottom:20px;
+  }
+  .block h2{
+    font-family:"Noto Serif TC",serif;
+    font-size:19px;
+    margin:0 0 4px;
+    color:var(--chalk-green);
+  }
+  .block .meta{color:var(--ink-soft);font-size:13px;margin:0 0 16px;}
+
+  .q{margin-bottom:18px;padding-bottom:16px;border-bottom:1px dashed var(--paper-line);}
+  .q:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0;}
+  .q-text{font-size:15.5px;margin-bottom:8px;}
+  .q-num{color:var(--gold);font-weight:700;margin-right:4px;}
+
+  .opts{display:grid;gap:8px;}
+  .opt{
+    display:flex;gap:8px;align-items:flex-start;
+    border:1.5px solid var(--paper-line);
+    border-radius:8px;
+    padding:9px 12px;
+    cursor:pointer;
+    font-size:14.5px;
+    background:#fffdf8;
+  }
+  .opt:hover{border-color:var(--chalk-green-2);}
+  .opt.selected{border-color:var(--chalk-green-2);background:#eef3ea;}
+  .opt.correct{border-color:var(--ok-green);background:var(--ok-green-soft);}
+  .opt.wrong{border-color:var(--pen-red);background:var(--pen-red-soft);}
+  .opt .tag{font-weight:700;color:var(--ink-soft);}
+  .opt.correct .tag{color:var(--ok-green);}
+  .opt.wrong .tag{color:var(--pen-red);}
+  .opt.disabled{cursor:default;}
+
+  .passage{
+    background:#f5f2e8;border-radius:8px;padding:14px 16px;margin-bottom:14px;
+    font-size:14.5px;white-space:pre-line;
+  }
+  .passage-label{font-weight:700;color:var(--chalk-green);margin-bottom:4px;display:block;}
+
+  .footer-link{
+    display:block;text-align:center;margin-top:30px;color:var(--chalk-green);
+    text-decoration:none;font-weight:700;font-size:14px;
+  }
+  .footer-link:hover{text-decoration:underline;}
+
+  @media print{
+    header.hero, .controls, .score-bar, .mini-btn, .footer-link{display:none !important;}
+    body{background:#fff;}
+    section.block{border:none;box-shadow:none;padding:8px 0;margin-bottom:14px;}
+    .opt.correct{background:none;border:none;font-weight:700;}
+    .opt.correct::after{content:" ← 正解";color:var(--pen-red);}
+    .opt{border:none;padding:2px 0;}
+    main{max-width:100%;padding:0 24px;}
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="breadcrumb"><a href="https://jenlin2002.github.io/">🏠 回總目錄</a> ／ <a href="../kangxuan-social-g8-1.html" style="color:#cfe0d1;">段考題庫</a></div>
+    <h1>歷史・第2回</h1>
+    <p class="subtitle">第2課 商周至隋唐的民族與文化｜康軒版八年級社會（三）Ａ卷</p>
+  </div>
+</header>
+
+<main>
+  <div class="controls">
+    <div class="mode-toggle">
+      <button id="quizModeBtn" class="active">✏️ 測驗模式</button>
+      <button id="printModeBtn" disabled title="完成測驗並送出成績後才能查看">🖨️ 完整題目與解答（送出成績後解鎖）</button>
+    </div>
+  </div>
+
+  <div class="score-bar" id="scoreBar">
+    <div>目前得分：<strong id="scoreText">0 / 0</strong>（僅計算選擇題）</div>
+    <button id="resetBtn">重新作答</button>
+  </div>
+
+  <div id="content"></div>
+
+  <a class="footer-link" href="../kangxuan-social-g8-1.html">← 回段考題庫總覽</a>
+</main>
+
+<script>
+
+window.EXAM_META = { version: "A卷", examLabel: "歷史第2回" };
+const DATA = {
+  sections: [
+    {
+      type:"mc",
+      title:"一、單題",
+      meta:"84%，每題3分",
+      items:[
+        {q:"七世紀時，麥加商人穆罕默德創立伊斯蘭教，之後信徒日漸增加，部分信徒移居中國後，也將伊斯蘭教傳入。伊斯蘭教最早在何時傳入中國？",options:["漢朝","魏晉","唐朝","宋朝"],correct:2},
+        {q:"小智將中國歷史上某條重要路線，繪製成右圖的示意圖。由圖中內容判斷，「？」應為下列何者？",image:"images/hist2/q4.png",options:["吐蕃","新羅","非洲","大秦"],correct:3},
+        {q:"佛教自西漢末年傳入中國後，逐漸影響中國人的思想、藝術與文學等層面。魏晉南北朝時期，佛教在中國大為盛行，其背景因素應不包含下列何者？",options:["政權更迭，社會動盪","部分胡人君主的提倡","百姓需要宗教的慰藉","許多高僧到日本取經"],correct:3},
+        {q:"培峰在《中國歷史地圖集》中，看到右圖的地圖。由圖中內容判斷，此圖最可能放在下列哪個章節中？",options:["北魏的漢化措施","永嘉之禍的影響","匈奴人遷居黃河流域","天可汗體系形成過程"],correct:0},
+        {q:"中國歷史某朝代曾實施「改漢姓」政策，例如「拔拔」改成「長孫」、「獨孤」改為「劉」等。當時朝廷實施此政策的主要目的為何？",options:["促進胡漢間的融合","激起胡人仇漢情緒","隔離胡漢免起衝突","胡漢共同對抗大食"],correct:0},
+        {q:"西元751年發生怛羅斯戰役，才成立不久的阿拔斯王朝軍隊就打敗唐朝軍隊，導致歐、亞、非大陸的國際關係出現轉變。請問：阿拔斯王朝應是下列哪個民族建立的國家？",options:["阿拉伯","土耳其","日耳曼","斯拉夫"],correct:0},
+        {q:"旅行社舉辦中國大陸旅遊團，右圖是行程規畫的主要路線。以此判斷，這個旅遊行程最可能為下列何者？",image:"images/hist2/q7.png",options:["秀麗江南古鎮全覽7日","絕美山東半島悠遊5日","西域絲路旅人精典11日","品味生活澳門輕旅行3日"],correct:2},
+        {q:"玄奘是歷史上的重要宗教家。關於他的事蹟，下列敘述何者正確？",options:["前往印度取經，翻譯佛經","引進伊斯蘭教，建清真寺","創立本土宗教，推廣道教","傳播一神信仰，出海傳教"],correct:0},
+        {q:"皇帝將文成公主許配給松贊干布。這門婚事讓松贊干布高興極了，他說：「我祖、父未有通婚上國者，今我得尚大唐公主，為幸實多，當為公主築一城，以誇示後代。」松贊干布應是哪一國首領？",options:["吐蕃","鮮卑","新羅","東突厥"],correct:0},
+        {q:"俊亨到中國進行歷史踏查活動，右圖是他所拍攝的照片。由圖中內容判斷，這趟行程的主題應與下列何者有關？",image:"images/hist2/q10.png",options:["犬戎攻滅西周","秦始皇的統一","魏晉南北朝佛教盛行","天可汗體系的建立"],correct:2},
+        {q:"佩瑜參觀歷史文物特展時，看到一幅描繪唐代社會景況的圖畫，畫中的背景是一個喧鬧的市集，大街上有一個騎著馬的吐蕃工匠，另一個西域商人正沿街叫賣貨物，還有一位來自日本的學生匆忙走過。這幅圖畫表現了當時的何種社會風氣？",options:["周王權威達於極盛","列強侵逼戰火浮生","特別警惕防禦外族","開放多元外來文化"],correct:3},
+        {q:"有學者把世界劃分為四大文明區：東地中海文明區、南亞次大陸文明區、東亞文明區、中南美印第安文明區。下列哪個國家不在「東亞文明區」內？",options:["日本","朝鮮","中國","印度"],correct:3},
+        {q:"智秀上臺進行口頭報告時，以右圖來舉例說明某個歷史主題。由圖中內容判斷，智秀的報告主題最可能與下列何者有關？",image:"images/hist2/q13.png",options:["新港文書的出現","秦朝文字的統一","漢代絲路的開通","唐朝文化的傳播"],correct:3},
+        {q:"知恩搭乘時光機回到中國史上某一朝代的首都，他看到遊客大多衣著豔麗，還有身著窄袖緊腰服裝的婦女。她走累了進入一家飲食店吃胡麻餅，還看到一個眼大鼻高的外族女子正在招呼客人。以此判斷，知恩應是回到了下列哪個朝代首都？",options:["東周洛陽","西漢長安","東晉建康","唐代長安"],correct:3},
+        {q:"匈奴是古代中國的北方民族，生活在亞洲北部草原，統治區域包括現今蒙古、中亞與西伯利亞南部地區。下列哪個朝代來自北方的威脅並非匈奴？",options:["西周","秦朝","漢朝","西晉"],correct:0},
+        {q:"以下為兩首詩中的部分描述：「葡萄美酒夜光杯，欲飲琵琶馬上催。」「胡旋女，胡旋女。心應弦，手應鼓。弦鼓一聲雙袖舉，迴雪飄颻轉蓬舞。左旋右轉不知疲，千匝萬周無已時。」這兩首詩皆在反映哪個朝代的娛樂活動特色？",options:["秦代","漢代","東周","唐代"],correct:3},
+        {q:"這位君王的名字為拓跋宏，之後改姓「元」。上任後他實行漢化，禁胡服、胡語，推廣教育，並規定鮮卑人改用漢姓。這位君主為下列何者？",options:["秦始皇","漢武帝","唐太宗","北魏孝文帝"],correct:3},
+        {q:"靜茹繪製右圖來分析中國某時期的歷史。由圖中內容判斷，「甲」應填入下列何者才正確？",image:"images/hist2/q18.png",options:["東周","秦朝","西漢","唐朝"],correct:3},
+        {q:"《後漢書》中對東漢靈帝有以下描述：「好胡服、胡帳、胡床、胡坐、胡飯、胡箜篌(一種撥弦樂器)、胡笛、胡舞，京都貴戚皆競為之。」東漢靈帝會有上述的喜好應是受到下列何者的影響？",options:["西周的禮樂儀式","東周時向外征伐","西域文物傳入中國","北魏推動漢化政策"],correct:2},
+        {q:"勝哲參觀某博物館舉辦「天可汗的世界」特展，他在展覽中最可能會看到下列哪個符合展覽主題的文物？",options:["兵馬俑與陪葬器物","圓形方孔的半兩錢","充滿胡風的駱駝樂人俑","鮮卑貴族元顯儁的墓誌銘"],correct:2},
+        {q:"承駿是西晉末年住在洛陽城的漢人平民，他最可能會有下列何種經歷？",options:["加入張騫出使西域的行列","眼見首都遭到匈奴人攻陷","看到日本留學生在大街閒逛","閱讀玄奘所參與翻譯的佛經"],correct:1},
+        {q:"此國國王十分仰慕中國文化，除派遣子弟至中國留學外，其文字、曆法、律令制度、服飾等皆學習唐式，故也稱為「君子國」。此國位於附圖中的何處？",image:"images/hist2/q22.png",options:["甲","乙","丙","丁"],correct:1},
+        {q:"某電視臺為了製作「商周時期的農業民族」節目，遠赴中國，前往當時的都城進行拍攝活動。以此判斷，電視臺所拍攝的場景主要應位於下列哪個地區？",options:["黃河流域","東南丘陵","長江流域","東北平原"],correct:0},
+        {q:"以下是羅馬帝國學者的記載：「遙遠的東方絲國在森林中收穫絲製品，經過浸泡等程序的加工，出口到羅馬，使得羅馬開始崇尚絲製衣服。」以此判斷，上述提到的「絲國」最可能為何？",options:["西周","秦朝","漢朝","唐朝"],correct:2},
+        {q:"老師請同學分享關於唐朝胡漢融合與國際化的實例。下列哪位同學的說法有誤？",options:["佳芸：許多外國人到中國經商","豪豪：朝鮮半島學生來華留學","子涵：政府修築城牆防禦外族","廷緯：唐朝政府有外國的官員"],correct:2},
+        {q:"一位外國史家在書中寫道：「造紙術從中國傳到撒馬爾罕，與中國的俘虜有關。抓到中國俘虜的人，為葛利將軍。從眾俘虜中得造紙工匠若干人，於是設造紙廠。造紙業發達後，不僅供應日需，且能行銷各地。造紙既盛，抄寫便利，實亦全世界人類的福利。」文中這位將軍應屬於哪個民族？",options:["日耳曼","阿拉伯","土耳其","斯拉夫"],correct:1},
+        {q:"小芙在一篇文章中看到一段文字如下：「某次，漢武帝聽幾個降軍說，西域有個叫大月氏的國家，國家不但被攻破，首領還被匈奴殺害了，想報仇雪恨，但無人相助。漢武帝認為，這是個教訓匈奴的好機會，便派人往西域出發，聯絡大月氏。」以此判斷，這篇文章探討的主題最可能為下列何者？",options:["東周時代商鞅變法圖強","北魏民族政策發展始末","勇闖西域第一人：張騫","唐朝東亞文化圈之形成"],correct:2},
+        {q:"一位學者對中國某個城市提出以下見解：「這座城市是七世紀時期，一座可容納一百多萬人口的大城市。寬闊的大道縱橫交錯，來自波斯、中亞、阿拉伯、新羅、日本等地的商人、使節在此聚集。」以此判斷，這座城市最可能為下列何者？",options:["西周鎬京","西漢長安","北魏洛陽","唐代長安"],correct:3}
+      ]
+    },
+    {
+      type:"reading",
+      title:"二、題組",
+      meta:"16%，每題4分",
+      passages:[
+        {
+          label:"(一)",
+          text:"西元645年，孝德天皇宣布模仿中國建立年號，定年號為「大化」。他即位後，力革弊政，詔以土地國有，廢世襲官爵，沒收封地，並蓄意吸取中國王朝的制度與文化。在位十年而國大治，史稱為「大化革新」。請回答下列問題：",
+          items:[
+            {q:"孝德天皇是今日何國歷史上的領袖？",options:["韓國","日本","印度","越南"],correct:1},
+            {q:"文中提及的「中國王朝」，應指中國歷史上的哪個朝代？",options:["東周","漢代","西晉","唐代"],correct:3}
+          ]
+        },
+        {
+          label:"(二)",
+          text:"《唐會要‧卷七三》中關於某一史事有以下記載：\n\n後來，許多外族酋長請求尊稱皇帝為「天可汗」。皇帝說：「我本是中國的天子，也能行使天可汗的職責。」於是下詔，將皇帝的詔書賜予西域與北方邊疆的各部族君長，他們都尊稱皇帝為「天可汗」。若有外族首領去世，朝廷必會下詔冊立其繼承人。自此以後，皇帝統領四方各族的局面，正式確立。",
+          items:[
+            {q:"文中所述情形應與哪一事件的結果最有關？",options:["張騫出使西域","嬴政統一中國","匈奴攻破洛陽城","唐太宗滅東突厥"],correct:3},
+            {q:"文中這件史事所造成的影響應包含下列何者？",options:["促使西域外族來華交流","造紙技術傳入西方國家","石窟等佛像藝術的發達","有助於經濟重心的南移"],correct:0}
+          ]
+        }
+      ]
+    }
+
+  ]
+};
+
+let currentMode = "quiz"; // quiz | print
+
+const contentEl = document.getElementById("content");
+const scoreBar = document.getElementById("scoreBar");
+const scoreText = document.getElementById("scoreText");
+
+function render(){
+  window.examAnswersRevealed = false;
+  contentEl.innerHTML = "";
+  DATA.sections.forEach((sec, si)=> contentEl.appendChild(renderSection(sec, si)));
+  if(currentMode==="quiz"){
+    scoreBar.classList.add("show");
+    updateScore();
+  } else {
+    scoreBar.classList.remove("show");
+    contentEl.querySelectorAll(".opt").forEach(o=>o.classList.add("disabled"));
+    contentEl.querySelectorAll(".opt.is-correct").forEach(o=>o.classList.add("correct"));
+  }
+}
+
+function renderSection(sec, si){
+  const block = document.createElement("section");
+  block.className = "block";
+  block.innerHTML = `<h2>${sec.title}</h2><p class="meta">${sec.meta}</p>`;
+
+  if(sec.type==="mc"){
+    sec.items.forEach((it,i)=>{
+      const q = document.createElement("div");
+      q.className = "q";
+      const optsHtml = it.options.map((op,oi)=>`
+        <div class="opt" data-idx="${oi}" data-correct="${oi===it.correct}">
+          <span class="tag">(${String.fromCharCode(65+oi)})</span><span>${op}</span>
+        </div>`).join("");
+      q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q}</div>
+        ${it.image ? `<img src="${it.image}" alt="題目附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">`:""}
+        <div class="opts">${optsHtml}</div>`;
+      q.querySelectorAll(".opt").forEach(optEl=>{
+        if(optEl.dataset.correct==="true") optEl.classList.add("is-correct");
+        optEl.addEventListener("click", ()=>selectOption(q, optEl));
+      });
+      block.appendChild(q);
+    });
+  }
+
+  else if(sec.type==="reading"){
+    sec.passages.forEach(p=>{
+      const passageDiv = document.createElement("div");
+      passageDiv.className = "passage";
+      passageDiv.innerHTML = `${p.label ? `<span class="passage-label">${p.label}</span>`:""}${p.text}${p.image ? `<img src="${p.image}" alt="題組附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-top:10px;border:1px solid var(--paper-line);">`:""}`;
+      block.appendChild(passageDiv);
+      p.items.forEach((it,i)=>{
+        const q = document.createElement("div");
+        q.className = "q";
+        const optsHtml = it.options.map((op,oi)=>`
+          <div class="opt" data-idx="${oi}" data-correct="${oi===it.correct}">
+            <span class="tag">(${String.fromCharCode(65+oi)})</span><span>${op}</span>
+          </div>`).join("");
+        q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q}</div>
+          ${it.image ? `<img src="${it.image}" alt="題目附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">`:""}
+          <div class="opts">${optsHtml}</div>`;
+        q.querySelectorAll(".opt").forEach(optEl=>{
+          if(optEl.dataset.correct==="true") optEl.classList.add("is-correct");
+          optEl.addEventListener("click", ()=>selectOption(q, optEl));
+        });
+        block.appendChild(q);
+      });
+    });
+  }
+
+  return block;
+}
+
+function selectOption(qEl, optEl){
+  if(currentMode!=="quiz") return;
+  if(qEl.dataset.answered==="true") return;
+  qEl.dataset.answered = "true";
+  qEl.querySelectorAll(".opt").forEach(o=>o.classList.add("disabled"));
+  optEl.classList.add("selected");
+  const correctOpt = qEl.querySelector('.opt[data-correct="true"]');
+  qEl.dataset.studentAnswer = optEl.textContent.trim();
+  qEl.dataset.correctAnswer = correctOpt ? correctOpt.textContent.trim() : "";
+  qEl.dataset.isCorrect = (optEl.dataset.correct==="true") ? "true" : "false";
+  updateScore();
+}
+
+function updateScore(){
+  let total = 0, answered = 0, correct = 0;
+  contentEl.querySelectorAll(".q").forEach(q=>{
+    const gradable = q.querySelector(".opts");
+    if(!gradable) return;
+    total++;
+    if(q.dataset.studentAnswer !== undefined){
+      answered++;
+      if(q.dataset.isCorrect === "true") correct++;
+    }
+  });
+  if(window.examAnswersRevealed){
+    scoreText.textContent = `${correct} / ${total}`;
+  } else {
+    scoreText.textContent = `已作答 ${answered} / ${total} 題`;
+  }
+}
+window.updateScore = updateScore;
+
+document.getElementById("resetBtn").addEventListener("click", render);
+document.getElementById("quizModeBtn").addEventListener("click", ()=>{
+  currentMode = "quiz";
+  document.getElementById("quizModeBtn").classList.add("active");
+  document.getElementById("printModeBtn").classList.remove("active");
+  render();
+});
+document.getElementById("printModeBtn").addEventListener("click", ()=>{
+  if(document.getElementById("printModeBtn").disabled) return;
+  currentMode = "print";
+  document.getElementById("printModeBtn").classList.add("active");
+  document.getElementById("quizModeBtn").classList.remove("active");
+  render();
+});
+
+window.unlockPrintMode = function(){
+  document.getElementById("printModeBtn").disabled = false;
+};
+
+render();
+</script>
+<script src="../sync.js"></script>
+</body>
+</html>
