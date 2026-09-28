@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>段考題庫｜公民第6回 - 第3~4課總複習（A卷）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@500;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#faf6ec;
+    --paper-line:#e3dcc8;
+    --ink:#26332b;
+    --ink-soft:#5b6b5f;
+    --chalk-green:#2f4538;
+    --chalk-green-2:#3d5a48;
+    --pen-red:#b8433a;
+    --pen-red-soft:#f4dedb;
+    --ok-green:#3f7d52;
+    --ok-green-soft:#dfeee1;
+    --gold:#b5842a;
+    --radius:10px;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:"Noto Sans TC",sans-serif;
+    line-height:1.7;
+  }
+  header.hero{
+    background:var(--chalk-green);
+    color:#eef2ea;
+    padding:28px 20px 40px;
+    position:relative;
+  }
+  header.hero::after{
+    content:"";
+    position:absolute;
+    left:0; right:0; bottom:-1px;
+    height:14px;
+    background:repeating-linear-gradient(90deg,var(--paper) 0 18px, transparent 18px 20px);
+  }
+  .hero-inner{max-width:880px;margin:0 auto;}
+  .breadcrumb a{color:#cfe0d1;text-decoration:none;font-size:14px;}
+  .breadcrumb a:hover{text-decoration:underline;}
+  h1{
+    font-family:"Noto Serif TC",serif;
+    font-weight:700;
+    font-size:clamp(24px,4vw,34px);
+    margin:10px 0 6px;
+  }
+  .subtitle{color:#cfe0d1;font-size:15px;margin:0;}
+  main{max-width:880px;margin:0 auto;padding:28px 20px 80px;}
+
+  .controls{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:22px;
+  }
+  .mode-toggle{display:flex;border:2px solid var(--chalk-green);border-radius:999px;overflow:hidden;}
+  .mode-toggle button{
+    background:transparent;border:none;padding:8px 16px;font-size:14px;font-weight:700;
+    color:var(--chalk-green);cursor:pointer;font-family:"Noto Sans TC",sans-serif;
+  }
+  .mode-toggle button.active{background:var(--gold);color:#fff;}
+  .mode-toggle button:disabled{opacity:.4;cursor:not-allowed;}
+
+  .score-bar{
+    display:none;
+    align-items:center;
+    justify-content:space-between;
+    background:#fff;
+    border:1px solid var(--paper-line);
+    border-left:5px solid var(--gold);
+    border-radius:var(--radius);
+    padding:12px 18px;
+    margin-bottom:22px;
+    font-size:14px;
+  }
+  .score-bar.show{display:flex;}
+  .score-bar strong{font-size:18px;color:var(--gold);}
+  .score-bar button{
+    background:none;border:1px solid var(--ink-soft);color:var(--ink-soft);
+    border-radius:6px;padding:6px 12px;font-size:13px;cursor:pointer;
+  }
+
+  section.block{
+    background:#fff;
+    border:1px solid var(--paper-line);
+    border-radius:var(--radius);
+    padding:22px 22px 26px;
+    margin-bottom:20px;
+  }
+  .block h2{
+    font-family:"Noto Serif TC",serif;
+    font-size:19px;
+    margin:0 0 4px;
+    color:var(--chalk-green);
+  }
+  .block .meta{color:var(--ink-soft);font-size:13px;margin:0 0 16px;}
+
+  .q{margin-bottom:18px;padding-bottom:16px;border-bottom:1px dashed var(--paper-line);}
+  .q:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0;}
+  .q-text{font-size:15.5px;margin-bottom:8px;}
+  .q-num{color:var(--gold);font-weight:700;margin-right:4px;}
+
+  .opts{display:grid;gap:8px;}
+  .opt{
+    display:flex;gap:8px;align-items:flex-start;
+    border:1.5px solid var(--paper-line);
+    border-radius:8px;
+    padding:9px 12px;
+    cursor:pointer;
+    font-size:14.5px;
+    background:#fffdf8;
+  }
+  .opt:hover{border-color:var(--chalk-green-2);}
+  .opt.selected{border-color:var(--chalk-green-2);background:#eef3ea;}
+  .opt.correct{border-color:var(--ok-green);background:var(--ok-green-soft);}
+  .opt.wrong{border-color:var(--pen-red);background:var(--pen-red-soft);}
+  .opt .tag{font-weight:700;color:var(--ink-soft);}
+  .opt.correct .tag{color:var(--ok-green);}
+  .opt.wrong .tag{color:var(--pen-red);}
+  .opt.disabled{cursor:default;}
+
+  .passage{
+    background:#f5f2e8;border-radius:8px;padding:14px 16px;margin-bottom:14px;
+    font-size:14.5px;white-space:pre-line;
+  }
+  .passage-label{font-weight:700;color:var(--chalk-green);margin-bottom:4px;display:block;}
+
+  .footer-link{
+    display:block;text-align:center;margin-top:30px;color:var(--chalk-green);
+    text-decoration:none;font-weight:700;font-size:14px;
+  }
+  .footer-link:hover{text-decoration:underline;}
+
+  @media print{
+    header.hero, .controls, .score-bar, .mini-btn, .footer-link{display:none !important;}
+    body{background:#fff;}
+    section.block{border:none;box-shadow:none;padding:8px 0;margin-bottom:14px;}
+    .opt.correct{background:none;border:none;font-weight:700;}
+    .opt.correct::after{content:" ← 正解";color:var(--pen-red);}
+    .opt{border:none;padding:2px 0;}
+    main{max-width:100%;padding:0 24px;}
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="breadcrumb"><a href="https://jenlin2002.github.io/">🏠 回總目錄</a> ／ <a href="../kangxuan-social-g8-1.html" style="color:#cfe0d1;">段考題庫</a></div>
+    <h1>公民・第6回</h1>
+    <p class="subtitle">第3~4課 總複習｜康軒版八年級社會（三）Ａ卷</p>
+  </div>
+</header>
+
+<main>
+  <div class="controls">
+    <div class="mode-toggle">
+      <button id="quizModeBtn" class="active">✏️ 測驗模式</button>
+      <button id="printModeBtn" disabled title="完成測驗並送出成績後才能查看">🖨️ 完整題目與解答（送出成績後解鎖）</button>
+    </div>
+  </div>
+
+  <div class="score-bar" id="scoreBar">
+    <div>目前得分：<strong id="scoreText">0 / 0</strong>（僅計算選擇題）</div>
+    <button id="resetBtn">重新作答</button>
+  </div>
+
+  <div id="content"></div>
+
+  <a class="footer-link" href="../kangxuan-social-g8-1.html">← 回段考題庫總覽</a>
+</main>
+
+<script>
+
+window.EXAM_META = { version: "A卷", examLabel: "公民第6回" };
+const DATA = {
+  sections: [
+    {
+      type:"mc",
+      title:"一、單題",
+      meta:"84%，每題3分",
+      items:[
+        {q:"孫中山先生曾於一場演講中提及西方主流的分權制度存有弊端，因此創立出新的分權制度，並表示「○○○○是我所創造，古今中外各國從來沒有的。」孫中山先生所創立的分權制度具有何種特色？",options:["將政府權力分為行政權、立法權、考試權三權","改善西方分權制度中無法限制政府權力之缺點","將監察權從立法權獨立，以避免國會權力過大","將行政權與考試權合併，以增加政府行政效率"],correct:2},
+        {q:"2020年新冠疫情蔓延時，中央流行疫情指揮中心為加強疫調速度，預計透過社交距離App取代實聯制，不過外界擔心App有資安問題。對此，內政部部長表示，防疫是全民作戰，有關個人資料的保護，政府遵守(甲)原則，不會侵害人民權利。上述的(甲)原則，應是指下列何者？",options:["權力分立","相互制衡","依法行政","主權在民"],correct:2},
+        {q:"下列是有關三權分立及五權分立的敘述，何者正確？",options:["三權分立可以限制政府權力","五權分立可以擴增政府權力","兩者皆為避免權力過度分散","我國目前採用的為三權分立"],correct:0},
+        {q:"一名進駐高雄的外國記者利用社群媒體控訴當地人行道騎車亂象，高雄市政府因此下令要求轄區警員依法加強取締違規行為。下列針對上文的敘述何者正確？",options:["外國記者在媒體上發聲，是行使權力的表現","高雄市政府下令的行為，是行使權利的表現","轄區警員依法加強取締，是行使權力的表現","民眾遵守交通法規行為，是行使權利的表現"],correct:2},
+        {q:"2022年，由立法委員提出「18歲公民權」的修憲案，並經公民投票，結果雖然未達到最低同意票門檻標準，但彰顯出我國國民具有是否同意《憲法》修改的權利，上述畫線處是下列何種精神的具體實踐？",options:["權力分立","多元包容","主權在民","依法行政"],correct:2},
+        {q:"有學者主張某國正在朝向「人治社會」靠攏，該學者做出該推論，最可能是因為該國出現下列何種現象？",options:["執政者依據法律限制人民的權利","執政者不能自行擴張或解釋法律","執政者能自行決定法律執行標準","執政者的統治行為須受法律約束"],correct:2},
+        {q:"為限制炒房行為，立法院三讀通過《平均地權條例》修正案。內政部次長表示，修正案通過、公布生效後，還須經行政院核定、公布後，才會正式上路。上文顯示我國政府須依循一定程序才能更改法律，以達到下列何種目的？",options:["擴張政府的權力","樹立政府的權威","強化人民的權力","保障人民的權利"],correct:3},
+        {q:"以下是四位公職人員的對話。根據內容判斷，何者的產生方式是由「行政院院長提請總統任命」？",options:["甲：我身為部長必須規畫教育方針","乙：我明天早上要質詢行政院院長","丙：我每天都會有看不完的釋憲案","丁：我等下要回去審中央年度決算"],correct:0},
+        {q:"「倒閣」是民主國家解決行政與立法機關衝突的一種機制，即立法機關對行政機關的施政不滿意時，所採取的制衡方式。上述「倒閣」是指下列何者？",options:["罷免案","覆議案","糾正案","不信任案"],correct:3},
+        {q:"以下是嘉嘉正在瀏覽的政府網頁——",image:"images/civ6/q10.png",options:["勞動部","審計部","銓敘部","內政部"],correct:2},
+        {q:"新聞報導：「中興紙業結束營業後即開始標售廠區土地，前後多次流標，遲至2020年完成標售作業，監察委員認為經濟部多年來未能解決此一窘境，嚴重傷害政府威信，因此提出　　。」上述　　是指何者？",options:["彈劾","糾舉","糾正","覆議"],correct:2},
+        {q:"右圖是某國政治人物在一場晚會上的談話。根據談話內容判斷，該晚會的舉辦是在鼓動人民行使下列哪項權利？",image:"images/civ6/q12.png",options:["選舉","罷免","創制","複決"],correct:1},
+        {q:"新聞報導：「德國的社民黨終於在大選中擊敗由執政16年的梅克爾所領導的政黨，實現政黨輪替，並將組織聯合政府。」上述德國的政治局勢變化，最適合以下列何者來說明？",options:["政府是一個永久性與持續性的組織整體","人民可以行使選舉權利更換政府的組成","政府統治的權力是從競爭對手奪取而來","人民可以透過分權制度收回政府的權力"],correct:1},
+        {q:"報載：已退休法官被控在任職法院期間，與涉訟當事人間有不當接觸情形，被監察院　　後移送司法院懲戒法院審理。根據上文，　　是指下列何者？",options:["審計","彈劾","糾舉","糾正"],correct:1},
+        {q:"我國政府官員的產生方式不盡相同，以下關於政府官員與產生方式之配對，何者正確？",image:"images/civ6/q15.png",options:["立法院院長","司法院院長","法務部部長","監察院審計長"],correct:3},
+        {q:"考試院與監察院的設置，是我國政府體制較其他國家特別的地方。下列有關考試委員與監察委員之間的比較，何者正確？",options:["行使職權相同","產生方式相同","均具有審計權","均具有立法權"],correct:1},
+        {q:"曾大偉高票當選某公職人員，謝票時提到：「感謝鄉親將寶貴的一票賜給我，進入國會後，我一定會嚴格監督內閣團隊與審查政府預算，幫人民看緊荷包。」上述曾大偉最可能是當選何種公職人員？",options:["市議員","立法委員","立法院院長","司法院大法官"],correct:1},
+        {q:"憲法法庭判決：「《醫療法》第84條規定：『非醫療機構，不得為醫療廣告。』其中禁止醫師為醫療廣告之部分，與《憲法》保障言論自由之意旨有違。」在《醫療法》的相關規定範圍內，自判決公告日起失效。上述案件中負責解釋《憲法》的公職人員應為下列何者？",options:["立法委員","考試委員","大法官","總統"],correct:2},
+        {q:"右圖為我國中央政府各權力間的互動關係，請根據圖中內容判斷，下列敘述何者正確？",image:"images/civ6/q19.png",options:["乙院院長由甲直接任命產生","丙院院長可以提請甲任命部會首長","甲可以經過丙院院長之核可，解散乙院","甲若違法失職可由乙院負責糾舉"],correct:1},
+        {q:"下列對行政院與立法院互動關係的敘述，何者正確？",options:["立法院通過的法律案、預算案，立法院院長可經由總統核可後，移請行政院覆議","立法院對行政院院長提出不信任案，如經通過，行政院可以直接解散立法院","行政院必須編列預算送立法院審查，院長及各部會首長接受立法委員的質詢","在兩院僵持不下情況下，總統可主動解散立法院"],correct:2},
+        {q:"下圖是緊急命令的發布流程，圖中的(甲)~(丙)依序應填入下列何者？",image:"images/civ6/q21.png",options:["總統、10日、立法院","總統、7日、司法院大法官","行政院院長、10日、立法院","行政院院長、7日、司法院大法官"],correct:0},
+        {q:"老師在公民課教導同學：「中央政府總預算」是由負責規畫國家政策的甲提出，經由乙審查，甲執行後，最後必須經由丙審核決算。上述甲、乙、丙依序分別為？",options:["行政院、司法院、監察院","立法院、行政院、監察院","行政院、立法院、司法院","行政院、立法院、監察院"],correct:3},
+        {q:"下表為阿和整理的筆記，但部分內容有誤。根據我國現行法律判斷，何者內容需要修正？",image:"images/civ6/q23.png",options:["提出者","優點","共同目的","權力類型"],correct:2},
+        {q:"公民老師上課時，向學生們講解　　的內涵，並舉出下列的例子：",image:"images/civ6/q24.png",options:["主權在民","人治法治","責任政治","權力分立"],correct:1},
+        {q:"某縣政府為整治交通亂象，交通局與警察機關合作，除加強取締違規停車外，針對屢次違規且拒絕改善的車主，除依法開罰外，更強制拖吊車輛並暫扣行照。根據上述畫底線處，主要在彰顯政府機關的何種功能？",options:["公權力之實行","辦理社會福利","實行地方自治","維持司法獨立"],correct:0},
+        {q:"根據我國法律規定，政府在面臨緊急事故時，可發布緊急命令以調動國內資源，下列敘述何者正確？",options:["由總統依監察院會議決議後發布","緊急命令由立法院發布後自動生效","緊急命令發布後，立法院應於10日內追認","緊急命令可由其他機關單獨發布，無需總統發布"],correct:2},
+        {q:"一名蘭嶼護理師搭乘黑鷹直升機後送病患，因直升機失事不幸罹難。家屬以「冒險犯難」申請因公撫卹，主管機關召開因公撫卹審議小組會議，認定符合「冒險犯難」，確定給卹。根據我國法律判斷，上述主管機關應為下列何者？",options:["行政院退輔會","監察院審計部","考試院考選部","考試院銓敘部"],correct:3},
+        {q:"下圖的甲、乙是隸屬於中央政府五院的官員，並聊到最近調查審理的案件——",image:"images/civ6/q28.png",options:["甲負責彈劾官員；乙負責制定法律","甲負責制定法律；乙負責審核決算","甲負責制定法律；乙負責解釋法律","甲負責審核決算；乙負責審查預算"],correct:2}
+      ]
+    },
+    {
+      type:"reading",
+      title:"二、題組",
+      meta:"16%，每題4分",
+      passages:[
+        {
+          label:"(一)",
+          text:"祕魯國會指控總統卡斯蒂約涉嫌貪腐以及軍隊和警察系統的違規晉升等，並以多數決通過彈劾程序，後續的彈劾審判若有三分之二國會議員投票贊成票，總統即須下臺。對此，總統卡斯蒂約反擊表示：「我理解國會有行使監督之權，但也不能濫用此憲政機制，而無視投票給我的民意」。請回答下列問題：",
+          items:[
+            {q:"上文祕魯的憲政設計，與下列哪種政府型態的建立最為相關？",options:["無限政府","有限政府","萬能政府","專制政府"],correct:1},
+            {q:"上文總統卡斯蒂約反擊的理由，應如何詮釋最合適？",options:["人民才有彈劾總統的權力，國會不具有此權利","國會應行使權力監督政府，避免總統濫用權力","總統的權力應以罷免的方式被收回，而非透過彈劾","總統權力是人民用選舉權利所賦予，不該隨意剝奪"],correct:3}
+          ]
+        },
+        {
+          label:"(二)",
+          text:"為避免人民的權利遭到侵害，我們的政府設有違憲審查制度，我國的《憲法訴訟法》於2022年1月4日施行，由15名大法官組成的「憲法法庭」，作成「憲法法庭判決」，取代過去的大法官解釋，繼續行使職權。請回答下列問題：",
+          items:[
+            {q:"關於上文所提及的《憲法》解釋權，應屬下列何者的職權？",options:["行政院","立法院","司法院","監察院"],correct:2},
+            {q:"根據我國現行法律，大法官的產生方式與下列何者相同？",options:["立法委員","行政院院長","立法院院長","考試院副院長"],correct:3}
+          ]
+        }
+      ]
+    }
+
+  ]
+};
+
+let currentMode = "quiz"; // quiz | print
+
+const contentEl = document.getElementById("content");
+const scoreBar = document.getElementById("scoreBar");
+const scoreText = document.getElementById("scoreText");
+
+function render(){
+  window.examAnswersRevealed = false;
+  contentEl.innerHTML = "";
+  DATA.sections.forEach((sec, si)=> contentEl.appendChild(renderSection(sec, si)));
+  if(currentMode==="quiz"){
+    scoreBar.classList.add("show");
+    updateScore();
+  } else {
+    scoreBar.classList.remove("show");
+    contentEl.querySelectorAll(".opt").forEach(o=>o.classList.add("disabled"));
+    contentEl.querySelectorAll(".opt.is-correct").forEach(o=>o.classList.add("correct"));
+  }
+}
+
+function renderSection(sec, si){
+  const block = document.createElement("section");
+  block.className = "block";
+  block.innerHTML = `<h2>${sec.title}</h2><p class="meta">${sec.meta}</p>`;
+
+  if(sec.type==="mc"){
+    sec.items.forEach((it,i)=>{
+      const q = document.createElement("div");
+      q.className = "q";
+      const optsHtml = it.options.map((op,oi)=>`
+        <div class="opt" data-idx="${oi}" data-correct="${oi===it.correct}">
+          <span class="tag">(${String.fromCharCode(65+oi)})</span><span>${op}</span>
+        </div>`).join("");
+      q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q}</div>
+        ${it.image ? `<img src="${it.image}" alt="題目附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">`:""}
+        <div class="opts">${optsHtml}</div>`;
+      q.querySelectorAll(".opt").forEach(optEl=>{
+        if(optEl.dataset.correct==="true") optEl.classList.add("is-correct");
+        optEl.addEventListener("click", ()=>selectOption(q, optEl));
+      });
+      block.appendChild(q);
+    });
+  }
+
+  else if(sec.type==="reading"){
+    sec.passages.forEach(p=>{
+      const passageDiv = document.createElement("div");
+      passageDiv.className = "passage";
+      passageDiv.innerHTML = `${p.label ? `<span class="passage-label">${p.label}</span>`:""}${p.text}${p.image ? `<img src="${p.image}" alt="題組附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-top:10px;border:1px solid var(--paper-line);">`:""}`;
+      block.appendChild(passageDiv);
+      p.items.forEach((it,i)=>{
+        const q = document.createElement("div");
+        q.className = "q";
+        const optsHtml = it.options.map((op,oi)=>`
+          <div class="opt" data-idx="${oi}" data-correct="${oi===it.correct}">
+            <span class="tag">(${String.fromCharCode(65+oi)})</span><span>${op}</span>
+          </div>`).join("");
+        q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q}</div>
+          ${it.image ? `<img src="${it.image}" alt="題目附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">`:""}
+          <div class="opts">${optsHtml}</div>`;
+        q.querySelectorAll(".opt").forEach(optEl=>{
+          if(optEl.dataset.correct==="true") optEl.classList.add("is-correct");
+          optEl.addEventListener("click", ()=>selectOption(q, optEl));
+        });
+        block.appendChild(q);
+      });
+    });
+  }
+
+  return block;
+}
+
+function selectOption(qEl, optEl){
+  if(currentMode!=="quiz") return;
+  if(qEl.dataset.answered==="true") return;
+  qEl.dataset.answered = "true";
+  qEl.querySelectorAll(".opt").forEach(o=>o.classList.add("disabled"));
+  optEl.classList.add("selected");
+  const correctOpt = qEl.querySelector('.opt[data-correct="true"]');
+  qEl.dataset.studentAnswer = optEl.textContent.trim();
+  qEl.dataset.correctAnswer = correctOpt ? correctOpt.textContent.trim() : "";
+  qEl.dataset.isCorrect = (optEl.dataset.correct==="true") ? "true" : "false";
+  updateScore();
+}
+
+function updateScore(){
+  let total = 0, answered = 0, correct = 0;
+  contentEl.querySelectorAll(".q").forEach(q=>{
+    const gradable = q.querySelector(".opts");
+    if(!gradable) return;
+    total++;
+    if(q.dataset.studentAnswer !== undefined){
+      answered++;
+      if(q.dataset.isCorrect === "true") correct++;
+    }
+  });
+  if(window.examAnswersRevealed){
+    scoreText.textContent = `${correct} / ${total}`;
+  } else {
+    scoreText.textContent = `已作答 ${answered} / ${total} 題`;
+  }
+}
+window.updateScore = updateScore;
+
+document.getElementById("resetBtn").addEventListener("click", render);
+document.getElementById("quizModeBtn").addEventListener("click", ()=>{
+  currentMode = "quiz";
+  document.getElementById("quizModeBtn").classList.add("active");
+  document.getElementById("printModeBtn").classList.remove("active");
+  render();
+});
+document.getElementById("printModeBtn").addEventListener("click", ()=>{
+  if(document.getElementById("printModeBtn").disabled) return;
+  currentMode = "print";
+  document.getElementById("printModeBtn").classList.add("active");
+  document.getElementById("quizModeBtn").classList.remove("active");
+  render();
+});
+
+window.unlockPrintMode = function(){
+  document.getElementById("printModeBtn").disabled = false;
+};
+
+render();
+</script>
+<script src="../sync.js"></script>
+</body>
+</html>
