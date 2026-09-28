@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>段考題庫｜地理第4回 - 中國的產業發展與地區差異（A卷）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@500;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#faf6ec;
+    --paper-line:#e3dcc8;
+    --ink:#26332b;
+    --ink-soft:#5b6b5f;
+    --chalk-green:#2f4538;
+    --chalk-green-2:#3d5a48;
+    --pen-red:#b8433a;
+    --pen-red-soft:#f4dedb;
+    --ok-green:#3f7d52;
+    --ok-green-soft:#dfeee1;
+    --gold:#b5842a;
+    --radius:10px;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:"Noto Sans TC",sans-serif;
+    line-height:1.7;
+  }
+  header.hero{
+    background:var(--chalk-green);
+    color:#eef2ea;
+    padding:28px 20px 40px;
+    position:relative;
+  }
+  header.hero::after{
+    content:"";
+    position:absolute;
+    left:0; right:0; bottom:-1px;
+    height:14px;
+    background:repeating-linear-gradient(90deg,var(--paper) 0 18px, transparent 18px 20px);
+  }
+  .hero-inner{max-width:880px;margin:0 auto;}
+  .breadcrumb a{color:#cfe0d1;text-decoration:none;font-size:14px;}
+  .breadcrumb a:hover{text-decoration:underline;}
+  h1{
+    font-family:"Noto Serif TC",serif;
+    font-weight:700;
+    font-size:clamp(24px,4vw,34px);
+    margin:10px 0 6px;
+  }
+  .subtitle{color:#cfe0d1;font-size:15px;margin:0;}
+  main{max-width:880px;margin:0 auto;padding:28px 20px 80px;}
+
+  .controls{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:22px;
+  }
+  .mode-toggle{display:flex;border:2px solid var(--chalk-green);border-radius:999px;overflow:hidden;}
+  .mode-toggle button{
+    background:transparent;border:none;padding:8px 16px;font-size:14px;font-weight:700;
+    color:var(--chalk-green);cursor:pointer;font-family:"Noto Sans TC",sans-serif;
+  }
+  .mode-toggle button.active{background:var(--gold);color:#fff;}
+  .mode-toggle button:disabled{opacity:.4;cursor:not-allowed;}
+
+  .score-bar{
+    display:none;
+    align-items:center;
+    justify-content:space-between;
+    background:#fff;
+    border:1px solid var(--paper-line);
+    border-left:5px solid var(--gold);
+    border-radius:var(--radius);
+    padding:12px 18px;
+    margin-bottom:22px;
+    font-size:14px;
+  }
+  .score-bar.show{display:flex;}
+  .score-bar strong{font-size:18px;color:var(--gold);}
+  .score-bar button{
+    background:none;border:1px solid var(--ink-soft);color:var(--ink-soft);
+    border-radius:6px;padding:6px 12px;font-size:13px;cursor:pointer;
+  }
+
+  section.block{
+    background:#fff;
+    border:1px solid var(--paper-line);
+    border-radius:var(--radius);
+    padding:22px 22px 26px;
+    margin-bottom:20px;
+  }
+  .block h2{
+    font-family:"Noto Serif TC",serif;
+    font-size:19px;
+    margin:0 0 4px;
+    color:var(--chalk-green);
+  }
+  .block .meta{color:var(--ink-soft);font-size:13px;margin:0 0 16px;}
+
+  .q{margin-bottom:18px;padding-bottom:16px;border-bottom:1px dashed var(--paper-line);}
+  .q:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0;}
+  .q-text{font-size:15.5px;margin-bottom:8px;}
+  .q-num{color:var(--gold);font-weight:700;margin-right:4px;}
+
+  .opts{display:grid;gap:8px;}
+  .opt{
+    display:flex;gap:8px;align-items:flex-start;
+    border:1.5px solid var(--paper-line);
+    border-radius:8px;
+    padding:9px 12px;
+    cursor:pointer;
+    font-size:14.5px;
+    background:#fffdf8;
+  }
+  .opt:hover{border-color:var(--chalk-green-2);}
+  .opt.selected{border-color:var(--chalk-green-2);background:#eef3ea;}
+  .opt.correct{border-color:var(--ok-green);background:var(--ok-green-soft);}
+  .opt.wrong{border-color:var(--pen-red);background:var(--pen-red-soft);}
+  .opt .tag{font-weight:700;color:var(--ink-soft);}
+  .opt.correct .tag{color:var(--ok-green);}
+  .opt.wrong .tag{color:var(--pen-red);}
+  .opt.disabled{cursor:default;}
+
+  .passage{
+    background:#f5f2e8;border-radius:8px;padding:14px 16px;margin-bottom:14px;
+    font-size:14.5px;white-space:pre-line;
+  }
+  .passage-label{font-weight:700;color:var(--chalk-green);margin-bottom:4px;display:block;}
+  .data-table{width:100%;border-collapse:collapse;margin-bottom:10px;font-size:13.5px;background:#fff;}
+  .data-table th, .data-table td{border:1px solid var(--paper-line);padding:6px 8px;text-align:center;}
+  .data-table th{background:#eef3ea;color:var(--chalk-green);}
+
+  .footer-link{
+    display:block;text-align:center;margin-top:30px;color:var(--chalk-green);
+    text-decoration:none;font-weight:700;font-size:14px;
+  }
+  .footer-link:hover{text-decoration:underline;}
+
+  @media print{
+    header.hero, .controls, .score-bar, .mini-btn, .footer-link{display:none !important;}
+    body{background:#fff;}
+    section.block{border:none;box-shadow:none;padding:8px 0;margin-bottom:14px;}
+    .opt.correct{background:none;border:none;font-weight:700;}
+    .opt.correct::after{content:" ← 正解";color:var(--pen-red);}
+    .opt{border:none;padding:2px 0;}
+    main{max-width:100%;padding:0 24px;}
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="breadcrumb"><a href="https://jenlin2002.github.io/">🏠 回總目錄</a> ／ <a href="../kangxuan-social-g8-1.html" style="color:#cfe0d1;">段考題庫</a></div>
+    <h1>地理・第4回</h1>
+    <p class="subtitle">第3課 中國的產業發展與地區差異｜康軒版八年級社會（三）Ａ卷</p>
+  </div>
+</header>
+
+<main>
+  <div class="controls">
+    <div class="mode-toggle">
+      <button id="quizModeBtn" class="active">✏️ 測驗模式</button>
+      <button id="printModeBtn" disabled title="完成測驗並送出成績後才能查看">🖨️ 完整題目與解答（送出成績後解鎖）</button>
+    </div>
+  </div>
+
+  <div class="score-bar" id="scoreBar">
+    <div>目前得分：<strong id="scoreText">0 / 0</strong>（僅計算選擇題）</div>
+    <button id="resetBtn">重新作答</button>
+  </div>
+
+  <div id="content"></div>
+
+  <a class="footer-link" href="../kangxuan-social-g8-1.html">← 回段考題庫總覽</a>
+</main>
+
+<script>
+
+window.EXAM_META = { version: "A卷", examLabel: "地理第4回" };
+const DATA = {
+  sections: [
+    {
+      type:"mc",
+      title:"一、單題",
+      meta:"72%，每題3分",
+      items:[
+        {q:"附圖是中國某地區牧民盛行的畜牧方式示意圖，牧民在春末夏初時會將牲畜趕到高山草場，秋初時則下山避冬。上述隨著季節遷徙的畜牧方式，在中國哪個地理區最為常見？",image:"images/geo4/q1.png",options:["黃土高原","雲貴高原","青藏高原","內蒙古高原"],correct:2},
+        {q:"近年來，中國積極將工業發展主力朝技術層次較高的類型發展，下列何者較符合上述發展的目標？",options:["玩具工廠","成衣工廠","製鞋工廠","電腦工廠"],correct:3},
+        {q:"2024年中國國內生產毛額(GDP)百大城市前3名，依序是上海、北京及深圳，這三座城市具有下列何種共同特徵？",options:["均屬於特別行政區","均位在東部經濟區","均以發展重工業為主","均位在長三角經濟圈"],correct:1},
+        {q:"臺灣某大型集團預計在中國設立全球最大的螢幕生產中心，設廠地點想選在西部經濟區內的現代化都市，下列何者會是該集團的首選？",options:["上海","廣州","重慶","北京"],correct:2},
+        {q:"中國積極推動「西部大開發」政策，在新疆地區建立工業區，若以原料優勢條件為首要考量，區內應以何種類型工業為主？",options:["石化工業","汽車工業","通訊工業","製鞋工業"],correct:0},
+        {q:"美國「矽谷」是世界著名的高科技發展區，各國發展高科技產業的中心也會冠上此一稱號。若要參訪有「中國矽谷」之稱的中關村，應前往下列哪個城市？",options:["上海","天津","北京","廣州"],correct:2},
+        {q:"附圖中ㄅ～ㄇ是中國工業發展的核心地區，其所分布的經濟區與內陸相較，具備下列哪項特色？",image:"images/geo4/q7.png",options:["包含四大直轄市","位主要能礦產區","林、牧資源豐富","水陸運交通便利"],correct:3},
+        {q:"附圖是近年中國三級產業產值比例變化圖，圖中「甲」產業具有下列何種特色？",image:"images/geo4/q8.png",options:["應為第一級產業","包含製造業、營造業","其產值比例排名最末","從業人口比例名列第一"],correct:1},
+        {q:"中國早期設立經濟特區，開啟「對內改革，對外開放」的政策。請問：經濟特區初期在產業發展上，主要具有何種特徵？",options:["打造先進科技重鎮","多勞力密集型產業","資金密集產業為主","高度仰賴國外礦產"],correct:1},
+        {q:"「口口從秦朝開始就是此區的政治中心，也是珠江流域的重要商港、今日中國南部的水陸交通樞紐。」上文空格應填入哪個城市名稱？",options:["北京","上海","廣州","深圳"],correct:2},
+        {q:"近年中國為了保障國內糧食供應的穩定性，將部分農業生產條件較佳的地區劃設為「全國性商品糧基地」，位置如附圖所示。依氣候條件判斷，圖中哪個基地以種植小麥為主？",image:"images/geo4/q11.png",options:["甲","乙","丙","丁"],correct:0},
+        {q:"中國改革開放初期，許多外資前往當地投資設立的工廠多為紡織、電子裝配業等類型，這些工廠主要是看中中國當時的哪項發展優勢條件？",options:["便捷的陸運網絡","大量的廉價勞力","廣大的消費市場","掌握先進的技術"],correct:1},
+        {q:"中國在1978年實施改革開放後，成為跨國企業投資生產的重要據點，然而隨著經濟成長，土地等生產成本不斷上漲，逐漸出現區域間的產業轉移現象。請問：中國的經濟發展空間趨向大致為何？",options:["由南而北，由沿海到內陸","由北而南，由沿海到內陸","由南而北，由內陸到沿海","由北而南，由內陸到沿海"],correct:0},
+        {q:"根據統計，2024年全球智慧型手機出貨量達12.4億支，出貨量前五名包含小米、OPPO、傳音等中國品牌，藉由境內上、中、下游生產廠商串起供應鏈，未來將不需由國外進口零件，轉為中國內產出。根據上述，可推知中國近期的工業發展目標為何？",options:["提升高科技工業技術能力","設立「沿海經濟開放區」","重工業產品銷售總量創新高","工業發展主軸以輕工業為主"],correct:0},
+        {q:"附表是2023年中國四大經濟區的相關統計數據，根據表中數據判斷，何者最可能是東部地區？",table:{head:["項目 / 經濟區","(A)甲","(B)乙","(C)丙","(D)丁"],rows:[["產值(%)","4.7","21.0","21.1","53.2"],["人口(%)","6.8","27.0","25.6","40.6"],["面積(%)","8.4","71.4","10.6","9.6"]]},options:["甲","乙","丙","丁"],correct:3},
+        {q:"「此地是距離臺灣最近的經濟特區，聚集許多中小企業的臺商，有著港闊水深的天然良港，也是最早開放小三通通航之處，輕工業發達。」以上描述的是哪個都市？",options:["深圳","珠海","海南","廈門"],correct:3},
+        {q:"下列是一篇財經新聞報導——「中國沿海地區許多工廠近幾年飽受缺工之苦，不同類型的工廠選擇不同的因應方式，有些工廠轉移至內陸地區；有些工廠則努力研發更好的產品，以增加競爭力、提升利潤。」請問：下列何者應屬文中選擇往內陸遷移的工廠類型？",options:["石化工業","紡織工業","資訊工業","鋼鐵工業"],correct:1},
+        {q:"「根據2024年的財報顯示，長三角經濟圈的經濟表現仍十分亮眼，其中上海的GDP突破5兆人民幣，成為帶動當地經濟發展的領頭羊。」請問：下列何者是上海所具備的優越條件？",options:["地扼長江出海口，坐擁廣闊腹地","唯一省級經濟特區，推進改革開放","位珠江三角洲的頂點，珠江出入門戶","中國首都，且為陸、空運之交通樞紐"],correct:0},
+        {q:"附圖是中國三級產業就業人口比例變化，目前以從事圖中乙產業的占比最高。下列四種職業中，何者應歸屬於乙產業的就業人口資料？",image:"images/geo4/q19.png",options:["百貨公司銷售員","牛乳加工廠作業員","專種玉米的農民","加工出口區機械機師"],correct:0},
+        {q:"右列是中國四大經濟區中某個地區的特色：◎工資較沿海低廉，吸引企業設廠　◎經濟區面積占比例，排行次之　◎無直轄市、特別行政區、海港，下列何者也應列在其中？",options:["工商發展最遲緩","深居內陸，地廣人稀","主要的糧食(稻、麥)供應區","對外交通便利，進出口興盛"],correct:2},
+        {q:"中國近來積極鼓勵民眾創業，境內某經濟圈因發展較早，加上港、澳的資金流入，近年成為中國新創產業的中心，是南部沿海地區經濟高度發展的地區。請問：此經濟圈為何者？",options:["環渤海經濟圈","長三角經濟圈","珠三角經濟圈"],correct:2},
+        {q:"瑞士銀行的報告指出，中國製造的價格優勢正日益消失中，在1996～2003年間，中國製造的輸出產品每年價格平均下滑2%；但自2004年以後，情勢開始逆轉，中國製造產品每年上漲2%，「世界工廠」的地位開始動搖。請問：導致中國製造產品的價格上漲，其原因最可能為何？",options:["環境汙染嚴重","勞工薪資上漲","礦產枯竭缺乏原料","國民消費能力降低"],correct:1},
+        {q:"附圖是中國的農牧業分區示意圖，受到氣候條件影響，具有東農西牧的特色。下列有關中國農牧業分布特色的敘述，何者正確？",image:"images/geo4/q23.png",options:["農業區皆以種植稻米為主","內蒙古高原以放牧犛牛為主","農業區主要分布於季風氣候區","兩者以秦嶺、淮河為主要分界線"],correct:2},
+        {q:"2009年中國學者提出「蟻族」的概念，當時中國大學畢業生的失業率高達3成，這些失業或低薪的畢業生在「寧要城市一張床，不要鄉村一間房」的心態下，只能如螞蟻般擁擠聚居在大城市邊緣群居生活，被稱為「蟻族」。若以中國四大經濟區區分，蟻族的移入方向主要為下列何者？",options:["中部→西部","東北→西部","中部→東北","西部→東部"],correct:3}
+      ]
+    },
+    {
+      type:"reading",
+      title:"二、題組",
+      meta:"28%，每題4分",
+      passages:[
+        {
+          label:"(一)",
+          text:"中國近年大量興建鐵路及高速公路，建構更完整的交通網絡。附圖是中國主要鐵路分布。請問：",
+          image:"images/geo4/q25.png",
+          items:[
+            {q:"圖中哪一段鐵路路線，屬於西部大開發的工程之一？",options:["西寧至拉薩","武漢至廣州","哈爾濱至滿洲里","西寧至烏魯木齊"],correct:0},
+            {q:"根據附圖可知中國的鐵路分布具有東密西疏的特色，造成此一現象的主因與下列何者最無關？",options:["人口密度高低","氣候類型不同","地形分布差異","工商業發達與否"],correct:1}
+          ]
+        },
+        {
+          label:"(二)",
+          text:"近年在中國快速工業化的發展下，不僅產業結構有所變動，也加速提升都市化程度。附圖是中國的四大城市，在商貿、科技、教育、基礎設施等指標都名列前茅。請問：",
+          image:"images/geo4/q27.png",
+          items:[
+            {q:"「身為中國的金融中心，外商銀行、證券公司等各種金融機構林立……。市區被黃浦江分隔成兩區，東側是新城區，東方明珠塔矗立其中，特別顯眼！」請判斷上述是指附圖中哪一城市？",options:["甲","乙","丙","丁"],correct:1},
+            {q:"怡蓁前往圖中丁城市旅行，旅程中最可能會有以下哪一經歷？",options:["深圳經濟特區紀念公園戶外踏青","登上廣州塔俯瞰珠江璀璨的夜景","參訪明、清兩朝皇家宮殿紫禁城","前往浦東新區，暢遊迪士尼樂園"],correct:2},
+            {q:"圖中甲城市是中國近年來快速崛起的一座移民城市，該城市在1970年代經濟改革開放前人口才33萬人左右，至2024年底常住人口達1,798萬人。促成期間該城市人口急速增加的主因最可能為何？",options:["四周為中國最大小麥生產區域","附近有大量的煤鐵等礦產資源","經濟改革多發展勞力密集產業","正位於中國海陸運輸樞紐位置"],correct:2}
+          ]
+        },
+        {
+          label:"(三)",
+          text:"「經濟特區」是世界自由港區的主要形式之一，以減免關稅等優惠措施為手段，通過創造良好的投資環境，鼓勵外商前來，引進先進技術和科學管理方法，達到促進特區所在國家經濟技術發展的目的。1980年以來，中國陸續在東南沿海設置五個經濟特區，吸引外資或跨國企業進駐。請問：",
+          image:"images/geo4/q31.png",
+          items:[
+            {q:"中國的經濟特區主要憑藉下列何項優勢吸引外資？",options:["充裕資金","先進技術","廣大市場","優惠政策"],correct:3},
+            {q:"附圖是已完工的廈深高速鐵路，連接東南沿海八個城市，當中三個設有經濟特區，下列哪個城市是其中之一？",options:["漳州","汕頭","潮州","惠州"],correct:1}
+          ]
+        }
+      ]
+    }
+
+  ]
+};
+
+let currentMode = "quiz"; // quiz | print
+
+const contentEl = document.getElementById("content");
+const scoreBar = document.getElementById("scoreBar");
+const scoreText = document.getElementById("scoreText");
+
+function render(){
+  window.examAnswersRevealed = false;
+  contentEl.innerHTML = "";
+  DATA.sections.forEach((sec, si)=> contentEl.appendChild(renderSection(sec, si)));
+  if(currentMode==="quiz"){
+    scoreBar.classList.add("show");
+    updateScore();
+  } else {
+    scoreBar.classList.remove("show");
+    contentEl.querySelectorAll(".opt").forEach(o=>o.classList.add("disabled"));
+    contentEl.querySelectorAll(".opt.is-correct").forEach(o=>o.classList.add("correct"));
+  }
+}
+
+function renderTable(t){
+  if(!t) return "";
+  const headHtml = `<tr>${t.head.map(h=>`<th>${h}</th>`).join("")}</tr>`;
+  const rowsHtml = t.rows.map(r=>`<tr>${r.map((c,ci)=>ci===0?`<th>${c}</th>`:`<td>${c}</td>`).join("")}</tr>`).join("");
+  return `<table class="data-table"><thead>${headHtml}</thead><tbody>${rowsHtml}</tbody></table>`;
+}
+
+function renderSection(sec, si){
+  const block = document.createElement("section");
+  block.className = "block";
+  block.innerHTML = `<h2>${sec.title}</h2><p class="meta">${sec.meta}</p>`;
+
+  if(sec.type==="mc"){
+    sec.items.forEach((it,i)=>{
+      const q = document.createElement("div");
+      q.className = "q";
+      const optsHtml = it.options.map((op,oi)=>`
+        <div class="opt" data-idx="${oi}" data-correct="${oi===it.correct}">
+          <span class="tag">(${String.fromCharCode(65+oi)})</span><span>${op}</span>
+        </div>`).join("");
+      q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q}</div>
+        ${it.image ? `<img src="${it.image}" alt="題目附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">`:""}
+        ${it.table ? renderTable(it.table) : ""}
+        <div class="opts">${optsHtml}</div>`;
+      q.querySelectorAll(".opt").forEach(optEl=>{
+        if(optEl.dataset.correct==="true") optEl.classList.add("is-correct");
+        optEl.addEventListener("click", ()=>selectOption(q, optEl));
+      });
+      block.appendChild(q);
+    });
+  }
+
+  else if(sec.type==="reading"){
+    sec.passages.forEach(p=>{
+      const passageDiv = document.createElement("div");
+      passageDiv.className = "passage";
+      passageDiv.innerHTML = `${p.label ? `<span class="passage-label">${p.label}</span>`:""}${p.text}${p.image ? `<img src="${p.image}" alt="題組附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-top:10px;border:1px solid var(--paper-line);">`:""}`;
+      block.appendChild(passageDiv);
+      p.items.forEach((it,i)=>{
+        const q = document.createElement("div");
+        q.className = "q";
+        const optsHtml = it.options.map((op,oi)=>`
+          <div class="opt" data-idx="${oi}" data-correct="${oi===it.correct}">
+            <span class="tag">(${String.fromCharCode(65+oi)})</span><span>${op}</span>
+          </div>`).join("");
+        q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q}</div>
+          ${it.image ? `<img src="${it.image}" alt="題目附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">`:""}
+          <div class="opts">${optsHtml}</div>`;
+        q.querySelectorAll(".opt").forEach(optEl=>{
+          if(optEl.dataset.correct==="true") optEl.classList.add("is-correct");
+          optEl.addEventListener("click", ()=>selectOption(q, optEl));
+        });
+        block.appendChild(q);
+      });
+    });
+  }
+
+  return block;
+}
+
+function selectOption(qEl, optEl){
+  if(currentMode!=="quiz") return;
+  if(qEl.dataset.answered==="true") return;
+  qEl.dataset.answered = "true";
+  qEl.querySelectorAll(".opt").forEach(o=>o.classList.add("disabled"));
+  optEl.classList.add("selected");
+  const correctOpt = qEl.querySelector('.opt[data-correct="true"]');
+  qEl.dataset.studentAnswer = optEl.textContent.trim();
+  qEl.dataset.correctAnswer = correctOpt ? correctOpt.textContent.trim() : "";
+  qEl.dataset.isCorrect = (optEl.dataset.correct==="true") ? "true" : "false";
+  updateScore();
+}
+
+function updateScore(){
+  let total = 0, answered = 0, correct = 0;
+  contentEl.querySelectorAll(".q").forEach(q=>{
+    const gradable = q.querySelector(".opts");
+    if(!gradable) return;
+    total++;
+    if(q.dataset.studentAnswer !== undefined){
+      answered++;
+      if(q.dataset.isCorrect === "true") correct++;
+    }
+  });
+  if(window.examAnswersRevealed){
+    scoreText.textContent = `${correct} / ${total}`;
+  } else {
+    scoreText.textContent = `已作答 ${answered} / ${total} 題`;
+  }
+}
+window.updateScore = updateScore;
+
+document.getElementById("resetBtn").addEventListener("click", render);
+document.getElementById("quizModeBtn").addEventListener("click", ()=>{
+  currentMode = "quiz";
+  document.getElementById("quizModeBtn").classList.add("active");
+  document.getElementById("printModeBtn").classList.remove("active");
+  render();
+});
+document.getElementById("printModeBtn").addEventListener("click", ()=>{
+  if(document.getElementById("printModeBtn").disabled) return;
+  currentMode = "print";
+  document.getElementById("printModeBtn").classList.add("active");
+  document.getElementById("quizModeBtn").classList.remove("active");
+  render();
+});
+
+window.unlockPrintMode = function(){
+  document.getElementById("printModeBtn").disabled = false;
+};
+
+render();
+</script>
+<script src="../sync.js"></script>
+</body>
+</html>
