@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>段考題庫｜地理第2回 - 中國的人口成長與文化遷移（A卷）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@500;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#faf6ec;
+    --paper-line:#e3dcc8;
+    --ink:#26332b;
+    --ink-soft:#5b6b5f;
+    --chalk-green:#2f4538;
+    --chalk-green-2:#3d5a48;
+    --pen-red:#b8433a;
+    --pen-red-soft:#f4dedb;
+    --ok-green:#3f7d52;
+    --ok-green-soft:#dfeee1;
+    --gold:#b5842a;
+    --radius:10px;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:"Noto Sans TC",sans-serif;
+    line-height:1.7;
+  }
+  header.hero{
+    background:var(--chalk-green);
+    color:#eef2ea;
+    padding:28px 20px 40px;
+    position:relative;
+  }
+  header.hero::after{
+    content:"";
+    position:absolute;
+    left:0; right:0; bottom:-1px;
+    height:14px;
+    background:repeating-linear-gradient(90deg,var(--paper) 0 18px, transparent 18px 20px);
+  }
+  .hero-inner{max-width:880px;margin:0 auto;}
+  .breadcrumb a{color:#cfe0d1;text-decoration:none;font-size:14px;}
+  .breadcrumb a:hover{text-decoration:underline;}
+  h1{
+    font-family:"Noto Serif TC",serif;
+    font-weight:700;
+    font-size:clamp(24px,4vw,34px);
+    margin:10px 0 6px;
+  }
+  .subtitle{color:#cfe0d1;font-size:15px;margin:0;}
+  main{max-width:880px;margin:0 auto;padding:28px 20px 80px;}
+
+  .controls{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:22px;
+  }
+  .mode-toggle{display:flex;border:2px solid var(--chalk-green);border-radius:999px;overflow:hidden;}
+  .mode-toggle button{
+    background:transparent;border:none;padding:8px 16px;font-size:14px;font-weight:700;
+    color:var(--chalk-green);cursor:pointer;font-family:"Noto Sans TC",sans-serif;
+  }
+  .mode-toggle button.active{background:var(--gold);color:#fff;}
+  .mode-toggle button:disabled{opacity:.4;cursor:not-allowed;}
+
+  .score-bar{
+    display:none;
+    align-items:center;
+    justify-content:space-between;
+    background:#fff;
+    border:1px solid var(--paper-line);
+    border-left:5px solid var(--gold);
+    border-radius:var(--radius);
+    padding:12px 18px;
+    margin-bottom:22px;
+    font-size:14px;
+  }
+  .score-bar.show{display:flex;}
+  .score-bar strong{font-size:18px;color:var(--gold);}
+  .score-bar button{
+    background:none;border:1px solid var(--ink-soft);color:var(--ink-soft);
+    border-radius:6px;padding:6px 12px;font-size:13px;cursor:pointer;
+  }
+
+  section.block{
+    background:#fff;
+    border:1px solid var(--paper-line);
+    border-radius:var(--radius);
+    padding:22px 22px 26px;
+    margin-bottom:20px;
+  }
+  .block h2{
+    font-family:"Noto Serif TC",serif;
+    font-size:19px;
+    margin:0 0 4px;
+    color:var(--chalk-green);
+  }
+  .block .meta{color:var(--ink-soft);font-size:13px;margin:0 0 16px;}
+
+  .q{margin-bottom:18px;padding-bottom:16px;border-bottom:1px dashed var(--paper-line);}
+  .q:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0;}
+  .q-text{font-size:15.5px;margin-bottom:8px;}
+  .q-num{color:var(--gold);font-weight:700;margin-right:4px;}
+
+  .opts{display:grid;gap:8px;}
+  .opt{
+    display:flex;gap:8px;align-items:flex-start;
+    border:1.5px solid var(--paper-line);
+    border-radius:8px;
+    padding:9px 12px;
+    cursor:pointer;
+    font-size:14.5px;
+    background:#fffdf8;
+  }
+  .opt:hover{border-color:var(--chalk-green-2);}
+  .opt.selected{border-color:var(--chalk-green-2);background:#eef3ea;}
+  .opt.correct{border-color:var(--ok-green);background:var(--ok-green-soft);}
+  .opt.wrong{border-color:var(--pen-red);background:var(--pen-red-soft);}
+  .opt .tag{font-weight:700;color:var(--ink-soft);}
+  .opt.correct .tag{color:var(--ok-green);}
+  .opt.wrong .tag{color:var(--pen-red);}
+  .opt.disabled{cursor:default;}
+
+  .passage{
+    background:#f5f2e8;border-radius:8px;padding:14px 16px;margin-bottom:14px;
+    font-size:14.5px;white-space:pre-line;
+  }
+  .passage-label{font-weight:700;color:var(--chalk-green);margin-bottom:4px;display:block;}
+
+  .footer-link{
+    display:block;text-align:center;margin-top:30px;color:var(--chalk-green);
+    text-decoration:none;font-weight:700;font-size:14px;
+  }
+  .footer-link:hover{text-decoration:underline;}
+
+  @media print{
+    header.hero, .controls, .score-bar, .mini-btn, .footer-link{display:none !important;}
+    body{background:#fff;}
+    section.block{border:none;box-shadow:none;padding:8px 0;margin-bottom:14px;}
+    .opt.correct{background:none;border:none;font-weight:700;}
+    .opt.correct::after{content:" ← 正解";color:var(--pen-red);}
+    .opt{border:none;padding:2px 0;}
+    main{max-width:100%;padding:0 24px;}
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="breadcrumb"><a href="https://jenlin2002.github.io/">🏠 回總目錄</a> ／ <a href="../kangxuan-social-g8-1.html" style="color:#cfe0d1;">段考題庫</a></div>
+    <h1>地理・第2回</h1>
+    <p class="subtitle">第2課 中國的人口成長與文化遷移｜康軒版八年級社會（三）Ａ卷</p>
+  </div>
+</header>
+
+<main>
+  <div class="controls">
+    <div class="mode-toggle">
+      <button id="quizModeBtn" class="active">✏️ 測驗模式</button>
+      <button id="printModeBtn" disabled title="完成測驗並送出成績後才能查看">🖨️ 完整題目與解答（送出成績後解鎖）</button>
+    </div>
+  </div>
+
+  <div class="score-bar" id="scoreBar">
+    <div>目前得分：<strong id="scoreText">0 / 0</strong>（僅計算選擇題）</div>
+    <button id="resetBtn">重新作答</button>
+  </div>
+
+  <div id="content"></div>
+
+  <a class="footer-link" href="../kangxuan-social-g8-1.html">← 回段考題庫總覽</a>
+</main>
+
+<script>
+
+window.EXAM_META = { version: "A卷", examLabel: "地理第2回" };
+const DATA = {
+  sections: [
+    {
+      type:"mc",
+      title:"一、單題",
+      meta:"88%，每題4分",
+      items:[
+        {q:"附圖是中國的族群比例，其中「甲」應是下列哪個族群？",image:"images/geo2/q1.png",options:["壯族","藏族","漢族","苗族"],correct:2},
+        {q:"「環境負載力」指某一地區能提供生物所需資源及承受其廢棄物的能力，通常環境負載力較高的地方，人口較為密集。根據上述推斷，下列哪個地理區的人口最密集？",options:["青藏高原","珠江三角洲","雲貴高原","塔里木盆地"],correct:1},
+        {q:"中國擁有14億人口，人口數名列世界前茅。然而該國於2022年起連續3年呈現人口負成長，有專家預估此一現象恐持續到下個世紀。請問：下列何者最可能是促成此一現象的主因？",options:["性別比失衡","死亡率下降","移入率增加","出生率下降"],correct:3},
+        {q:"曾有中國學者以境內某兩座城市連線為地理分界線，該連線以東土地面積占中國總面積43%，卻聚集全國94%的人口，連線以西則人口稀疏。根據上文判斷，此應是下列哪兩座城市的連線？",options:["黑河、騰衝","北京、拉薩","天津、蘭州","上海、四川"],correct:0},
+        {q:"中國曾於1979年起推動一胎化政策，限制一對夫妻僅能生育一胎，但每年增加的人口數仍非常驚人，從近10億人增加至14.1億人。造成此一現象的主因為何？",options:["性別比嚴重失衡","社會增加率下跌","總人口數量龐大","人口分布不平均"],correct:2},
+        {q:"一地人口數量的多寡與當地提供的維生資源密切相關。怡雯取得四個地區的人口資料如附圖所示，四張地圖圖幅大小相同，其中何者所提供的維生資源相對最多？",image:"images/geo2/q6.png",options:["甲","乙","丙","丁"],correct:3},
+        {q:"「2002年中國當局宣布，為了修正某項人口問題，嚴格禁止非醫學需要的胎兒性別鑑定，以及為選擇胎兒性別而進行人工終止妊娠行為。」請問：中國政府制定這項嚴厲規定的目的是為改善該國哪項人口問題？",options:["人口已呈現負成長","新生兒性別比偏高","自然增加率呈負值","老年人口比例下降"],correct:1},
+        {q:"「變形地圖」是一種利用面積大小來呈現某項統計資料量高低的地圖，面積愈大，表示資料數值愈高。若依據「行政區人口數量愈多，則面積愈大」的原則來繪製中國行政區變形圖，下列哪個省級行政區的面積會較其他三者大？",options:["廣東省","西藏自治區","內蒙古自治區","新疆維吾爾自治區"],correct:0},
+        {q:"附圖是近代中國人口成長圖，其自然增加率的變化，主要受下列哪項因素的變動影響最大？",image:"images/geo2/q9.png",options:["出生率","移入率","死亡率","人口總數"],correct:0},
+        {q:"人口倍時是指一地人口數增加一倍所需的時間。中國人口在19世紀初至20世紀中花了150年增加一倍至5.5億人，但接著只花了30年人口即增加一倍至10億人口。請問：下列何者最可能是導致中國1950至1980年間人口倍時大幅縮短的原因之一？",options:["醫療衛生進步","糧食供應匱乏","開放移民海外","推行一胎化政策"],correct:0},
+        {q:"附圖所呈現的是中國近年推行的人口計畫措施。請問：中國採行此一計畫，主要是為了因應該國出現哪種人口問題？",image:"images/geo2/q11.png",options:["人口城鄉分布不均","境外的移入人口多","人口老化現象顯著","自然增加率數值高"],correct:2},
+        {q:"中國人口具有明顯分布不均的特色，廣大的西半部地區人口稀少，但大多聚集在下列何處？",options:["海運便利的港口","繁榮的特別行政區","水源豐沛的綠洲","迎季風的平原地區"],correct:2},
+        {q:"附圖是中國於不同時間為解決各階段人口問題所提出的人口政策。根據政策內容的變化判斷，中國正面臨何種人口問題？",image:"images/geo2/q13.png",options:["性別比偏低","人口高齡化","人口快速成長","社會增加率低"],correct:1},
+        {q:"新聞報導：「中國適婚男女的性別比懸殊，預估在2027年性別比將達到最高峰119，屆時適婚年齡者中男性會比女性多出2,250萬人，可看出中國『剩男』問題愈來愈嚴重。」請問：下列何者是造成中國性別比失衡的原因之一？",options:["人口成長趨緩","全面開放生育三胎","人口快速老化","傳統重男輕女觀念"],correct:3},
+        {q:"早年有不少中國東南沿海的居民因原居地生活不易，選擇遷徙至海外謀生，也將文化傳入新居地。若要說明華人文化向外擴散的情形，下列哪一宗教建築可作為舉例？",options:["平埔族用以祭祀阿立祖的公廨","建於清帝國時期的新北市頂泰山巖","由國際移工籌建之屏東東港清真寺","於日治時期建成之濟南基督長老教會"],correct:1},
+        {q:"「華工」指清帝國晚期前往海外工作的華人勞工或苦力，這些人多半來自較為窮困的鄉村，由沿海地區搭船遠赴美國、澳洲工作尋求謀生機會。請問：搭船遠赴上述國家的華工，船隻皆須橫渡下列哪一海域？",options:["北極海","大西洋","印度洋","太平洋"],correct:3},
+        {q:"附圖是近代中國人口成長變化圖，根據圖中資訊判斷，近代中國人口成長具有下列何種特色？",image:"images/geo2/q17.png",options:["壯年人口比例穩定上升","人口成長速度先慢後快","社會增加率長年呈負值","自然增加率長年呈正值"],correct:1},
+        {q:"附圖是中國某項人口統計數據，依圖中的曲線變化趨勢判斷，其應是表示中國哪一人口統計數據的變化情形？",image:"images/geo2/q18.png",options:["性別比","扶養比","國民平均壽命","少數民族人口比例"],correct:1},
+        {q:"「★政策加深中國『養老難』的問題，加快人口老化速度。據統計2006年中國老年人口約1.04億，而2024年就翻倍達2.2億！更有學者預估到了2054年，中國的老年人口將達到5.2億的高峰，占比超過40%，將成為世界第一的老年人口大國。」上述★應指下列何項政策？",options:["一胎化政策","全面二孩政策","掃除文盲的政策","禁止移民的政策"],correct:0},
+        {q:"下列哪張圖最能呈現中國人口整體分布不均的現象？",image:"images/geo2/q20.png",options:["A","B","C","D"],correct:1},
+        {q:"附圖是中國兩個年度的人口金字塔圖，觀察年齡結構變化，該國應加速推動下列哪項政策以因應人口結構的改變？",image:"images/geo2/q21.png",options:["推動老年安養政策","全面落實義務教育","施行限制生育政策","鼓勵人民移居西部"],correct:0},
+        {q:"根據預測，中國到2035年左右，城鎮職工基本養老保險基金的累積結餘可能歸零，養老金資產入不敷出的問題漸趨嚴重，其政府口號演變如附圖所示。請問：此議題發展與中國人口哪項變化趨勢最相關？",image:"images/geo2/q22.png",options:["邁入高齡社會","整體性別比＜100","扶養比逐年下降","文盲比例居高不下"],correct:0}
+      ]
+    },
+    {
+      type:"reading",
+      title:"二、題組",
+      meta:"12%，每題2分",
+      passages:[
+        {
+          label:"(一)",
+          text:"附圖是靜怡在研究中國人口問題時所蒐集到中國於1970至2022年，某個人口主題的統計圖。請問：",
+          image:"images/geo2/q23.png",
+          items:[
+            {q:"根據圖中曲線變化趨勢判斷，此圖最可能呈現下列何項統計數據？",options:["平均壽命","總人口數","婦女生育率","新生兒性別比"],correct:2},
+            {q:"若此發展趨勢未見改善，中國未來最可能會產生何項人口問題？",options:["醫療水準下降","出生率逐漸飆升","勞動力短缺不足","移居海外者大增"],correct:2}
+          ]
+        },
+        {
+          label:"(二)",
+          text:"附圖是近代中國人口主要遷徙路徑示意圖。請問：",
+          image:"images/geo2/q25.png",
+          items:[
+            {q:"當時移民的船隻多需依賴風力前進。依此判斷，住在東南沿海一帶的居民要前往東南亞時，多會選在哪個季節出發？",options:["春季","夏季","秋季","冬季"],correct:3},
+            {q:"造成東南沿海一帶的居民選擇向海外遷徙的主因，與原居地具有何種人口推力最有關係？",options:["山多田少，糧產不足","旱災不斷，終年乾熱","政治紛擾，民不聊生","位居高緯，冬季嚴寒"],correct:0}
+          ]
+        },
+        {
+          label:"(三)",
+          text:"據統計，2023年中國人口約14.1億人，名列世界前茅，但受到環境條件、發展程度影響，人口分布非常不平均。請問：",
+          items:[
+            {q:"下列哪個地形區因位居內陸，氣候乾燥少雨、環境負載力低，人口較為稀疏？",options:["華北平原","東南丘陵","雲貴高原","塔里木盆地"],correct:3},
+            {q:"中國東半部人口多於西半部，此現象與東半部具有下列何種特色有關？",options:["瀕臨大西洋，海運較便利","地形平坦，氣候溫暖溼潤","東與歐洲接壤，邊境貿易繁榮","淡水河水運便利，溝通南北部"],correct:1}
+          ]
+        }
+      ]
+    }
+
+  ]
+};
+
+let currentMode = "quiz"; // quiz | print
+
+const contentEl = document.getElementById("content");
+const scoreBar = document.getElementById("scoreBar");
+const scoreText = document.getElementById("scoreText");
+
+function render(){
+  window.examAnswersRevealed = false;
+  contentEl.innerHTML = "";
+  DATA.sections.forEach((sec, si)=> contentEl.appendChild(renderSection(sec, si)));
+  if(currentMode==="quiz"){
+    scoreBar.classList.add("show");
+    updateScore();
+  } else {
+    scoreBar.classList.remove("show");
+    contentEl.querySelectorAll(".opt").forEach(o=>o.classList.add("disabled"));
+    contentEl.querySelectorAll(".opt.is-correct").forEach(o=>o.classList.add("correct"));
+  }
+}
+
+function renderSection(sec, si){
+  const block = document.createElement("section");
+  block.className = "block";
+  block.innerHTML = `<h2>${sec.title}</h2><p class="meta">${sec.meta}</p>`;
+
+  if(sec.type==="mc"){
+    sec.items.forEach((it,i)=>{
+      const q = document.createElement("div");
+      q.className = "q";
+      const optsHtml = it.options.map((op,oi)=>`
+        <div class="opt" data-idx="${oi}" data-correct="${oi===it.correct}">
+          <span class="tag">(${String.fromCharCode(65+oi)})</span><span>${op}</span>
+        </div>`).join("");
+      q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q}</div>
+        ${it.image ? `<img src="${it.image}" alt="題目附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">`:""}
+        <div class="opts">${optsHtml}</div>`;
+      q.querySelectorAll(".opt").forEach(optEl=>{
+        if(optEl.dataset.correct==="true") optEl.classList.add("is-correct");
+        optEl.addEventListener("click", ()=>selectOption(q, optEl));
+      });
+      block.appendChild(q);
+    });
+  }
+
+  else if(sec.type==="reading"){
+    sec.passages.forEach(p=>{
+      const passageDiv = document.createElement("div");
+      passageDiv.className = "passage";
+      passageDiv.innerHTML = `${p.label ? `<span class="passage-label">${p.label}</span>`:""}${p.text}${p.image ? `<img src="${p.image}" alt="題組附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-top:10px;border:1px solid var(--paper-line);">`:""}`;
+      block.appendChild(passageDiv);
+      p.items.forEach((it,i)=>{
+        const q = document.createElement("div");
+        q.className = "q";
+        const optsHtml = it.options.map((op,oi)=>`
+          <div class="opt" data-idx="${oi}" data-correct="${oi===it.correct}">
+            <span class="tag">(${String.fromCharCode(65+oi)})</span><span>${op}</span>
+          </div>`).join("");
+        q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q}</div>
+          ${it.image ? `<img src="${it.image}" alt="題目附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">`:""}
+          <div class="opts">${optsHtml}</div>`;
+        q.querySelectorAll(".opt").forEach(optEl=>{
+          if(optEl.dataset.correct==="true") optEl.classList.add("is-correct");
+          optEl.addEventListener("click", ()=>selectOption(q, optEl));
+        });
+        block.appendChild(q);
+      });
+    });
+  }
+
+  return block;
+}
+
+function selectOption(qEl, optEl){
+  if(currentMode!=="quiz") return;
+  if(qEl.dataset.answered==="true") return;
+  qEl.dataset.answered = "true";
+  qEl.querySelectorAll(".opt").forEach(o=>o.classList.add("disabled"));
+  optEl.classList.add("selected");
+  const correctOpt = qEl.querySelector('.opt[data-correct="true"]');
+  qEl.dataset.studentAnswer = optEl.textContent.trim();
+  qEl.dataset.correctAnswer = correctOpt ? correctOpt.textContent.trim() : "";
+  qEl.dataset.isCorrect = (optEl.dataset.correct==="true") ? "true" : "false";
+  updateScore();
+}
+
+function updateScore(){
+  let total = 0, answered = 0, correct = 0;
+  contentEl.querySelectorAll(".q").forEach(q=>{
+    const gradable = q.querySelector(".opts");
+    if(!gradable) return;
+    total++;
+    if(q.dataset.studentAnswer !== undefined){
+      answered++;
+      if(q.dataset.isCorrect === "true") correct++;
+    }
+  });
+  if(window.examAnswersRevealed){
+    scoreText.textContent = `${correct} / ${total}`;
+  } else {
+    scoreText.textContent = `已作答 ${answered} / ${total} 題`;
+  }
+}
+window.updateScore = updateScore;
+
+document.getElementById("resetBtn").addEventListener("click", render);
+document.getElementById("quizModeBtn").addEventListener("click", ()=>{
+  currentMode = "quiz";
+  document.getElementById("quizModeBtn").classList.add("active");
+  document.getElementById("printModeBtn").classList.remove("active");
+  render();
+});
+document.getElementById("printModeBtn").addEventListener("click", ()=>{
+  if(document.getElementById("printModeBtn").disabled) return;
+  currentMode = "print";
+  document.getElementById("printModeBtn").classList.add("active");
+  document.getElementById("quizModeBtn").classList.remove("active");
+  render();
+});
+
+window.unlockPrintMode = function(){
+  document.getElementById("printModeBtn").disabled = false;
+};
+
+render();
+</script>
+<script src="../sync.js"></script>
+</body>
+</html>
