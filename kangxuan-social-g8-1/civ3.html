@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>段考題庫｜公民第3回 - 第1~2課總複習（A卷）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@500;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#faf6ec;
+    --paper-line:#e3dcc8;
+    --ink:#26332b;
+    --ink-soft:#5b6b5f;
+    --chalk-green:#2f4538;
+    --chalk-green-2:#3d5a48;
+    --pen-red:#b8433a;
+    --pen-red-soft:#f4dedb;
+    --ok-green:#3f7d52;
+    --ok-green-soft:#dfeee1;
+    --gold:#b5842a;
+    --radius:10px;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:"Noto Sans TC",sans-serif;
+    line-height:1.7;
+  }
+  header.hero{
+    background:var(--chalk-green);
+    color:#eef2ea;
+    padding:28px 20px 40px;
+    position:relative;
+  }
+  header.hero::after{
+    content:"";
+    position:absolute;
+    left:0; right:0; bottom:-1px;
+    height:14px;
+    background:repeating-linear-gradient(90deg,var(--paper) 0 18px, transparent 18px 20px);
+  }
+  .hero-inner{max-width:880px;margin:0 auto;}
+  .breadcrumb a{color:#cfe0d1;text-decoration:none;font-size:14px;}
+  .breadcrumb a:hover{text-decoration:underline;}
+  h1{
+    font-family:"Noto Serif TC",serif;
+    font-weight:700;
+    font-size:clamp(24px,4vw,34px);
+    margin:10px 0 6px;
+  }
+  .subtitle{color:#cfe0d1;font-size:15px;margin:0;}
+  main{max-width:880px;margin:0 auto;padding:28px 20px 80px;}
+
+  .controls{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:22px;
+  }
+  .mode-toggle{display:flex;border:2px solid var(--chalk-green);border-radius:999px;overflow:hidden;}
+  .mode-toggle button{
+    background:transparent;border:none;padding:8px 16px;font-size:14px;font-weight:700;
+    color:var(--chalk-green);cursor:pointer;font-family:"Noto Sans TC",sans-serif;
+  }
+  .mode-toggle button.active{background:var(--gold);color:#fff;}
+  .mode-toggle button:disabled{opacity:.4;cursor:not-allowed;}
+
+  .score-bar{
+    display:none;
+    align-items:center;
+    justify-content:space-between;
+    background:#fff;
+    border:1px solid var(--paper-line);
+    border-left:5px solid var(--gold);
+    border-radius:var(--radius);
+    padding:12px 18px;
+    margin-bottom:22px;
+    font-size:14px;
+  }
+  .score-bar.show{display:flex;}
+  .score-bar strong{font-size:18px;color:var(--gold);}
+  .score-bar button{
+    background:none;border:1px solid var(--ink-soft);color:var(--ink-soft);
+    border-radius:6px;padding:6px 12px;font-size:13px;cursor:pointer;
+  }
+
+  section.block{
+    background:#fff;
+    border:1px solid var(--paper-line);
+    border-radius:var(--radius);
+    padding:22px 22px 26px;
+    margin-bottom:20px;
+  }
+  .block h2{
+    font-family:"Noto Serif TC",serif;
+    font-size:19px;
+    margin:0 0 4px;
+    color:var(--chalk-green);
+  }
+  .block .meta{color:var(--ink-soft);font-size:13px;margin:0 0 16px;}
+
+  .q{margin-bottom:18px;padding-bottom:16px;border-bottom:1px dashed var(--paper-line);}
+  .q:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0;}
+  .q-text{font-size:15.5px;margin-bottom:8px;}
+  .q-num{color:var(--gold);font-weight:700;margin-right:4px;}
+
+  .opts{display:grid;gap:8px;}
+  .opt{
+    display:flex;gap:8px;align-items:flex-start;
+    border:1.5px solid var(--paper-line);
+    border-radius:8px;
+    padding:9px 12px;
+    cursor:pointer;
+    font-size:14.5px;
+    background:#fffdf8;
+  }
+  .opt:hover{border-color:var(--chalk-green-2);}
+  .opt.selected{border-color:var(--chalk-green-2);background:#eef3ea;}
+  .opt.correct{border-color:var(--ok-green);background:var(--ok-green-soft);}
+  .opt.wrong{border-color:var(--pen-red);background:var(--pen-red-soft);}
+  .opt .tag{font-weight:700;color:var(--ink-soft);}
+  .opt.correct .tag{color:var(--ok-green);}
+  .opt.wrong .tag{color:var(--pen-red);}
+  .opt.disabled{cursor:default;}
+
+  .passage{
+    background:#f5f2e8;border-radius:8px;padding:14px 16px;margin-bottom:14px;
+    font-size:14.5px;white-space:pre-line;
+  }
+  .passage-label{font-weight:700;color:var(--chalk-green);margin-bottom:4px;display:block;}
+
+  .footer-link{
+    display:block;text-align:center;margin-top:30px;color:var(--chalk-green);
+    text-decoration:none;font-weight:700;font-size:14px;
+  }
+  .footer-link:hover{text-decoration:underline;}
+
+  @media print{
+    header.hero, .controls, .score-bar, .mini-btn, .footer-link{display:none !important;}
+    body{background:#fff;}
+    section.block{border:none;box-shadow:none;padding:8px 0;margin-bottom:14px;}
+    .opt.correct{background:none;border:none;font-weight:700;}
+    .opt.correct::after{content:" ← 正解";color:var(--pen-red);}
+    .opt{border:none;padding:2px 0;}
+    main{max-width:100%;padding:0 24px;}
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="breadcrumb"><a href="https://jenlin2002.github.io/">🏠 回總目錄</a> ／ <a href="../kangxuan-social-g8-1.html" style="color:#cfe0d1;">段考題庫</a></div>
+    <h1>公民・第3回</h1>
+    <p class="subtitle">第1~2課 總複習｜康軒版八年級社會（三）Ａ卷</p>
+  </div>
+</header>
+
+<main>
+  <div class="controls">
+    <div class="mode-toggle">
+      <button id="quizModeBtn" class="active">✏️ 測驗模式</button>
+      <button id="printModeBtn" disabled title="完成測驗並送出成績後才能查看">🖨️ 完整題目與解答（送出成績後解鎖）</button>
+    </div>
+  </div>
+
+  <div class="score-bar" id="scoreBar">
+    <div>目前得分：<strong id="scoreText">0 / 0</strong>（僅計算選擇題）</div>
+    <button id="resetBtn">重新作答</button>
+  </div>
+
+  <div id="content"></div>
+
+  <a class="footer-link" href="../kangxuan-social-g8-1.html">← 回段考題庫總覽</a>
+</main>
+
+<script>
+
+window.EXAM_META = { version: "A卷", examLabel: "公民第3回" };
+const DATA = {
+  sections: [
+    {
+      type:"mc",
+      title:"一、單題",
+      meta:"88%，每題4分",
+      items:[
+        {q:"衛生福利部研擬，凡具中華民國國籍且設籍者，無論是否在國內，都要持續繳交健保費。上文畫底線處屬於何種國家組成要素？",options:["人民","領土","政府","主權"],correct:0},
+        {q:"下圖中小葵所言國家存在之目的最可能是指何者？",image:"images/civ3/q2.png",options:["保衛國家安全","維持社會秩序","保障基本人權","保存文化傳統"],correct:1},
+        {q:"國家存在的首要目的是維護領土及主權的完整，避免國家遭到侵略，進而保障人民的安全。國家通常會藉由下列何者，來達成此項目的？",options:["推動國防與外交","建立警察系統","制定保障人權的法律","制訂社會福利政策"],correct:0},
+        {q:"右圖是宗達在手機上看到的一則報導。該內容主要呈現出下列何種民主政治的特色？",image:"images/civ3/q4.png",options:["政黨政治","法治政治","責任政治","民意政治"],correct:1},
+        {q:"新竹市政府在婦女館增設夜間及假日臨托服務，讓家中育有學齡前幼童的家長預約使用，享受安心托兒服務。根據上文，此舉落實哪項國家存在的目的？",options:["保衛國家安全","維持社會秩序","保障基本人權","發展社會福利"],correct:3},
+        {q:"個人資料遭駭客竊取與盜賣案件頻傳，造成國人個資外洩而讓詐騙集團有機可乘，行政院院長在治安會報上，建議定期公布易發生詐騙的高風險網路業者名單，避免民眾被詐騙，造成財產損失。上文旨在強調下列哪項國家存在的目的？",options:["促進經濟發展","保衛國家安全","維持社會秩序","發展社會福利"],correct:2},
+        {q:"某藝人因碩士論文的主題為「研究自己」，引發外界議論，民眾紛紛討論起碩士論文以自己為研究對象，是否符合學術標準。上述論文研究對象成為民眾共同關注與討論的話題，凸顯公共意見具有下列何種特性？",options:["議題性","複雜性","影響性","變動性"],correct:0},
+        {q:"下表為小晴上網查到美國歷任總統的部分資料：",image:"images/civ3/q8.png",options:["政府是抽象概念，國家是具體的組織","政府擁有統治權，執行國家的公共事務","政府僅為國家的一部分，涵蓋範圍較國家小","政府是短暫、可改變的組織，其更替不代表國家的滅亡"],correct:3},
+        {q:"「俄羅斯侵略烏克蘭後，日本處理與俄羅斯之間的南千島群島管轄爭議，態度轉趨強硬，主張該島是遭到俄羅斯非法占領。」上述凸顯日、俄兩國存在何種爭議？",options:["人民、主權","政府、主權","領土、主權","政府、領土"],correct:2},
+        {q:"前任體育署署長於東京奧運時，因爆發商務艙事件風波，引咎辭職下臺，並由教育部次長代理。上述署長請辭的做法，最能說明哪項民主政治的特色？",options:["民意政治","責任政治","法治政治","政黨政治"],correct:1},
+        {q:"以下為蘋果黨候選人於總統大選後的感言：",image:"images/civ3/q11.png",options:["蘋果黨為在野黨，未來將匯集民意、執行政策","橘子黨為執政黨，未來將監督政府、反映民意","兩黨透過選舉爭取執政權，為政黨政治的運作","此次選舉之後，蘋果黨將取得國家的最高權力"],correct:2},
+        {q:"公民課時，老師讓同學分組輪流抽題，一起搶答競賽。右圖為小芹抽到的題目，下列何者最可能是該題的正確答案？",image:"images/civ3/q12.png",options:["經常因革命、選舉而更替","擁有主權，但其統治權由政府運作","涵蓋範圍較政府小，僅包含制度與成員","為國家事務的執行者，是一個具體的組織"],correct:0},
+        {q:"有數名立法委員就「數位平臺和新聞媒體議價」議題召開公聽會，邀集相關政、媒體、學界，及勞工代表提供建議，這是第一次在相關會議中，有勞方代表聲音出現。根據上文，立委邀集民間各界提供相關建議，可看出民主政治的哪項特色？",options:["民意政治","法治政治","責任政治","政黨政治"],correct:0},
+        {q:"圖1為小玄與小彬在玩線上遊戲時的對話：",image:"images/civ3/q14fig1.png",image2:"images/civ3/q14fig2.png",options:["甲、乙","乙、丙","丁、甲","丁、乙"],correct:3},
+        {q:"新聞一：民進黨於2022年地方選舉中失利，行政院院長為開創新局決定請辭，改組內閣。\n新聞二：澳洲聯邦政府針對勞資關係進行改革，未來員工可於下班時間無視老闆不合理的電話和訊息。\n以上二則新聞報導，主要提及何項國家組成要素？",options:["人民","主權","領土","政府"],correct:3},
+        {q:"美國政府有權修訂半導體管制政策，我國政府為支持藝文產業而發放文化幣，日本政府與我國合作實施入境預先通關服務，由上述可發現各國政府皆擁有權力執行政策，增進人民福祉。這些國家政府權力的正當性與合法性從何而來？",options:["流血革命","世襲傳承","定期選舉","民眾起義"],correct:2},
+        {q:"2020年新冠肺炎爆發時，我國政府限制口罩出口，引發民眾議論，網路上贊成與反對的意見皆有。隨著疫情升溫，口罩需求增加，人民紛紛表示贊同政府的做法。根據上文，人民對於口罩限制出口政策的立場，因為疫情發展而產生變化，最符合公共意見的何種特性？",options:["差異性","影響性","議題性","不穩定性"],correct:2},
+        {q:"南韓近日一項民意調查顯示，有近六成民眾反對政府提出的日本二戰時期強徵勞工賠償方案，但也有三成多民眾表示為了韓日關係和國家利益而贊成。根據上述內容，可以反映出哪一種公共意見的特性？",options:["議題性","複雜性","影響性","變動性"],correct:1},
+        {q:"政府訪問民眾對於某項政策的看法，運用系統做成書面資料，以下為部分資料內容：",image:"images/civ3/q19.png",options:["落實責任政治","獲得國家主權","審核社會意見","探知民眾訴求"],correct:3},
+        {q:"在某一篇報導藝人離婚消息的新聞中提及：「做妻子的，適當的眼淚可以令男人停止吵架；但發狂大哭反而會令事情更糟，沒人能夠接受潑婦的。」上述報導內容最可能存在著下列何種問題？",options:["報導未必反映事實","報導具有商業利益","內容隱含偏見或歧視","報導未善盡查證訊息真假之責"],correct:2},
+        {q:"阿哲在警政單位的政令宣導中看到下列內容——",image:"images/civ3/q21.png",options:["促進媒體保持中立立場","消除媒體中的隱藏性歧視","減少媒體對民眾的所有影響","培養閱聽人懷疑與主動思辨能力"],correct:3},
+        {q:"小清在觀看網路上某位Youtuber製播的影片時，看到右圖的說法。圖中主要顯示媒體可能產生下列何種現象？",image:"images/civ3/q22.png",options:["報導未必反映事實","報導有特定的立場","內容隱含偏見或歧視","報導未善盡查證訊息真假之責"],correct:1}
+      ]
+    },
+    {
+      type:"reading",
+      title:"二、題組",
+      meta:"12%，每題2分",
+      passages:[
+        {
+          label:"(一)",
+          text:"針對解禁日本福島食品的措施，政府表示這是為加入跨太平洋夥伴全面進步協定(CPTPP)鋪路，讓國際看見我國按照科學依據看待食品進口，並增進兩國友好關係。不過①在野黨抨擊此政策藐視②2018年公民投票中779萬反對核食進口民眾的意願，因此③譴責政府並要求官員請辭下臺。請回答下列問題：",
+          items:[
+            {q:"從上文中解禁福島食品的理由判斷，該項措施與落實哪種國家存在目的較相關？",options:["保衛國家安全","維持社會秩序","保障基本人權","發展社會福利"],correct:0},
+            {q:"上文三項畫底線處，依序展現何種民主政治的特色？",options:["法治政治→民意政治→責任政治","政黨政治→民意政治→責任政治","政黨政治→法治政治→民意政治","責任政治→民意政治→法治政治"],correct:1}
+          ]
+        },
+        {
+          label:"(二)",
+          text:"小智看到近年法國罷工示威活動的相關報導，上網查詢到2019年的新聞摘要如下：2019年12月5日法國各大工會展開無限期全國大罷工，上街抗議政府改革退休金制度。此波罷工行動導致鐵公路等交通運輸癱瘓，工會成員揚言號召教師、醫護人員等加入罷工行列。該抗議行動後續不僅讓法國總統宣布放棄卸任後的總統特有退休金，更迫使政府暫緩推動法案，並提出妥協方案。請依據上述新聞摘要，回答下列問題：",
+          items:[
+            {q:"上文中工會應該是以下列何種方式表達自身的意見？",options:["遊行","公聽會","民意調查","公民投票"],correct:0},
+            {q:"針對上述團體發起的罷工運動，下列敘述何者正確？",options:["工會必須提名候選人，才能達成其所期望的目標","工會應舉辦競選活動與宣傳讓更多人了解其訴求","工會為利益團體，可以透過集體行動向政府發聲","工會非利益團體，不能代表民眾與反映公共意見"],correct:2}
+          ]
+        },
+        {
+          label:"(三)",
+          text:"2018年4月，網路上出現一段美國前任總統歐巴馬的新影片，背景裡有美國的國旗與總統旗，看起來就像他以前的諸多談話影片。歐巴馬穿著整平的白襯衫與深色西裝，面對攝影機，伸出雙手說：「川普總統是不折不扣的笨蛋。」但其實這是外國媒體Buzzfeed為了讓大家了解假新聞的嚴重性，特別利用AI生成假歐巴馬影片所進行的公共服務宣導。請回答下列問題：",
+          items:[
+            {q:"文中外國媒體的作為，是為了讓閱聽人了解媒體可能具有下列何種現象？",options:["報導未必反映事實","報導有特定的立場","內容隱含偏見或歧視","報導未善盡查證訊息真假之責"],correct:0},
+            {q:"閱聽人應該要具備下列何種能力，才能加以因應媒體可能存在的亂象？",options:["接受訊息","媒體識讀","保護個人隱私","抵制網路霸凌"],correct:1}
+          ]
+        }
+      ]
+    }
+
+  ]
+};
+
+let currentMode = "quiz"; // quiz | print
+
+const contentEl = document.getElementById("content");
+const scoreBar = document.getElementById("scoreBar");
+const scoreText = document.getElementById("scoreText");
+
+function render(){
+  window.examAnswersRevealed = false;
+  contentEl.innerHTML = "";
+  DATA.sections.forEach((sec, si)=> contentEl.appendChild(renderSection(sec, si)));
+  if(currentMode==="quiz"){
+    scoreBar.classList.add("show");
+    updateScore();
+  } else {
+    scoreBar.classList.remove("show");
+    contentEl.querySelectorAll(".opt").forEach(o=>o.classList.add("disabled"));
+    contentEl.querySelectorAll(".opt.is-correct").forEach(o=>o.classList.add("correct"));
+  }
+}
+
+function renderSection(sec, si){
+  const block = document.createElement("section");
+  block.className = "block";
+  block.innerHTML = `<h2>${sec.title}</h2><p class="meta">${sec.meta}</p>`;
+
+  if(sec.type==="mc"){
+    sec.items.forEach((it,i)=>{
+      const q = document.createElement("div");
+      q.className = "q";
+      const optsHtml = it.options.map((op,oi)=>`
+        <div class="opt" data-idx="${oi}" data-correct="${oi===it.correct}">
+          <span class="tag">(${String.fromCharCode(65+oi)})</span><span>${op}</span>
+        </div>`).join("");
+      const imgHtml = it.image ? `<img src="${it.image}" alt="題目附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">` : "";
+      const img2Html = it.image2 ? `<img src="${it.image2}" alt="題目附圖2" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">` : "";
+      q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q}</div>
+        ${imgHtml}${img2Html}
+        <div class="opts">${optsHtml}</div>`;
+      q.querySelectorAll(".opt").forEach(optEl=>{
+        if(optEl.dataset.correct==="true") optEl.classList.add("is-correct");
+        optEl.addEventListener("click", ()=>selectOption(q, optEl));
+      });
+      block.appendChild(q);
+    });
+  }
+
+  else if(sec.type==="reading"){
+    sec.passages.forEach(p=>{
+      const passageDiv = document.createElement("div");
+      passageDiv.className = "passage";
+      passageDiv.innerHTML = `${p.label ? `<span class="passage-label">${p.label}</span>`:""}${p.text}${p.image ? `<img src="${p.image}" alt="題組附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-top:10px;border:1px solid var(--paper-line);">`:""}`;
+      block.appendChild(passageDiv);
+      p.items.forEach((it,i)=>{
+        const q = document.createElement("div");
+        q.className = "q";
+        const optsHtml = it.options.map((op,oi)=>`
+          <div class="opt" data-idx="${oi}" data-correct="${oi===it.correct}">
+            <span class="tag">(${String.fromCharCode(65+oi)})</span><span>${op}</span>
+          </div>`).join("");
+        q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q}</div>
+          ${it.image ? `<img src="${it.image}" alt="題目附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">`:""}
+          <div class="opts">${optsHtml}</div>`;
+        q.querySelectorAll(".opt").forEach(optEl=>{
+          if(optEl.dataset.correct==="true") optEl.classList.add("is-correct");
+          optEl.addEventListener("click", ()=>selectOption(q, optEl));
+        });
+        block.appendChild(q);
+      });
+    });
+  }
+
+  return block;
+}
+
+function selectOption(qEl, optEl){
+  if(currentMode!=="quiz") return;
+  if(qEl.dataset.answered==="true") return;
+  qEl.dataset.answered = "true";
+  qEl.querySelectorAll(".opt").forEach(o=>o.classList.add("disabled"));
+  optEl.classList.add("selected");
+  const correctOpt = qEl.querySelector('.opt[data-correct="true"]');
+  qEl.dataset.studentAnswer = optEl.textContent.trim();
+  qEl.dataset.correctAnswer = correctOpt ? correctOpt.textContent.trim() : "";
+  qEl.dataset.isCorrect = (optEl.dataset.correct==="true") ? "true" : "false";
+  updateScore();
+}
+
+function updateScore(){
+  let total = 0, answered = 0, correct = 0;
+  contentEl.querySelectorAll(".q").forEach(q=>{
+    const gradable = q.querySelector(".opts");
+    if(!gradable) return;
+    total++;
+    if(q.dataset.studentAnswer !== undefined){
+      answered++;
+      if(q.dataset.isCorrect === "true") correct++;
+    }
+  });
+  if(window.examAnswersRevealed){
+    scoreText.textContent = `${correct} / ${total}`;
+  } else {
+    scoreText.textContent = `已作答 ${answered} / ${total} 題`;
+  }
+}
+window.updateScore = updateScore;
+
+document.getElementById("resetBtn").addEventListener("click", render);
+document.getElementById("quizModeBtn").addEventListener("click", ()=>{
+  currentMode = "quiz";
+  document.getElementById("quizModeBtn").classList.add("active");
+  document.getElementById("printModeBtn").classList.remove("active");
+  render();
+});
+document.getElementById("printModeBtn").addEventListener("click", ()=>{
+  if(document.getElementById("printModeBtn").disabled) return;
+  currentMode = "print";
+  document.getElementById("printModeBtn").classList.add("active");
+  document.getElementById("quizModeBtn").classList.remove("active");
+  render();
+});
+
+window.unlockPrintMode = function(){
+  document.getElementById("printModeBtn").disabled = false;
+};
+
+render();
+</script>
+<script src="../sync.js"></script>
+</body>
+</html>
