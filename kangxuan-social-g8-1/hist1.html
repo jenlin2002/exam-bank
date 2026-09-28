@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>段考題庫｜歷史第1回 - 商周至隋唐的國家與社會（A卷）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@500;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#faf6ec;
+    --paper-line:#e3dcc8;
+    --ink:#26332b;
+    --ink-soft:#5b6b5f;
+    --chalk-green:#2f4538;
+    --chalk-green-2:#3d5a48;
+    --pen-red:#b8433a;
+    --pen-red-soft:#f4dedb;
+    --ok-green:#3f7d52;
+    --ok-green-soft:#dfeee1;
+    --gold:#b5842a;
+    --radius:10px;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:"Noto Sans TC",sans-serif;
+    line-height:1.7;
+  }
+  header.hero{
+    background:var(--chalk-green);
+    color:#eef2ea;
+    padding:28px 20px 40px;
+    position:relative;
+  }
+  header.hero::after{
+    content:"";
+    position:absolute;
+    left:0; right:0; bottom:-1px;
+    height:14px;
+    background:repeating-linear-gradient(90deg,var(--paper) 0 18px, transparent 18px 20px);
+  }
+  .hero-inner{max-width:880px;margin:0 auto;}
+  .breadcrumb a{color:#cfe0d1;text-decoration:none;font-size:14px;}
+  .breadcrumb a:hover{text-decoration:underline;}
+  h1{
+    font-family:"Noto Serif TC",serif;
+    font-weight:700;
+    font-size:clamp(24px,4vw,34px);
+    margin:10px 0 6px;
+  }
+  .subtitle{color:#cfe0d1;font-size:15px;margin:0;}
+  main{max-width:880px;margin:0 auto;padding:28px 20px 80px;}
+
+  .controls{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:22px;
+  }
+  .mode-toggle{display:flex;border:2px solid var(--chalk-green);border-radius:999px;overflow:hidden;}
+  .mode-toggle button{
+    background:transparent;border:none;padding:8px 16px;font-size:14px;font-weight:700;
+    color:var(--chalk-green);cursor:pointer;font-family:"Noto Sans TC",sans-serif;
+  }
+  .mode-toggle button.active{background:var(--gold);color:#fff;}
+  .mode-toggle button:disabled{opacity:.4;cursor:not-allowed;}
+
+  .score-bar{
+    display:none;
+    align-items:center;
+    justify-content:space-between;
+    background:#fff;
+    border:1px solid var(--paper-line);
+    border-left:5px solid var(--gold);
+    border-radius:var(--radius);
+    padding:12px 18px;
+    margin-bottom:22px;
+    font-size:14px;
+  }
+  .score-bar.show{display:flex;}
+  .score-bar strong{font-size:18px;color:var(--gold);}
+  .score-bar button{
+    background:none;border:1px solid var(--ink-soft);color:var(--ink-soft);
+    border-radius:6px;padding:6px 12px;font-size:13px;cursor:pointer;
+  }
+
+  section.block{
+    background:#fff;
+    border:1px solid var(--paper-line);
+    border-radius:var(--radius);
+    padding:22px 22px 26px;
+    margin-bottom:20px;
+  }
+  .block h2{
+    font-family:"Noto Serif TC",serif;
+    font-size:19px;
+    margin:0 0 4px;
+    color:var(--chalk-green);
+  }
+  .block .meta{color:var(--ink-soft);font-size:13px;margin:0 0 16px;}
+
+  .q{margin-bottom:18px;padding-bottom:16px;border-bottom:1px dashed var(--paper-line);}
+  .q:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0;}
+  .q-text{font-size:15.5px;margin-bottom:8px;}
+  .q-num{color:var(--gold);font-weight:700;margin-right:4px;}
+
+  .opts{display:grid;gap:8px;}
+  .opt{
+    display:flex;gap:8px;align-items:flex-start;
+    border:1.5px solid var(--paper-line);
+    border-radius:8px;
+    padding:9px 12px;
+    cursor:pointer;
+    font-size:14.5px;
+    background:#fffdf8;
+  }
+  .opt:hover{border-color:var(--chalk-green-2);}
+  .opt.selected{border-color:var(--chalk-green-2);background:#eef3ea;}
+  .opt.correct{border-color:var(--ok-green);background:var(--ok-green-soft);}
+  .opt.wrong{border-color:var(--pen-red);background:var(--pen-red-soft);}
+  .opt .tag{font-weight:700;color:var(--ink-soft);}
+  .opt.correct .tag{color:var(--ok-green);}
+  .opt.wrong .tag{color:var(--pen-red);}
+  .opt.disabled{cursor:default;}
+
+  .passage{
+    background:#f5f2e8;border-radius:8px;padding:14px 16px;margin-bottom:14px;
+    font-size:14.5px;white-space:pre-line;
+  }
+  .passage-label{font-weight:700;color:var(--chalk-green);margin-bottom:4px;display:block;}
+  .data-table{width:100%;border-collapse:collapse;margin-bottom:10px;font-size:13.5px;background:#fff;}
+  .data-table th, .data-table td{border:1px solid var(--paper-line);padding:6px 8px;text-align:center;}
+  .data-table th{background:#eef3ea;color:var(--chalk-green);}
+
+  .footer-link{
+    display:block;text-align:center;margin-top:30px;color:var(--chalk-green);
+    text-decoration:none;font-weight:700;font-size:14px;
+  }
+  .footer-link:hover{text-decoration:underline;}
+
+  @media print{
+    header.hero, .controls, .score-bar, .mini-btn, .footer-link{display:none !important;}
+    body{background:#fff;}
+    section.block{border:none;box-shadow:none;padding:8px 0;margin-bottom:14px;}
+    .opt.correct{background:none;border:none;font-weight:700;}
+    .opt.correct::after{content:" ← 正解";color:var(--pen-red);}
+    .opt{border:none;padding:2px 0;}
+    main{max-width:100%;padding:0 24px;}
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="breadcrumb"><a href="https://jenlin2002.github.io/">🏠 回總目錄</a> ／ <a href="../kangxuan-social-g8-1.html" style="color:#cfe0d1;">段考題庫</a></div>
+    <h1>歷史・第1回</h1>
+    <p class="subtitle">第1課 商周至隋唐的國家與社會｜康軒版八年級社會（三）Ａ卷</p>
+  </div>
+</header>
+
+<main>
+  <div class="controls">
+    <div class="mode-toggle">
+      <button id="quizModeBtn" class="active">✏️ 測驗模式</button>
+      <button id="printModeBtn" disabled title="完成測驗並送出成績後才能查看">🖨️ 完整題目與解答（送出成績後解鎖）</button>
+    </div>
+  </div>
+
+  <div class="score-bar" id="scoreBar">
+    <div>目前得分：<strong id="scoreText">0 / 0</strong>（僅計算選擇題）</div>
+    <button id="resetBtn">重新作答</button>
+  </div>
+
+  <div id="content"></div>
+
+  <a class="footer-link" href="../kangxuan-social-g8-1.html">← 回段考題庫總覽</a>
+</main>
+
+<script>
+
+window.EXAM_META = { version: "A卷", examLabel: "歷史第1回" };
+const DATA = {
+  sections: [
+    {
+      type:"mc",
+      title:"一、單題",
+      meta:"84%，每題3分",
+      items:[
+        {q:"右圖是中國歷史上某朝代的階層關係圖，由其內容判斷，圖中的「？」最可能指下列何者？",image:"images/hist1/q1.png",options:["匈奴王","周王","秦始皇","漢武帝"],correct:1},
+        {q:"歷史上對商鞅的評價兩極，有人認為他刻薄寡恩、不近人情；也有人認為他是個激底的改革家。下列何者是他進行改革的其一內容？",options:["按軍功授爵位","實施封建制度","制定禮樂制度","推行察舉選才"],correct:0},
+        {q:"東周時代，魯國貴族季孫氏在庭院中以天子「八佾」規格起舞，孔子聞之大怒說道：「是可忍，孰不可忍也。」孔子大怒的原因最可能是季孫氏的行為破壞了下列何種規範貴族行為舉止的內容？",options:["九品官人之法","戶籍制度","郡縣制度","禮樂儀式"],correct:3},
+        {q:"智旻正在觀賞戲劇節目《呂不韋傳奇》，劇中敘述東周時期的呂不韋雖為一介平民，但透過經商提高了社會地位，更因輔佐秦王而位居秦國相國。上述呂不韋地位的轉變，反映當時何種社會風氣？",options:["君王採納儒家學者觀點，實行仁政","家世背景是選拔官員的最主要考量","十年寒窗無人問，一舉成名天下知","平民可憑藉個人能力獲得國君重用"],correct:3},
+        {q:"下圖為中國歷史上部分朝代演進圖：",image:"images/hist1/q5.png",options:["統一文字、車軌、度量衡","創立科舉制度以選拔官員","國君用人唯才，布衣可為卿相","為了保衛王室，於是施行封建"],correct:1},
+        {q:"西元1974年，位於陝西秦始皇陵的部分文物重見天日，裡面除有仿造中國古代宮殿建築及庭園外，還有數量眾多的兵馬俑。雄偉壯觀的秦始皇陵最可能反映秦朝的何種政治特色？",options:["各地仍處於部落型態，自給自足","開放所有的平民參政以落實民主","中央強化權力集中，得以動員龐大人力","在封建體制之下，地方和中央各自為政"],correct:2},
+        {q:"燕久是西周前期的貴族，他最可能有下列何種遭遇？",options:["行為舉止受到禮樂儀式的規範","為了謀生私下開課向平民講學","認真準備科舉考試以求取官位","在太學擔任講學者以培育人才"],correct:0},
+        {q:"右圖是中國歷史上某項制度的示意圖。由圖中內容判斷，下列何者符合此制度的目的？",image:"images/hist1/q8.png",options:["地方分權","民主政治","中央集權","虛位皇權"],correct:2},
+        {q:"中國某一時期，社會上形成「上品無寒門，下品無世族」的現象。此現象的形成，應與下列何者最有關？",options:["受教權為貴族的專屬","九品官人之法的實行","私人講學風氣的盛行","科舉制度的擴大實施"],correct:1},
+        {q:"小芙將中國歷史上某一時期的貨幣演進，繪成下圖：",image:"images/hist1/q10.png",options:["周武王滅商","周王室東遷","嬴政統一天下","漢武帝即位"],correct:2},
+        {q:"《史記‧○○本紀》中記載：「朕為始皇帝，後世以計數，二世、三世至千萬世，傳之無窮。」以此判斷，上述○○應填入下列何者最符合史實？",options:["周武王","秦始皇","漢武帝","齊桓公"],correct:1},
+        {q:"統一六國後，官員對於實施郡縣還是封建，發生了爭論。其中主張郡縣制的丞相，認為應該薄古厚今，提出焚書的建議，其建議被君王採納，作為法令頒布。此君王為何人？",options:["商紂王","周武王","秦始皇","漢武帝"],correct:2},
+        {q:"下圖是中國世族的興衰趨勢圖。由圖中內容判斷，「乙」階段的發展趨勢主要受到下列何者的影響？",image:"images/hist1/q13.png",options:["孝子廉吏的推舉","布衣卿相的出現","九品官人的實施","科舉制度的創立"],correct:2},
+        {q:"東周時代，諸國征戰，人口成為最重要的資源。當時秦國率先建立嚴密的戶口登記制，並禁止人民自由遷徙。透過嚴密的戶籍制，秦國獲得強大的基礎，而得以在爭霸戰中勝出。上述「基礎」應不包含何者？",options:["加強中央對地方控制","穩定政府稅收的來源","增加軍事動員的能力","強化禮樂制度的實施"],correct:3},
+        {q:"謝允是魏晉時期江南的讀書人，無論才能或品德都極其平凡，但因他的家族顯赫，父輩也擔任國家要臣，因此負責品評士人的官員就將他列為最高等第，並交由中央授官。根據上述，謝允能夠獲得官職，主要受益於當時政府的何項政策？",options:["郡縣制度","設立太學","以科舉選才","九品官人之法"],correct:3},
+        {q:"若要在右圖中畫出「周王滅商」的征服路線，則圖中的哪一路線最為符合？",image:"images/hist1/q16.png",options:["甲","乙","丙","丁"],correct:2},
+        {q:"孔子在漢朝後，被歷代帝王尊為「聖人」，他出生在貧窮的家庭，因為努力自學，成了最著名的思想家和教育家。他是哪個思想流派的代表人物？",options:["儒家","法家","墨家","道家"],correct:0},
+        {q:"一篇文章提到：「此一時期，謝氏共有十二代、一百餘人見於史傳，其世族門第之高，連皇帝有時也不得不借助於他們的影響力。謝氏擁有大量資產，子弟也大多才華出眾，被視為世族領袖，前後一百餘年。」以此判斷，上述應為哪個時期的情形？",options:["商周時期","東周時期","西漢時期","魏晉南北朝"],correct:3},
+        {q:"圖1至圖2是中國歷史上某位皇帝改革措施之一，根據內容判斷，此君主最可能是下列何者？",image:"images/hist1/q19.png",options:["周平王","漢武帝","秦始皇","唐太宗"],correct:1},
+        {q:"睿恩的歷史報告欲探討某項制度，她引用了《左傳‧昭公二十八年》中的敘述：「昔周武王克商，光有天下，其兄弟之國者，十有五人，姬姓(周朝的國姓)之國者，四十人，皆舉親也。」以此判斷，睿恩的報告主題最可能與下列何者有關？",options:["施行封建","郡縣制度","科舉制度","中央集權"],correct:0},
+        {q:"下表為東周時期平民任官的人數統計表：",table:{head:["時間","已知任官數","平民出身數","平民出身所占比"],rows:[["西元前722～633年","130人","29人","22%"],["西元前542～464年","163人","49人","30%"],["西元前343～221年","120人","67人","56%"]]},options:["貴族人數較平民還多","貴族沒落，平民崛起","熟讀儒家經典可任官","社會階層幾乎不流動"],correct:1},
+        {q:"周在打敗前朝勢力後，得到廣大的領土，為了統治廣大的領土，必須逐漸建立制度或政策，以確保封建的秩序。這些制度或政策不包括下列何者？",options:["在軍政據點武裝殖民","規範貴族的日常行為","利用儀式來區別尊卑","行中央集權穩固政權"],correct:3},
+        {q:"以下為某項選官方式的敘述：「統治當局透過開科取士的方式來選拔人才，其中包含：進士、明經、明法、明算等科別，有能力者多數都可參與考試，為平民的晉升管道開啟了一道大門。」以此判斷，這項方式應為下列何者？",options:["就讀太學","九品官人","察舉","科舉制度"],correct:3},
+        {q:"下列關於魏晉南北朝時期世族的敘述，何者正確？",image:"images/hist1/q24.png",options:["A","B","C","D"],correct:3},
+        {q:"趙翼在《廿二史箚記》中評論中國某項制度的弊害：「高門華閥，有世及之榮(權位可以世代相傳)，庶姓寒人，無寸進之路。選舉之弊，至此而極。」以此判斷，趙翼所批評的制度應為下列何者？",options:["察舉","九品官人","禮樂","科舉制度"],correct:1},
+        {q:"《文苑英華‧寒素論》中有一段敘述：「服冕之家(官宦之家)，流品(門第)之人，視寒素(門第微寒者)之子，輕若仆(僕)隸，易如草芥，曾不以之為伍。」意指寒門雖致位通顯，上升為貴戚近臣，倘不自量力而前去見世族，亦不為世族以禮接見，甚至會受到侮辱。上述情景最可能發生在哪個時期？",options:["西周","秦朝","東周","魏晉南北朝"],correct:3},
+        {q:"以下是某大臣的建議，並獲得當時中國皇帝的採納：「周朝分封許多同姓子弟為諸侯，但他們關係漸漸疏遠，甚至互相攻伐，像仇人一樣，周天子也無法制止。如今，陛下統一天下，土地皆劃分為郡縣，諸子與功臣可由朝廷用賦稅給予豐厚賞賜，這樣更容易控制……。」皇帝採納此建議後，推行下列何項政策？",options:["擴大封建","禮樂儀式","實施察舉","郡縣制度"],correct:3},
+        {q:"《昭明文選‧沈約‧奏彈王源》記載：「風聞東海王源，嫁女與富陽滿氏……。王滿聯姻，實駭物聽。」描述一樁婚事引發官員認為這場聯姻玷辱世族，而請朝廷革去王源官職。上述反映當時的何種社會現象？",options:["貴族沒落，平民崛起","削弱世族，促進平等","分封宗室，以禮約制","不同家世，互不通婚"],correct:3}
+      ]
+    },
+    {
+      type:"reading",
+      title:"二、題組",
+      meta:"16%，每題4分",
+      passages:[
+        {
+          label:"(一)",
+          text:"右圖是中國歷史上某時期的形勢圖，當時各地有很多諸侯國，圖中是當時最為重要的地方王國。請回答下列問題：",
+          image:"images/hist1/q29.png",
+          items:[
+            {q:"上文中的「某時期」是指哪個時期？",options:["西周時期","東周時期","秦漢時期","魏晉時期"],correct:1},
+            {q:"最後，圖中的其中一國結束分裂的局面，統一中國，該國位於圖中的何處？",options:["甲","乙","丙","丁"],correct:3}
+          ]
+        },
+        {
+          label:"(二)",
+          text:"葛洪的《抱朴子》中引述某時期民間傳唱的歌謠：「舉秀才，不知書。舉孝廉，父別居。寒素清白濁如泥，高第良將怯如雞。」意指凡被推舉為秀才的人，本應文才深秀、學富五車，但實際上卻連字都不識得。被推舉為孝廉之人，實際上竟與父親分居而住。被選拔為廉潔之人，本應是出身清貧、為官清正之人，實際上卻被民眾評價為汙濁如泥。而被推舉為剛毅勇猛而有謀之人，事實上卻膽怯如雞。請回答下列問題：",
+          items:[
+            {q:"歌謠所述內容應為下列哪個時代的情形？",options:["東周","秦代","漢代末年","魏晉時期"],correct:2},
+            {q:"文中這段歌謠所諷刺的現象應為何項措施的流弊？",options:["君主分封土地和爵位給諸侯","國家以禮樂規範貴族的秩序","地方長官定期向中央推舉孝廉","官員以九個等第評選各地士人"],correct:2}
+          ]
+        }
+      ]
+    }
+
+  ]
+};
+
+let currentMode = "quiz"; // quiz | print
+
+const contentEl = document.getElementById("content");
+const scoreBar = document.getElementById("scoreBar");
+const scoreText = document.getElementById("scoreText");
+
+function render(){
+  window.examAnswersRevealed = false;
+  contentEl.innerHTML = "";
+  DATA.sections.forEach((sec, si)=> contentEl.appendChild(renderSection(sec, si)));
+  if(currentMode==="quiz"){
+    scoreBar.classList.add("show");
+    updateScore();
+  } else {
+    scoreBar.classList.remove("show");
+    contentEl.querySelectorAll(".opt").forEach(o=>o.classList.add("disabled"));
+    contentEl.querySelectorAll(".opt.is-correct").forEach(o=>o.classList.add("correct"));
+  }
+}
+
+function renderTable(t){
+  if(!t) return "";
+  const headHtml = `<tr>${t.head.map(h=>`<th>${h}</th>`).join("")}</tr>`;
+  const rowsHtml = t.rows.map(r=>`<tr>${r.map((c,ci)=>ci===0?`<th>${c}</th>`:`<td>${c}</td>`).join("")}</tr>`).join("");
+  return `<table class="data-table"><thead>${headHtml}</thead><tbody>${rowsHtml}</tbody></table>`;
+}
+
+function renderSection(sec, si){
+  const block = document.createElement("section");
+  block.className = "block";
+  block.innerHTML = `<h2>${sec.title}</h2><p class="meta">${sec.meta}</p>`;
+
+  if(sec.type==="mc"){
+    sec.items.forEach((it,i)=>{
+      const q = document.createElement("div");
+      q.className = "q";
+      const optsHtml = it.options.map((op,oi)=>`
+        <div class="opt" data-idx="${oi}" data-correct="${oi===it.correct}">
+          <span class="tag">(${String.fromCharCode(65+oi)})</span><span>${op}</span>
+        </div>`).join("");
+      q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q}</div>
+        ${it.image ? `<img src="${it.image}" alt="題目附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">`:""}
+        ${it.table ? renderTable(it.table) : ""}
+        <div class="opts">${optsHtml}</div>`;
+      q.querySelectorAll(".opt").forEach(optEl=>{
+        if(optEl.dataset.correct==="true") optEl.classList.add("is-correct");
+        optEl.addEventListener("click", ()=>selectOption(q, optEl));
+      });
+      block.appendChild(q);
+    });
+  }
+
+  else if(sec.type==="reading"){
+    sec.passages.forEach(p=>{
+      const passageDiv = document.createElement("div");
+      passageDiv.className = "passage";
+      passageDiv.innerHTML = `${p.label ? `<span class="passage-label">${p.label}</span>`:""}${p.text}${p.image ? `<img src="${p.image}" alt="題組附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-top:10px;border:1px solid var(--paper-line);">`:""}`;
+      block.appendChild(passageDiv);
+      p.items.forEach((it,i)=>{
+        const q = document.createElement("div");
+        q.className = "q";
+        const optsHtml = it.options.map((op,oi)=>`
+          <div class="opt" data-idx="${oi}" data-correct="${oi===it.correct}">
+            <span class="tag">(${String.fromCharCode(65+oi)})</span><span>${op}</span>
+          </div>`).join("");
+        q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q}</div>
+          ${it.image ? `<img src="${it.image}" alt="題目附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">`:""}
+          <div class="opts">${optsHtml}</div>`;
+        q.querySelectorAll(".opt").forEach(optEl=>{
+          if(optEl.dataset.correct==="true") optEl.classList.add("is-correct");
+          optEl.addEventListener("click", ()=>selectOption(q, optEl));
+        });
+        block.appendChild(q);
+      });
+    });
+  }
+
+  return block;
+}
+
+function selectOption(qEl, optEl){
+  if(currentMode!=="quiz") return;
+  if(qEl.dataset.answered==="true") return;
+  qEl.dataset.answered = "true";
+  qEl.querySelectorAll(".opt").forEach(o=>o.classList.add("disabled"));
+  optEl.classList.add("selected");
+  const correctOpt = qEl.querySelector('.opt[data-correct="true"]');
+  qEl.dataset.studentAnswer = optEl.textContent.trim();
+  qEl.dataset.correctAnswer = correctOpt ? correctOpt.textContent.trim() : "";
+  qEl.dataset.isCorrect = (optEl.dataset.correct==="true") ? "true" : "false";
+  updateScore();
+}
+
+function updateScore(){
+  let total = 0, answered = 0, correct = 0;
+  contentEl.querySelectorAll(".q").forEach(q=>{
+    const gradable = q.querySelector(".opts");
+    if(!gradable) return;
+    total++;
+    if(q.dataset.studentAnswer !== undefined){
+      answered++;
+      if(q.dataset.isCorrect === "true") correct++;
+    }
+  });
+  if(window.examAnswersRevealed){
+    scoreText.textContent = `${correct} / ${total}`;
+  } else {
+    scoreText.textContent = `已作答 ${answered} / ${total} 題`;
+  }
+}
+window.updateScore = updateScore;
+
+document.getElementById("resetBtn").addEventListener("click", render);
+document.getElementById("quizModeBtn").addEventListener("click", ()=>{
+  currentMode = "quiz";
+  document.getElementById("quizModeBtn").classList.add("active");
+  document.getElementById("printModeBtn").classList.remove("active");
+  render();
+});
+document.getElementById("printModeBtn").addEventListener("click", ()=>{
+  if(document.getElementById("printModeBtn").disabled) return;
+  currentMode = "print";
+  document.getElementById("printModeBtn").classList.add("active");
+  document.getElementById("quizModeBtn").classList.remove("active");
+  render();
+});
+
+window.unlockPrintMode = function(){
+  document.getElementById("printModeBtn").disabled = false;
+};
+
+render();
+</script>
+<script src="../sync.js"></script>
+</body>
+</html>
