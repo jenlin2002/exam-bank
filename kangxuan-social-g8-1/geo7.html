@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>段考題庫｜地理第7回 - 東北亞的自然環境（A卷）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@500;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#faf6ec;
+    --paper-line:#e3dcc8;
+    --ink:#26332b;
+    --ink-soft:#5b6b5f;
+    --chalk-green:#2f4538;
+    --chalk-green-2:#3d5a48;
+    --pen-red:#b8433a;
+    --pen-red-soft:#f4dedb;
+    --ok-green:#3f7d52;
+    --ok-green-soft:#dfeee1;
+    --gold:#b5842a;
+    --radius:10px;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:"Noto Sans TC",sans-serif;
+    line-height:1.7;
+  }
+  header.hero{
+    background:var(--chalk-green);
+    color:#eef2ea;
+    padding:28px 20px 40px;
+    position:relative;
+  }
+  header.hero::after{
+    content:"";
+    position:absolute;
+    left:0; right:0; bottom:-1px;
+    height:14px;
+    background:repeating-linear-gradient(90deg,var(--paper) 0 18px, transparent 18px 20px);
+  }
+  .hero-inner{max-width:880px;margin:0 auto;}
+  .breadcrumb a{color:#cfe0d1;text-decoration:none;font-size:14px;}
+  .breadcrumb a:hover{text-decoration:underline;}
+  h1{
+    font-family:"Noto Serif TC",serif;
+    font-weight:700;
+    font-size:clamp(24px,4vw,34px);
+    margin:10px 0 6px;
+  }
+  .subtitle{color:#cfe0d1;font-size:15px;margin:0;}
+  main{max-width:880px;margin:0 auto;padding:28px 20px 80px;}
+
+  .controls{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:22px;
+  }
+  .mode-toggle{display:flex;border:2px solid var(--chalk-green);border-radius:999px;overflow:hidden;}
+  .mode-toggle button{
+    background:transparent;border:none;padding:8px 16px;font-size:14px;font-weight:700;
+    color:var(--chalk-green);cursor:pointer;font-family:"Noto Sans TC",sans-serif;
+  }
+  .mode-toggle button.active{background:var(--gold);color:#fff;}
+  .mode-toggle button:disabled{opacity:.4;cursor:not-allowed;}
+
+  .score-bar{
+    display:none;
+    align-items:center;
+    justify-content:space-between;
+    background:#fff;
+    border:1px solid var(--paper-line);
+    border-left:5px solid var(--gold);
+    border-radius:var(--radius);
+    padding:12px 18px;
+    margin-bottom:22px;
+    font-size:14px;
+  }
+  .score-bar.show{display:flex;}
+  .score-bar strong{font-size:18px;color:var(--gold);}
+  .score-bar button{
+    background:none;border:1px solid var(--ink-soft);color:var(--ink-soft);
+    border-radius:6px;padding:6px 12px;font-size:13px;cursor:pointer;
+  }
+
+  section.block{
+    background:#fff;
+    border:1px solid var(--paper-line);
+    border-radius:var(--radius);
+    padding:22px 22px 26px;
+    margin-bottom:20px;
+  }
+  .block h2{
+    font-family:"Noto Serif TC",serif;
+    font-size:19px;
+    margin:0 0 4px;
+    color:var(--chalk-green);
+  }
+  .block .meta{color:var(--ink-soft);font-size:13px;margin:0 0 16px;}
+
+  .q{margin-bottom:18px;padding-bottom:16px;border-bottom:1px dashed var(--paper-line);}
+  .q:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0;}
+  .q-text{font-size:15.5px;margin-bottom:8px;}
+  .q-num{color:var(--gold);font-weight:700;margin-right:4px;}
+
+  .opts{display:grid;gap:8px;}
+  .opt{
+    display:flex;gap:8px;align-items:flex-start;
+    border:1.5px solid var(--paper-line);
+    border-radius:8px;
+    padding:9px 12px;
+    cursor:pointer;
+    font-size:14.5px;
+    background:#fffdf8;
+  }
+  .opt:hover{border-color:var(--chalk-green-2);}
+  .opt.selected{border-color:var(--chalk-green-2);background:#eef3ea;}
+  .opt.correct{border-color:var(--ok-green);background:var(--ok-green-soft);}
+  .opt.wrong{border-color:var(--pen-red);background:var(--pen-red-soft);}
+  .opt .tag{font-weight:700;color:var(--ink-soft);}
+  .opt.correct .tag{color:var(--ok-green);}
+  .opt.wrong .tag{color:var(--pen-red);}
+  .opt.disabled{cursor:default;}
+
+  .passage{
+    background:#f5f2e8;border-radius:8px;padding:14px 16px;margin-bottom:14px;
+    font-size:14.5px;white-space:pre-line;
+  }
+  .passage-label{font-weight:700;color:var(--chalk-green);margin-bottom:4px;display:block;}
+  .data-table{width:100%;border-collapse:collapse;margin-bottom:10px;font-size:13.5px;background:#fff;}
+  .data-table th, .data-table td{border:1px solid var(--paper-line);padding:6px 8px;text-align:center;}
+  .data-table th{background:#eef3ea;color:var(--chalk-green);}
+
+  .footer-link{
+    display:block;text-align:center;margin-top:30px;color:var(--chalk-green);
+    text-decoration:none;font-weight:700;font-size:14px;
+  }
+  .footer-link:hover{text-decoration:underline;}
+
+  @media print{
+    header.hero, .controls, .score-bar, .mini-btn, .footer-link{display:none !important;}
+    body{background:#fff;}
+    section.block{border:none;box-shadow:none;padding:8px 0;margin-bottom:14px;}
+    .opt.correct{background:none;border:none;font-weight:700;}
+    .opt.correct::after{content:" ← 正解";color:var(--pen-red);}
+    .opt{border:none;padding:2px 0;}
+    main{max-width:100%;padding:0 24px;}
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="breadcrumb"><a href="https://jenlin2002.github.io/">🏠 回總目錄</a> ／ <a href="../kangxuan-social-g8-1.html" style="color:#cfe0d1;">段考題庫</a></div>
+    <h1>地理・第7回</h1>
+    <p class="subtitle">第5課 東北亞的自然環境｜康軒版八年級社會（三）Ａ卷</p>
+  </div>
+</header>
+
+<main>
+  <div class="controls">
+    <div class="mode-toggle">
+      <button id="quizModeBtn" class="active">✏️ 測驗模式</button>
+      <button id="printModeBtn" disabled title="完成測驗並送出成績後才能查看">🖨️ 完整題目與解答（送出成績後解鎖）</button>
+    </div>
+  </div>
+
+  <div class="score-bar" id="scoreBar">
+    <div>目前得分：<strong id="scoreText">0 / 0</strong>（僅計算選擇題）</div>
+    <button id="resetBtn">重新作答</button>
+  </div>
+
+  <div id="content"></div>
+
+  <a class="footer-link" href="../kangxuan-social-g8-1.html">← 回段考題庫總覽</a>
+</main>
+
+<script>
+
+window.EXAM_META = { version: "A卷", examLabel: "地理第7回" };
+const DATA = {
+  sections: [
+    {
+      type:"mc",
+      title:"一、單題",
+      meta:"72%，每題3分",
+      items:[
+        {q:"季風亞洲面積約占亞洲的1/3，居住人口將近世界總數的1/2。因溼潤環境利於農業發展，大多數地區種植下列何種糧食作物，以養活眾多人口？",options:["玉米","高粱","稻米","小麥"],correct:2},
+        {q:"附圖是日本某季節的盛行風向示意圖，根據附圖判斷，下列有關此季節的敘述，何者正確？",image:"images/geo7/q2.png",options:["為火山噴發的好發季節","為日本主要的降水季節","為秋季，欣賞楓葉轉紅","為冬季，下雪可能致災"],correct:1},
+        {q:"「阿蘇山是日本最大的活火山，位於四大島中位置最南的島嶼，近年多次噴發，當噴火警戒層級提高為3級時，就暫時禁止民眾登山。」上述活火山是位在哪個島嶼？",options:["九州","本州","四國","北海道"],correct:0},
+        {q:"某知名百貨推出某國特選商品展活動，活動中將販售各類美食，如石鍋拌飯、部隊鍋等，歡迎民眾前去品嘗道地的異國料理。根據上述判斷，此活動最主要販售哪個國家的商品？",options:["日本","越南","印尼","南韓"],correct:3},
+        {q:"山地和高原約占朝鮮半島面積的3/4，蓋馬高原是半島地勢最高處，主要分布在哪一區？",options:["半島西南部","半島東南部","半島西北部","半島東北部"],correct:3},
+        {q:"附圖中斜線區域是某種氣候類型的分布區，下列有關該氣候區的敘述，何者正確？",image:"images/geo7/q6.png",options:["範圍涵蓋歐洲","降水集中冬季","分布於西、北半球","冬夏盛行風向相反"],correct:3},
+        {q:"「自古以來，這個地區因其所在位置介於中、日之間的重要通道，素有『東亞陸橋』之稱。」上述是說明哪個地理區位置的特性？",options:["東沙群島","朝鮮半島","中南半島","菲律賓群島"],correct:1},
+        {q:"黃海沿岸是朝鮮半島人口稠密的精華區，南、北兩韓首都皆位於此，這與下列何者最相關？",options:["長江流經，冬不結冰","平原較廣，地勢平坦","迎冬季季風，冬雨多","位高原上，地勢高平"],correct:1},
+        {q:"北海道是日本知名的觀光地區，特別是冬季賞雪、滑雪等行程往往吸引到不少觀光客。但2024年因逢暖冬，積雪提前融化，滑雪場業者可營業的時間較往年縮短不少。請問：上述新聞中提及的地區位於附圖中何地？",image:"images/geo7/q9.png",options:["甲","乙","丙","丁"],correct:0},
+        {q:"朝鮮半島的山脈大致呈現「亍」字型排列，其半島的東側以下列哪座山脈為半島的脊梁？",options:["富士山","天山山脈","海岸山脈","太白山脈"],correct:3},
+        {q:"新聞報導：「日本氣象廳表示，12月22至23日間，受冬季季風影響，位於迎風坡的日本海沿岸地區可能下大雪，提醒民眾外出時須注意安全。」根據上述判斷，此時節的季風風向為何？",options:["東北季風","東南季風","西北季風","西南季風"],correct:2},
+        {q:"日本漁業資源豐富，近海為世界重要的漁場，從古至今，形塑出獨特的食魚文化。請問：日本漁業發達的主因有右列哪些？",image:"images/geo7/q12.png",options:["甲乙","甲丙","乙丙","乙丁"],correct:0},
+        {q:"日本、臺灣在河川方面均有右列特點：河川短小湍急，多不具航運之利，流域面積普遍小，中、上游富含水力。形成這些特性的共同背景原因為何？",options:["多南北走向山脈","地勢呈西高東低","島嶼狹窄，地形以山地為主","小島眾多，專屬經濟海域廣"],correct:2},
+        {q:"附圖是日本白川鄉知名的「合掌造」民居，其最大的特色就是呈現60度斜角的屋頂。根據當地的氣候特色判斷，屋頂採用此一形式的主因為何？",image:"images/geo7/q14.png",options:["避免溼氣入侵屋內","避免風沙侵入屋內","避免積雪壓垮房屋","便於收集雨水灌溉"],correct:2},
+        {q:"附圖是亞洲甲、乙、丙三個緯度相近都市的位置分布，由圖判斷，下列哪項數值以甲地最高？",image:"images/geo7/q15.png",options:["日溫差","年溫差","海拔高度","年降水量"],correct:3},
+        {q:"日本最高峰是座活火山，上次噴發已是300年前，因此有專家預測未來若發生大地震，恐導致該火山再次噴發。為避免火山噴發導致嚴重災情，日本政府向東京、橫濱等關東地區城市發布火山噴發指引，防範未然。上述所指的火山最可能是下列何者？",options:["阿蘇山","富士山","太白山脈","長白山脈"],correct:1},
+        {q:"鳳敏在地理課堂上展示如附圖的海報，她所報告的觀光資源與下列哪項自然環境特色最相關？",options:["位多個板塊交界地帶","國土南北跨越緯度大","海岸線綿長的海島國","地表崎嶇地形起伏大"],correct:0},
+        {q:"傳統上日本人多吃米食，但緯度相近的中國東北部居民卻以麵食為主，造成兩地傳統飲食有所差異的主因最可能為何？",options:["日本降水豐沛","日本夏季悶熱","日本年溫差較大","日本山多平原少"],correct:0},
+        {q:"日本因位於板塊交界帶上，受到板塊擠壓的結果，地形呈現山地多平原少的情形，其中平原主要集中在附圖中哪一地區？",image:"images/geo7/q19.png",options:["甲","乙","丙","丁"],correct:1},
+        {q:"附表是快樂旅行社針對日本的兩座城市製作的冬季穿著建議。造成兩地冬季氣溫差異大的原因為何？",table:{head:["","札幌(北海道)","長崎(九州)"],rows:[["冬季均溫","約－6℃","約4至13℃"],["建議穿著","搭配羽絨外套、毛衣等","建議攜帶厚外套、圍巾應對早晚溫差"]]},options:["緯度差距大","黑潮流經與否","盛行風向相反","所在時區不同"],correct:0},
+        {q:"新聞報導：「2025年美國、南韓的聯合軍演於3月10日展開，北韓疑似為表達對此次軍演的不滿，往朝鮮半島西部海域發射多枚飛彈，南韓軍方表示正密切關注當中。」根據上述判斷，北韓應是朝向哪一海域發射飛彈？",options:["南海","黃海","太平洋","日本海"],correct:1},
+        {q:"附圖是日本氣象廳發布東北亞某日的地面天氣圖，從圖中資訊來看，下列何者最可能是當時氣象主播的預報內容？",options:["南韓高氣壓籠罩，天氣晴","強颱逼近本州島，明早登陸","大陸冷氣團南下，北韓各地愈晚愈冷","鋒面停滯在四國上空，仍舊陰雨綿綿"],correct:3},
+        {q:"2011年日本本州島東北部的福島第一核電廠因地震、海嘯遭到損害，當時日本政府緊急使用海水為爐心降溫，雖避免了核爆危機，卻也在當地留下輻射水問題。經過多年審議，日本政府決議於2023年8月底開始排放核廢水入海，由於含有氚的廢水可能會順著洋流帶往北方，影響沿岸國家，因此備受全球關注。請問：文中提及的洋流為何？",options:["黑潮","親潮","中國沿岸流","北大西洋暖流"],correct:0},
+        {q:"芯玥熱愛美食，尤其是韓國人餐餐離不開的傳統食物——泡菜，辛香酸辣、鮮甜爽口的滋味，讓她愛不釋手。泡菜為韓國代表性的飲食文化，該項食物起源發展與當地哪一自然環境相關？",options:["冬季嚴寒","夏季酷熱","颱風多，風雨大","梅雨季長，溼熱"],correct:0}
+      ]
+    },
+    {
+      type:"reading",
+      title:"二、題組",
+      meta:"28%，每題4分",
+      passages:[
+        {
+          label:"(一)",
+          text:"新聞快報：「2024年1月1日，在日本當地時間16：10發生規模7.6的地震，震央位在能登半島，位置如附圖所示。」請問：",
+          image:"images/geo7/q25.png",
+          items:[
+            {q:"地震後日本政府隨即發布海嘯警報，根據震央位置判斷，發布海嘯警報的地區位在下列哪一海域的沿岸？",options:["黃海","南海","日本海","太平洋"],correct:2},
+            {q:"根據震央位置判斷，此次地震是由於右列哪兩個板塊活動所造成的？（甲）北美板塊　（乙）歐亞板塊　（丙）太平洋板塊　（丁）菲律賓海板塊",options:["甲、乙","甲、丙","乙、丁","丙、丁"],correct:0}
+          ]
+        },
+        {
+          label:"(二)",
+          text:"賞櫻可說是日本人的全民運動，每年3月起，隨著氣溫回暖，日本各地陸續有櫻花綻放，帶來春意盎然的美景，地方賞櫻活動會接連登場，儘管盛開期只有兩週左右，卻創出高額「櫻花經濟」，吸睛又吸金。請問：",
+          image:"images/geo7/q27.png",
+          items:[
+            {q:"賞櫻不僅成為日本全民運動，每年更是吸引大批旅客赴日追櫻。依氣候推判，附圖中哪一地區的櫻花最晚盛開？",options:["甲","乙","丙","丁"],correct:0},
+            {q:"「櫻前線」是預測櫻花開花日期的等值線，自2010年起，日本轉交由民間氣象機構發布此一資訊。日本各地開花時間有所不同，主要受下列哪項因素影響？",options:["距海遠近","洋流性質","地形主體","緯度高低"],correct:3}
+          ]
+        },
+        {
+          label:"(三)",
+          text:"東北亞國家屬同一文化圈，其食、衣、住、行等，皆深受中國文化影響。請問：",
+          items:[
+            {q:"日、韓居民傳統文化與生活皆受到中國文化深刻的影響，其主要原因為何？",options:["同一民族，習性相近","位置接近，地緣關係","居環太平洋戰略要地","屬季風亞洲的一部分"],correct:1},
+            {q:"日、韓部分文化因與中國傳統文化互相融合交流，發展出相似的特點，當中不包含下列何者？",options:["日本茶道","南韓宮殿建築","日本生魚片(刺身)","南韓秋夕節慶(中秋節)"],correct:2},
+            {q:"附圖為韓屋「溫突」設施，與中國北方「炕床」相似，皆引爐灶熱氣至地板或床鋪下，使屋內溫暖，這種設施的出現與下列何者相關？",image:"images/geo7/q31.png",options:["冬溫低","夏涼爽","降水量少","年溫差小"],correct:0}
+          ]
+        }
+      ]
+    }
+
+  ]
+};
+
+let currentMode = "quiz"; // quiz | print
+
+const contentEl = document.getElementById("content");
+const scoreBar = document.getElementById("scoreBar");
+const scoreText = document.getElementById("scoreText");
+
+function render(){
+  window.examAnswersRevealed = false;
+  contentEl.innerHTML = "";
+  DATA.sections.forEach((sec, si)=> contentEl.appendChild(renderSection(sec, si)));
+  if(currentMode==="quiz"){
+    scoreBar.classList.add("show");
+    updateScore();
+  } else {
+    scoreBar.classList.remove("show");
+    contentEl.querySelectorAll(".opt").forEach(o=>o.classList.add("disabled"));
+    contentEl.querySelectorAll(".opt.is-correct").forEach(o=>o.classList.add("correct"));
+  }
+}
+
+function renderTable(t){
+  if(!t) return "";
+  const headHtml = `<tr>${t.head.map(h=>`<th>${h}</th>`).join("")}</tr>`;
+  const rowsHtml = t.rows.map(r=>`<tr>${r.map((c,ci)=>ci===0?`<th>${c}</th>`:`<td>${c}</td>`).join("")}</tr>`).join("");
+  return `<table class="data-table"><thead>${headHtml}</thead><tbody>${rowsHtml}</tbody></table>`;
+}
+
+function renderSection(sec, si){
+  const block = document.createElement("section");
+  block.className = "block";
+  block.innerHTML = `<h2>${sec.title}</h2><p class="meta">${sec.meta}</p>`;
+
+  if(sec.type==="mc"){
+    sec.items.forEach((it,i)=>{
+      const q = document.createElement("div");
+      q.className = "q";
+      const optsHtml = it.options.map((op,oi)=>`
+        <div class="opt" data-idx="${oi}" data-correct="${oi===it.correct}">
+          <span class="tag">(${String.fromCharCode(65+oi)})</span><span>${op}</span>
+        </div>`).join("");
+      q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q}</div>
+        ${it.image ? `<img src="${it.image}" alt="題目附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">`:""}
+        ${it.table ? renderTable(it.table) : ""}
+        <div class="opts">${optsHtml}</div>`;
+      q.querySelectorAll(".opt").forEach(optEl=>{
+        if(optEl.dataset.correct==="true") optEl.classList.add("is-correct");
+        optEl.addEventListener("click", ()=>selectOption(q, optEl));
+      });
+      block.appendChild(q);
+    });
+  }
+
+  else if(sec.type==="reading"){
+    sec.passages.forEach(p=>{
+      const passageDiv = document.createElement("div");
+      passageDiv.className = "passage";
+      passageDiv.innerHTML = `${p.label ? `<span class="passage-label">${p.label}</span>`:""}${p.text}${p.image ? `<img src="${p.image}" alt="題組附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-top:10px;border:1px solid var(--paper-line);">`:""}`;
+      block.appendChild(passageDiv);
+      p.items.forEach((it,i)=>{
+        const q = document.createElement("div");
+        q.className = "q";
+        const optsHtml = it.options.map((op,oi)=>`
+          <div class="opt" data-idx="${oi}" data-correct="${oi===it.correct}">
+            <span class="tag">(${String.fromCharCode(65+oi)})</span><span>${op}</span>
+          </div>`).join("");
+        q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q}</div>
+          ${it.image ? `<img src="${it.image}" alt="題目附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">`:""}
+          <div class="opts">${optsHtml}</div>`;
+        q.querySelectorAll(".opt").forEach(optEl=>{
+          if(optEl.dataset.correct==="true") optEl.classList.add("is-correct");
+          optEl.addEventListener("click", ()=>selectOption(q, optEl));
+        });
+        block.appendChild(q);
+      });
+    });
+  }
+
+  return block;
+}
+
+function selectOption(qEl, optEl){
+  if(currentMode!=="quiz") return;
+  if(qEl.dataset.answered==="true") return;
+  qEl.dataset.answered = "true";
+  qEl.querySelectorAll(".opt").forEach(o=>o.classList.add("disabled"));
+  optEl.classList.add("selected");
+  const correctOpt = qEl.querySelector('.opt[data-correct="true"]');
+  qEl.dataset.studentAnswer = optEl.textContent.trim();
+  qEl.dataset.correctAnswer = correctOpt ? correctOpt.textContent.trim() : "";
+  qEl.dataset.isCorrect = (optEl.dataset.correct==="true") ? "true" : "false";
+  updateScore();
+}
+
+function updateScore(){
+  let total = 0, answered = 0, correct = 0;
+  contentEl.querySelectorAll(".q").forEach(q=>{
+    const gradable = q.querySelector(".opts");
+    if(!gradable) return;
+    total++;
+    if(q.dataset.studentAnswer !== undefined){
+      answered++;
+      if(q.dataset.isCorrect === "true") correct++;
+    }
+  });
+  if(window.examAnswersRevealed){
+    scoreText.textContent = `${correct} / ${total}`;
+  } else {
+    scoreText.textContent = `已作答 ${answered} / ${total} 題`;
+  }
+}
+window.updateScore = updateScore;
+
+document.getElementById("resetBtn").addEventListener("click", render);
+document.getElementById("quizModeBtn").addEventListener("click", ()=>{
+  currentMode = "quiz";
+  document.getElementById("quizModeBtn").classList.add("active");
+  document.getElementById("printModeBtn").classList.remove("active");
+  render();
+});
+document.getElementById("printModeBtn").addEventListener("click", ()=>{
+  if(document.getElementById("printModeBtn").disabled) return;
+  currentMode = "print";
+  document.getElementById("printModeBtn").classList.add("active");
+  document.getElementById("quizModeBtn").classList.remove("active");
+  render();
+});
+
+window.unlockPrintMode = function(){
+  document.getElementById("printModeBtn").disabled = false;
+};
+
+render();
+</script>
+<script src="../sync.js"></script>
+</body>
+</html>
