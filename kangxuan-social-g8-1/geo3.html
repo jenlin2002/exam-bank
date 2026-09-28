@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>段考題庫｜地理第3回 - 第1~2課總複習（A卷）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@500;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#faf6ec;
+    --paper-line:#e3dcc8;
+    --ink:#26332b;
+    --ink-soft:#5b6b5f;
+    --chalk-green:#2f4538;
+    --chalk-green-2:#3d5a48;
+    --pen-red:#b8433a;
+    --pen-red-soft:#f4dedb;
+    --ok-green:#3f7d52;
+    --ok-green-soft:#dfeee1;
+    --gold:#b5842a;
+    --radius:10px;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:"Noto Sans TC",sans-serif;
+    line-height:1.7;
+  }
+  header.hero{
+    background:var(--chalk-green);
+    color:#eef2ea;
+    padding:28px 20px 40px;
+    position:relative;
+  }
+  header.hero::after{
+    content:"";
+    position:absolute;
+    left:0; right:0; bottom:-1px;
+    height:14px;
+    background:repeating-linear-gradient(90deg,var(--paper) 0 18px, transparent 18px 20px);
+  }
+  .hero-inner{max-width:880px;margin:0 auto;}
+  .breadcrumb a{color:#cfe0d1;text-decoration:none;font-size:14px;}
+  .breadcrumb a:hover{text-decoration:underline;}
+  h1{
+    font-family:"Noto Serif TC",serif;
+    font-weight:700;
+    font-size:clamp(24px,4vw,34px);
+    margin:10px 0 6px;
+  }
+  .subtitle{color:#cfe0d1;font-size:15px;margin:0;}
+  main{max-width:880px;margin:0 auto;padding:28px 20px 80px;}
+
+  .controls{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:22px;
+  }
+  .mode-toggle{display:flex;border:2px solid var(--chalk-green);border-radius:999px;overflow:hidden;}
+  .mode-toggle button{
+    background:transparent;border:none;padding:8px 16px;font-size:14px;font-weight:700;
+    color:var(--chalk-green);cursor:pointer;font-family:"Noto Sans TC",sans-serif;
+  }
+  .mode-toggle button.active{background:var(--gold);color:#fff;}
+  .mode-toggle button:disabled{opacity:.4;cursor:not-allowed;}
+
+  .score-bar{
+    display:none;
+    align-items:center;
+    justify-content:space-between;
+    background:#fff;
+    border:1px solid var(--paper-line);
+    border-left:5px solid var(--gold);
+    border-radius:var(--radius);
+    padding:12px 18px;
+    margin-bottom:22px;
+    font-size:14px;
+  }
+  .score-bar.show{display:flex;}
+  .score-bar strong{font-size:18px;color:var(--gold);}
+  .score-bar button{
+    background:none;border:1px solid var(--ink-soft);color:var(--ink-soft);
+    border-radius:6px;padding:6px 12px;font-size:13px;cursor:pointer;
+  }
+
+  section.block{
+    background:#fff;
+    border:1px solid var(--paper-line);
+    border-radius:var(--radius);
+    padding:22px 22px 26px;
+    margin-bottom:20px;
+  }
+  .block h2{
+    font-family:"Noto Serif TC",serif;
+    font-size:19px;
+    margin:0 0 4px;
+    color:var(--chalk-green);
+  }
+  .block .meta{color:var(--ink-soft);font-size:13px;margin:0 0 16px;}
+
+  .q{margin-bottom:18px;padding-bottom:16px;border-bottom:1px dashed var(--paper-line);}
+  .q:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0;}
+  .q-text{font-size:15.5px;margin-bottom:8px;}
+  .q-num{color:var(--gold);font-weight:700;margin-right:4px;}
+
+  .opts{display:grid;gap:8px;}
+  .opt{
+    display:flex;gap:8px;align-items:flex-start;
+    border:1.5px solid var(--paper-line);
+    border-radius:8px;
+    padding:9px 12px;
+    cursor:pointer;
+    font-size:14.5px;
+    background:#fffdf8;
+  }
+  .opt:hover{border-color:var(--chalk-green-2);}
+  .opt.selected{border-color:var(--chalk-green-2);background:#eef3ea;}
+  .opt.correct{border-color:var(--ok-green);background:var(--ok-green-soft);}
+  .opt.wrong{border-color:var(--pen-red);background:var(--pen-red-soft);}
+  .opt .tag{font-weight:700;color:var(--ink-soft);}
+  .opt.correct .tag{color:var(--ok-green);}
+  .opt.wrong .tag{color:var(--pen-red);}
+  .opt.disabled{cursor:default;}
+
+  .passage{
+    background:#f5f2e8;border-radius:8px;padding:14px 16px;margin-bottom:14px;
+    font-size:14.5px;white-space:pre-line;
+  }
+  .passage-label{font-weight:700;color:var(--chalk-green);margin-bottom:4px;display:block;}
+  .data-table{width:100%;border-collapse:collapse;margin-bottom:10px;font-size:13.5px;background:#fff;}
+  .data-table th, .data-table td{border:1px solid var(--paper-line);padding:6px 8px;text-align:center;}
+  .data-table th{background:#eef3ea;color:var(--chalk-green);}
+
+  .footer-link{
+    display:block;text-align:center;margin-top:30px;color:var(--chalk-green);
+    text-decoration:none;font-weight:700;font-size:14px;
+  }
+  .footer-link:hover{text-decoration:underline;}
+
+  @media print{
+    header.hero, .controls, .score-bar, .mini-btn, .footer-link{display:none !important;}
+    body{background:#fff;}
+    section.block{border:none;box-shadow:none;padding:8px 0;margin-bottom:14px;}
+    .opt.correct{background:none;border:none;font-weight:700;}
+    .opt.correct::after{content:" ← 正解";color:var(--pen-red);}
+    .opt{border:none;padding:2px 0;}
+    main{max-width:100%;padding:0 24px;}
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="breadcrumb"><a href="https://jenlin2002.github.io/">🏠 回總目錄</a> ／ <a href="../kangxuan-social-g8-1.html" style="color:#cfe0d1;">段考題庫</a></div>
+    <h1>地理・第3回</h1>
+    <p class="subtitle">第1~2課 總複習｜康軒版八年級社會（三）Ａ卷</p>
+  </div>
+</header>
+
+<main>
+  <div class="controls">
+    <div class="mode-toggle">
+      <button id="quizModeBtn" class="active">✏️ 測驗模式</button>
+      <button id="printModeBtn" disabled title="完成測驗並送出成績後才能查看">🖨️ 完整題目與解答（送出成績後解鎖）</button>
+    </div>
+  </div>
+
+  <div class="score-bar" id="scoreBar">
+    <div>目前得分：<strong id="scoreText">0 / 0</strong>（僅計算選擇題）</div>
+    <button id="resetBtn">重新作答</button>
+  </div>
+
+  <div id="content"></div>
+
+  <a class="footer-link" href="../kangxuan-social-g8-1.html">← 回段考題庫總覽</a>
+</main>
+
+<script>
+
+window.EXAM_META = { version: "A卷", examLabel: "地理第3回" };
+const DATA = {
+  sections: [
+    {
+      type:"mc",
+      title:"一、單題",
+      meta:"88%，每題4分",
+      items:[
+        {q:"根據中國的「絕對位置」判斷，下列哪張地圖最能正確表示中國的位置？",image:"images/geo3/q1.png",options:["A","B","C","D"],correct:1},
+        {q:"中國是由多個族群所組成的國家，其中以下列哪個族群占比最高，約占總人口數的91%？",options:["回族","苗族","漢族","藏族"],correct:2},
+        {q:"每到冬季，中國境內人民的感覺可謂兩樣情！南方海南省居民穿著薄長袖，北方黑龍江省居民卻穿戴毛帽、手套及棉褲保暖，這種現象與中國疆域哪項特色有關？",options:["緯度跨距大","北極圈經過","山地面積占比高","位在歐亞大陸東側"],correct:0},
+        {q:"附圖為2023年中國人口分布圖，圖中用大小一致的點來表示人口分布，通常人口較密集處，具有較佳的自然環境或生產技術。由圖判斷，下列哪個地理區人口應最為密集？",image:"images/geo3/q4.png",options:["華北平原","青藏高原","塔里木盆地","準噶爾盆地"],correct:0},
+        {q:"中國為控制人口成長的速度，於1979年起實施「一胎化政策」，嚴格控管每對夫婦的生育數，自此人口成長速度雖然趨緩，但每年增加的人口數仍然非常驚人，造成此一現象的主因為何？",options:["總人口數龐大","醫療水準降低","移民人口減少","老年福利完善"],correct:0},
+        {q:"對中國的氣候而言，這座山脈就像一座「擋風牆」，冬季它阻滯了冷氣團南下，減弱寒流的威力；夏季它攔截了季風帶來的水氣，因此山脈以南地區年降水量多超過750mm。請問：這座山脈最可能是附圖中哪一座山脈？",image:"images/geo3/q6.png",options:["甲","乙","丙","丁"],correct:2},
+        {q:"中國整體地勢呈「西高東低」分布，關於此一地形特徵所造成的影響及現象，包含下列何者？",options:["高地氣候區主要分布在西北側","有利夏季的暖溼氣流深入內陸","造成主要河川多向東流，注入大西洋","年降水量以西北部最多，向東南遞減"],correct:1},
+        {q:"附圖是中國某地理區的氣候圖，依圖判斷，此氣候類型最可能出現在下列哪個地理區？",image:"images/geo3/q8.png",options:["四川盆地","青藏高原","準噶爾盆地","珠江三角洲"],correct:1},
+        {q:"附圖是中國氣象網站發布的夏季某日高溫區預報，哪個地理區的高溫區分布範圍最廣，居民最需要特別留意預防中暑？",image:"images/geo3/q9.png",options:["雲貴高原","東北平原","珠江三角洲","長江中下游平原"],correct:3},
+        {q:"數百年來許多華人移居海外，將華人文化擴散到世界各地。若以人口移動的推力與拉力來看，下列哪個敘述應列入人口外移的推力？",options:["臺灣錢淹腳目，渡海來臺灣開墾","東南亞多同鄉，貿易發展機會大","東南沿海多丘陵，閩粵地區山多田少","美國開發大西部，招募華人挖金礦"],correct:2},
+        {q:"中國為行政管理上的需要，設立33個省級行政區劃，共分為省、直轄市、自治區及特別行政區四種。下列有關中國行政區劃的敘述，何者正確？",options:["自治區是少數民族聚居之處","直轄市曾經是他國的殖民地","北京、上海皆屬特別行政區","省是數量最少的省級行政區劃"],correct:0},
+        {q:"雅芬暑假時去附圖中的「甲」區旅遊，卻一連數天遇到下雨，影響出遊興致。請問：此時節替甲區帶來降水的季風風向為何？",image:"images/geo3/q12.png",options:["A","B","C","D"],correct:3},
+        {q:"根據中國的降水分布特色來看，新疆是中國境內氣候最為乾燥的區域，造成此現象的主要原因為何？",options:["緯度位置低","受涼流影響","無山脈阻隔","距海較遙遠"],correct:3},
+        {q:"春節假期期間，北京成為中國國內熱門的旅遊目的地，故宮、頤和園及天壇等知名古蹟人潮不斷。請問：上文中提及的景點位於附圖中何處？",image:"images/geo3/q14.png",options:["甲","乙","丙","丁"],correct:0},
+        {q:"「這個高原位於太行山以西，是由冬季西北季風帶來細如花粉的岩石碎屑逐漸堆積而形成，因此土壤表層疏鬆，易受流水侵蝕，使地表呈現崎嶇不平的樣貌。」上文中提及的高原應為下列何者？",options:["雲貴高原","黃土高原","青藏高原","內蒙古高原"],correct:1},
+        {q:"附圖是中國2018年正式通車的跨海大橋路線圖。根據附圖判斷，該跨海大橋橫跨下列哪條河川的出海口？",image:"images/geo3/q16.png",options:["黃河","長江","珠江","淮河"],correct:2},
+        {q:"茶是中國重要經濟作物，茶樹喜好溫暖溼潤、多雲霧的環境，尤其在副熱帶季風氣候區種植的品質最佳。根據上述判斷，附表中何地最可能是中國品質最好的茶產區？",table:{head:["地點","(A)甲","(B)乙","(C)丙","(D)丁"],rows:[["1月月均溫(℃)","－8.1","－5.0","3.5","20.4"],["7月月均溫(℃)","33.2","25.4","28.8","28.0"],["年降水量(mm)","19","683","1,223","2,290"]]},options:["甲","乙","丙","丁"],correct:2},
+        {q:"小杰到東南亞旅行，發現當地華人眾多，閩南語、潮州話、粵語、客家話在華人間也普遍使用，此情形與中國早期哪個地區人口外移現象關係最密切？",options:["東南丘陵","四川盆地","東北平原","黃土高原"],correct:0},
+        {q:"附表是四種地形的特色描述，根據表中資料判斷，下列何種地形在中國所占的面積比例最高？",table:{head:["選項","地形特色"],rows:[["(A)甲","地勢高而平坦，海拔大於1,000公尺"],["(B)乙","地勢平坦廣闊，適宜發展農業"],["(C)丙","地勢崎嶇起伏大，且坡度陡峭"],["(D)丁","四周被丘陵、山地環繞，中間低平"]]},options:["甲","乙","丙","丁"],correct:2},
+        {q:"附圖是西藏僧侶(喇嘛)的服飾，除了有宗教意涵外，也配合當地的氣候特色：在夏季午間常將外袍的袖子繫在腰間，袒露右臂或雙臂，晚間或其他季節則多披上披肩。請問：此一穿著方式，可以反映出當地夏季具有下列哪種氣候特色？",options:["空氣稀薄","日溫差大","風力強勁","年溫差大"],correct:1},
+        {q:"附圖是中國不同時期的人口金字塔，根據金字塔外形及數值的演變分析中國人口的特徵，下列敘述何者正確？",image:"images/geo3/q21.png",options:["扶養比逐漸上升","出生率維持穩定","已進入超高齡社會","男性人口多於女性"],correct:3},
+        {q:"中國人口壓力龐大，於1970年代推行「一胎化」政策，雖然控制了人口成長的速度，卻也造成許多負面的社會問題。請問：推行一胎化政策後，中國人口的特徵最合適用下列哪張圖來說明？",image:"images/geo3/q22.png",options:["A","B","C","D"],correct:0}
+      ]
+    },
+    {
+      type:"reading",
+      title:"二、題組",
+      meta:"12%，每題2分",
+      passages:[
+        {
+          label:"(一)",
+          text:"中國最長的高速公路——連霍高速公路，全長4,395公里，附圖為其路線圖。請問：",
+          image:"images/geo3/q23.png",
+          items:[
+            {q:"若駕駛開車行經此高速公路的霍爾果斯至烏魯木齊段，路旁最可能呈現下列何種景色？",options:["廣闊無邊的沙漠","平緩入海的長江","滿布梯田的東南丘陵","適應溼潤環境的森林"],correct:0},
+            {q:"若漢昇開車從霍爾果斯出發，抵達終點連雲港，最可能體驗到下列何種變化？",options:["日夜溫差漸大","降水天數變多","地勢逐漸變高","季風影響漸弱"],correct:1}
+          ]
+        },
+        {
+          label:"(二)",
+          text:"某部戲劇講述中國建國初期，幾名地質隊員以無畏的革命精神，深入「世界屋脊」探勘，發現巨大儲量油區。開拍之前，劇組赴超過海拔3,000m的石油基地考察，在當地嚮導帶領下，領略震撼的自然風貌，也感受到工人在惡劣環境敬業的工作精神。請問：",
+          image:"images/geo3/q25.png",
+          items:[
+            {q:"劇組實際考察的地區位於附圖中何處？",options:["甲","乙","丙","丁"],correct:2},
+            {q:"當年隊員探勘報告中，最可能會提及在當地看見何種景觀？",options:["多處石灰岩洞穴","丘陵多闢為梯田","地勢陡峭，寒冷荒涼","流水侵蝕，溝谷密布"],correct:2}
+          ]
+        },
+        {
+          label:"(三)",
+          text:"自古以來，糧食安全是治國大事，糧食充分供應與價格穩定是社會安定基礎，而中國設置「全國性商品糧基地」(如附圖)，透過專業化且大量生產，滿足人口成長下的糧食需求。請問：",
+          image:"images/geo3/q27.png",
+          items:[
+            {q:"由圖推斷，商品糧基地主要位於下列哪一氣候區內？",options:["季風氣候","乾燥氣候","寒帶氣候","高地氣候"],correct:0},
+            {q:"依圖中「甲」區的自然環境推論，該區最可能出現下列哪種季節性災害？",options:["冬天逢旱災，引雪水灌溉","冬天遭颱風，農作泡水中","夏溫不夠高，需品種改良","夏季雨水多，收成逢水災"],correct:3}
+          ]
+        }
+      ]
+    }
+
+  ]
+};
+
+let currentMode = "quiz"; // quiz | print
+
+const contentEl = document.getElementById("content");
+const scoreBar = document.getElementById("scoreBar");
+const scoreText = document.getElementById("scoreText");
+
+function render(){
+  window.examAnswersRevealed = false;
+  contentEl.innerHTML = "";
+  DATA.sections.forEach((sec, si)=> contentEl.appendChild(renderSection(sec, si)));
+  if(currentMode==="quiz"){
+    scoreBar.classList.add("show");
+    updateScore();
+  } else {
+    scoreBar.classList.remove("show");
+    contentEl.querySelectorAll(".opt").forEach(o=>o.classList.add("disabled"));
+    contentEl.querySelectorAll(".opt.is-correct").forEach(o=>o.classList.add("correct"));
+  }
+}
+
+function renderTable(t){
+  if(!t) return "";
+  const headHtml = `<tr>${t.head.map(h=>`<th>${h}</th>`).join("")}</tr>`;
+  const rowsHtml = t.rows.map(r=>`<tr>${r.map((c,ci)=>ci===0?`<th>${c}</th>`:`<td>${c}</td>`).join("")}</tr>`).join("");
+  return `<table class="data-table"><thead>${headHtml}</thead><tbody>${rowsHtml}</tbody></table>`;
+}
+
+function renderSection(sec, si){
+  const block = document.createElement("section");
+  block.className = "block";
+  block.innerHTML = `<h2>${sec.title}</h2><p class="meta">${sec.meta}</p>`;
+
+  if(sec.type==="mc"){
+    sec.items.forEach((it,i)=>{
+      const q = document.createElement("div");
+      q.className = "q";
+      const optsHtml = it.options.map((op,oi)=>`
+        <div class="opt" data-idx="${oi}" data-correct="${oi===it.correct}">
+          <span class="tag">(${String.fromCharCode(65+oi)})</span><span>${op}</span>
+        </div>`).join("");
+      q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q}</div>
+        ${it.image ? `<img src="${it.image}" alt="題目附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">`:""}
+        ${it.table ? renderTable(it.table) : ""}
+        <div class="opts">${optsHtml}</div>`;
+      q.querySelectorAll(".opt").forEach(optEl=>{
+        if(optEl.dataset.correct==="true") optEl.classList.add("is-correct");
+        optEl.addEventListener("click", ()=>selectOption(q, optEl));
+      });
+      block.appendChild(q);
+    });
+  }
+
+  else if(sec.type==="reading"){
+    sec.passages.forEach(p=>{
+      const passageDiv = document.createElement("div");
+      passageDiv.className = "passage";
+      passageDiv.innerHTML = `${p.label ? `<span class="passage-label">${p.label}</span>`:""}${p.text}${p.image ? `<img src="${p.image}" alt="題組附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-top:10px;border:1px solid var(--paper-line);">`:""}`;
+      block.appendChild(passageDiv);
+      p.items.forEach((it,i)=>{
+        const q = document.createElement("div");
+        q.className = "q";
+        const optsHtml = it.options.map((op,oi)=>`
+          <div class="opt" data-idx="${oi}" data-correct="${oi===it.correct}">
+            <span class="tag">(${String.fromCharCode(65+oi)})</span><span>${op}</span>
+          </div>`).join("");
+        q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q}</div>
+          ${it.image ? `<img src="${it.image}" alt="題目附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">`:""}
+          <div class="opts">${optsHtml}</div>`;
+        q.querySelectorAll(".opt").forEach(optEl=>{
+          if(optEl.dataset.correct==="true") optEl.classList.add("is-correct");
+          optEl.addEventListener("click", ()=>selectOption(q, optEl));
+        });
+        block.appendChild(q);
+      });
+    });
+  }
+
+  return block;
+}
+
+function selectOption(qEl, optEl){
+  if(currentMode!=="quiz") return;
+  if(qEl.dataset.answered==="true") return;
+  qEl.dataset.answered = "true";
+  qEl.querySelectorAll(".opt").forEach(o=>o.classList.add("disabled"));
+  optEl.classList.add("selected");
+  const correctOpt = qEl.querySelector('.opt[data-correct="true"]');
+  qEl.dataset.studentAnswer = optEl.textContent.trim();
+  qEl.dataset.correctAnswer = correctOpt ? correctOpt.textContent.trim() : "";
+  qEl.dataset.isCorrect = (optEl.dataset.correct==="true") ? "true" : "false";
+  updateScore();
+}
+
+function updateScore(){
+  let total = 0, answered = 0, correct = 0;
+  contentEl.querySelectorAll(".q").forEach(q=>{
+    const gradable = q.querySelector(".opts");
+    if(!gradable) return;
+    total++;
+    if(q.dataset.studentAnswer !== undefined){
+      answered++;
+      if(q.dataset.isCorrect === "true") correct++;
+    }
+  });
+  if(window.examAnswersRevealed){
+    scoreText.textContent = `${correct} / ${total}`;
+  } else {
+    scoreText.textContent = `已作答 ${answered} / ${total} 題`;
+  }
+}
+window.updateScore = updateScore;
+
+document.getElementById("resetBtn").addEventListener("click", render);
+document.getElementById("quizModeBtn").addEventListener("click", ()=>{
+  currentMode = "quiz";
+  document.getElementById("quizModeBtn").classList.add("active");
+  document.getElementById("printModeBtn").classList.remove("active");
+  render();
+});
+document.getElementById("printModeBtn").addEventListener("click", ()=>{
+  if(document.getElementById("printModeBtn").disabled) return;
+  currentMode = "print";
+  document.getElementById("printModeBtn").classList.add("active");
+  document.getElementById("quizModeBtn").classList.remove("active");
+  render();
+});
+
+window.unlockPrintMode = function(){
+  document.getElementById("printModeBtn").disabled = false;
+};
+
+render();
+</script>
+<script src="../sync.js"></script>
+</body>
+</html>
