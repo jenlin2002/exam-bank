@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>段考題庫｜地理第8回 - 東北亞的經濟發展（A卷）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@500;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#faf6ec;
+    --paper-line:#e3dcc8;
+    --ink:#26332b;
+    --ink-soft:#5b6b5f;
+    --chalk-green:#2f4538;
+    --chalk-green-2:#3d5a48;
+    --pen-red:#b8433a;
+    --pen-red-soft:#f4dedb;
+    --ok-green:#3f7d52;
+    --ok-green-soft:#dfeee1;
+    --gold:#b5842a;
+    --radius:10px;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:"Noto Sans TC",sans-serif;
+    line-height:1.7;
+  }
+  header.hero{
+    background:var(--chalk-green);
+    color:#eef2ea;
+    padding:28px 20px 40px;
+    position:relative;
+  }
+  header.hero::after{
+    content:"";
+    position:absolute;
+    left:0; right:0; bottom:-1px;
+    height:14px;
+    background:repeating-linear-gradient(90deg,var(--paper) 0 18px, transparent 18px 20px);
+  }
+  .hero-inner{max-width:880px;margin:0 auto;}
+  .breadcrumb a{color:#cfe0d1;text-decoration:none;font-size:14px;}
+  .breadcrumb a:hover{text-decoration:underline;}
+  h1{
+    font-family:"Noto Serif TC",serif;
+    font-weight:700;
+    font-size:clamp(24px,4vw,34px);
+    margin:10px 0 6px;
+  }
+  .subtitle{color:#cfe0d1;font-size:15px;margin:0;}
+  main{max-width:880px;margin:0 auto;padding:28px 20px 80px;}
+
+  .controls{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:22px;
+  }
+  .mode-toggle{display:flex;border:2px solid var(--chalk-green);border-radius:999px;overflow:hidden;}
+  .mode-toggle button{
+    background:transparent;border:none;padding:8px 16px;font-size:14px;font-weight:700;
+    color:var(--chalk-green);cursor:pointer;font-family:"Noto Sans TC",sans-serif;
+  }
+  .mode-toggle button.active{background:var(--gold);color:#fff;}
+  .mode-toggle button:disabled{opacity:.4;cursor:not-allowed;}
+
+  .score-bar{
+    display:none;
+    align-items:center;
+    justify-content:space-between;
+    background:#fff;
+    border:1px solid var(--paper-line);
+    border-left:5px solid var(--gold);
+    border-radius:var(--radius);
+    padding:12px 18px;
+    margin-bottom:22px;
+    font-size:14px;
+  }
+  .score-bar.show{display:flex;}
+  .score-bar strong{font-size:18px;color:var(--gold);}
+  .score-bar button{
+    background:none;border:1px solid var(--ink-soft);color:var(--ink-soft);
+    border-radius:6px;padding:6px 12px;font-size:13px;cursor:pointer;
+  }
+
+  section.block{
+    background:#fff;
+    border:1px solid var(--paper-line);
+    border-radius:var(--radius);
+    padding:22px 22px 26px;
+    margin-bottom:20px;
+  }
+  .block h2{
+    font-family:"Noto Serif TC",serif;
+    font-size:19px;
+    margin:0 0 4px;
+    color:var(--chalk-green);
+  }
+  .block .meta{color:var(--ink-soft);font-size:13px;margin:0 0 16px;}
+
+  .q{margin-bottom:18px;padding-bottom:16px;border-bottom:1px dashed var(--paper-line);}
+  .q:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0;}
+  .q-text{font-size:15.5px;margin-bottom:8px;}
+  .q-num{color:var(--gold);font-weight:700;margin-right:4px;}
+
+  .opts{display:grid;gap:8px;}
+  .opt{
+    display:flex;gap:8px;align-items:flex-start;
+    border:1.5px solid var(--paper-line);
+    border-radius:8px;
+    padding:9px 12px;
+    cursor:pointer;
+    font-size:14.5px;
+    background:#fffdf8;
+  }
+  .opt:hover{border-color:var(--chalk-green-2);}
+  .opt.selected{border-color:var(--chalk-green-2);background:#eef3ea;}
+  .opt.correct{border-color:var(--ok-green);background:var(--ok-green-soft);}
+  .opt.wrong{border-color:var(--pen-red);background:var(--pen-red-soft);}
+  .opt .tag{font-weight:700;color:var(--ink-soft);}
+  .opt.correct .tag{color:var(--ok-green);}
+  .opt.wrong .tag{color:var(--pen-red);}
+  .opt.disabled{cursor:default;}
+
+  .passage{
+    background:#f5f2e8;border-radius:8px;padding:14px 16px;margin-bottom:14px;
+    font-size:14.5px;white-space:pre-line;
+  }
+  .passage-label{font-weight:700;color:var(--chalk-green);margin-bottom:4px;display:block;}
+  .data-table{width:100%;border-collapse:collapse;margin-bottom:10px;font-size:13.5px;background:#fff;}
+  .data-table th, .data-table td{border:1px solid var(--paper-line);padding:6px 8px;text-align:center;}
+  .data-table th{background:#eef3ea;color:var(--chalk-green);}
+
+  .footer-link{
+    display:block;text-align:center;margin-top:30px;color:var(--chalk-green);
+    text-decoration:none;font-weight:700;font-size:14px;
+  }
+  .footer-link:hover{text-decoration:underline;}
+
+  @media print{
+    header.hero, .controls, .score-bar, .mini-btn, .footer-link{display:none !important;}
+    body{background:#fff;}
+    section.block{border:none;box-shadow:none;padding:8px 0;margin-bottom:14px;}
+    .opt.correct{background:none;border:none;font-weight:700;}
+    .opt.correct::after{content:" ← 正解";color:var(--pen-red);}
+    .opt{border:none;padding:2px 0;}
+    main{max-width:100%;padding:0 24px;}
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="breadcrumb"><a href="https://jenlin2002.github.io/">🏠 回總目錄</a> ／ <a href="../kangxuan-social-g8-1.html" style="color:#cfe0d1;">段考題庫</a></div>
+    <h1>地理・第8回</h1>
+    <p class="subtitle">第6課 東北亞的經濟發展｜康軒版八年級社會（三）Ａ卷</p>
+  </div>
+</header>
+
+<main>
+  <div class="controls">
+    <div class="mode-toggle">
+      <button id="quizModeBtn" class="active">✏️ 測驗模式</button>
+      <button id="printModeBtn" disabled title="完成測驗並送出成績後才能查看">🖨️ 完整題目與解答（送出成績後解鎖）</button>
+    </div>
+  </div>
+
+  <div class="score-bar" id="scoreBar">
+    <div>目前得分：<strong id="scoreText">0 / 0</strong>（僅計算選擇題）</div>
+    <button id="resetBtn">重新作答</button>
+  </div>
+
+  <div id="content"></div>
+
+  <a class="footer-link" href="../kangxuan-social-g8-1.html">← 回段考題庫總覽</a>
+</main>
+
+<script>
+
+window.EXAM_META = { version: "A卷", examLabel: "地理第8回" };
+const DATA = {
+  sections: [
+    {
+      type:"mc",
+      title:"一、單題",
+      meta:"88%，每題4分",
+      items:[
+        {q:"近年在南韓政府與企業的大力支持下，如防彈少年團(BTS)、TWICE等偶像團體、知名綜藝節目及戲劇等「韓流」席捲世界各國。上述現象主要與南韓確立下列哪項產業發展政策有關？",options:["世界工廠","文化立國","世界市場","扶植財團"],correct:1},
+        {q:"2024年12月3日晚間，南韓總統宣布戒嚴，震驚全球。雖然戒嚴持續時間不長，但許多外商認為南韓政治局勢不穩，某項以南韓為生產重心的產業廠商恐將訂單轉往他國生產。根據上述判斷，下列何者最有可能為上述將訂單轉移至其他國家的產業？",options:["製鞋工廠","紡織工業","罐頭加工廠","半導體產業"],correct:3},
+        {q:"新聞報導：「動漫聯名商品正夯！據統計，2022年亞洲某國的動漫產值高達22億美元，創下新紀錄。許多廠商看中此一商機，紛紛推出動漫聯名商品，如某知名連鎖壽司店接連與『鬼滅之刃』、『寶可夢』等作品聯名，推出限定轉蛋公仔，吸引粉絲前往消費。」上述所指的國家最可能為何？",options:["中國","日本","北韓","南韓"],correct:1},
+        {q:"2023年3月16、17日，南韓總統尹錫悅到訪日本，與日本首相岸田文雄舉行峰會，隨行者包含5家南韓龍頭企業的集團領袖，將一同針對日、韓間經濟交流的議題進行討論。請問：上述南韓龍頭企業最可能包含下列何者？",options:["三星","三菱","統一","華為"],correct:0},
+        {q:"南韓在進入21世紀後，政府大力推動工業升級，主力發展下列何種類型的工業，帶動國家經濟發展？",options:["勞力密集型產業","動力密集型產業","技術密集型產業","能源密集型產業"],correct:2},
+        {q:"「國際貿易是日本的經濟命脈」，下列何者是造成此一現象的原因之一？",options:["河川坡度陡，適合發展水力發電","位居低緯，外銷本地熱帶農作物","工業十分發達，其產品亟需海外市場","位太平洋與印度洋交界，居海運要衝"],correct:2},
+        {q:"「這個城市是日本的文化古都，以傳統建築與藝妓文化聞名，更是名列日本三大祭典之一的祇園祭舉辦地點，觀光客若在7月時來到此處，可千萬不能錯過！」上文最可能是附圖中哪個城市的介紹？",image:"images/geo8/q7.png",options:["甲","乙","丙","丁"],correct:2},
+        {q:"國際貿易是日本經濟命脈，而海運是跨國貿易往來最常用的交通工具。其中緊鄰東京灣的橫濱是東京主要貨物進出口門戶，港口機能發達。請問：上文中提及的工業港瀕臨下列哪一海域？",options:["黃海","太平洋","日本海","大西洋"],correct:1},
+        {q:"朝鮮半島南北發展差距大！美國NASA曾公布一張朝鮮半島的夜間衛星影像圖，南韓夜間燈火通明，宛如璀璨的銀河；然而北韓僅有微弱的燈光，多數地區漆黑一片，顯示出兩國間的發展差異。請問：北韓因主力發展何種工業，導致該國經濟發展較落後？",options:["電子工業","化學工業","製鞋工業","國防工業"],correct:3},
+        {q:"日本自1980年代開始，國內陸續出現失業率提高、產業衰退與經濟結構失衡的現象，經濟發展面臨重大危機。上述情形與下列何者的關係最密切？",options:["日廠製造部門移往海外","日廠企畫部門遷回國內","日本採取貿易保護政策","日本技術發展逐漸落後"],correct:0},
+        {q:"2023年是南、北韓分裂70週年，兩國在政治、經濟等各方面均表現出極大差異。附表是兩國特色的比較，其中哪一項內容正確？",table:{head:["國家","(A)氣候類型","(B)地形主體","(C)礦產資源","(D)政治體制"],rows:[["北韓","溫帶季風","太白山脈","豐富","民主開放"],["南韓","熱帶季風","蓋馬高原","匱乏","專制獨裁"]]},options:["A","B","C","D"],correct:2},
+        {q:"日本本土企業為了提升產業競爭力、開拓國際市場，紛紛赴海外投資，建立營運據點。但為了鞏固在國際分工體系的主導地位，並維護核心技術與知識，日本企業同時採取下列何種作法？",options:["企業總部留在國內","低階加工轉回國內製造","降低研發經費預算","扮演天然資源的提供者"],correct:0},
+        {q:"Interbrand顧問公司多年來蒐集及分析最有價值的品牌，進行企業商品與服務的財務績效評比。附圖的日本品牌(TOYOTA、NISSAN)，分別居2024年全球最具價值百大品牌的第6、59位，這兩者皆以發展何種產業為骨幹？",options:["生技","汽車","手機","石化"],correct:1},
+        {q:"「多年來，南韓前十大企業的年營收約占國內生產毛額(GDP)的40%以上，當中龍頭企業更占近1/3，其業務包含金融、機械、建設等眾多領域。」根據上述，該國的經濟發展有哪項特色？",options:["中小型企業蓬勃發展","政府全力投入軍事工業","國家經濟命脈繫於大型財團","海外跨國企業支撐整體經濟成長"],correct:2},
+        {q:"位於停戰線附近的★城市是兩韓之間唯一的接觸點，一般民眾經申請可前往參觀，但2023年7月起因兩韓間緊張局勢升溫，此城市的觀光行程暫停，截至2024年底仍未重新開放。上述★城市所指為何？",options:["平壤","首爾","釜山","板門店"],correct:3},
+        {q:"日本農民不管是種植糧食作物還是經濟作物，皆採精耕細作，農業經營集約、生產專業化，以提高單位面積產量。上述現象形成與當地哪一環境特色最相關？",options:["屬珊瑚礁島，地勢低","位板塊交界，地震多","平原少，可耕地有限","河川短，流域面積小"],correct:2},
+        {q:"近年來日本面臨少子化等人口問題，為解決未來勞力不足的隱憂，該國政府逐步放寬外國人才居留的條件，原先需在日本連續居住10年以上才可申請永久居住權，現今只要持有特定證照，長居日本1年或3年以上，即可申請永久居住。根據上述判斷，現今日本的人口金字塔最接近下列何者？",image:"images/geo8/q17.png",options:["A","B","C","D"],correct:3},
+        {q:"日本工業實力世界一流，經濟高度發達，境內主要工業區如附圖所示，大多集中在太平洋沿岸地帶。請問：影響工業區呈現此分布情形的主要原因為何？",image:"images/geo8/q18.png",options:["鄰近多座地熱發電廠","便於工業原物料進口","有大量便宜的勞工聚集地","為內銷國內廣大消費市場"],correct:1},
+        {q:"「南韓薪資水準差距大！據統計，2022年南韓中小企業員工平均年薪約50,317美元(約新臺幣164萬元)，大型企業平均年薪則約87,130美元(約新臺幣284萬元)，兩者差距達3.6萬美元。」上文最可能在探討下列哪一項議題？",options:["政府扶植大財團，貿易萎縮","實施計畫經濟，忽視輕工業","忽略中小企業，貧富差距擴大","民間企業活躍發展，干預市場"],correct:2},
+        {q:"朝鮮半島位於亞洲大陸東北部，自1948年起分裂為北韓、南韓兩個國家。現今兩國經濟貿易與國民生活水平落差甚大，北韓發展遠落後於南韓，此與下列何者關係最密切？",options:["軍事實力較落後","採獨裁政治體制","政府大力發展輕工業","深居內陸交通不便"],correct:1},
+        {q:"在二戰之後，南韓與臺灣經濟發展的途徑相近，均透過政府主導產業政策，並以工業帶動國家經濟起飛。請問：下列何者是兩國在工業發展歷程上的共通點？",options:["現今以重工業為發展主軸","目前高科技工業所占產值低","政府持續協助中小企業升級轉型","現今發展技術密集度高的工業為主"],correct:3},
+        {q:"附表是2023年日本貿易狀況與前三大進、出口產品占比資料，根據表中內容，可了解日本的經濟發展具有下列何種特色？",table:{head:["出口總額","占出口總額比例","進口總額","占進口總額比例"],rows:[["7,170億美元","汽車(15.5%)　積體電路(6.1%)　電子機械(4.5%)","7,860億美元","礦物燃料(24.9%)　電子機械(15%)　機械零件(9.3%)"]]},options:["境內缺乏礦產資源，屬能源進口國","國內造船工業發達，成為支柱產業","該年國際貿易「出超」，貿易餘額呈正值","出口大宗民生用品，民生工業為發展主力"],correct:0}
+      ]
+    },
+    {
+      type:"reading",
+      title:"二、題組",
+      meta:"12%，每題2分",
+      passages:[
+        {
+          label:"(一)",
+          text:"G7是世界七大工業國的簡稱，其成員國有美國、加拿大、英國、法國、德國、義大利及日本等七個國家，此一組織會定期在會員國間輪流召開會議，其中2023年的會議是由日本主持，在本州島上的廣島召開。請問：",
+          image:"images/geo8/q23.png",
+          items:[
+            {q:"根據上文判斷，本屆會議舉辦的地點位於附圖中哪個大島？",options:["甲","乙","丙","丁"],correct:1},
+            {q:"日本工業發達，是G7成員中唯一的亞洲國家，其主要仰賴下列何種優勢條件發展工業？",options:["人口數量居世界之冠，勞力充足","河川具航運之利，水運運費低廉","礦產資源豐富，可供給國內企業","科技領先進步，企業創新能力強"],correct:3}
+          ]
+        },
+        {
+          label:"(二)",
+          text:"近年北韓面臨1990年代以來最嚴重的糧食危機，有專家估計2023年初時北韓穀物短缺100萬公噸，而這個缺口相當於北韓年需求量的20%，許多分析師認為此次北韓糧食短缺是金正恩上臺以來最嚴重的糧食危機。造成北韓面臨此一困境的原因，一是該國受自然環境限制導致糧食生產不足，另外就是與該國因故屢受國際制裁有關。請問：",
+          items:[
+            {q:"造成北韓糧食生產不足的原因，與該國受到下列何種自然環境限制最有關係？",options:["作物生長季短","境內沙漠廣布","位居寒帶氣候嚴寒","高山阻擋東北季風"],correct:0},
+            {q:"下列何者是造成北韓被國際社會實施經濟制裁的主要原因？",options:["對南海宣示主權","侵占北極海石油","發展核武、核彈","攔截湄公河水源"],correct:2}
+          ]
+        },
+        {
+          label:"(三)",
+          text:"日本農民老化情況嚴重，平均年齡高達67歲，要靠這樣的勞動力增加產量，只有科技化輔助一途。日本政府在2016年提出農業升級計畫，打算運用大數據分析、活用機器人技術與農業ICT(資訊通訊技術)，推動農業改革，來提升作物產量、達到省力省工效益等。請問：",
+          items:[
+            {q:"日本農林水產省著重推動感測器、無人機等應用，說明農業朝向何種型態發展，「農業技術×尖端技術」是對它的詮釋？",options:["園藝農業","休閒農業","有機農業","智慧型農業"],correct:3},
+            {q:"近年日本農業活用ICT技術提升生產效率、引入人工智慧(AI)協助管理、開發無人駕駛農業機具等，主要是為了解決農業面臨的何種問題？",options:["農業人口減少","農作種類單一","農業設備老舊","糧作供過於求"],correct:0}
+          ]
+        }
+      ]
+    }
+
+  ]
+};
+
+let currentMode = "quiz"; // quiz | print
+
+const contentEl = document.getElementById("content");
+const scoreBar = document.getElementById("scoreBar");
+const scoreText = document.getElementById("scoreText");
+
+function render(){
+  window.examAnswersRevealed = false;
+  contentEl.innerHTML = "";
+  DATA.sections.forEach((sec, si)=> contentEl.appendChild(renderSection(sec, si)));
+  if(currentMode==="quiz"){
+    scoreBar.classList.add("show");
+    updateScore();
+  } else {
+    scoreBar.classList.remove("show");
+    contentEl.querySelectorAll(".opt").forEach(o=>o.classList.add("disabled"));
+    contentEl.querySelectorAll(".opt.is-correct").forEach(o=>o.classList.add("correct"));
+  }
+}
+
+function renderTable(t){
+  if(!t) return "";
+  const headHtml = `<tr>${t.head.map(h=>`<th>${h}</th>`).join("")}</tr>`;
+  const rowsHtml = t.rows.map(r=>`<tr>${r.map((c,ci)=>ci===0?`<th>${c}</th>`:`<td>${c}</td>`).join("")}</tr>`).join("");
+  return `<table class="data-table"><thead>${headHtml}</thead><tbody>${rowsHtml}</tbody></table>`;
+}
+
+function renderSection(sec, si){
+  const block = document.createElement("section");
+  block.className = "block";
+  block.innerHTML = `<h2>${sec.title}</h2><p class="meta">${sec.meta}</p>`;
+
+  if(sec.type==="mc"){
+    sec.items.forEach((it,i)=>{
+      const q = document.createElement("div");
+      q.className = "q";
+      const optsHtml = it.options.map((op,oi)=>`
+        <div class="opt" data-idx="${oi}" data-correct="${oi===it.correct}">
+          <span class="tag">(${String.fromCharCode(65+oi)})</span><span>${op}</span>
+        </div>`).join("");
+      q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q}</div>
+        ${it.image ? `<img src="${it.image}" alt="題目附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">`:""}
+        ${it.table ? renderTable(it.table) : ""}
+        <div class="opts">${optsHtml}</div>`;
+      q.querySelectorAll(".opt").forEach(optEl=>{
+        if(optEl.dataset.correct==="true") optEl.classList.add("is-correct");
+        optEl.addEventListener("click", ()=>selectOption(q, optEl));
+      });
+      block.appendChild(q);
+    });
+  }
+
+  else if(sec.type==="reading"){
+    sec.passages.forEach(p=>{
+      const passageDiv = document.createElement("div");
+      passageDiv.className = "passage";
+      passageDiv.innerHTML = `${p.label ? `<span class="passage-label">${p.label}</span>`:""}${p.text}${p.image ? `<img src="${p.image}" alt="題組附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-top:10px;border:1px solid var(--paper-line);">`:""}`;
+      block.appendChild(passageDiv);
+      p.items.forEach((it,i)=>{
+        const q = document.createElement("div");
+        q.className = "q";
+        const optsHtml = it.options.map((op,oi)=>`
+          <div class="opt" data-idx="${oi}" data-correct="${oi===it.correct}">
+            <span class="tag">(${String.fromCharCode(65+oi)})</span><span>${op}</span>
+          </div>`).join("");
+        q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q}</div>
+          ${it.image ? `<img src="${it.image}" alt="題目附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">`:""}
+          <div class="opts">${optsHtml}</div>`;
+        q.querySelectorAll(".opt").forEach(optEl=>{
+          if(optEl.dataset.correct==="true") optEl.classList.add("is-correct");
+          optEl.addEventListener("click", ()=>selectOption(q, optEl));
+        });
+        block.appendChild(q);
+      });
+    });
+  }
+
+  return block;
+}
+
+function selectOption(qEl, optEl){
+  if(currentMode!=="quiz") return;
+  if(qEl.dataset.answered==="true") return;
+  qEl.dataset.answered = "true";
+  qEl.querySelectorAll(".opt").forEach(o=>o.classList.add("disabled"));
+  optEl.classList.add("selected");
+  const correctOpt = qEl.querySelector('.opt[data-correct="true"]');
+  qEl.dataset.studentAnswer = optEl.textContent.trim();
+  qEl.dataset.correctAnswer = correctOpt ? correctOpt.textContent.trim() : "";
+  qEl.dataset.isCorrect = (optEl.dataset.correct==="true") ? "true" : "false";
+  updateScore();
+}
+
+function updateScore(){
+  let total = 0, answered = 0, correct = 0;
+  contentEl.querySelectorAll(".q").forEach(q=>{
+    const gradable = q.querySelector(".opts");
+    if(!gradable) return;
+    total++;
+    if(q.dataset.studentAnswer !== undefined){
+      answered++;
+      if(q.dataset.isCorrect === "true") correct++;
+    }
+  });
+  if(window.examAnswersRevealed){
+    scoreText.textContent = `${correct} / ${total}`;
+  } else {
+    scoreText.textContent = `已作答 ${answered} / ${total} 題`;
+  }
+}
+window.updateScore = updateScore;
+
+document.getElementById("resetBtn").addEventListener("click", render);
+document.getElementById("quizModeBtn").addEventListener("click", ()=>{
+  currentMode = "quiz";
+  document.getElementById("quizModeBtn").classList.add("active");
+  document.getElementById("printModeBtn").classList.remove("active");
+  render();
+});
+document.getElementById("printModeBtn").addEventListener("click", ()=>{
+  if(document.getElementById("printModeBtn").disabled) return;
+  currentMode = "print";
+  document.getElementById("printModeBtn").classList.add("active");
+  document.getElementById("quizModeBtn").classList.remove("active");
+  render();
+});
+
+window.unlockPrintMode = function(){
+  document.getElementById("printModeBtn").disabled = false;
+};
+
+render();
+</script>
+<script src="../sync.js"></script>
+</body>
+</html>
