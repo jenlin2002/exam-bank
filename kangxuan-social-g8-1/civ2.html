@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>段考題庫｜公民第2回 - 民主國家中的公共意見（A卷）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@500;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#faf6ec;
+    --paper-line:#e3dcc8;
+    --ink:#26332b;
+    --ink-soft:#5b6b5f;
+    --chalk-green:#2f4538;
+    --chalk-green-2:#3d5a48;
+    --pen-red:#b8433a;
+    --pen-red-soft:#f4dedb;
+    --ok-green:#3f7d52;
+    --ok-green-soft:#dfeee1;
+    --gold:#b5842a;
+    --radius:10px;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:"Noto Sans TC",sans-serif;
+    line-height:1.7;
+  }
+  header.hero{
+    background:var(--chalk-green);
+    color:#eef2ea;
+    padding:28px 20px 40px;
+    position:relative;
+  }
+  header.hero::after{
+    content:"";
+    position:absolute;
+    left:0; right:0; bottom:-1px;
+    height:14px;
+    background:repeating-linear-gradient(90deg,var(--paper) 0 18px, transparent 18px 20px);
+  }
+  .hero-inner{max-width:880px;margin:0 auto;}
+  .breadcrumb a{color:#cfe0d1;text-decoration:none;font-size:14px;}
+  .breadcrumb a:hover{text-decoration:underline;}
+  h1{
+    font-family:"Noto Serif TC",serif;
+    font-weight:700;
+    font-size:clamp(24px,4vw,34px);
+    margin:10px 0 6px;
+  }
+  .subtitle{color:#cfe0d1;font-size:15px;margin:0;}
+  main{max-width:880px;margin:0 auto;padding:28px 20px 80px;}
+
+  .controls{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:22px;
+  }
+  .mode-toggle{display:flex;border:2px solid var(--chalk-green);border-radius:999px;overflow:hidden;}
+  .mode-toggle button{
+    background:transparent;border:none;padding:8px 16px;font-size:14px;font-weight:700;
+    color:var(--chalk-green);cursor:pointer;font-family:"Noto Sans TC",sans-serif;
+  }
+  .mode-toggle button.active{background:var(--gold);color:#fff;}
+  .mode-toggle button:disabled{opacity:.4;cursor:not-allowed;}
+
+  .score-bar{
+    display:none;
+    align-items:center;
+    justify-content:space-between;
+    background:#fff;
+    border:1px solid var(--paper-line);
+    border-left:5px solid var(--gold);
+    border-radius:var(--radius);
+    padding:12px 18px;
+    margin-bottom:22px;
+    font-size:14px;
+  }
+  .score-bar.show{display:flex;}
+  .score-bar strong{font-size:18px;color:var(--gold);}
+  .score-bar button{
+    background:none;border:1px solid var(--ink-soft);color:var(--ink-soft);
+    border-radius:6px;padding:6px 12px;font-size:13px;cursor:pointer;
+  }
+
+  section.block{
+    background:#fff;
+    border:1px solid var(--paper-line);
+    border-radius:var(--radius);
+    padding:22px 22px 26px;
+    margin-bottom:20px;
+  }
+  .block h2{
+    font-family:"Noto Serif TC",serif;
+    font-size:19px;
+    margin:0 0 4px;
+    color:var(--chalk-green);
+  }
+  .block .meta{color:var(--ink-soft);font-size:13px;margin:0 0 16px;}
+
+  .q{margin-bottom:18px;padding-bottom:16px;border-bottom:1px dashed var(--paper-line);}
+  .q:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0;}
+  .q-text{font-size:15.5px;margin-bottom:8px;}
+  .q-num{color:var(--gold);font-weight:700;margin-right:4px;}
+
+  .opts{display:grid;gap:8px;}
+  .opt{
+    display:flex;gap:8px;align-items:flex-start;
+    border:1.5px solid var(--paper-line);
+    border-radius:8px;
+    padding:9px 12px;
+    cursor:pointer;
+    font-size:14.5px;
+    background:#fffdf8;
+  }
+  .opt:hover{border-color:var(--chalk-green-2);}
+  .opt.selected{border-color:var(--chalk-green-2);background:#eef3ea;}
+  .opt.correct{border-color:var(--ok-green);background:var(--ok-green-soft);}
+  .opt.wrong{border-color:var(--pen-red);background:var(--pen-red-soft);}
+  .opt .tag{font-weight:700;color:var(--ink-soft);}
+  .opt.correct .tag{color:var(--ok-green);}
+  .opt.wrong .tag{color:var(--pen-red);}
+  .opt.disabled{cursor:default;}
+
+  .passage{
+    background:#f5f2e8;border-radius:8px;padding:14px 16px;margin-bottom:14px;
+    font-size:14.5px;white-space:pre-line;
+  }
+  .passage-label{font-weight:700;color:var(--chalk-green);margin-bottom:4px;display:block;}
+
+  .footer-link{
+    display:block;text-align:center;margin-top:30px;color:var(--chalk-green);
+    text-decoration:none;font-weight:700;font-size:14px;
+  }
+  .footer-link:hover{text-decoration:underline;}
+
+  @media print{
+    header.hero, .controls, .score-bar, .mini-btn, .footer-link{display:none !important;}
+    body{background:#fff;}
+    section.block{border:none;box-shadow:none;padding:8px 0;margin-bottom:14px;}
+    .opt.correct{background:none;border:none;font-weight:700;}
+    .opt.correct::after{content:" ← 正解";color:var(--pen-red);}
+    .opt{border:none;padding:2px 0;}
+    main{max-width:100%;padding:0 24px;}
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="breadcrumb"><a href="https://jenlin2002.github.io/">🏠 回總目錄</a> ／ <a href="../kangxuan-social-g8-1.html" style="color:#cfe0d1;">段考題庫</a></div>
+    <h1>公民・第2回</h1>
+    <p class="subtitle">第2課 民主國家中的公共意見｜康軒版八年級社會（三）Ａ卷</p>
+  </div>
+</header>
+
+<main>
+  <div class="controls">
+    <div class="mode-toggle">
+      <button id="quizModeBtn" class="active">✏️ 測驗模式</button>
+      <button id="printModeBtn" disabled title="完成測驗並送出成績後才能查看">🖨️ 完整題目與解答（送出成績後解鎖）</button>
+    </div>
+  </div>
+
+  <div class="score-bar" id="scoreBar">
+    <div>目前得分：<strong id="scoreText">0 / 0</strong>（僅計算選擇題）</div>
+    <button id="resetBtn">重新作答</button>
+  </div>
+
+  <div id="content"></div>
+
+  <a class="footer-link" href="../kangxuan-social-g8-1.html">← 回段考題庫總覽</a>
+</main>
+
+<script>
+
+window.EXAM_META = { version: "A卷", examLabel: "公民第2回" };
+const DATA = {
+  sections: [
+    {
+      type:"mc",
+      title:"一、單題",
+      meta:"84%，每題3分",
+      items:[
+        {q:"民意調查簡稱「民調」，是由專業民調公司、媒體或政府進行的調查方法，大多是以網路、電話、或書面等作為調查媒介。下列何者最可能是民調的目的？",options:["落實政黨政治","探知公共意見","促進志願結社","貫徹權力分立"],correct:1},
+        {q:"因應媒體呈現的資訊日益龐雜，閱聽人須具備的素養，成為現代公民的重要課題之一。下列針對媒體與閱聽人的敘述何者正確？",options:["媒體與閱聽人不具任何影響關係","閱聽人指製播訊息的訊息提供者","撰寫專題報導的大偉屬於閱聽人","瀏覽網路新聞的軒軒屬於閱聽人"],correct:3},
+        {q:"2023年因彈性調整放假，導致補班補課次數高達六次，引起各界討論，贊成與反對意見都有，人事行政總處表示會針對各方意見研擬可行方案。根據上文，同一議題出現正反意見，顯示公共意見具有下列哪一種特性？",options:["議題性","差異性","影響性","變動性"],correct:1},
+        {q:"法國逾百萬民眾走上街頭，抗議總統馬克宏延長退休年齡的年金改革計畫，這場全國罷工行動嚴重影響交通運輸。民眾此舉屬於下列何種意見表達方式？",options:["公投","助選","遊行","公聽會"],correct:2},
+        {q:"以下為某團體的簡介內容：",image:"images/civ2/q5.png",options:["由一群具有相同職業的人所組成","期望成為在野，不以執政為目標","僅會重視與自身利益相關的議題","通常會推派候選人參與選舉活動"],correct:3},
+        {q:"在民主國家中，利益團體和政黨都扮演著聯繫人民與政府間關係的角色。下列關於二者的敘述何者正確？",options:["利益團體若獲得多數民眾支持，就能取得執政權","政黨主要採不取得執政權的其他方式向政府發聲","利益團體只追求自身的利益，無法反映公共意見","政黨是一種民眾向政府表達反映公共意見的管道"],correct:3},
+        {q:"小智在報紙社論上閱讀到某則評論：許多政治人物都明白「民意如流水」，但當人在高處時，雖總想明白流水因何故流往何處，繼而思索應對之道，往往難免因各種主客觀條件而被孤立於無知之幕外。上文中的「民意如流水」，主要在描述公共意見的何種特性？",options:["議題性","複雜性","影響性","變動性"],correct:3},
+        {q:"嘉玲與班上同學正在討論公共意見的表達方式，下列何人的說法有誤？",image:"images/civ2/q8.png",options:["A","B","C","D"],correct:2},
+        {q:"在民主社會中，政府施政須以民意為依歸，獲得多數民眾的支持，國家政策才能順利推動。下列何者不是政府單位為了匯集民意所可能採取的方式？",options:["公聽會","民意調查","公民投票","立法禁止表達"],correct:3},
+        {q:"民眾可透過各種方式及管道，表達對公共事務的意見。下列針對此民主機制的敘述，何者最為適切？",options:["目的是落實法治政治的特色","過程都是由少數菁英來表達意見","優點是政府施政僅以民意為唯一考量","功能是確保政府政策能符合多數民眾需求"],correct:3},
+        {q:"小勤在某屆立法委員選舉公報上看到下表：",image:"images/civ2/q11.png",options:["為民眾發聲","關注的議題單一","提名候選人","反映不同的公共意見"],correct:2},
+        {q:"下列關於各種公共意見特性的敘述，何者有誤？",options:["議題性：公共意見是社會成員共同面臨的特定議題","複雜性：社會成員對於同一個議題的意見表達呈現差異，有反對也會有支持，甚至是其他想法","影響性：強調社會大眾的價值觀與思考判斷方向，主要受到公共意見的影響","變動性：強調民眾的立場可能會隨時空改變"],correct:2},
+        {q:"下表關於政黨與利益團體的比較，何者有誤？",image:"images/civ2/q13.png",options:["A","B","C","D"],correct:1},
+        {q:"候選人於競選總部前設置「幸福郵筒」，邀請民眾將明信片投入郵筒中，表達對於國家政策的看法。若成功當選，將帶著民眾的心聲訂定政策。上文中候選人設置「幸福郵筒」的目的，最可能為何？",options:["匯集人民的意見","剷除反對的聲音","關注特定的議題","對政府施加壓力"],correct:0},
+        {q:"在民主國家中，一群具有相同理念或利益的人會組成利益團體，以期能夠實現主張與理想。下列何者最不可能是利益團體為實現理想所採取的行動？",options:["透過公開辯論表達政治主張，爭取執政機會","口頭向民意機關或行政單位說明以表達訴求","走上街頭遊行吸引大眾目光以獲得民眾支持","以行動劇方式表達訴求，引發社會大眾關注"],correct:0},
+        {q:"新竹市政府對於關埔地區的空橋設置計畫，日前召開首場公聽會，由設計單位向居民說明規畫內容與方向，並與當地民眾及民意代表交流討論。根據上文，下列何者是新竹市政府舉辦公聽會的目的？",options:["傾聽當地民眾的意見","擴大政府的公權力","決定執行政策的人選","在大選中贏得勝選"],correct:0},
+        {q:"一名網紅透過影片揭露多起人口販運案，引起社會大眾的關注，促使政府成立專案小組，積極展開救援行動。關於上述網紅的作為，下列敘述何者正確？",options:["民眾可透過傳播媒體引起社會關注，形成民意","政府展開救援行動，顯示公共意見具有議題性","民眾應透過政黨表達看法，避免浪費社會資源","此事件與社會多數人無關，因此政府無須作為"],correct:0},
+        {q:"下表為某報針對立法院審議法案過程中，立法委員們在利益團體表達意見前後對於法案態度進行之分析：",image:"images/civ2/q18.png",options:["利益團體對政策的決議不具影響性","政黨透過此方式迫使委員們公開表態","利益團體會採用此方式影響政策的制訂","立法委員在審議法案的過程中不受外力影響"],correct:2},
+        {q:"政府須了解公共意見形成的過程，才能發掘與探知多數的民意。下列關於公共意見形成的論述，何者正確？",options:["透過政黨匯集的意見才能具有影響性","指20歲以上公民對公共事務所提出的建議","在民眾針對公共事務進行對話和討論後匯集而成","代表多數人的想法，須是超過半數以上民眾的共識"],correct:2},
+        {q:"以下為四個團體的作為敘述：",image:"images/civ2/q20.png",options:["甲團體","乙團體","丙團體","丁團體"],correct:0},
+        {q:"某市政府計畫將社區公園改為商業開發區，此計畫引起社區居民採取行動表達對該公共政策的意見。附表為四位市民所採取的行動，根據內容判斷，哪些市民採取的行動為較適當的公共意見表達方式？",image:"images/civ2/q21.png",options:["甲乙","甲丙","乙丁","丙丁"],correct:2},
+        {q:"下列何者的舉例，最能說明公共意見具「影響性」？",image:"images/civ2/q22.png",options:["A","B","C","D"],correct:2},
+        {q:"政黨與利益團體在落實團體目標的做法上大不相同，下列何者最不可能是「利益團體」會採行的做法？",options:["召集參與婚姻平權大遊行","舉辦婚姻平權的遊行活動","推選出具有婚姻平權理念的候選人","和團體一起向政府表達婚姻平權的訴求"],correct:2},
+        {q:"某公聽會上，有四位公民表達他們對於臺灣是否應該發展核能發電議題的相關看法：",image:"images/civ2/q24.png",options:["安雅——影響性","博偉——議題性","思涵——變動性","婉婷——複雜性"],correct:2},
+        {q:"小滿在社群平臺看到某知名藝人病逝的報導，震驚之餘查詢該藝人的官方帳號，發現經紀公司已發聲明稿澄清該名藝人身體狀況良好，呼籲網友勿聽信謠言。上述小滿的經歷，主要顯示出媒體可能具有何種現象？",options:["報導未必反映事實","報導有特定的立場","內容隱含偏見或歧視","傳遞的管道多元而複雜"],correct:0},
+        {q:"當民眾在看戲劇或新聞時，常常不知不覺中接觸到政府政策或商品的廣告資訊，進而支持某項政策或購買該項商品。下列何種做法較能避免上述情況對閱聽人的影響？",options:["學會使用網路媒體來表達意見","透過主動製播內容取代該廣告","藉由單一性管道接收廣告資訊","提升解讀媒體隱藏價值的能力"],correct:3},
+        {q:"「五一行動聯盟」號召全國各地工會和工運團體，共同發起「五一遊行」，在勞動節當天到勞動部唱歌給部長聽，接著轉往立法院表達勞工要「多休假、多保障」。上述五一行動聯盟的性質屬於下列何者？",options:["在野黨","政府組織","利益團體","公益團體"],correct:2},
+        {q:"右圖為小毅所做的筆記，但其中一部分因水漬而模糊不清，根據內容判斷，汙損處的文字最可能為下列何者？",image:"images/civ2/q28.png",options:["利益團體","公益團體","里民中心","政黨"],correct:3}
+      ]
+    },
+    {
+      type:"reading",
+      title:"二、題組",
+      meta:"16%，每題4分",
+      passages:[
+        {
+          label:"(一)",
+          text:"新興菸品是近年來備受矚目的健康話題，據報載，美國在2019年8月開始爆發新興菸品的神祕肺病，短短一個月的時間就造成了12人死亡。在我國，董氏基金會經常收到民眾檢舉，新興菸品販售的花招百出，甚至連國小學生都不放過。董氏基金會主任呼籲政府應修法管制，別讓菸品的危害擴大，政府官員則表示會商討相關修法方向。請回答下列問題：",
+          items:[
+            {q:"上文中畫底線處，主要可看出公共意見的哪些特性？",options:["議題性、變動性","議題性、影響性","複雜性、變動性","複雜性、影響性"],correct:1},
+            {q:"董氏基金會若為達成其目的，可能採取下列哪種行動？",options:["暴力抗議","提名候選人","設立競選總部","透過媒體宣傳自身的理念"],correct:3}
+          ]
+        },
+        {
+          label:"(二)",
+          text:"媒體識讀不僅是「看懂」訊息，更強調「辨別」與「驗證」。以「網路假訊息」為例，關鍵在於「查核三步驟」：確認來源權威性、比對多方資料、檢視內容是否帶有偏見。例如若收到「政府隱瞞環境汙染數據」的傳言，應先查證發布者是否為環保專業組織，再比對官方公開報告或學術研究，確認消息真偽，才能杜絕假訊息的傳播。請回答下列問題：",
+          items:[
+            {q:"關於文中提及媒體識讀的概念，下列何者較為適當？",options:["為保障言論自由，可任意轉發網路訊息","政府應禁止爭議性新聞，避免誤導民眾","確認訊息來源、比對數據、檢視媒體立場","減少使用社群媒體，可避免接收不實資訊"],correct:2},
+            {q:"小張在網路上看到：「政府未公開核電廠輻射超標報告，危害居民健康。」若他想培養本身的媒體識讀能力，下列何者做法最為適當？",options:["轉發「政府黑箱作業」訊息","立刻刪除訊息避免引起爭議","懷疑來源媒體是否有特定立場","不加查證立刻向警察報案檢舉"],correct:2}
+          ]
+        }
+      ]
+    }
+
+  ]
+};
+
+let currentMode = "quiz"; // quiz | print
+
+const contentEl = document.getElementById("content");
+const scoreBar = document.getElementById("scoreBar");
+const scoreText = document.getElementById("scoreText");
+
+function render(){
+  window.examAnswersRevealed = false;
+  contentEl.innerHTML = "";
+  DATA.sections.forEach((sec, si)=> contentEl.appendChild(renderSection(sec, si)));
+  if(currentMode==="quiz"){
+    scoreBar.classList.add("show");
+    updateScore();
+  } else {
+    scoreBar.classList.remove("show");
+    contentEl.querySelectorAll(".opt").forEach(o=>o.classList.add("disabled"));
+    contentEl.querySelectorAll(".opt.is-correct").forEach(o=>o.classList.add("correct"));
+  }
+}
+
+function renderSection(sec, si){
+  const block = document.createElement("section");
+  block.className = "block";
+  block.innerHTML = `<h2>${sec.title}</h2><p class="meta">${sec.meta}</p>`;
+
+  if(sec.type==="mc"){
+    sec.items.forEach((it,i)=>{
+      const q = document.createElement("div");
+      q.className = "q";
+      const optsHtml = it.options.map((op,oi)=>`
+        <div class="opt" data-idx="${oi}" data-correct="${oi===it.correct}">
+          <span class="tag">(${String.fromCharCode(65+oi)})</span><span>${op}</span>
+        </div>`).join("");
+      q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q}</div>
+        ${it.image ? `<img src="${it.image}" alt="題目附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">`:""}
+        <div class="opts">${optsHtml}</div>`;
+      q.querySelectorAll(".opt").forEach(optEl=>{
+        if(optEl.dataset.correct==="true") optEl.classList.add("is-correct");
+        optEl.addEventListener("click", ()=>selectOption(q, optEl));
+      });
+      block.appendChild(q);
+    });
+  }
+
+  else if(sec.type==="reading"){
+    sec.passages.forEach(p=>{
+      const passageDiv = document.createElement("div");
+      passageDiv.className = "passage";
+      passageDiv.innerHTML = `${p.label ? `<span class="passage-label">${p.label}</span>`:""}${p.text}${p.image ? `<img src="${p.image}" alt="題組附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-top:10px;border:1px solid var(--paper-line);">`:""}`;
+      block.appendChild(passageDiv);
+      p.items.forEach((it,i)=>{
+        const q = document.createElement("div");
+        q.className = "q";
+        const optsHtml = it.options.map((op,oi)=>`
+          <div class="opt" data-idx="${oi}" data-correct="${oi===it.correct}">
+            <span class="tag">(${String.fromCharCode(65+oi)})</span><span>${op}</span>
+          </div>`).join("");
+        q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q}</div>
+          ${it.image ? `<img src="${it.image}" alt="題目附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">`:""}
+          <div class="opts">${optsHtml}</div>`;
+        q.querySelectorAll(".opt").forEach(optEl=>{
+          if(optEl.dataset.correct==="true") optEl.classList.add("is-correct");
+          optEl.addEventListener("click", ()=>selectOption(q, optEl));
+        });
+        block.appendChild(q);
+      });
+    });
+  }
+
+  return block;
+}
+
+function selectOption(qEl, optEl){
+  if(currentMode!=="quiz") return;
+  if(qEl.dataset.answered==="true") return;
+  qEl.dataset.answered = "true";
+  qEl.querySelectorAll(".opt").forEach(o=>o.classList.add("disabled"));
+  optEl.classList.add("selected");
+  const correctOpt = qEl.querySelector('.opt[data-correct="true"]');
+  qEl.dataset.studentAnswer = optEl.textContent.trim();
+  qEl.dataset.correctAnswer = correctOpt ? correctOpt.textContent.trim() : "";
+  qEl.dataset.isCorrect = (optEl.dataset.correct==="true") ? "true" : "false";
+  updateScore();
+}
+
+function updateScore(){
+  let total = 0, answered = 0, correct = 0;
+  contentEl.querySelectorAll(".q").forEach(q=>{
+    const gradable = q.querySelector(".opts");
+    if(!gradable) return;
+    total++;
+    if(q.dataset.studentAnswer !== undefined){
+      answered++;
+      if(q.dataset.isCorrect === "true") correct++;
+    }
+  });
+  if(window.examAnswersRevealed){
+    scoreText.textContent = `${correct} / ${total}`;
+  } else {
+    scoreText.textContent = `已作答 ${answered} / ${total} 題`;
+  }
+}
+window.updateScore = updateScore;
+
+document.getElementById("resetBtn").addEventListener("click", render);
+document.getElementById("quizModeBtn").addEventListener("click", ()=>{
+  currentMode = "quiz";
+  document.getElementById("quizModeBtn").classList.add("active");
+  document.getElementById("printModeBtn").classList.remove("active");
+  render();
+});
+document.getElementById("printModeBtn").addEventListener("click", ()=>{
+  if(document.getElementById("printModeBtn").disabled) return;
+  currentMode = "print";
+  document.getElementById("printModeBtn").classList.add("active");
+  document.getElementById("quizModeBtn").classList.remove("active");
+  render();
+});
+
+window.unlockPrintMode = function(){
+  document.getElementById("printModeBtn").disabled = false;
+};
+
+render();
+</script>
+<script src="../sync.js"></script>
+</body>
+</html>
