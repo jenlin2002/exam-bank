@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>段考題庫｜地理第5回 - 中國的經濟發展與全球關連（A卷）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@500;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#faf6ec;
+    --paper-line:#e3dcc8;
+    --ink:#26332b;
+    --ink-soft:#5b6b5f;
+    --chalk-green:#2f4538;
+    --chalk-green-2:#3d5a48;
+    --pen-red:#b8433a;
+    --pen-red-soft:#f4dedb;
+    --ok-green:#3f7d52;
+    --ok-green-soft:#dfeee1;
+    --gold:#b5842a;
+    --radius:10px;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:"Noto Sans TC",sans-serif;
+    line-height:1.7;
+  }
+  header.hero{
+    background:var(--chalk-green);
+    color:#eef2ea;
+    padding:28px 20px 40px;
+    position:relative;
+  }
+  header.hero::after{
+    content:"";
+    position:absolute;
+    left:0; right:0; bottom:-1px;
+    height:14px;
+    background:repeating-linear-gradient(90deg,var(--paper) 0 18px, transparent 18px 20px);
+  }
+  .hero-inner{max-width:880px;margin:0 auto;}
+  .breadcrumb a{color:#cfe0d1;text-decoration:none;font-size:14px;}
+  .breadcrumb a:hover{text-decoration:underline;}
+  h1{
+    font-family:"Noto Serif TC",serif;
+    font-weight:700;
+    font-size:clamp(24px,4vw,34px);
+    margin:10px 0 6px;
+  }
+  .subtitle{color:#cfe0d1;font-size:15px;margin:0;}
+  main{max-width:880px;margin:0 auto;padding:28px 20px 80px;}
+
+  .controls{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:22px;
+  }
+  .mode-toggle{display:flex;border:2px solid var(--chalk-green);border-radius:999px;overflow:hidden;}
+  .mode-toggle button{
+    background:transparent;border:none;padding:8px 16px;font-size:14px;font-weight:700;
+    color:var(--chalk-green);cursor:pointer;font-family:"Noto Sans TC",sans-serif;
+  }
+  .mode-toggle button.active{background:var(--gold);color:#fff;}
+  .mode-toggle button:disabled{opacity:.4;cursor:not-allowed;}
+
+  .score-bar{
+    display:none;
+    align-items:center;
+    justify-content:space-between;
+    background:#fff;
+    border:1px solid var(--paper-line);
+    border-left:5px solid var(--gold);
+    border-radius:var(--radius);
+    padding:12px 18px;
+    margin-bottom:22px;
+    font-size:14px;
+  }
+  .score-bar.show{display:flex;}
+  .score-bar strong{font-size:18px;color:var(--gold);}
+  .score-bar button{
+    background:none;border:1px solid var(--ink-soft);color:var(--ink-soft);
+    border-radius:6px;padding:6px 12px;font-size:13px;cursor:pointer;
+  }
+
+  section.block{
+    background:#fff;
+    border:1px solid var(--paper-line);
+    border-radius:var(--radius);
+    padding:22px 22px 26px;
+    margin-bottom:20px;
+  }
+  .block h2{
+    font-family:"Noto Serif TC",serif;
+    font-size:19px;
+    margin:0 0 4px;
+    color:var(--chalk-green);
+  }
+  .block .meta{color:var(--ink-soft);font-size:13px;margin:0 0 16px;}
+
+  .q{margin-bottom:18px;padding-bottom:16px;border-bottom:1px dashed var(--paper-line);}
+  .q:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0;}
+  .q-text{font-size:15.5px;margin-bottom:8px;}
+  .q-num{color:var(--gold);font-weight:700;margin-right:4px;}
+
+  .opts{display:grid;gap:8px;}
+  .opt{
+    display:flex;gap:8px;align-items:flex-start;
+    border:1.5px solid var(--paper-line);
+    border-radius:8px;
+    padding:9px 12px;
+    cursor:pointer;
+    font-size:14.5px;
+    background:#fffdf8;
+  }
+  .opt:hover{border-color:var(--chalk-green-2);}
+  .opt.selected{border-color:var(--chalk-green-2);background:#eef3ea;}
+  .opt.correct{border-color:var(--ok-green);background:var(--ok-green-soft);}
+  .opt.wrong{border-color:var(--pen-red);background:var(--pen-red-soft);}
+  .opt .tag{font-weight:700;color:var(--ink-soft);}
+  .opt.correct .tag{color:var(--ok-green);}
+  .opt.wrong .tag{color:var(--pen-red);}
+  .opt.disabled{cursor:default;}
+
+  .passage{
+    background:#f5f2e8;border-radius:8px;padding:14px 16px;margin-bottom:14px;
+    font-size:14.5px;white-space:pre-line;
+  }
+  .passage-label{font-weight:700;color:var(--chalk-green);margin-bottom:4px;display:block;}
+  .data-table{width:100%;border-collapse:collapse;margin-bottom:10px;font-size:13.5px;background:#fff;}
+  .data-table th, .data-table td{border:1px solid var(--paper-line);padding:6px 8px;text-align:center;}
+  .data-table th{background:#eef3ea;color:var(--chalk-green);}
+
+  .footer-link{
+    display:block;text-align:center;margin-top:30px;color:var(--chalk-green);
+    text-decoration:none;font-weight:700;font-size:14px;
+  }
+  .footer-link:hover{text-decoration:underline;}
+
+  @media print{
+    header.hero, .controls, .score-bar, .mini-btn, .footer-link{display:none !important;}
+    body{background:#fff;}
+    section.block{border:none;box-shadow:none;padding:8px 0;margin-bottom:14px;}
+    .opt.correct{background:none;border:none;font-weight:700;}
+    .opt.correct::after{content:" ← 正解";color:var(--pen-red);}
+    .opt{border:none;padding:2px 0;}
+    main{max-width:100%;padding:0 24px;}
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="breadcrumb"><a href="https://jenlin2002.github.io/">🏠 回總目錄</a> ／ <a href="../kangxuan-social-g8-1.html" style="color:#cfe0d1;">段考題庫</a></div>
+    <h1>地理・第5回</h1>
+    <p class="subtitle">第4課 中國的經濟發展與全球關連｜康軒版八年級社會（三）Ａ卷</p>
+  </div>
+</header>
+
+<main>
+  <div class="controls">
+    <div class="mode-toggle">
+      <button id="quizModeBtn" class="active">✏️ 測驗模式</button>
+      <button id="printModeBtn" disabled title="完成測驗並送出成績後才能查看">🖨️ 完整題目與解答（送出成績後解鎖）</button>
+    </div>
+  </div>
+
+  <div class="score-bar" id="scoreBar">
+    <div>目前得分：<strong id="scoreText">0 / 0</strong>（僅計算選擇題）</div>
+    <button id="resetBtn">重新作答</button>
+  </div>
+
+  <div id="content"></div>
+
+  <a class="footer-link" href="../kangxuan-social-g8-1.html">← 回段考題庫總覽</a>
+</main>
+
+<script>
+
+window.EXAM_META = { version: "A卷", examLabel: "地理第5回" };
+const DATA = {
+  sections: [
+    {
+      type:"mc",
+      title:"一、單題",
+      meta:"80%，每題4分",
+      items:[
+        {q:"無現金「電子支付」已普及於中國日常生活的各個領域，此一交易方式的發展與下列何者最相關？",options:["世界加工基地","水運運輸便利","人民消費力高","無線網路普及"],correct:3},
+        {q:"碳排放指人類從事活動產生的溫室氣體CO2，其排放量增加，將加劇氣候變遷、加速冰川融化等。附圖是2023年CO2排放量名列前茅的國家，居冠的「甲」是何國？",image:"images/geo5/q2.png",options:["日本","中國","美國","印度"],correct:1},
+        {q:"中國近年積極推動「一帶一路」倡議，還召開數屆高峰論壇，其主要目的為何？",options:["減少國內工業汙染","均衡國內工業發展","擴大海外經貿活動","解決中美貿易爭端"],correct:2},
+        {q:"丁禹假日到家電商場選購電器用品時，發現多數商品都是「Made in China」，代表多國廠商將哪一生產階段移到中國，造就其成為「世界工廠」？",options:["加工組裝","設計樣品","訂單銷售","原料採購"],correct:0},
+        {q:"中國在西南部的青藏高原及橫斷山脈大量興建水壩用以蓄水及發電，以解決國內水資源及電力不足問題，但此一作法引發河川下游周邊鄰國的不安。請問：中國水資源日益不足的主要原因，除了人口數量龐大的壓力之外，還包括下列何者？",options:["乾燥氣候範圍廣","地勢高低起伏大","國際貿易總額高","工商業急速發展"],correct:3},
+        {q:"近年，中國電子產業逐漸降低對國外零組件的依賴，政府大力扶植在地廠商，建立完整本土供應鏈。此一現象主要對中國經濟發展產生何種影響？",options:["成為「世界市場」","替國際大廠研發為主","轉型「製造強國」","建海外供應生產體系"],correct:2},
+        {q:"根據報導，全球最大奢侈品牌路易威登(Louis Vuitton)在中國的首家餐廳落腳於四川成都，吸引了眾多消費者，統計到餐廳用餐的人均消費約為人民幣3,000元(約新臺幣1.4萬元)，高昂價格並未撲熄中國民眾的熱情，預約已經排到半年後。上述的消費情景最能反映出中國哪一社會經濟發展現況？",options:["勞動力充足","出生率銳減","消費力提升","城鄉差距大"],correct:2},
+        {q:"2023年中國社會消費品零售總額達47.15兆元，其中網購占比超過20%，消費無遠弗屆。網購已成為中國民眾消費重要渠道，此一消費方式盛行有賴何種條件？",options:["基本工資減少","大眾捷運便捷","商品在量販店上架","電子商務系統發達"],correct:3},
+        {q:"中國商務部發布「2024年度中國對外直接投資統計公報」，表示目前全球80%以上的國家地區都有中國的投資。請問：附圖中投資對象「甲」是下列哪一洲？",image:"images/geo5/q9.png",options:["歐洲","亞洲","大洋洲","中南美洲"],correct:1},
+        {q:"中國電子商務系統發達，民眾出門不需要帶錢包，只要拿出手機掃描二維條碼(QR Code)就能輕鬆付款，不只在百貨商場，連傳統市場攤販也能使用無現金支付。根據上述內容，可知中國經濟具有何項特色？",options:["勞動人口眾多且工資低廉","無現金交易支付極為普及","消費力提升擴大市場規模","工業轉型中，失業率提高"],correct:1},
+        {q:"沙漠是由於氣候環境、人類活動等因素形成的旱地。在中國，內蒙古高原東側因下列何種人為活動，導致土地沙漠化範圍擴大？",options:["畜養犛牛","南水北調","過度放牧","大量施肥"],correct:2},
+        {q:"自2014年起，中國境內外商直接投資增長的部分主要在服務業，製造業領域的投資則在下降，這顯示流入中國的資金是以下列何項因素為主要考量？",options:["穩定原料供應","吸收科技人才","擴展中國市場","降低勞力成本"],correct:2},
+        {q:"附圖是中國一帶一路倡議中的其中一項合作計畫，中國推動此一鐵路建設的主要原因為何？",image:"images/geo5/q13.png",options:["帶動東部地區發展","提高石油運送安全性","可連接珠三角經濟圈","掌握大西洋交通要道"],correct:1},
+        {q:"附表是2024年全球前五大手機品牌的市占率。中國品牌的手機近年來市占率逐漸提高，與該國近年工業發展具有下列何種趨勢有關？",table:{head:["品牌","市占率"],rows:[["蘋果(美國)","19%"],["三星(南韓)","18%"],["小米(中國)","14%"],["OPPO(中國)","8%"],["VIVO(中國)","8%"]]},options:["平均薪資逐漸提高","礦產資源仰賴進口","逐步擴大的交通網絡","國內供應鏈漸趨完整"],correct:3},
+        {q:"「南韓首爾及仁川地區，於2月11日晚間發布PM2.5注意警報，PM2.5濃度已飆破每立方公尺130微克，空氣品質已達『極差』等級。當地媒體指出，中國春節期間燃燒鞭炮、紙錢所造成的空氣汙染，順著盛行季風吹拂影響南韓。」上述新聞所指的季風風向為何？",options:["西北季風","東北季風","西南季風","東南季風"],correct:0},
+        {q:"蘋果手機熱銷全球，長年占據全球手機銷售排行榜。據蘋果公司發布的統計數據顯示，中國零件供應商的占比日漸提高，從2018年的14%，至2024年已躍升至80%，甚至有企業原先僅是切割壓克力的小工廠，在研發出能夠切割玻璃的機器後，一躍成為蘋果公司手機表層加工的主力之一。根據上述，顯示中國近年工業發展具有何種現象？",options:["消費市場龐大","擴大海外投資","製造實力提升","電子商務崛起"],correct:2},
+        {q:"中國沙塵暴主要是因境內強風刮起裸露地表鬆軟的沙土和塵埃所形成，使空氣變得混濁，其主要發源於下列何種氣候環境？",table:{head:["氣候類型","(A)","(B)","(C)","(D)"],rows:[["1月月均溫(℃)","6.7","－7.6","15.7","－3.1"],["7月月均溫(℃)","25.1","23.3","27.8","14.2"],["年降水量(mm)","894","215","1,612","403"]]},options:["A","B","C","D"],correct:1},
+        {q:"「中國北部多地正遭遇今年以來範圍最大、強度最強的沙塵暴襲擊，尤其北京情況嚴重，在滾滾黃沙籠罩下，能見度僅數百公尺。」本區沙塵暴天氣最常發生在哪個時節？",options:["冬末春初","春末夏初","夏末秋初","秋末冬初"],correct:0},
+        {q:"知名連鎖速食品牌宣布將加碼在中國的投資，預計將在2028年達到1萬間門市的目標。截至2024年9月止，該品牌在中國境內的門市數量達6,500家，中國已成為該品牌在全球的第二大市場，也是發展速度最快者。根據上述判斷，該品牌決定擴店的原因，與近年中國何項數值大幅提升有關？",options:["人口增加率","平均國民所得","對外投資額","每年出超金額"],correct:1},
+        {q:"中國是全球主要的碳排放大國，其政策動向對全球抑制碳排放影響深遠。在2021年4月召開的氣候峰會上，中國國家主席習近平重申，中國要在2030年以前達到碳排放的峰值，並在2060年以前達到碳中和的目標。請問：下列哪一項中國的政策與此一宣示最相關？",options:["積極推動西部地區的開發","鼓勵再生能源的技術研發","積極研發國產的手機晶片","加速經濟特區內產業升級"],correct:1}
+      ]
+    },
+    {
+      type:"reading",
+      title:"二、題組",
+      meta:"20%，每題2分",
+      passages:[
+        {
+          label:"(一)",
+          text:"2013年中國提出對外發展、投資的長遠策略「一帶一路」，附圖為此倡議的路線圖，請問：",
+          image:"images/geo5/q21.png",
+          items:[
+            {q:"依路線判斷，「絲綢之路經濟帶」的合作夥伴包含下列哪一大洲的國家？",options:["歐洲","北美洲","大洋洲","中南美洲"],correct:0},
+            {q:"該政策倡議的路線途經不少能源豐富的國家，可藉由管道輸送資源。附圖中甲位於「一路」串聯西亞的海上交通要道，貨物運輸繁忙，其為哪一海域？",options:["太平洋","印度洋","大西洋","北極海"],correct:1},
+            {q:"瀕臨渤海的ㄅ城市是中國重要的港口，是絲綢之路經濟帶的起點之一，其應為下列何者？",options:["天津","上海","廣州","澳門"],correct:0},
+            {q:"附圖中★國參與「一帶一路」以推動國內公共建設，卻因無力向中國償還貸款，該國政府將漢班托塔港的控制權租借給中國99年來抵債。根據上述內容及附圖判斷，★應是下列哪個國家？",options:["印度","日本","菲律賓","斯里蘭卡"],correct:3},
+            {q:"中國提出橫跨三大洲的「一帶一路」，誓言促成合作繁榮，下列何者是該倡議為中國帶來的益處？",options:["開挖北極海油氣資源","全面開放引進國際移工","掌握更多資源與戰略要地","獲取半導體產業的關鍵技術"],correct:2}
+          ]
+        },
+        {
+          label:"(二)",
+          text:"附圖是2024年世界前五大貿易國的進出口貿易總額資料，請依據圖中資訊回答下列問題：",
+          image:"images/geo5/q26.png",
+          items:[
+            {q:"下列哪一個國家，對外貿易呈現入超？",options:["美國","德國","中國","荷蘭"],correct:0},
+            {q:"根據附圖判斷，關於中國對外貿易的特色，下列敘述何者正確？",options:["中國主要貿易夥伴為美國","中國對日本貿易呈現入超","中國對外貿易總額居世界第一","中國主要進口礦產、出口汽車"],correct:2}
+          ]
+        },
+        {
+          label:"(三)",
+          text:"附圖為瀾滄江—湄公河的流路示意圖，該河川全長4,180公里，是世界第12長河，但因河川上下游流經不同國家而出現水權爭奪的情形。請問：",
+          image:"images/geo5/q28.png",
+          items:[
+            {q:"該河川發源自中國青藏高原，下游流經中南半島，最終注入下列哪個海域？",options:["南海","東海","北極海","大西洋"],correct:0},
+            {q:"根據附圖判斷，中國在瀾滄江興建水壩，會引發該國與下列哪個地區國家的水權糾紛？",options:["大洋洲","北美洲","東南亞","東北亞"],correct:2},
+            {q:"湄公河委員會(Mekong River Commission, MRC)曾警告，隨著中國在湄公河上游興建水電廠，使湄公河出現「令人憂心的低水位」。除了水位降低的隱憂，中國此舉動還可能對湄公河流域帶來何種影響？",options:["河川可通航的距離變長，具航運之利","河流沖積的沃土減少，影響農業耕作","河川流量增加，若遇到暴雨容易致災","海岸線往前推進，河岸沙洲範圍擴大"],correct:1}
+          ]
+        }
+      ]
+    }
+
+  ]
+};
+
+let currentMode = "quiz"; // quiz | print
+
+const contentEl = document.getElementById("content");
+const scoreBar = document.getElementById("scoreBar");
+const scoreText = document.getElementById("scoreText");
+
+function render(){
+  window.examAnswersRevealed = false;
+  contentEl.innerHTML = "";
+  DATA.sections.forEach((sec, si)=> contentEl.appendChild(renderSection(sec, si)));
+  if(currentMode==="quiz"){
+    scoreBar.classList.add("show");
+    updateScore();
+  } else {
+    scoreBar.classList.remove("show");
+    contentEl.querySelectorAll(".opt").forEach(o=>o.classList.add("disabled"));
+    contentEl.querySelectorAll(".opt.is-correct").forEach(o=>o.classList.add("correct"));
+  }
+}
+
+function renderTable(t){
+  if(!t) return "";
+  const headHtml = `<tr>${t.head.map(h=>`<th>${h}</th>`).join("")}</tr>`;
+  const rowsHtml = t.rows.map(r=>`<tr>${r.map((c,ci)=>ci===0?`<th>${c}</th>`:`<td>${c}</td>`).join("")}</tr>`).join("");
+  return `<table class="data-table"><thead>${headHtml}</thead><tbody>${rowsHtml}</tbody></table>`;
+}
+
+function renderSection(sec, si){
+  const block = document.createElement("section");
+  block.className = "block";
+  block.innerHTML = `<h2>${sec.title}</h2><p class="meta">${sec.meta}</p>`;
+
+  if(sec.type==="mc"){
+    sec.items.forEach((it,i)=>{
+      const q = document.createElement("div");
+      q.className = "q";
+      const optsHtml = it.options.map((op,oi)=>`
+        <div class="opt" data-idx="${oi}" data-correct="${oi===it.correct}">
+          <span class="tag">(${String.fromCharCode(65+oi)})</span><span>${op}</span>
+        </div>`).join("");
+      q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q}</div>
+        ${it.image ? `<img src="${it.image}" alt="題目附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">`:""}
+        ${it.table ? renderTable(it.table) : ""}
+        <div class="opts">${optsHtml}</div>`;
+      q.querySelectorAll(".opt").forEach(optEl=>{
+        if(optEl.dataset.correct==="true") optEl.classList.add("is-correct");
+        optEl.addEventListener("click", ()=>selectOption(q, optEl));
+      });
+      block.appendChild(q);
+    });
+  }
+
+  else if(sec.type==="reading"){
+    sec.passages.forEach(p=>{
+      const passageDiv = document.createElement("div");
+      passageDiv.className = "passage";
+      passageDiv.innerHTML = `${p.label ? `<span class="passage-label">${p.label}</span>`:""}${p.text}${p.image ? `<img src="${p.image}" alt="題組附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-top:10px;border:1px solid var(--paper-line);">`:""}`;
+      block.appendChild(passageDiv);
+      p.items.forEach((it,i)=>{
+        const q = document.createElement("div");
+        q.className = "q";
+        const optsHtml = it.options.map((op,oi)=>`
+          <div class="opt" data-idx="${oi}" data-correct="${oi===it.correct}">
+            <span class="tag">(${String.fromCharCode(65+oi)})</span><span>${op}</span>
+          </div>`).join("");
+        q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q}</div>
+          ${it.image ? `<img src="${it.image}" alt="題目附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">`:""}
+          <div class="opts">${optsHtml}</div>`;
+        q.querySelectorAll(".opt").forEach(optEl=>{
+          if(optEl.dataset.correct==="true") optEl.classList.add("is-correct");
+          optEl.addEventListener("click", ()=>selectOption(q, optEl));
+        });
+        block.appendChild(q);
+      });
+    });
+  }
+
+  return block;
+}
+
+function selectOption(qEl, optEl){
+  if(currentMode!=="quiz") return;
+  if(qEl.dataset.answered==="true") return;
+  qEl.dataset.answered = "true";
+  qEl.querySelectorAll(".opt").forEach(o=>o.classList.add("disabled"));
+  optEl.classList.add("selected");
+  const correctOpt = qEl.querySelector('.opt[data-correct="true"]');
+  qEl.dataset.studentAnswer = optEl.textContent.trim();
+  qEl.dataset.correctAnswer = correctOpt ? correctOpt.textContent.trim() : "";
+  qEl.dataset.isCorrect = (optEl.dataset.correct==="true") ? "true" : "false";
+  updateScore();
+}
+
+function updateScore(){
+  let total = 0, answered = 0, correct = 0;
+  contentEl.querySelectorAll(".q").forEach(q=>{
+    const gradable = q.querySelector(".opts");
+    if(!gradable) return;
+    total++;
+    if(q.dataset.studentAnswer !== undefined){
+      answered++;
+      if(q.dataset.isCorrect === "true") correct++;
+    }
+  });
+  if(window.examAnswersRevealed){
+    scoreText.textContent = `${correct} / ${total}`;
+  } else {
+    scoreText.textContent = `已作答 ${answered} / ${total} 題`;
+  }
+}
+window.updateScore = updateScore;
+
+document.getElementById("resetBtn").addEventListener("click", render);
+document.getElementById("quizModeBtn").addEventListener("click", ()=>{
+  currentMode = "quiz";
+  document.getElementById("quizModeBtn").classList.add("active");
+  document.getElementById("printModeBtn").classList.remove("active");
+  render();
+});
+document.getElementById("printModeBtn").addEventListener("click", ()=>{
+  if(document.getElementById("printModeBtn").disabled) return;
+  currentMode = "print";
+  document.getElementById("printModeBtn").classList.add("active");
+  document.getElementById("quizModeBtn").classList.remove("active");
+  render();
+});
+
+window.unlockPrintMode = function(){
+  document.getElementById("printModeBtn").disabled = false;
+};
+
+render();
+</script>
+<script src="../sync.js"></script>
+</body>
+</html>
