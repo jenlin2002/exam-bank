@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>段考題庫｜歷史第9回 - 第5~6課總複習（A卷）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@500;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#faf6ec;
+    --paper-line:#e3dcc8;
+    --ink:#26332b;
+    --ink-soft:#5b6b5f;
+    --chalk-green:#2f4538;
+    --chalk-green-2:#3d5a48;
+    --pen-red:#b8433a;
+    --pen-red-soft:#f4dedb;
+    --ok-green:#3f7d52;
+    --ok-green-soft:#dfeee1;
+    --gold:#b5842a;
+    --radius:10px;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:"Noto Sans TC",sans-serif;
+    line-height:1.7;
+  }
+  header.hero{
+    background:var(--chalk-green);
+    color:#eef2ea;
+    padding:28px 20px 40px;
+    position:relative;
+  }
+  header.hero::after{
+    content:"";
+    position:absolute;
+    left:0; right:0; bottom:-1px;
+    height:14px;
+    background:repeating-linear-gradient(90deg,var(--paper) 0 18px, transparent 18px 20px);
+  }
+  .hero-inner{max-width:880px;margin:0 auto;}
+  .breadcrumb a{color:#cfe0d1;text-decoration:none;font-size:14px;}
+  .breadcrumb a:hover{text-decoration:underline;}
+  h1{
+    font-family:"Noto Serif TC",serif;
+    font-weight:700;
+    font-size:clamp(24px,4vw,34px);
+    margin:10px 0 6px;
+  }
+  .subtitle{color:#cfe0d1;font-size:15px;margin:0;}
+  main{max-width:880px;margin:0 auto;padding:28px 20px 80px;}
+
+  .controls{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:22px;
+  }
+  .mode-toggle{display:flex;border:2px solid var(--chalk-green);border-radius:999px;overflow:hidden;}
+  .mode-toggle button{
+    background:transparent;border:none;padding:8px 16px;font-size:14px;font-weight:700;
+    color:var(--chalk-green);cursor:pointer;font-family:"Noto Sans TC",sans-serif;
+  }
+  .mode-toggle button.active{background:var(--gold);color:#fff;}
+  .mode-toggle button:disabled{opacity:.4;cursor:not-allowed;}
+
+  .score-bar{
+    display:none;
+    align-items:center;
+    justify-content:space-between;
+    background:#fff;
+    border:1px solid var(--paper-line);
+    border-left:5px solid var(--gold);
+    border-radius:var(--radius);
+    padding:12px 18px;
+    margin-bottom:22px;
+    font-size:14px;
+  }
+  .score-bar.show{display:flex;}
+  .score-bar strong{font-size:18px;color:var(--gold);}
+  .score-bar button{
+    background:none;border:1px solid var(--ink-soft);color:var(--ink-soft);
+    border-radius:6px;padding:6px 12px;font-size:13px;cursor:pointer;
+  }
+
+  section.block{
+    background:#fff;
+    border:1px solid var(--paper-line);
+    border-radius:var(--radius);
+    padding:22px 22px 26px;
+    margin-bottom:20px;
+  }
+  .block h2{
+    font-family:"Noto Serif TC",serif;
+    font-size:19px;
+    margin:0 0 4px;
+    color:var(--chalk-green);
+  }
+  .block .meta{color:var(--ink-soft);font-size:13px;margin:0 0 16px;}
+
+  .q{margin-bottom:18px;padding-bottom:16px;border-bottom:1px dashed var(--paper-line);}
+  .q:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0;}
+  .q-text{font-size:15.5px;margin-bottom:8px;}
+  .q-num{color:var(--gold);font-weight:700;margin-right:4px;}
+
+  .opts{display:grid;gap:8px;}
+  .opt{
+    display:flex;gap:8px;align-items:flex-start;
+    border:1.5px solid var(--paper-line);
+    border-radius:8px;
+    padding:9px 12px;
+    cursor:pointer;
+    font-size:14.5px;
+    background:#fffdf8;
+  }
+  .opt:hover{border-color:var(--chalk-green-2);}
+  .opt.selected{border-color:var(--chalk-green-2);background:#eef3ea;}
+  .opt.correct{border-color:var(--ok-green);background:var(--ok-green-soft);}
+  .opt.wrong{border-color:var(--pen-red);background:var(--pen-red-soft);}
+  .opt .tag{font-weight:700;color:var(--ink-soft);}
+  .opt.correct .tag{color:var(--ok-green);}
+  .opt.wrong .tag{color:var(--pen-red);}
+  .opt.disabled{cursor:default;}
+
+  .passage{
+    background:#f5f2e8;border-radius:8px;padding:14px 16px;margin-bottom:14px;
+    font-size:14.5px;white-space:pre-line;
+  }
+  .passage-label{font-weight:700;color:var(--chalk-green);margin-bottom:4px;display:block;}
+
+  .footer-link{
+    display:block;text-align:center;margin-top:30px;color:var(--chalk-green);
+    text-decoration:none;font-weight:700;font-size:14px;
+  }
+  .footer-link:hover{text-decoration:underline;}
+
+  @media print{
+    header.hero, .controls, .score-bar, .mini-btn, .footer-link{display:none !important;}
+    body{background:#fff;}
+    section.block{border:none;box-shadow:none;padding:8px 0;margin-bottom:14px;}
+    .opt.correct{background:none;border:none;font-weight:700;}
+    .opt.correct::after{content:" ← 正解";color:var(--pen-red);}
+    .opt{border:none;padding:2px 0;}
+    main{max-width:100%;padding:0 24px;}
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="breadcrumb"><a href="https://jenlin2002.github.io/">🏠 回總目錄</a> ／ <a href="../kangxuan-social-g8-1.html" style="color:#cfe0d1;">段考題庫</a></div>
+    <h1>歷史・第9回</h1>
+    <p class="subtitle">第5~6課 總複習｜康軒版八年級社會（三）Ａ卷</p>
+  </div>
+</header>
+
+<main>
+  <div class="controls">
+    <div class="mode-toggle">
+      <button id="quizModeBtn" class="active">✏️ 測驗模式</button>
+      <button id="printModeBtn" disabled title="完成測驗並送出成績後才能查看">🖨️ 完整題目與解答（送出成績後解鎖）</button>
+    </div>
+  </div>
+
+  <div class="score-bar" id="scoreBar">
+    <div>目前得分：<strong id="scoreText">0 / 0</strong>（僅計算選擇題）</div>
+    <button id="resetBtn">重新作答</button>
+  </div>
+
+  <div id="content"></div>
+
+  <a class="footer-link" href="../kangxuan-social-g8-1.html">← 回段考題庫總覽</a>
+</main>
+
+<script>
+
+window.EXAM_META = { version: "A卷", examLabel: "歷史第9回" };
+const DATA = {
+  sections: [
+    {
+      type:"mc",
+      title:"一、單題",
+      meta:"92%，每題4分",
+      items:[
+        {q:"安德魯是十九世紀後期住在上海的英國人。他在喝醉後打傷路人，卻不受中國法律管轄，而由英國的領事官依該國法律審判。這是因為英國人在中國享有何種權利？",options:["協定關稅","最惠國待遇","劃定租界","領事裁判權"],correct:3},
+        {q:"右圖為清末某場戰爭結束後的形勢圖。由圖中內容判斷，此結果的出現應與清帝國簽訂哪項條約最有關？",image:"images/hist9/q2.png",options:["《澶淵之盟》","《南京條約》","《馬關條約》","《辛丑和約》"],correct:1},
+        {q:"1842年，清朝不情願的把一個荒蕪小島割讓給英國。此島早期靠著英國投注的大量資源，迅速繁榮起來。1898年清朝又把與中國大陸接壤的新界以99年租期租予英國。這小島指何地？",options:["澳門","海南島","香港","臺灣島"],correct:2},
+        {q:"乾隆將通商口岸限制於這個港口的原因，是為加強對外商的管理，防止外國勢力影響政局與社會秩序，加上港口地理位置優越，便於清廷掌控對外貿易。上文的「港口」為何？",options:["廣州","上海","廈門","福州"],correct:0},
+        {q:"下列是秋瑾文章《敬告姐妹們》的部分內容：「我們不能再被傳統束縛，做一輩子只知三從四德的『賢妻良母』。……女子也是人，也有智慧、有能力，為什麼不能和男子一樣去求知、去參與國事？」從文章判斷秋瑾的理念最可能為下列何者？",options:["遵循傳統與三從四德","女子能力比不上男子","鼓勵女權意識的擴展","要求男子須保家衛國"],correct:2},
+        {q:"自1843年此地設立租界以來，四面八方的外國人湧入這個城市，他們將西方物質文明、制度、生活方式與意識精神都帶進來，於是這裡成為包容性最大的城市。此城市最可能為何？",options:["香港","上海","西安","重慶"],correct:1},
+        {q:"這個晚清的改革內容主要包括：設立京師大學堂，廢除八股文，改革科舉制度，提倡西學以強國；裁撤冗官，精簡機構等。最後這個改革被宣告失敗，其原因為何？",options:["八國聯軍的爆發","革命派的反抵制","甲午戰爭的戰敗","守舊派發動政變"],correct:3},
+        {q:"老師上課時，要同學討論梁啟超的事蹟。下列哪位同學的說法有誤而會被修正？",image:"images/hist9/q8.png",options:["A","B","C","D"],correct:3},
+        {q:"李鴻章曾寫信給劉銘傳，提到：「割臺實有不得已的苦衷，但足下銳意經營的臺灣島，乃日人最喜歡，必繼承而不廢；仁兄多年淬礪的治績，也將永保不滅。」上述書信應出現在下列何時？",options:["《南京條約》簽訂後","英法聯軍二度進攻時","清廷於甲午戰爭戰敗後","八國聯軍攻陷北京之後"],correct:2},
+        {q:"右圖為兩位清代士人正在討論政府實施的新政策。由圖中內容判斷，此政策應屬於下列哪場改革運動的一環？",image:"images/hist9/q10.png",options:["自強運動","戊戌變法","庚子後新政","立憲運動"],correct:2},
+        {q:"《紐約時報》記者在西元1871年12月24日遊歷廣州時，對廣州的繁華讚嘆不已：「清式和西式的閣樓、寶塔、博物館、清真寺、大廈、倉庫、商鋪等，這些建築物毫不間斷的緊緊挨在一起。遠處可見英國領事館的小教堂，上面有鐘樓和高高的十字架。」上述情景的出現，應與下列何者最有關？",options:["新航路開通，歐洲商人與傳教士陸續來華","《南京條約》簽訂後，開放五個通商口岸","《馬關條約》簽訂後，外人在通商口岸設廠","八國聯軍攻陷北京，清廷簽訂《辛丑條約》"],correct:1},
+        {q:"清帝國為抵制列強的壓迫，陸續推行數個改革運動。同時期日本也展開「明治維新」。關於「明治維新」的改革內容，下列何者正確？",options:["時間：二十世紀中期後","背景：俄國以武力逼迫日本","內容：學習西方的科技與制度","影響：因甲午戰爭失敗被宣告失敗"],correct:2},
+        {q:"一篇敘述1903年上海的日記寫道：「上午乘車……途中經公園，地甚敞，青蔥滿目，白人游息其中者，無不有自得之意。惟中國人不得入，門懸金字牌一，大書『犬與華人不准入』七字，哀我華人與犬為伍。」會有如此情況與下列何者有關？",options:["上海為西人的租界","上海割讓給英、法","上海是特別行政區","上海喪失關稅自主"],correct:0},
+        {q:"清末曾有知識分子合編歌謠，其中歌詞如下：",image:"images/hist9/q14.png",options:["民主法治觀念深入人心","婦女權利意識漸受重視","城市居民休閒育樂出現轉變","清廷推動西化改革成效顯著"],correct:1},
+        {q:"俊亨複習考試重點時，繪製了右圖來理解某個歷史主題概念。由圖中內容判斷，此主題應為下列何者？",image:"images/hist9/q15.png",options:["明治維新","自強運動","戊戌變法","庚子後新政"],correct:1},
+        {q:"十八世紀，英國曾派遣特使來華覲見乾隆皇帝，進行交涉，卻因跪拜禮節問題造成任務失敗。上述「任務」應為下列何者？",options:["清廷禁止天主教傳播，英國要求放寬","清廷採取朝貢貿易，英國要求受冊封","英國要求清廷接受鴉片合法進口中國","英國希望改善與中國的各種貿易限制"],correct:3},
+        {q:"培峰在網路上看到一段敘述中國民眾生活的詩句，如右圖。這首詩所描述的情景最早應出現在何時何地？",image:"images/hist9/q17.png",options:["八世紀初，長安","十五世紀末，南京","十七世紀末，北京","十九世紀末，上海"],correct:3},
+        {q:"魯迅在西元1919年寫的文章中指出：「在中國社會上的狀態，簡直將幾十世紀縮在一時：自油燈片以至電燈，自獨輪車以至飛機，自鏢槍以至機關炮……都摩肩挨背的存在。」上述所反映的情形應為何？",options:["傳統習俗深植中國人心中","民眾的審美觀出現新改變","傳統社會過渡到現代社會","民眾抗拒西方文化的入侵"],correct:2},
+        {q:"下表為二十世紀初關於中國婦女的社會現象：",options:["婦女地位始終卑微未曾改變","婦女角色出現變化地位日升","政府賦予婦女受教權但無參政權","政府逐步立法限縮婦女的參政權"],correct:1},
+        {q:"睿恩在主題報告中引用以下的資料：",options:["協定關稅","成立使館區","劃定租界","領事裁判權"],correct:2},
+        {q:"這個事件是立憲運動展開的一個重要原因，事件結局更給朝野很大的震撼，他們普遍將這個事件的結局與國家政體聯繫在一起，認為國家要強盛非君主立憲不可。此事件為何？",options:["鴉片戰爭","派學童留學","日俄戰爭","義和團事件"],correct:2},
+        {q:"以下為清末陳澧的《炮子謠》：",image:"images/hist9/q22.png",options:["目睹西方船堅炮利，期許朝廷能戮力圖強","指出物質改革不足，需就制度上大力維新","建議發展鴉片產業，以販賣所得製造彈藥","提及鴉片危害健康，更造成中國白銀外流"],correct:1},
+        {q:"以下是清末某條約的內容：「日本臣民得在中國通商口岸、城邑，任便從事各項工藝製造；又得將各項機器任便裝運進口，只需交納所訂進口稅。」以此判斷，這項條約的簽訂背景應與哪一戰事有關？",options:["鴉片戰爭","英法聯軍","甲午戰爭","日俄戰爭"],correct:2}
+      ]
+    },
+    {
+      type:"reading",
+      title:"二、題組",
+      meta:"8%，每題2分",
+      passages:[
+        {
+          label:"(一)",
+          text:"以下為《海上力量——世界海軍史》書中的敘述：",
+          image:"images/hist9/q24passage.png",
+          items:[
+            {q:"文中雙方爆發的戰爭應為下列何者？",options:["鴉片戰爭","甲午戰爭","日俄戰爭","八國聯軍"],correct:1},
+            {q:"關於文中這場戰爭造成的影響，下列何者有誤？",options:["清廷被迫承認朝鮮自主地位","清廷面臨受列強瓜分的危機","部分知識分子主張制度層面上的改革","慈禧太后推動庚子後新政以挽回民心"],correct:3}
+          ]
+        },
+        {
+          label:"(二)",
+          text:"以下為清末一份宣戰詔書的部分內容：",
+          image:"images/hist9/q26passage.png",
+          items:[
+            {q:"詔書中提到的「義勇軍」，其身分應該為何？",options:["打著扶清滅洋的義和團","穿戴儒生服飾的傳教士","災民與飢兵結合的流寇","由滿族親貴構成的內閣"],correct:0},
+            {q:"此詔書的發布造成下列何種結果？",options:["中國的天朝體制被打破","列強組成聯軍攻陷北京","中國民間出現崇洋媚外心態","清廷下詔預備立憲力圖改革"],correct:1}
+          ]
+        }
+      ]
+    }
+
+  ]
+};
+
+let currentMode = "quiz"; // quiz | print
+
+const contentEl = document.getElementById("content");
+const scoreBar = document.getElementById("scoreBar");
+const scoreText = document.getElementById("scoreText");
+
+function render(){
+  window.examAnswersRevealed = false;
+  contentEl.innerHTML = "";
+  DATA.sections.forEach((sec, si)=> contentEl.appendChild(renderSection(sec, si)));
+  if(currentMode==="quiz"){
+    scoreBar.classList.add("show");
+    updateScore();
+  } else {
+    scoreBar.classList.remove("show");
+    contentEl.querySelectorAll(".opt").forEach(o=>o.classList.add("disabled"));
+    contentEl.querySelectorAll(".opt.is-correct").forEach(o=>o.classList.add("correct"));
+  }
+}
+
+function renderSection(sec, si){
+  const block = document.createElement("section");
+  block.className = "block";
+  block.innerHTML = `<h2>${sec.title}</h2><p class="meta">${sec.meta}</p>`;
+
+  if(sec.type==="mc"){
+    sec.items.forEach((it,i)=>{
+      const q = document.createElement("div");
+      q.className = "q";
+      const optsHtml = it.options.map((op,oi)=>`
+        <div class="opt" data-idx="${oi}" data-correct="${oi===it.correct}">
+          <span class="tag">(${String.fromCharCode(65+oi)})</span><span>${op}</span>
+        </div>`).join("");
+      q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q}</div>
+        ${it.image ? `<img src="${it.image}" alt="題目附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">`:""}
+        <div class="opts">${optsHtml}</div>`;
+      q.querySelectorAll(".opt").forEach(optEl=>{
+        if(optEl.dataset.correct==="true") optEl.classList.add("is-correct");
+        optEl.addEventListener("click", ()=>selectOption(q, optEl));
+      });
+      block.appendChild(q);
+    });
+  }
+
+  else if(sec.type==="reading"){
+    sec.passages.forEach(p=>{
+      const passageDiv = document.createElement("div");
+      passageDiv.className = "passage";
+      passageDiv.innerHTML = `${p.label ? `<span class="passage-label">${p.label}</span>`:""}${p.text}${p.image ? `<img src="${p.image}" alt="題組附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-top:10px;border:1px solid var(--paper-line);">`:""}`;
+      block.appendChild(passageDiv);
+      p.items.forEach((it,i)=>{
+        const q = document.createElement("div");
+        q.className = "q";
+        const optsHtml = it.options.map((op,oi)=>`
+          <div class="opt" data-idx="${oi}" data-correct="${oi===it.correct}">
+            <span class="tag">(${String.fromCharCode(65+oi)})</span><span>${op}</span>
+          </div>`).join("");
+        q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q}</div>
+          ${it.image ? `<img src="${it.image}" alt="題目附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">`:""}
+          <div class="opts">${optsHtml}</div>`;
+        q.querySelectorAll(".opt").forEach(optEl=>{
+          if(optEl.dataset.correct==="true") optEl.classList.add("is-correct");
+          optEl.addEventListener("click", ()=>selectOption(q, optEl));
+        });
+        block.appendChild(q);
+      });
+    });
+  }
+
+  return block;
+}
+
+function selectOption(qEl, optEl){
+  if(currentMode!=="quiz") return;
+  if(qEl.dataset.answered==="true") return;
+  qEl.dataset.answered = "true";
+  qEl.querySelectorAll(".opt").forEach(o=>o.classList.add("disabled"));
+  optEl.classList.add("selected");
+  const correctOpt = qEl.querySelector('.opt[data-correct="true"]');
+  qEl.dataset.studentAnswer = optEl.textContent.trim();
+  qEl.dataset.correctAnswer = correctOpt ? correctOpt.textContent.trim() : "";
+  qEl.dataset.isCorrect = (optEl.dataset.correct==="true") ? "true" : "false";
+  updateScore();
+}
+
+function updateScore(){
+  let total = 0, answered = 0, correct = 0;
+  contentEl.querySelectorAll(".q").forEach(q=>{
+    const gradable = q.querySelector(".opts");
+    if(!gradable) return;
+    total++;
+    if(q.dataset.studentAnswer !== undefined){
+      answered++;
+      if(q.dataset.isCorrect === "true") correct++;
+    }
+  });
+  if(window.examAnswersRevealed){
+    scoreText.textContent = `${correct} / ${total}`;
+  } else {
+    scoreText.textContent = `已作答 ${answered} / ${total} 題`;
+  }
+}
+window.updateScore = updateScore;
+
+document.getElementById("resetBtn").addEventListener("click", render);
+document.getElementById("quizModeBtn").addEventListener("click", ()=>{
+  currentMode = "quiz";
+  document.getElementById("quizModeBtn").classList.add("active");
+  document.getElementById("printModeBtn").classList.remove("active");
+  render();
+});
+document.getElementById("printModeBtn").addEventListener("click", ()=>{
+  if(document.getElementById("printModeBtn").disabled) return;
+  currentMode = "print";
+  document.getElementById("printModeBtn").classList.add("active");
+  document.getElementById("quizModeBtn").classList.remove("active");
+  render();
+});
+
+window.unlockPrintMode = function(){
+  document.getElementById("printModeBtn").disabled = false;
+};
+
+render();
+</script>
+<script src="../sync.js"></script>
+</body>
+</html>
