@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>段考題庫｜公民第9回 - 第5~6課總複習（A卷）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@500;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#faf6ec;
+    --paper-line:#e3dcc8;
+    --ink:#26332b;
+    --ink-soft:#5b6b5f;
+    --chalk-green:#2f4538;
+    --chalk-green-2:#3d5a48;
+    --pen-red:#b8433a;
+    --pen-red-soft:#f4dedb;
+    --ok-green:#3f7d52;
+    --ok-green-soft:#dfeee1;
+    --gold:#b5842a;
+    --radius:10px;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:"Noto Sans TC",sans-serif;
+    line-height:1.7;
+  }
+  header.hero{
+    background:var(--chalk-green);
+    color:#eef2ea;
+    padding:28px 20px 40px;
+    position:relative;
+  }
+  header.hero::after{
+    content:"";
+    position:absolute;
+    left:0; right:0; bottom:-1px;
+    height:14px;
+    background:repeating-linear-gradient(90deg,var(--paper) 0 18px, transparent 18px 20px);
+  }
+  .hero-inner{max-width:880px;margin:0 auto;}
+  .breadcrumb a{color:#cfe0d1;text-decoration:none;font-size:14px;}
+  .breadcrumb a:hover{text-decoration:underline;}
+  h1{
+    font-family:"Noto Serif TC",serif;
+    font-weight:700;
+    font-size:clamp(24px,4vw,34px);
+    margin:10px 0 6px;
+  }
+  .subtitle{color:#cfe0d1;font-size:15px;margin:0;}
+  main{max-width:880px;margin:0 auto;padding:28px 20px 80px;}
+
+  .controls{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:22px;
+  }
+  .mode-toggle{display:flex;border:2px solid var(--chalk-green);border-radius:999px;overflow:hidden;}
+  .mode-toggle button{
+    background:transparent;border:none;padding:8px 16px;font-size:14px;font-weight:700;
+    color:var(--chalk-green);cursor:pointer;font-family:"Noto Sans TC",sans-serif;
+  }
+  .mode-toggle button.active{background:var(--gold);color:#fff;}
+  .mode-toggle button:disabled{opacity:.4;cursor:not-allowed;}
+
+  .score-bar{
+    display:none;
+    align-items:center;
+    justify-content:space-between;
+    background:#fff;
+    border:1px solid var(--paper-line);
+    border-left:5px solid var(--gold);
+    border-radius:var(--radius);
+    padding:12px 18px;
+    margin-bottom:22px;
+    font-size:14px;
+  }
+  .score-bar.show{display:flex;}
+  .score-bar strong{font-size:18px;color:var(--gold);}
+  .score-bar button{
+    background:none;border:1px solid var(--ink-soft);color:var(--ink-soft);
+    border-radius:6px;padding:6px 12px;font-size:13px;cursor:pointer;
+  }
+
+  section.block{
+    background:#fff;
+    border:1px solid var(--paper-line);
+    border-radius:var(--radius);
+    padding:22px 22px 26px;
+    margin-bottom:20px;
+  }
+  .block h2{
+    font-family:"Noto Serif TC",serif;
+    font-size:19px;
+    margin:0 0 4px;
+    color:var(--chalk-green);
+  }
+  .block .meta{color:var(--ink-soft);font-size:13px;margin:0 0 16px;}
+
+  .q{margin-bottom:18px;padding-bottom:16px;border-bottom:1px dashed var(--paper-line);}
+  .q:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0;}
+  .q-text{font-size:15.5px;margin-bottom:8px;}
+  .q-num{color:var(--gold);font-weight:700;margin-right:4px;}
+
+  .opts{display:grid;gap:8px;}
+  .opt{
+    display:flex;gap:8px;align-items:flex-start;
+    border:1.5px solid var(--paper-line);
+    border-radius:8px;
+    padding:9px 12px;
+    cursor:pointer;
+    font-size:14.5px;
+    background:#fffdf8;
+  }
+  .opt:hover{border-color:var(--chalk-green-2);}
+  .opt.selected{border-color:var(--chalk-green-2);background:#eef3ea;}
+  .opt.correct{border-color:var(--ok-green);background:var(--ok-green-soft);}
+  .opt.wrong{border-color:var(--pen-red);background:var(--pen-red-soft);}
+  .opt .tag{font-weight:700;color:var(--ink-soft);}
+  .opt.correct .tag{color:var(--ok-green);}
+  .opt.wrong .tag{color:var(--pen-red);}
+  .opt.disabled{cursor:default;}
+
+  .passage{
+    background:#f5f2e8;border-radius:8px;padding:14px 16px;margin-bottom:14px;
+    font-size:14.5px;white-space:pre-line;
+  }
+  .passage-label{font-weight:700;color:var(--chalk-green);margin-bottom:4px;display:block;}
+
+  .footer-link{
+    display:block;text-align:center;margin-top:30px;color:var(--chalk-green);
+    text-decoration:none;font-weight:700;font-size:14px;
+  }
+  .footer-link:hover{text-decoration:underline;}
+
+  @media print{
+    header.hero, .controls, .score-bar, .mini-btn, .footer-link{display:none !important;}
+    body{background:#fff;}
+    section.block{border:none;box-shadow:none;padding:8px 0;margin-bottom:14px;}
+    .opt.correct{background:none;border:none;font-weight:700;}
+    .opt.correct::after{content:" ← 正解";color:var(--pen-red);}
+    .opt{border:none;padding:2px 0;}
+    main{max-width:100%;padding:0 24px;}
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="breadcrumb"><a href="https://jenlin2002.github.io/">🏠 回總目錄</a> ／ <a href="../kangxuan-social-g8-1.html" style="color:#cfe0d1;">段考題庫</a></div>
+    <h1>公民・第9回</h1>
+    <p class="subtitle">第5~6課 總複習｜康軒版八年級社會（三）Ａ卷</p>
+  </div>
+</header>
+
+<main>
+  <div class="controls">
+    <div class="mode-toggle">
+      <button id="quizModeBtn" class="active">✏️ 測驗模式</button>
+      <button id="printModeBtn" disabled title="完成測驗並送出成績後才能查看">🖨️ 完整題目與解答（送出成績後解鎖）</button>
+    </div>
+  </div>
+
+  <div class="score-bar" id="scoreBar">
+    <div>目前得分：<strong id="scoreText">0 / 0</strong>（僅計算選擇題）</div>
+    <button id="resetBtn">重新作答</button>
+  </div>
+
+  <div id="content"></div>
+
+  <a class="footer-link" href="../kangxuan-social-g8-1.html">← 回段考題庫總覽</a>
+</main>
+
+<script>
+
+window.EXAM_META = { version: "A卷", examLabel: "公民第9回" };
+const DATA = {
+  sections: [
+    {
+      type:"mc",
+      title:"一、單題",
+      meta:"84%，每題3分",
+      items:[
+        {q:"依據現行《地方制度法》的規定，下列何者具有「地方自治團體」的性質？",options:["臺灣省","臺北市大安區","桃園市桃園區","高雄市桃源區"],correct:3},
+        {q:"依據中央政府與地方政府的權限劃分，下列何種事務屬於地方政府的職權？",options:["審核軍購預算","舉辦司法考試","推動觀光事業","設置地方法院"],correct:2},
+        {q:"《地方制度法》其中一條內容如下：「中央與直轄市、縣市間，權限遇有爭議時，由【甲院】會議決之」。依規定，下列何者屬於【甲院】的職權？",options:["審議地方總預算","提出領土變更案","提出公務人員彈劾案","任命行政院院長與官員"],correct:1},
+        {q:"公民課舉行地方政府官員的角色扮演，下列是四位同學的臺詞，請判斷何者扮演的最可能是「市民代表」？",image:"images/civ9/q4.png",options:["A","B","C","D"],correct:2},
+        {q:"每逢冬季寒流來襲，國內感染流行性感冒的人數就會大幅增加。為了控制疫情，衛生福利部統一購買流感疫苗，委託各縣市衛生單位施打。上述政府在控制疫情的事務分配上，採取的是下列何種方式？",options:["地方自治","水平分權","垂直分權","依法行政"],correct:2},
+        {q:"新北市政府將非自住房屋第4戶稅率調高為2.4%，引發反彈；新北市議會提案修改通過，將此稅率調降為1.5%。從上文可看出，地方政府具有哪些權力來治理地方事務？",options:["司法權、考試權","行政權、考試權","立法權、司法權","行政權、立法權"],correct:3},
+        {q:"在我國，下列哪項公職人員是由地方首長所任命？",options:["連江縣南竿鄉鄉長","嘉義縣布袋鎮鎮長","臺北市大安區區長","高雄市那瑪夏區區長"],correct:2},
+        {q:"下表為阿明與其親戚之身分資料——",image:"images/civ9/q8.png",options:["阿明","大可","白白","小堂"],correct:1},
+        {q:"政府為了讓人民能對重大政策、法案表達自己贊成或反對的意見，於2003年通過下列哪部法律？",options:["《憲法》","《公民投票法》","《公職人員選舉罷免法》","《總統副總統選舉罷免法》"],correct:1},
+        {q:"小明的中國網友要來臺灣自由行，由於旅遊時間只有一週，他拜託小明協助規畫北臺灣「直轄市」中著名的亮點行程。下列何者不適合列入行程當中？",options:["新北市平溪手做天燈祈福","臺北市101摩天大樓購物","基隆市和平島濱海公園觀浪","桃園市懷舊風情的大溪老街"],correct:2},
+        {q:"年滿29歲的王大明參加公職人員選舉，當選後，他跟朋友提到：「我的任期是4年，連選得連任一次」。依此判斷，王大明最可能是擔任下列何種公職人員？",options:["新北市市長","彰化縣縣長","屏東市市長","花蓮縣議員"],correct:2},
+        {q:"以下有五個公職人員選舉職位，依據法律被選舉人資格規定，哪些公職人員的法定參選年齡門檻相同？",options:["甲丙","乙丁","丙戊","丁戊"],correct:2},
+        {q:"我國國民志明住在新竹市香山區，年滿20歲。在地方公職人員選舉當天，下列哪些是志明依法可以領到的公職人員選票？",image:"images/civ9/q13.png",options:["甲乙庚辛","丙丁戊己","丙丁庚辛","丙丁"],correct:3},
+        {q:"我國身分證號碼開頭的英文字母代表的出生戶籍地縣市，如右表。根據表中內容，若民眾未離開出生戶籍地，以下關於身分證字母的分析，何者正確？",image:"images/civ9/q14.png",options:["字母為ABCD者，出生戶籍地屬於直轄市","字母為C者，可能可以投票選出區民代表","字母為H者，可能可以投票選出市民代表","字母為I者，出生戶籍地的地方制度層級與G相同"],correct:3},
+        {q:"依下列新聞內容判斷，臺南市政府所舉辦的祭典活動，與哪些地方自治事項較為相關？",image:"images/civ9/q15.png",options:["社會服務、教育文化","安全衛生、社會服務","經濟發展、安全衛生","教育文化、經濟發展"],correct:3},
+        {q:"根據《美國憲法》，美國總統是先由各州公民選出該州的選舉人，再由選舉人代表該州投票選出總統。上述方式與我國的哪項公平投票原則相互違背？",options:["普通","平等","直接","無記名"],correct:2},
+        {q:"以下是地方政府合併與改制的整理——",options:["簡化地方的行政層級","均衡北中南區域發展","改善地方的行政效率","處理跨區域自治事項"],correct:3},
+        {q:"王大明到日本旅遊，他寄了四張風景明信片給親朋好友，但下列何者的地址出現錯誤？",image:"images/civ9/q18.png",options:["A","B","C","D"],correct:0},
+        {q:"依我國現行《憲法》及法律規定，下表①~⑤的法定年齡依序為何？",image:"images/civ9/q19.png",options:["18、20、23、26、30","20、18、23、26、30","20、18、23、26、40","23、26、18、20、30"],correct:1},
+        {q:"阿光一家人在縣長選舉投票結束之後，就等著選舉結果揭曉，希望知道所支持的候選人是否當選。上述的選舉結果依法應由下列何者公布？",options:["總統","縣政府","考試院","選舉委員會"],correct:3},
+        {q:"總統大選時，某知名影星在選票上簽上名字，事後新聞播出時，她才知道她的選票成為廢票，直呼真是不好的示範。上述影星已違反我國哪項公平投票原則？",options:["普通","平等","直接","祕密投票"],correct:3},
+        {q:"公職人員選舉時，各政黨都會舉辦造勢晚會為候選人造勢。依據我國《公職人員選舉罷免法》規定，選舉造勢活動應該在選舉的哪個過程中舉辦？",options:["登記參選","競選","投票","開票"],correct:1},
+        {q:"我國在2022年舉行地方公職人員選舉，右列哪些選民所領取的票數相同？",image:"images/civ9/q23.png",options:["閃閃、小亮","小亮、阿妹","漂漂、阿妹","閃閃、阿妹"],correct:3},
+        {q:"下列哪組人員，皆是依《公職人員選舉罷免法》選出的地方公職人員？",image:"images/civ9/q24.png",options:["甲","乙","丙","丁"],correct:1},
+        {q:"以下為公民老師於上課前所準備的新聞案例：",image:"images/civ9/q25.png",options:["家庭平權","權力分立","政治參與","地方自治"],correct:2},
+        {q:"2021年12月我國進行17~20案的全國性公民投票時，下列何者最可能具備投票權？",options:["年滿18歲設籍在我國剛4個月的芳庭","年滿19歲來自加拿大的外籍學生玥珊","年滿20歲受地方法院監護宣告的阿哲","年滿21歲被最高法院褫奪公權的維康"],correct:3},
+        {q:"波多黎各各總督曾針對是否成為美國第51州一案交由全民決定。在我國，若由人民發起類似的公投案，依法須遵行下列哪項程序？",options:["提案→公告→連署→投票","公告→連署→提案→投票","連署→提案→公告→投票","提案→連署→公告→投票"],correct:3},
+        {q:"下表是我國辦理臺北市市長選舉時，四位國民的資料。依我國現行法律規定判斷，其中哪些人具有法定的投票資格？",image:"images/civ9/q28.png",options:["甲乙丙丁","甲乙丁","甲丙丁","乙丙丁"],correct:0}
+      ]
+    },
+    {
+      type:"reading",
+      title:"二、題組",
+      meta:"16%，每題4分",
+      passages:[
+        {
+          label:"(一)",
+          text:"有網友發現有多位候選人之政見內容相當特別，因此整理成表格，如下表。請根據表中內容，回答下列問題：",
+          image:"images/civ9/q29passage.png",
+          items:[
+            {q:"下列針對本次選舉的敘述，何者正確？",options:["發放選舉公報發生在登記參選階段","民眾須經由政黨提名才可登記參選","此次選舉的流程須依據《公民投票法》","年滿20歲者才具有本次選舉的投票權"],correct:3},
+            {q:"已知此選舉為地方公職人員選舉，且公職人員可連任一次，則此選舉最可能會選出何種角色？",options:["總統","市議員","直轄市長","鄉長"],correct:3}
+          ]
+        },
+        {
+          label:"(二)",
+          text:"2021年4月28日，臺北市衛生局制定《新興菸品管理自治條例》草案，在市議會法規委員會審議通過，率先全面禁售電子菸等類菸品，並將加熱式菸品納管，不得於臺北市學校50公尺以內販賣、供應、展示或廣告，違者最重可罰5萬元，若順利通過，下半年可報請行政院核定再公告實施。請回答下列問題：",
+          items:[
+            {q:"下列何者也屬於上文中審議通過該自治條例之政府官員的職權？",options:["執行地方工作事項","制定《菸害防制法》","執行上級政府委辦事項","監督地方行政機關施政"],correct:3},
+            {q:"地方政府對於電子菸、加熱菸等之管制，與下列哪些地方自治事項較為相關？",options:["社會服務、教育文化","安全衛生、社會服務","經濟發展、安全衛生","教育文化、經濟發展"],correct:1}
+          ]
+        }
+      ]
+    }
+
+  ]
+};
+
+let currentMode = "quiz"; // quiz | print
+
+const contentEl = document.getElementById("content");
+const scoreBar = document.getElementById("scoreBar");
+const scoreText = document.getElementById("scoreText");
+
+function render(){
+  window.examAnswersRevealed = false;
+  contentEl.innerHTML = "";
+  DATA.sections.forEach((sec, si)=> contentEl.appendChild(renderSection(sec, si)));
+  if(currentMode==="quiz"){
+    scoreBar.classList.add("show");
+    updateScore();
+  } else {
+    scoreBar.classList.remove("show");
+    contentEl.querySelectorAll(".opt").forEach(o=>o.classList.add("disabled"));
+    contentEl.querySelectorAll(".opt.is-correct").forEach(o=>o.classList.add("correct"));
+  }
+}
+
+function renderSection(sec, si){
+  const block = document.createElement("section");
+  block.className = "block";
+  block.innerHTML = `<h2>${sec.title}</h2><p class="meta">${sec.meta}</p>`;
+
+  if(sec.type==="mc"){
+    sec.items.forEach((it,i)=>{
+      const q = document.createElement("div");
+      q.className = "q";
+      const optsHtml = it.options.map((op,oi)=>`
+        <div class="opt" data-idx="${oi}" data-correct="${oi===it.correct}">
+          <span class="tag">(${String.fromCharCode(65+oi)})</span><span>${op}</span>
+        </div>`).join("");
+      q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q}</div>
+        ${it.image ? `<img src="${it.image}" alt="題目附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">`:""}
+        <div class="opts">${optsHtml}</div>`;
+      q.querySelectorAll(".opt").forEach(optEl=>{
+        if(optEl.dataset.correct==="true") optEl.classList.add("is-correct");
+        optEl.addEventListener("click", ()=>selectOption(q, optEl));
+      });
+      block.appendChild(q);
+    });
+  }
+
+  else if(sec.type==="reading"){
+    sec.passages.forEach(p=>{
+      const passageDiv = document.createElement("div");
+      passageDiv.className = "passage";
+      passageDiv.innerHTML = `${p.label ? `<span class="passage-label">${p.label}</span>`:""}${p.text}${p.image ? `<img src="${p.image}" alt="題組附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-top:10px;border:1px solid var(--paper-line);">`:""}`;
+      block.appendChild(passageDiv);
+      p.items.forEach((it,i)=>{
+        const q = document.createElement("div");
+        q.className = "q";
+        const optsHtml = it.options.map((op,oi)=>`
+          <div class="opt" data-idx="${oi}" data-correct="${oi===it.correct}">
+            <span class="tag">(${String.fromCharCode(65+oi)})</span><span>${op}</span>
+          </div>`).join("");
+        q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q}</div>
+          ${it.image ? `<img src="${it.image}" alt="題目附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">`:""}
+          <div class="opts">${optsHtml}</div>`;
+        q.querySelectorAll(".opt").forEach(optEl=>{
+          if(optEl.dataset.correct==="true") optEl.classList.add("is-correct");
+          optEl.addEventListener("click", ()=>selectOption(q, optEl));
+        });
+        block.appendChild(q);
+      });
+    });
+  }
+
+  return block;
+}
+
+function selectOption(qEl, optEl){
+  if(currentMode!=="quiz") return;
+  if(qEl.dataset.answered==="true") return;
+  qEl.dataset.answered = "true";
+  qEl.querySelectorAll(".opt").forEach(o=>o.classList.add("disabled"));
+  optEl.classList.add("selected");
+  const correctOpt = qEl.querySelector('.opt[data-correct="true"]');
+  qEl.dataset.studentAnswer = optEl.textContent.trim();
+  qEl.dataset.correctAnswer = correctOpt ? correctOpt.textContent.trim() : "";
+  qEl.dataset.isCorrect = (optEl.dataset.correct==="true") ? "true" : "false";
+  updateScore();
+}
+
+function updateScore(){
+  let total = 0, answered = 0, correct = 0;
+  contentEl.querySelectorAll(".q").forEach(q=>{
+    const gradable = q.querySelector(".opts");
+    if(!gradable) return;
+    total++;
+    if(q.dataset.studentAnswer !== undefined){
+      answered++;
+      if(q.dataset.isCorrect === "true") correct++;
+    }
+  });
+  if(window.examAnswersRevealed){
+    scoreText.textContent = `${correct} / ${total}`;
+  } else {
+    scoreText.textContent = `已作答 ${answered} / ${total} 題`;
+  }
+}
+window.updateScore = updateScore;
+
+document.getElementById("resetBtn").addEventListener("click", render);
+document.getElementById("quizModeBtn").addEventListener("click", ()=>{
+  currentMode = "quiz";
+  document.getElementById("quizModeBtn").classList.add("active");
+  document.getElementById("printModeBtn").classList.remove("active");
+  render();
+});
+document.getElementById("printModeBtn").addEventListener("click", ()=>{
+  if(document.getElementById("printModeBtn").disabled) return;
+  currentMode = "print";
+  document.getElementById("printModeBtn").classList.add("active");
+  document.getElementById("quizModeBtn").classList.remove("active");
+  render();
+});
+
+window.unlockPrintMode = function(){
+  document.getElementById("printModeBtn").disabled = false;
+};
+
+render();
+</script>
+<script src="../sync.js"></script>
+</body>
+</html>
