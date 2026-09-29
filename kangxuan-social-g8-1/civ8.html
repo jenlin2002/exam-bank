@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>段考題庫｜公民第8回 - 民主社會的政治參與及投票（A卷）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@500;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#faf6ec;
+    --paper-line:#e3dcc8;
+    --ink:#26332b;
+    --ink-soft:#5b6b5f;
+    --chalk-green:#2f4538;
+    --chalk-green-2:#3d5a48;
+    --pen-red:#b8433a;
+    --pen-red-soft:#f4dedb;
+    --ok-green:#3f7d52;
+    --ok-green-soft:#dfeee1;
+    --gold:#b5842a;
+    --radius:10px;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:"Noto Sans TC",sans-serif;
+    line-height:1.7;
+  }
+  header.hero{
+    background:var(--chalk-green);
+    color:#eef2ea;
+    padding:28px 20px 40px;
+    position:relative;
+  }
+  header.hero::after{
+    content:"";
+    position:absolute;
+    left:0; right:0; bottom:-1px;
+    height:14px;
+    background:repeating-linear-gradient(90deg,var(--paper) 0 18px, transparent 18px 20px);
+  }
+  .hero-inner{max-width:880px;margin:0 auto;}
+  .breadcrumb a{color:#cfe0d1;text-decoration:none;font-size:14px;}
+  .breadcrumb a:hover{text-decoration:underline;}
+  h1{
+    font-family:"Noto Serif TC",serif;
+    font-weight:700;
+    font-size:clamp(24px,4vw,34px);
+    margin:10px 0 6px;
+  }
+  .subtitle{color:#cfe0d1;font-size:15px;margin:0;}
+  main{max-width:880px;margin:0 auto;padding:28px 20px 80px;}
+
+  .controls{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:22px;
+  }
+  .mode-toggle{display:flex;border:2px solid var(--chalk-green);border-radius:999px;overflow:hidden;}
+  .mode-toggle button{
+    background:transparent;border:none;padding:8px 16px;font-size:14px;font-weight:700;
+    color:var(--chalk-green);cursor:pointer;font-family:"Noto Sans TC",sans-serif;
+  }
+  .mode-toggle button.active{background:var(--gold);color:#fff;}
+  .mode-toggle button:disabled{opacity:.4;cursor:not-allowed;}
+
+  .score-bar{
+    display:none;
+    align-items:center;
+    justify-content:space-between;
+    background:#fff;
+    border:1px solid var(--paper-line);
+    border-left:5px solid var(--gold);
+    border-radius:var(--radius);
+    padding:12px 18px;
+    margin-bottom:22px;
+    font-size:14px;
+  }
+  .score-bar.show{display:flex;}
+  .score-bar strong{font-size:18px;color:var(--gold);}
+  .score-bar button{
+    background:none;border:1px solid var(--ink-soft);color:var(--ink-soft);
+    border-radius:6px;padding:6px 12px;font-size:13px;cursor:pointer;
+  }
+
+  section.block{
+    background:#fff;
+    border:1px solid var(--paper-line);
+    border-radius:var(--radius);
+    padding:22px 22px 26px;
+    margin-bottom:20px;
+  }
+  .block h2{
+    font-family:"Noto Serif TC",serif;
+    font-size:19px;
+    margin:0 0 4px;
+    color:var(--chalk-green);
+  }
+  .block .meta{color:var(--ink-soft);font-size:13px;margin:0 0 16px;}
+
+  .q{margin-bottom:18px;padding-bottom:16px;border-bottom:1px dashed var(--paper-line);}
+  .q:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0;}
+  .q-text{font-size:15.5px;margin-bottom:8px;}
+  .q-num{color:var(--gold);font-weight:700;margin-right:4px;}
+
+  .opts{display:grid;gap:8px;}
+  .opt{
+    display:flex;gap:8px;align-items:flex-start;
+    border:1.5px solid var(--paper-line);
+    border-radius:8px;
+    padding:9px 12px;
+    cursor:pointer;
+    font-size:14.5px;
+    background:#fffdf8;
+  }
+  .opt:hover{border-color:var(--chalk-green-2);}
+  .opt.selected{border-color:var(--chalk-green-2);background:#eef3ea;}
+  .opt.correct{border-color:var(--ok-green);background:var(--ok-green-soft);}
+  .opt.wrong{border-color:var(--pen-red);background:var(--pen-red-soft);}
+  .opt .tag{font-weight:700;color:var(--ink-soft);}
+  .opt.correct .tag{color:var(--ok-green);}
+  .opt.wrong .tag{color:var(--pen-red);}
+  .opt.disabled{cursor:default;}
+
+  .passage{
+    background:#f5f2e8;border-radius:8px;padding:14px 16px;margin-bottom:14px;
+    font-size:14.5px;white-space:pre-line;
+  }
+  .passage-label{font-weight:700;color:var(--chalk-green);margin-bottom:4px;display:block;}
+
+  .footer-link{
+    display:block;text-align:center;margin-top:30px;color:var(--chalk-green);
+    text-decoration:none;font-weight:700;font-size:14px;
+  }
+  .footer-link:hover{text-decoration:underline;}
+
+  @media print{
+    header.hero, .controls, .score-bar, .mini-btn, .footer-link{display:none !important;}
+    body{background:#fff;}
+    section.block{border:none;box-shadow:none;padding:8px 0;margin-bottom:14px;}
+    .opt.correct{background:none;border:none;font-weight:700;}
+    .opt.correct::after{content:" ← 正解";color:var(--pen-red);}
+    .opt{border:none;padding:2px 0;}
+    main{max-width:100%;padding:0 24px;}
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="breadcrumb"><a href="https://jenlin2002.github.io/">🏠 回總目錄</a> ／ <a href="../kangxuan-social-g8-1.html" style="color:#cfe0d1;">段考題庫</a></div>
+    <h1>公民・第8回</h1>
+    <p class="subtitle">第6課 民主社會的政治參與及投票｜康軒版八年級社會（三）Ａ卷</p>
+  </div>
+</header>
+
+<main>
+  <div class="controls">
+    <div class="mode-toggle">
+      <button id="quizModeBtn" class="active">✏️ 測驗模式</button>
+      <button id="printModeBtn" disabled title="完成測驗並送出成績後才能查看">🖨️ 完整題目與解答（送出成績後解鎖）</button>
+    </div>
+  </div>
+
+  <div class="score-bar" id="scoreBar">
+    <div>目前得分：<strong id="scoreText">0 / 0</strong>（僅計算選擇題）</div>
+    <button id="resetBtn">重新作答</button>
+  </div>
+
+  <div id="content"></div>
+
+  <a class="footer-link" href="../kangxuan-social-g8-1.html">← 回段考題庫總覽</a>
+</main>
+
+<script>
+
+window.EXAM_META = { version: "A卷", examLabel: "公民第8回" };
+const DATA = {
+  sections: [
+    {
+      type:"mc",
+      title:"一、單題",
+      meta:"84%，每題3分",
+      items:[
+        {q:"目前世界上共有一百多個國家的投票年齡門檻為18歲，近幾年來，我國許多公民團體也積極推動「選舉年齡全面下修至18歲」的訴求。上述訴求是為了落實下列何種選舉原則？",options:["普通","平等","直接","無記名"],correct:0},
+        {q:"某縣政府計畫將閒置空地改建為垃圾掩埋場，引發附近居民的強烈反彈。居民組成自救會、舉辦說明會並連署向縣政府陳情，要求重新評估。此事件最能說明下列何者的重要性？",options:["政策的決定為政府職權","公民政治參與影響政策","環保科技解決汙染問題","地方政府完全自主決定"],correct:1},
+        {q:"以下新聞中的女子應該是違反了下列何種投票原則？",image:"images/civ8/q3.png",options:["普通","平等","直接","無記名"],correct:3},
+        {q:"柯大方為我國國民，現年32歲，舉家從基隆市遷籍到新北市新店區安昌里剛好滿5個月。根據上文判斷，柯大方無法參與下列哪件事？",options:["參選新北市議員","參選安昌里的里長","參與政黨造勢晚會","參與新北市地方公投"],correct:0},
+        {q:"以下是阿昌在文化中心演講時，所做的重點摘要——",image:"images/civ8/q5.png",options:["選舉活動","政黨政治","地方自治","政治參與"],correct:3},
+        {q:"此方式並非完美的方式，須花費較多的時間及金錢，但卻可以和平決定國家的政策內容，使少數群體擁有相同的發聲機會，即使是市井小民也可決定國家的去向。根據內容，上文的主題最可能為何？",options:["投票的重要性","政府的組成要件","平等權的爭取","家庭平權的促成"],correct:0},
+        {q:"大維：我已經擔任兩屆○○，此次選舉無法再參選。\n小新：那你可以參選□□，這個沒有連任次數限制。\n根據對話判斷，上述○○與□□依序為下列何者？",options:["里長；議員","鄉長；立法委員","議員；縣長","市長；總統"],correct:1},
+        {q:"市長候選人郝大明舉辦了多場造勢晚會，也發放文宣品，說明自己的理念與政見，請選民惠賜一票。上述現象應是發生在哪個階段的選舉過程？",options:["選舉公告","登記參選","競選","投票"],correct:2},
+        {q:"成為執政黨是每個政黨的終極目標，如果執政者想繼續執政，就要努力實現競選政見，人民透過選舉制度，有助於督促執政黨對其施政負責。根據上文，是選舉何種功能的展現？",options:["選出公職人員","影響政府決策","合法轉移政權","展現責任政治"],correct:3},
+        {q:"設籍在新竹縣竹北市的阿東特地向公司請假，返回戶籍地參與我國地方公職人員選舉的投票，善盡公民責任。依法阿東最多可領取幾張選票？",options:["2張","3張","5張","6張"],correct:2},
+        {q:"在造勢晚會上，某候選人大聲疾呼：「請支持2號員林市市長候選人，我將盡心盡力為彰化縣員林市市民服務。」上述候選人最有可能為下列何者？",options:["20歲受監護宣告的彬彬","23歲大學剛畢業的郁茹","38歲從軍職退役的阿德","40歲被褫奪公權的小櫻"],correct:1},
+        {q:"我國各項公職人員的參選年齡限制各有不同，右列公職人員若依其參選年齡的順序排列，何者正確？",image:"images/civ8/q12.png",options:["甲＞乙＞丙＞丁＞戊","乙＞甲＞丙＞丁＞戊","乙＞甲＞丙＞丁＝戊","丁＞乙＞甲＞丙＝戊"],correct:2},
+        {q:"王聰明在某次選舉中獲得執政黨推薦擔任「監票員」工作，主要工作內容是檢視民眾的選票蓋印與工作人員的唱票、計算是否正確。這項工作內容是在選舉的哪項過程中執行？",options:["選舉公告時期","登記參選階段","候選人競選時","投票當日開票"],correct:3},
+        {q:"我國第1~8任的總統、副總統是由國民大會代表投票選出，修憲之後，自民國85年第9任開始改為人民直選，不須再透過國大代表。上述選舉制度的改變是下列哪項選舉原則的落實？",options:["普通","平等","直接","無記名"],correct:2},
+        {q:"黃先生是人民黨的黨員，打算投入立法委員選舉。下列是他整理的選舉程序，其中哪項正確？",image:"images/civ8/q15.png",options:["登記參選→選舉公告→競選活動→投票→開票","選舉公告→競選活動→登記參選→投票→開票","選舉公告→登記參選→競選活動→投票→開票","競選活動→選舉公告→登記參選→投票→開票"],correct:2},
+        {q:"立法院於2017年年底通過《公民投票法》修正案，包括提案、連署、通過的人數門檻都調降，連投票資格也放寬。下列有關現行公民投票的投票人資格規定，何者正確？",options:["滿20歲且設籍滿4個月","滿18歲且設籍滿4個月","滿20歲且設籍滿6個月","滿18歲且設籍滿6個月"],correct:3},
+        {q:"在民主國家中，政府是由人民透過選舉定期授權產生，而定期選舉機制能使政黨藉由正當性的管道取得政權。上文主要在描述選舉的哪種功能？",options:["選出公職人員","影響政府政策","合法組成政府","落實責任政治"],correct:2},
+        {q:"公民投票是一種直接民主的展現，簡稱公投，由整個國家或地區的公民決議某些重要議題。下列關於公民投票之敘述，何者正確？",options:["須依《公職人員選舉罷免法》規定辦理","須在公民投票案所在地設籍4個月以上","公投的目的主要在選舉適當的候選人","公投主要在落實人民的創制及複決權"],correct:3},
+        {q:"英國在1900年廢除「大學選區制度」，舊制是指擁有大學學歷的選民除在戶籍地投票外，還能再回到自己畢業的大學選區再投一票；此外，1928年才讓全體成年女性享有投票權。依上所述，在1900年之前的英國選舉，違反哪些選舉原則？",options:["平等、直接","普通、平等","普通、無記名","平等、無記名"],correct:1},
+        {q:"根據我國公職人員的參選條件，下表中哪一選項的內容完全正確？",image:"images/civ8/q20.png",options:["里長","鄉民代表","立法委員","縣長"],correct:0},
+        {q:"有民眾於公共政策網路參與平臺發表提案，表示直轄市範圍廣大，下轄之區並非地方自治團體，使政策內容無法切合當地需要。因此提議修法將官派的區長改為民選。根據上文內容，下列說明何者正確？",options:["依據我國地方政府制度，區長皆由市長指派","此名民眾期望透過選舉表達看法，影響政府政策","此提案若促使政府修法，凸顯公共意見具影響性","在野黨會設法匯集民眾意見，並轉為實際的政策"],correct:2},
+        {q:"小齊在網路新聞中，看到右圖的新聞標題。舉行圖中該投票案的程序應為下列何者？",image:"images/civ8/q22.png",options:["連署→提案→公告→投票","登記→連署→投票→公告","登記→競選→投票→公告","提案→連署→公告→投票"],correct:3},
+        {q:"政治參與經常以投票方式呈現。若以現行相關法規判斷，下列關於「對人」與「對事」投票的比較，何者正確？",image:"images/civ8/q23.png",options:["對應權利","投票年齡","投票目的","選民應排除條件"],correct:1},
+        {q:"公民老師請四位同學發表對於政治參與的看法，哪個人的見解最正確？",image:"images/civ8/q24.png",options:["A","B","C","D"],correct:1},
+        {q:"右表為我國四位候選人的參選年齡與預計參選的公職，根據我國現行法律判斷，哪些候選人符合年齡的參選資格？",image:"images/civ8/q25.png",options:["大強、阿豪、小佳","大強、阿豪、美月","大強、小佳、美月","阿豪、小佳、美月"],correct:0},
+        {q:"右表為近三次阿雯的選舉資格變化情形，根據表中內容判斷，阿雯在2020年至2024年間，最可能發生下列哪一事件？",image:"images/civ8/q26.png",options:["考上國內的頂尖大學","失去快樂黨黨員身分","遭法院判處褫奪公權","年齡符合投票的規定"],correct:3},
+        {q:"阿宣即將在最近的選舉中投下神聖的一票，身為首投族的他為求慎重，特地在網路上搜尋到下圖的投票注意事項，並看到網友針對這些規定發表的留言。其中下列何者的留言正確？",image:"images/civ8/q27.png",options:["甲：如果當天沒空，可請他人代為投票","乙：依此領票及投票，可落實投票的公平","丙：符合資格就能投票，彰顯選舉的平等原則","丁：要確實將印章蓋在選票上，否則視為廢票"],correct:1},
+        {q:"選舉權為人民的基本權利，可細分為選出擔任公職者的「投票權」，及成為公職候選人的「被選舉權」。根據我國現行法規，下列關於「投票權」及「被選舉權」的敘述，何者正確？",options:["行使對人的投票權，最低年齡為18歲","行使被選舉權的最低年齡為20歲","受監護宣告者無法行使其投票權","受褫奪公權者無法行使被選舉權"],correct:3}
+      ]
+    },
+    {
+      type:"reading",
+      title:"二、題組",
+      meta:"16%，每題4分",
+      passages:[
+        {
+          label:"(一)",
+          text:"「不在籍投票」是指為了選民因故而無法到投票所現場行使投票之權利時，提供其他行使投票權的途徑。不在籍投票如以「移轉投票」的方式進行，也就是選民在投票日當天，若無法回到戶籍地投票，只要在事前的規定時間內，向戶政機關申請，就可以在投票日當天，就近移轉到工作地或求學地投票。有學者認為不在籍投票可讓人民親自投票，不需透過他人行使投票權，保障選民參政權，但外界仍對此存在許多疑慮，仍需進一步解決。請依據上文，回答下列問題：",
+          items:[
+            {q:"根據上文學者的說法，最能彰顯下列何項選舉原則？",options:["平等","直接","普通","無記名"],correct:1},
+            {q:"中選會曾表示：如果實施不在籍投票，建議先實施於中央層級選舉，地方層級種類多達9種，困難度非常高。根據上文，下列何者屬於中央層級的選舉？",options:["直轄市議員","立法委員","縣轄市市長","鄉鎮市民代表"],correct:1}
+          ]
+        },
+        {
+          label:"(二)",
+          text:"活寶市是個直轄市，其所在國家的選舉制度與相關規定與我國相同。以下是活寶市市民的資料，請根據內容，回答下列問題：",
+          image:"images/civ8/q31passage.png",
+          items:[
+            {q:"表中共有幾人可以競選活寶市立法機關公職人員？",options:["1人","2人","3人","4人"],correct:1},
+            {q:"表中具有投票資格的一共有幾人？",options:["1人","2人","3人","4人"],correct:2}
+          ]
+        }
+      ]
+    }
+
+  ]
+};
+
+let currentMode = "quiz"; // quiz | print
+
+const contentEl = document.getElementById("content");
+const scoreBar = document.getElementById("scoreBar");
+const scoreText = document.getElementById("scoreText");
+
+function render(){
+  window.examAnswersRevealed = false;
+  contentEl.innerHTML = "";
+  DATA.sections.forEach((sec, si)=> contentEl.appendChild(renderSection(sec, si)));
+  if(currentMode==="quiz"){
+    scoreBar.classList.add("show");
+    updateScore();
+  } else {
+    scoreBar.classList.remove("show");
+    contentEl.querySelectorAll(".opt").forEach(o=>o.classList.add("disabled"));
+    contentEl.querySelectorAll(".opt.is-correct").forEach(o=>o.classList.add("correct"));
+  }
+}
+
+function renderSection(sec, si){
+  const block = document.createElement("section");
+  block.className = "block";
+  block.innerHTML = `<h2>${sec.title}</h2><p class="meta">${sec.meta}</p>`;
+
+  if(sec.type==="mc"){
+    sec.items.forEach((it,i)=>{
+      const q = document.createElement("div");
+      q.className = "q";
+      const optsHtml = it.options.map((op,oi)=>`
+        <div class="opt" data-idx="${oi}" data-correct="${oi===it.correct}">
+          <span class="tag">(${String.fromCharCode(65+oi)})</span><span>${op}</span>
+        </div>`).join("");
+      q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q}</div>
+        ${it.image ? `<img src="${it.image}" alt="題目附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">`:""}
+        <div class="opts">${optsHtml}</div>`;
+      q.querySelectorAll(".opt").forEach(optEl=>{
+        if(optEl.dataset.correct==="true") optEl.classList.add("is-correct");
+        optEl.addEventListener("click", ()=>selectOption(q, optEl));
+      });
+      block.appendChild(q);
+    });
+  }
+
+  else if(sec.type==="reading"){
+    sec.passages.forEach(p=>{
+      const passageDiv = document.createElement("div");
+      passageDiv.className = "passage";
+      passageDiv.innerHTML = `${p.label ? `<span class="passage-label">${p.label}</span>`:""}${p.text}${p.image ? `<img src="${p.image}" alt="題組附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-top:10px;border:1px solid var(--paper-line);">`:""}`;
+      block.appendChild(passageDiv);
+      p.items.forEach((it,i)=>{
+        const q = document.createElement("div");
+        q.className = "q";
+        const optsHtml = it.options.map((op,oi)=>`
+          <div class="opt" data-idx="${oi}" data-correct="${oi===it.correct}">
+            <span class="tag">(${String.fromCharCode(65+oi)})</span><span>${op}</span>
+          </div>`).join("");
+        q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q}</div>
+          ${it.image ? `<img src="${it.image}" alt="題目附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">`:""}
+          <div class="opts">${optsHtml}</div>`;
+        q.querySelectorAll(".opt").forEach(optEl=>{
+          if(optEl.dataset.correct==="true") optEl.classList.add("is-correct");
+          optEl.addEventListener("click", ()=>selectOption(q, optEl));
+        });
+        block.appendChild(q);
+      });
+    });
+  }
+
+  return block;
+}
+
+function selectOption(qEl, optEl){
+  if(currentMode!=="quiz") return;
+  if(qEl.dataset.answered==="true") return;
+  qEl.dataset.answered = "true";
+  qEl.querySelectorAll(".opt").forEach(o=>o.classList.add("disabled"));
+  optEl.classList.add("selected");
+  const correctOpt = qEl.querySelector('.opt[data-correct="true"]');
+  qEl.dataset.studentAnswer = optEl.textContent.trim();
+  qEl.dataset.correctAnswer = correctOpt ? correctOpt.textContent.trim() : "";
+  qEl.dataset.isCorrect = (optEl.dataset.correct==="true") ? "true" : "false";
+  updateScore();
+}
+
+function updateScore(){
+  let total = 0, answered = 0, correct = 0;
+  contentEl.querySelectorAll(".q").forEach(q=>{
+    const gradable = q.querySelector(".opts");
+    if(!gradable) return;
+    total++;
+    if(q.dataset.studentAnswer !== undefined){
+      answered++;
+      if(q.dataset.isCorrect === "true") correct++;
+    }
+  });
+  if(window.examAnswersRevealed){
+    scoreText.textContent = `${correct} / ${total}`;
+  } else {
+    scoreText.textContent = `已作答 ${answered} / ${total} 題`;
+  }
+}
+window.updateScore = updateScore;
+
+document.getElementById("resetBtn").addEventListener("click", render);
+document.getElementById("quizModeBtn").addEventListener("click", ()=>{
+  currentMode = "quiz";
+  document.getElementById("quizModeBtn").classList.add("active");
+  document.getElementById("printModeBtn").classList.remove("active");
+  render();
+});
+document.getElementById("printModeBtn").addEventListener("click", ()=>{
+  if(document.getElementById("printModeBtn").disabled) return;
+  currentMode = "print";
+  document.getElementById("printModeBtn").classList.add("active");
+  document.getElementById("quizModeBtn").classList.remove("active");
+  render();
+});
+
+window.unlockPrintMode = function(){
+  document.getElementById("printModeBtn").disabled = false;
+};
+
+render();
+</script>
+<script src="../sync.js"></script>
+</body>
+</html>
