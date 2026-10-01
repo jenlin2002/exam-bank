@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>段考題庫｜地理第2回 - 世界中的臺灣（A卷）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@500;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#faf6ec;
+    --paper-line:#e3dcc8;
+    --ink:#26332b;
+    --ink-soft:#5b6b5f;
+    --chalk-green:#2f4538;
+    --chalk-green-2:#3d5a48;
+    --pen-red:#b8433a;
+    --pen-red-soft:#f4dedb;
+    --ok-green:#3f7d52;
+    --ok-green-soft:#dfeee1;
+    --gold:#b5842a;
+    --radius:10px;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:"Noto Sans TC",sans-serif;
+    line-height:1.7;
+  }
+  header.hero{
+    background:var(--chalk-green);
+    color:#eef2ea;
+    padding:28px 20px 40px;
+    position:relative;
+  }
+  header.hero::after{
+    content:"";
+    position:absolute;
+    left:0; right:0; bottom:-1px;
+    height:14px;
+    background:repeating-linear-gradient(90deg,var(--paper) 0 18px, transparent 18px 20px);
+  }
+  .hero-inner{max-width:880px;margin:0 auto;}
+  .breadcrumb a{color:#cfe0d1;text-decoration:none;font-size:14px;}
+  .breadcrumb a:hover{text-decoration:underline;}
+  h1{
+    font-family:"Noto Serif TC",serif;
+    font-weight:700;
+    font-size:clamp(24px,4vw,34px);
+    margin:10px 0 6px;
+  }
+  .subtitle{color:#cfe0d1;font-size:15px;margin:0;}
+  main{max-width:880px;margin:0 auto;padding:28px 20px 80px;}
+
+  .controls{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:22px;
+  }
+  .mode-toggle{display:flex;border:2px solid var(--chalk-green);border-radius:999px;overflow:hidden;}
+  .mode-toggle button{
+    background:transparent;border:none;padding:8px 16px;font-size:14px;font-weight:700;
+    color:var(--chalk-green);cursor:pointer;font-family:"Noto Sans TC",sans-serif;
+  }
+  .mode-toggle button.active{background:var(--gold);color:#fff;}
+  .mode-toggle button:disabled{opacity:.4;cursor:not-allowed;}
+
+  .score-bar{
+    display:none;
+    align-items:center;
+    justify-content:space-between;
+    background:#fff;
+    border:1px solid var(--paper-line);
+    border-left:5px solid var(--gold);
+    border-radius:var(--radius);
+    padding:12px 18px;
+    margin-bottom:22px;
+    font-size:14px;
+  }
+  .score-bar.show{display:flex;}
+  .score-bar strong{font-size:18px;color:var(--gold);}
+  .score-bar button{
+    background:none;border:1px solid var(--ink-soft);color:var(--ink-soft);
+    border-radius:6px;padding:6px 12px;font-size:13px;cursor:pointer;
+  }
+
+  section.block{
+    background:#fff;
+    border:1px solid var(--paper-line);
+    border-radius:var(--radius);
+    padding:22px 22px 26px;
+    margin-bottom:20px;
+  }
+  .block h2{
+    font-family:"Noto Serif TC",serif;
+    font-size:19px;
+    margin:0 0 4px;
+    color:var(--chalk-green);
+  }
+  .block .meta{color:var(--ink-soft);font-size:13px;margin:0 0 16px;}
+
+  .q{margin-bottom:18px;padding-bottom:16px;border-bottom:1px dashed var(--paper-line);}
+  .q:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0;}
+  .q-text{font-size:15.5px;margin-bottom:8px;}
+  .q-num{color:var(--gold);font-weight:700;margin-right:4px;}
+
+  .opts{display:grid;gap:8px;}
+  .opt{
+    display:flex;gap:8px;align-items:flex-start;
+    border:1.5px solid var(--paper-line);
+    border-radius:8px;
+    padding:9px 12px;
+    cursor:pointer;
+    font-size:14.5px;
+    background:#fffdf8;
+  }
+  .opt:hover{border-color:var(--chalk-green-2);}
+  .opt.selected{border-color:var(--chalk-green-2);background:#eef3ea;}
+  .opt.correct{border-color:var(--ok-green);background:var(--ok-green-soft);}
+  .opt.wrong{border-color:var(--pen-red);background:var(--pen-red-soft);}
+  .opt .tag{font-weight:700;color:var(--ink-soft);}
+  .opt.correct .tag{color:var(--ok-green);}
+  .opt.wrong .tag{color:var(--pen-red);}
+  .opt.disabled{cursor:default;}
+
+  .passage{
+    background:#f5f2e8;border-radius:8px;padding:14px 16px;margin-bottom:14px;
+    font-size:14.5px;white-space:pre-line;
+  }
+  .passage-label{font-weight:700;color:var(--chalk-green);margin-bottom:4px;display:block;}
+
+  .footer-link{
+    display:block;text-align:center;margin-top:30px;color:var(--chalk-green);
+    text-decoration:none;font-weight:700;font-size:14px;
+  }
+  .footer-link:hover{text-decoration:underline;}
+
+  @media print{
+    header.hero, .controls, .score-bar, .mini-btn, .footer-link{display:none !important;}
+    body{background:#fff;}
+    section.block{border:none;box-shadow:none;padding:8px 0;margin-bottom:14px;}
+    .opt.correct{background:none;border:none;font-weight:700;}
+    .opt.correct::after{content:" ← 正解";color:var(--pen-red);}
+    .opt{border:none;padding:2px 0;}
+    main{max-width:100%;padding:0 24px;}
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="breadcrumb"><a href="https://jenlin2002.github.io/">🏠 回總目錄</a> ／ <a href="../hanlin-social-g7-1.html" style="color:#cfe0d1;">段考題庫</a></div>
+    <h1>地理・第2回</h1>
+    <p class="subtitle">第2章 世界中的臺灣｜翰林版七年級社會（一）Ａ卷</p>
+  </div>
+</header>
+
+<main>
+  <div class="controls">
+    <div class="mode-toggle">
+      <button id="quizModeBtn" class="active">✏️ 測驗模式</button>
+      <button id="printModeBtn" disabled title="完成測驗並送出成績後才能查看">🖨️ 完整題目與解答（送出成績後解鎖）</button>
+    </div>
+  </div>
+
+  <div class="score-bar" id="scoreBar">
+    <div>目前得分：<strong id="scoreText">0 / 0</strong>（僅計算選擇題）</div>
+    <button id="resetBtn">重新作答</button>
+  </div>
+
+  <div id="content"></div>
+
+  <a class="footer-link" href="../hanlin-social-g7-1.html">← 回段考題庫總覽</a>
+</main>
+
+<script>
+
+window.EXAM_META = { version: "A卷", examLabel: "地理第2回" };
+const DATA = {
+  sections: [
+    {
+      type:"mc",
+      title:"一、單題",
+      meta:"60%，每題3分",
+      items:[
+        {q:"臺灣特有物種「南庄橙」，僅存於竹苗一帶，因富有特殊香氣，在2023年世界柑橘果醬大賽奪得冠軍。在臺灣與南庄橙同為特有物種的植物高達26%，因獨特性高而成為珍貴的自然資產。上述提及特有物種比例與下列哪一個因素最有關？",options:["低緯熱帶氣候適宜植物的演化","居東亞島弧而使物種便於遷徙","海島地形造成臺灣島位置孤立","位於亞洲大陸邊緣而物種眾多"],correct:2},
+        {q:"圖(一)是西太平洋上一系列火山島嶼，這些島嶼沿著東亞大陸邊緣，形成一連串弧形島嶼，地震、火山等活動非常活躍。根據圖中內容判斷，臺灣具有何種優勢？",image:"images/geo2/q2.png",options:["重要交通樞紐","經濟海域廣大","島內物產豐富","周邊離島眾多"],correct:0},
+        {q:"喜歡出國旅遊的小義某次向班上同學展示他出國旅遊的照片，照片中的他雙腳分別踏在東半球及西半球。小義不可能是到哪一洲去旅遊？",options:["歐洲","非洲","大洋洲","中南美洲"],correct:3},
+        {q:"灰面鷲是隨季節遷移的候鳥，每年十月左右在屏東滿州稍停歇，後轉飛往東南亞過冬，隔年春天北返，於清明節前後盤聚於彰化八卦山，形成壯觀景象。上述物種之所以經過臺灣，與臺灣何種地理位置有關？",options:["冰河時期與大陸相連","居熱帶及溫帶交界區","臨世界最大的太平洋","居歐亞大陸的東南側"],correct:1},
+        {q:"圖(二)中標示著「★」的島嶼，為我國最南端領土，我國在該島領海附近舉行軍事演習時，最可能引發哪一國家的抗議？",image:"images/geo2/q5.png",options:["日本","南韓","俄羅斯","菲律賓"],correct:3},
+        {q:"臺灣本島的位置約介於120°E〜122°E，22°N〜25°N之間。某旅遊團遊覽時，車上的定位系統測得該地的經緯度座標為（24.16°N，121.62°E），該旅遊團最可能是在下列何處遊覽？",options:["嘉義阿里山","花蓮太魯閣","臺東三仙臺","高雄西子灣"],correct:1},
+        {q:"2025年海洋國家公園管理處舉辦淨灘活動，選定澎湖南方四島公園的東吉嶼進行，共清出900公斤海漂垃圾，其中以來自中國的最多。上述活動所見到的海域為下列何者？",options:["東海","南海","太平洋","臺灣海峽"],correct:3},
+        {q:"小茹參加《全球冒險王》的節目錄影，節目一開始只知道自己位置在南半球，那她不可能在哪一洲？",options:["歐洲","非洲","南美洲","大洋洲"],correct:0},
+        {q:"每年冬天成群的烏魚南下，臺灣漁民遠赴圖(三)中★處的離島海域，開啟「追魚」之路，並一路航行至臺灣西南沿海，成群的烏魚帶來可觀的收入，又被稱為烏金。由圖判斷，漁民追魚的起點應是哪一離島？",image:"images/geo2/q9.png",options:["金門","馬祖","澎湖","蘭嶼"],correct:1},
+        {q:"2023年6月來自海上的強烈熱帶氣旋登陸甲國，發生短時強降雨以及約2公尺高的風暴潮，洪水淹沒了低窪地區，學校勒令停課，沿岸漁業活動暫停。根據圖(四)中甲國位置判斷，上述的氣旋最可能來自哪一個鄰近海域？",image:"images/geo2/q10.png",options:["北極海","印度洋","太平洋","大西洋"],correct:1},
+        {q:"臺灣氣候類型屬於熱帶和溫帶氣候交界的位置。造成此現象的原因為何？",options:["介於大洋西側","介於東經120°到122°","介於陸地東側","介於北緯22°到25°"],correct:3},
+        {q:"臺灣的地理位置會帶來許多影響，下列哪一現象與位置帶來的影響關係最小？",options:["冬季時有許多候鳥到臺灣來避冬","高雄港成為貨物吞吐量大的港口","臺灣島面積狹小且離島數量眾多","像櫻花鉤吻鮭一樣的特有物種多"],correct:2},
+        {q:"雪霸國家公園的櫻花鉤吻鮭為臺灣特有物種，是臺灣的國寶魚，更被印在2,000元紙鈔上成為圖案。上述魚類成為臺灣特有物種的原因為何？",options:["冰河期結束後，海峽阻隔臺灣與亞洲大陸","早期先民從福建沿海渡海來臺時所帶來","科學家經過基因改造而成","受到輻射感染使鮭魚變異"],correct:0},
+        {q:"16世紀初，麥哲倫率領船隊從歐洲南部的西班牙出海，向西航行抵達美洲，雖然最後在菲律賓喪生，但其船隊繼續向西航行，繞過非洲南端，回到西班牙，完成環遊世界一周的壯舉。船隊在麥哲倫喪生後向西返回歐洲的過程中，依序經過下列哪些大洋？",options:["印度洋→太平洋","大西洋→印度洋","大西洋→太平洋","印度洋→大西洋"],correct:3},
+        {q:"難民拉娜因社會動盪從甲洲離開，與子女在乙洲生活多年，最終才以難民身分獲得重新安置到丙洲，與久別多年在美國的妹妹重逢。根據圖(五)中資訊判斷，拉娜在各大洲遷徙路徑的順序為何？",image:"images/geo2/q15.png",options:["非洲→北美洲→亞洲","南美洲→歐洲→亞洲","非洲→亞洲→北美洲","南美洲→亞洲→歐洲"],correct:2},
+        {q:"地理課時，老師說明臺灣位於全世界最大的海洋和全世界最大的陸地之間，上述海洋及陸地各是下列何者？",options:["亞洲、大西洋","美洲、大西洋","亞洲、太平洋","美洲、太平洋"],correct:2},
+        {q:"2024年屏東黑鮪魚文化觀光季第一鮪是由「安穩發8號」在北緯20度、東經122度海域捕獲，重量達301.8公斤。上述這隻第一鮪應是在位於臺灣本島哪一方向的海域上捕捉到的？",options:["東北方","東南方","西北方","西南方"],correct:1},
+        {q:"賽鴿為以鴿子長途飛行速度作為競賽，競賽場域多位於海上，賽鴿隊會搭乘船隻至指定賽事地點進行放鴿。阿沅接獲賽事地點通知為「東經118.15度，北緯21.31度」，他在參考圖(六)的臺灣絕對位置圖後，應搭乘船隻前往哪個海域進行比賽？",image:"images/geo2/q18.png",options:["東海","南海","巴士海峽","臺灣海峽"],correct:1},
+        {q:"小傑暑假搭火車出去玩，坐在面向行進方向，左邊靠窗的位置，整段旅程在早上的時候完全不會被太陽曬到，這次的出遊路線最有可能是下列何者？",options:["嘉義到新竹","臺中到花蓮","宜蘭到臺東","苗栗到彰化"],correct:0},
+        {q:"2024年臺灣外海發生甲國快艇翻覆事件，圖(七)是事發地點圖。根據資訊判斷，此事件中翻覆的快艇應隸屬哪一個鄰近國家？",image:"images/geo2/q20.png",options:["日本","南韓","中國","菲律賓"],correct:2}
+      ]
+    },
+    {
+      type:"reading",
+      title:"二、題組",
+      meta:"12%，每題3分",
+      passages:[
+        {
+          label:"(一)",
+          text:"內政部目前研議要開放東沙島（20.7°N，116.7°E）觀光活動，此項議題拋出後隨即引來各界討論及關心。",
+          items:[
+            {q:"東沙島開放觀光後，遊客們會從臺灣本島的哪一港口出發搭船較為接近？",options:["蘇澳港","臺北港","臺中港","高雄港"],correct:3},
+            {q:"我國在東沙島的軍事管轄權，在領海基線向外推移多少海哩的範圍內？",options:["2海哩","12海哩","60海哩","200海哩"],correct:1}
+          ]
+        },
+        {
+          label:"(二)",
+          text:"美國於2022年公布「印太戰略」報告，圖(八)為美國遏制中國海洋勢力擴張的「第一島鏈」海空防禦圖，顯示臺灣位於關鍵核心，因此維護臺灣海峽的和平與穩定也成為美國的戰略目標。",
+          image:"images/geo2/q23passage.png",
+          items:[
+            {q:"臺灣位於第一島鏈的關鍵核心，與下列何者有關？",options:["位於東亞島弧中段","經濟海域多與他國重疊","位居板塊交界地帶","溫帶與熱帶氣候過渡帶"],correct:0},
+            {q:"此報告是為遏制中國向哪一海洋擴張勢力？",options:["北極海","太平洋","印度洋","大西洋"],correct:1}
+          ]
+        }
+      ]
+    },
+    {
+      type:"mc",
+      title:"三、進階思考題",
+      meta:"28%，每題4分",
+      items:[
+        {q:"台江國家公園是臺灣第8座國家公園，是臺灣唯一溼地型國家公園，每到一定的時節，黑面琵鷺便會從北方遷徙至此，因而該管理處也會做長期觀測。通常在下列哪一時期園區內黑面琵鷺的數量最少？",options:["1〜2月","5〜6月","10〜11月","11〜12月"],correct:1},
+        {q:"圖(九)是小光在新聞上看到的「臺灣地表位移圖」，臺灣因為位於板塊交界，地表每年都產生位移，圖中箭頭方向代表地表移動方向、箭頭長度代表每年的移動距離。小光在閱讀地圖後，可能觀察出哪一個現象？",image:"images/geo2/q26.png",options:["蘭嶼每年以100mm速度往本島靠攏","臺灣島西南部往巴士海峽方向移動","花蓮與臺東地區大致往東南方位移","龜山島每年向東南移動約300mm"],correct:0},
+        {q:"香香航空公司今年開闢了一條由日本東京直飛臺灣高雄小港機場的新航線，小軒從東京搭乘了此航線，在途中他可能不會經過下列哪一海域？",options:["臺灣海峽","東海","南海","太平洋"],correct:2},
+        {q:"在宜蘭可見大面積冰河時期遺留下來的特有植物山毛櫸，此植物多位於溫帶氣候，臺灣是在全球分布的最南界，屬臺灣珍稀植物。上述植物的生態特性與臺灣哪一地理特色有關？",options:["位於溫、熱帶的交界","冰河時期與菲律賓相連","位處低緯而全年暖溼","位居東亞島弧最南端"],correct:0},
+        {q:"地球上海陸分布面積不均，北半球和南半球各有不同。根據上述，下列何者正確？",options:["在北半球，陸地面積大於海洋面積","在南半球，陸地面積大於海洋面積","北半球的陸地面積大於南半球的陸地面積","北半球的海洋面積大於南半球的海洋面積"],correct:2},
+        {q:"臺灣的某離島隸屬金門縣管轄，位於金門和馬祖間，兩地並無經常性交通工具，交通必須仰賴軍艦就近往返臺中港，目前由我國海軍陸戰隊駐紮該島。上述島嶼應位於哪一海域上？",options:["臺灣海峽","巴士海峽","太平洋","東海"],correct:0},
+        {q:"圖(十)為地球的海陸面積比例及各洲面積比例圓餅圖。根據圖中資料判斷，下列哪一項敘述正確？",image:"images/geo2/q31.png",options:["亞洲面積比美洲總和大","北半球的陸地面積比海洋面積大","歐洲面積占地球表面的7%","大部分的陸地分布在南半球"],correct:0}
+      ]
+    }
+
+  ]
+};
+
+let currentMode = "quiz"; // quiz | print
+
+const contentEl = document.getElementById("content");
+const scoreBar = document.getElementById("scoreBar");
+const scoreText = document.getElementById("scoreText");
+
+function render(){
+  window.examAnswersRevealed = false;
+  contentEl.innerHTML = "";
+  DATA.sections.forEach((sec, si)=> contentEl.appendChild(renderSection(sec, si)));
+  if(currentMode==="quiz"){
+    scoreBar.classList.add("show");
+    updateScore();
+  } else {
+    scoreBar.classList.remove("show");
+    contentEl.querySelectorAll(".opt").forEach(o=>o.classList.add("disabled"));
+    contentEl.querySelectorAll(".opt.is-correct").forEach(o=>o.classList.add("correct"));
+  }
+}
+
+function renderSection(sec, si){
+  const block = document.createElement("section");
+  block.className = "block";
+  block.innerHTML = `<h2>${sec.title}</h2><p class="meta">${sec.meta}</p>`;
+
+  if(sec.type==="mc"){
+    sec.items.forEach((it,i)=>{
+      const q = document.createElement("div");
+      q.className = "q";
+      const optsHtml = it.options.map((op,oi)=>`
+        <div class="opt" data-idx="${oi}" data-correct="${oi===it.correct}">
+          <span class="tag">(${String.fromCharCode(65+oi)})</span><span>${op}</span>
+        </div>`).join("");
+      const imgHtml = it.image ? `<img src="${it.image}" alt="題目附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">` : "";
+      const img2Html = it.image2 ? `<img src="${it.image2}" alt="題目附圖2" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">` : "";
+      q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q}</div>
+        ${imgHtml}${img2Html}
+        <div class="opts">${optsHtml}</div>`;
+      q.querySelectorAll(".opt").forEach(optEl=>{
+        if(optEl.dataset.correct==="true") optEl.classList.add("is-correct");
+        optEl.addEventListener("click", ()=>selectOption(q, optEl));
+      });
+      block.appendChild(q);
+    });
+  }
+
+  else if(sec.type==="reading"){
+    sec.passages.forEach(p=>{
+      const passageDiv = document.createElement("div");
+      passageDiv.className = "passage";
+      passageDiv.innerHTML = `${p.label ? `<span class="passage-label">${p.label}</span>`:""}${p.text}${p.image ? `<img src="${p.image}" alt="題組附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-top:10px;border:1px solid var(--paper-line);">`:""}`;
+      block.appendChild(passageDiv);
+      p.items.forEach((it,i)=>{
+        const q = document.createElement("div");
+        q.className = "q";
+        const optsHtml = it.options.map((op,oi)=>`
+          <div class="opt" data-idx="${oi}" data-correct="${oi===it.correct}">
+            <span class="tag">(${String.fromCharCode(65+oi)})</span><span>${op}</span>
+          </div>`).join("");
+        q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q}</div>
+          ${it.image ? `<img src="${it.image}" alt="題目附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">`:""}
+          <div class="opts">${optsHtml}</div>`;
+        q.querySelectorAll(".opt").forEach(optEl=>{
+          if(optEl.dataset.correct==="true") optEl.classList.add("is-correct");
+          optEl.addEventListener("click", ()=>selectOption(q, optEl));
+        });
+        block.appendChild(q);
+      });
+    });
+  }
+
+  return block;
+}
+
+function selectOption(qEl, optEl){
+  if(currentMode!=="quiz") return;
+  if(qEl.dataset.answered==="true") return;
+  qEl.dataset.answered = "true";
+  qEl.querySelectorAll(".opt").forEach(o=>o.classList.add("disabled"));
+  optEl.classList.add("selected");
+  const correctOpt = qEl.querySelector('.opt[data-correct="true"]');
+  qEl.dataset.studentAnswer = optEl.textContent.trim();
+  qEl.dataset.correctAnswer = correctOpt ? correctOpt.textContent.trim() : "";
+  qEl.dataset.isCorrect = (optEl.dataset.correct==="true") ? "true" : "false";
+  updateScore();
+}
+
+function updateScore(){
+  let total = 0, answered = 0, correct = 0;
+  contentEl.querySelectorAll(".q").forEach(q=>{
+    const gradable = q.querySelector(".opts");
+    if(!gradable) return;
+    total++;
+    if(q.dataset.studentAnswer !== undefined){
+      answered++;
+      if(q.dataset.isCorrect === "true") correct++;
+    }
+  });
+  if(window.examAnswersRevealed){
+    scoreText.textContent = `${correct} / ${total}`;
+  } else {
+    scoreText.textContent = `已作答 ${answered} / ${total} 題`;
+  }
+}
+window.updateScore = updateScore;
+
+document.getElementById("resetBtn").addEventListener("click", render);
+document.getElementById("quizModeBtn").addEventListener("click", ()=>{
+  currentMode = "quiz";
+  document.getElementById("quizModeBtn").classList.add("active");
+  document.getElementById("printModeBtn").classList.remove("active");
+  render();
+});
+document.getElementById("printModeBtn").addEventListener("click", ()=>{
+  if(document.getElementById("printModeBtn").disabled) return;
+  currentMode = "print";
+  document.getElementById("printModeBtn").classList.add("active");
+  document.getElementById("quizModeBtn").classList.remove("active");
+  render();
+});
+
+window.unlockPrintMode = function(){
+  document.getElementById("printModeBtn").disabled = false;
+};
+
+render();
+</script>
+<script src="../sync.js"></script>
+</body>
+</html>
