@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>段考題庫｜地理第1回 - 認識位置與地圖（A卷）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@500;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#faf6ec;
+    --paper-line:#e3dcc8;
+    --ink:#26332b;
+    --ink-soft:#5b6b5f;
+    --chalk-green:#2f4538;
+    --chalk-green-2:#3d5a48;
+    --pen-red:#b8433a;
+    --pen-red-soft:#f4dedb;
+    --ok-green:#3f7d52;
+    --ok-green-soft:#dfeee1;
+    --gold:#b5842a;
+    --radius:10px;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:"Noto Sans TC",sans-serif;
+    line-height:1.7;
+  }
+  header.hero{
+    background:var(--chalk-green);
+    color:#eef2ea;
+    padding:28px 20px 40px;
+    position:relative;
+  }
+  header.hero::after{
+    content:"";
+    position:absolute;
+    left:0; right:0; bottom:-1px;
+    height:14px;
+    background:repeating-linear-gradient(90deg,var(--paper) 0 18px, transparent 18px 20px);
+  }
+  .hero-inner{max-width:880px;margin:0 auto;}
+  .breadcrumb a{color:#cfe0d1;text-decoration:none;font-size:14px;}
+  .breadcrumb a:hover{text-decoration:underline;}
+  h1{
+    font-family:"Noto Serif TC",serif;
+    font-weight:700;
+    font-size:clamp(24px,4vw,34px);
+    margin:10px 0 6px;
+  }
+  .subtitle{color:#cfe0d1;font-size:15px;margin:0;}
+  main{max-width:880px;margin:0 auto;padding:28px 20px 80px;}
+
+  .controls{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:22px;
+  }
+  .mode-toggle{display:flex;border:2px solid var(--chalk-green);border-radius:999px;overflow:hidden;}
+  .mode-toggle button{
+    background:transparent;border:none;padding:8px 16px;font-size:14px;font-weight:700;
+    color:var(--chalk-green);cursor:pointer;font-family:"Noto Sans TC",sans-serif;
+  }
+  .mode-toggle button.active{background:var(--gold);color:#fff;}
+  .mode-toggle button:disabled{opacity:.4;cursor:not-allowed;}
+
+  .score-bar{
+    display:none;
+    align-items:center;
+    justify-content:space-between;
+    background:#fff;
+    border:1px solid var(--paper-line);
+    border-left:5px solid var(--gold);
+    border-radius:var(--radius);
+    padding:12px 18px;
+    margin-bottom:22px;
+    font-size:14px;
+  }
+  .score-bar.show{display:flex;}
+  .score-bar strong{font-size:18px;color:var(--gold);}
+  .score-bar button{
+    background:none;border:1px solid var(--ink-soft);color:var(--ink-soft);
+    border-radius:6px;padding:6px 12px;font-size:13px;cursor:pointer;
+  }
+
+  section.block{
+    background:#fff;
+    border:1px solid var(--paper-line);
+    border-radius:var(--radius);
+    padding:22px 22px 26px;
+    margin-bottom:20px;
+  }
+  .block h2{
+    font-family:"Noto Serif TC",serif;
+    font-size:19px;
+    margin:0 0 4px;
+    color:var(--chalk-green);
+  }
+  .block .meta{color:var(--ink-soft);font-size:13px;margin:0 0 16px;}
+
+  .q{margin-bottom:18px;padding-bottom:16px;border-bottom:1px dashed var(--paper-line);}
+  .q:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0;}
+  .q-text{font-size:15.5px;margin-bottom:8px;}
+  .q-num{color:var(--gold);font-weight:700;margin-right:4px;}
+
+  .opts{display:grid;gap:8px;}
+  .opt{
+    display:flex;gap:8px;align-items:flex-start;
+    border:1.5px solid var(--paper-line);
+    border-radius:8px;
+    padding:9px 12px;
+    cursor:pointer;
+    font-size:14.5px;
+    background:#fffdf8;
+  }
+  .opt:hover{border-color:var(--chalk-green-2);}
+  .opt.selected{border-color:var(--chalk-green-2);background:#eef3ea;}
+  .opt.correct{border-color:var(--ok-green);background:var(--ok-green-soft);}
+  .opt.wrong{border-color:var(--pen-red);background:var(--pen-red-soft);}
+  .opt .tag{font-weight:700;color:var(--ink-soft);}
+  .opt.correct .tag{color:var(--ok-green);}
+  .opt.wrong .tag{color:var(--pen-red);}
+  .opt.disabled{cursor:default;}
+
+  .passage{
+    background:#f5f2e8;border-radius:8px;padding:14px 16px;margin-bottom:14px;
+    font-size:14.5px;white-space:pre-line;
+  }
+  .passage-label{font-weight:700;color:var(--chalk-green);margin-bottom:4px;display:block;}
+
+  .footer-link{
+    display:block;text-align:center;margin-top:30px;color:var(--chalk-green);
+    text-decoration:none;font-weight:700;font-size:14px;
+  }
+  .footer-link:hover{text-decoration:underline;}
+
+  @media print{
+    header.hero, .controls, .score-bar, .mini-btn, .footer-link{display:none !important;}
+    body{background:#fff;}
+    section.block{border:none;box-shadow:none;padding:8px 0;margin-bottom:14px;}
+    .opt.correct{background:none;border:none;font-weight:700;}
+    .opt.correct::after{content:" ← 正解";color:var(--pen-red);}
+    .opt{border:none;padding:2px 0;}
+    main{max-width:100%;padding:0 24px;}
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="breadcrumb"><a href="https://jenlin2002.github.io/">🏠 回總目錄</a> ／ <a href="../hanlin-social-g7-1.html" style="color:#cfe0d1;">段考題庫</a></div>
+    <h1>地理・第1回</h1>
+    <p class="subtitle">第1章 認識位置與地圖｜翰林版七年級社會（一）Ａ卷</p>
+  </div>
+</header>
+
+<main>
+  <div class="controls">
+    <div class="mode-toggle">
+      <button id="quizModeBtn" class="active">✏️ 測驗模式</button>
+      <button id="printModeBtn" disabled title="完成測驗並送出成績後才能查看">🖨️ 完整題目與解答（送出成績後解鎖）</button>
+    </div>
+  </div>
+
+  <div class="score-bar" id="scoreBar">
+    <div>目前得分：<strong id="scoreText">0 / 0</strong>（僅計算選擇題）</div>
+    <button id="resetBtn">重新作答</button>
+  </div>
+
+  <div id="content"></div>
+
+  <a class="footer-link" href="../hanlin-social-g7-1.html">← 回段考題庫總覽</a>
+</main>
+
+<script>
+
+window.EXAM_META = { version: "A卷", examLabel: "地理第1回" };
+const DATA = {
+  sections: [
+    {
+      type:"mc",
+      title:"一、單題",
+      meta:"60%，每題3分",
+      items:[
+        {q:"允豪參加校園地圖大賽，規則為地圖上以5公分繪製100公尺跑道與等比例的操場。根據上述規則，允豪應採用下列哪一個比例尺才能正確呈現？",image:"images/geo1/q1.png",options:["A","B","C","D"],correct:1},
+        {q:"在一場大地遊戲中，小明在小美的南方10公尺，而小華在小明的東方10公尺，那小美應在小華的何方？",options:["東北方","東南方","西北方","西南方"],correct:2},
+        {q:"地圖是了解一地資訊的重要來源，一般來說地圖包含四個要素，圖(一)是阿華在網站上看到的某張地圖，該圖僅呈現下列哪一要素？",image:"images/geo1/q3.png",options:["圖名","圖例","比例尺","方向標"],correct:1},
+        {q:"經線和緯線能標示出每個地點的位置，下列相關敘述何者正確？",options:["0度緯線是最長的一條緯線","0度經線是最長的一條經線","是一種相對位置的表示方法","是真實存在於地表面的線段"],correct:0},
+        {q:"小銘在登山時發生了山難，為了要讓救難人員迅速掌握他的位置，應該如何通報最佳？",options:["玉山主峰和東峰之間","位於23.5°N，121°E","離嘉義縣政府約50公里","位於玉山山脈的西側"],correct:1},
+        {q:"下表是婷婷整理關於大、小比例尺的比較，下列何者錯誤？",image:"images/geo1/q6.png",options:["範圍","內容","舉例","每1公分實際距離"],correct:2},
+        {q:"圖(二)是育寧班上的外籍教師在介紹故鄉風土民情時搭配的國家位置圖，根據位置判斷，該教師的家鄉位於臺灣（24°N，121°E）的哪一方向？",image:"images/geo1/q7.png",options:["東南方","西南方","東北方","西北方"],correct:1},
+        {q:"小柔出國前，參加旅行社的行前說明會，導遊告知旅遊區氣候炎熱、四季如夏，並強調不必帶厚重衣物。小柔旅遊的國家最可能位在圖(三)中的哪個地點？",image:"images/geo1/q8.png",options:["甲","乙","丙","丁"],correct:1},
+        {q:"新聞報導：「大馬士革國際機場附近發生強烈爆炸，大約在當地時間23點5分，也就是格林威治時間21點5分，敵軍針對機場郊區發動空襲。」根據報導判斷，大馬士革應位於圖(四)中何處？",image:"images/geo1/q9.png",options:["甲","乙","丙","丁"],correct:2},
+        {q:"因受到地球自轉軸傾斜的影響，太陽的直射範圍會在圖(五)中哪兩條線之間移動？",image:"images/geo1/q10.png",options:["甲、乙","乙、丙","丙、丁","甲、丁"],correct:1},
+        {q:"泰勒絲從美國紐約搭飛機前往日本東京，飛行路線如圖(六)。根據圖中資訊判斷，下列有關此趟行程的敘述，何者正確？",image:"images/geo1/q11.png",options:["兩地分屬不同氣候帶且季節相反","橫越國際換日線後日期須減一天","兩地相差14小時且東京時間較早","由紐約向東飛越海洋後抵達東京"],correct:2},
+        {q:"小緯去國外旅遊時在某景點看到許多遊客打開雙腳呈現大字型在拍照，表示自己橫跨了東、西半球，這個景點最可能有下列哪一經緯線通過？",options:["赤道","北極圈","南回歸線","本初經線"],correct:3},
+        {q:"比例尺有很多不同的表示方法，下列哪一種表示法經過印刷、縮放等程序後還能保持正確比例？",options:["1：10,000","比例尺為圖形比例尺（0―100―200公尺）","1／10,000","一萬分之一"],correct:1},
+        {q:"住在臺北的小昱在午餐時間打電話給住在加拿大多倫多的阿姨，電話接通時，阿姨說她是被電話的聲音吵醒的。上述兩座城市的時間為何不同？",options:["兩地經度不同","兩地緯度不同","兩地生活習慣不同","兩地經濟發展程度不同"],correct:0},
+        {q:"大華從新加坡（1°N，103°E）搭機回臺北（25°N，121°E），上機時氣溫大約是攝氏30度，抵達臺北時卻只有攝氏13度。會有這樣差異的原因為何？",options:["新加坡的經度較小","臺北的緯度較高","兩地的季節相反","兩地分屬東、西半球"],correct:1},
+        {q:"泓志第一次到臺北大巨蛋觀賞球賽，剛下車就迷失方向，立刻向朋友阿閔通話求救：「我正在光復南路的接駁站，我該怎麼走到大巨蛋入口？」阿閔在查看圖(七)的進場動線指南後，該如何回答泓志？",image:"images/geo1/q16.png",options:["下車後向北走，入口在文化城東側200m","下車後背對著國父紀念館，往前走150m","往東走到捷運出口5處，再往西走300m","往南走到忠孝東路後，再轉向東走400m"],correct:3},
+        {q:"「美國總統川普日前表態希望可以取得格陵蘭島，這個位於西、北半球的島嶼是世界最大島嶼，目前屬丹麥的領土……。」文中提及的島嶼應為下列何者？",image:"images/geo1/q17.png",options:["A","B","C","D"],correct:0},
+        {q:"表示位置的方式相當多樣，圖(八)是日常生活中常見到的標示，此種表示位置的方式與下列何者屬於同一類型？",image:"images/geo1/q18.png",options:["友愛國中側門正對面","位在23.5°N，119°E","在金門列嶼的東南方","距澎湖約120公里處"],correct:0},
+        {q:"潛水愛好者雞丁某次潛水時，被海流沖走，還好配戴的GPS裝置發出救援訊號，如圖(九)，國際救援中心即刻定位其座標，才成功獲救。下列何者最可能是當時雞丁的所在位置？",image:"images/geo1/q19.png",options:["（40°S，150°E）","（40°N，150°E）","（40°S，150°W）","（40°N，150°W）"],correct:0},
+        {q:"背包客阿文常到世界各地旅行，也結識了許多海外友人，圖(十)是他今年所拜訪的四位友人所在地，依據圖中資訊判斷，何人與家住臺灣的阿文時差最大且季節相反？",image:"images/geo1/q20.png",options:["約翰","麥可","文森","大衛"],correct:3}
+      ]
+    },
+    {
+      type:"reading",
+      title:"二、題組",
+      meta:"12%，每題3分",
+      passages:[
+        {
+          label:"(一)",
+          text:"2023年臺灣傳出狒狒從飼養園區脫逃事件，狒狒被人發現在街頭遊蕩，圖(十一)為五日內目擊民眾回報現蹤地點繪製成的圖。",
+          image:"images/geo1/q21passage.png",
+          items:[
+            {q:"根據圖中資訊判斷，下列哪一分析最為正確？",options:["飼養狒狒的園區位於桃園市平鎮","民眾目擊地涵蓋新竹縣與桃園市","3/20遭遇圍捕並往東北方向逃離","3/23現蹤後繼續向西北方向移動"],correct:2},
+            {q:"若欲計算狒狒逃脫距離，應在圖中加入哪一要素？",options:["圖例","方向標","高度表","比例尺"],correct:3}
+          ]
+        },
+        {
+          label:"(二)",
+          text:"「我飄向北方，家人是否無恙，肩上沉重的行囊，盛滿了惆悵。」來自馬來西亞（2°N，102°E）的歌手以一首《飄向北方》紅遍華人社會，歌詞講述離開家鄉「北漂」尋夢的心路歷程。",
+          items:[
+            {q:"這位歌手家鄉位於馬來西亞，他年輕的時候也曾如歌曲所描述，離開故鄉前來臺灣（25°N，120°E）就讀大學，追逐夢想。他由家鄉前來臺灣的飛行方向為何？",options:["東北方","西北方","西南方","東南方"],correct:0},
+            {q:"《飄向北方》在歌詞中描寫家鄉是個位於南方、有椰子樹搖晃的地方，根據馬來西亞的位置判斷，當地應屬於哪一氣候區？",options:["寒帶氣候區","溫帶氣候區","熱帶氣候區","無法判斷"],correct:2}
+          ]
+        }
+      ]
+    },
+    {
+      type:"mc",
+      title:"三、進階思考題",
+      meta:"28%，每題4分",
+      items:[
+        {q:"從紐約（75°W）到臺灣（120°E）當交換學生的小璋打電話回家時，臺灣時間為下午1點，在紐約的父母當時最可能進行下列何事？",options:["睡夢中","吃早餐","剛上班","吃晚餐"],correct:0},
+        {q:"如果南回歸線通過臺灣，根據圖(十二)判斷，臺北市和高雄市的溫度變化為何？",image:"images/geo1/q28.png",options:["兩地皆變熱","兩地皆變冷","臺北市變熱，高雄市變冷","臺北市變冷，高雄市變熱"],correct:2},
+        {q:"一張地圖中，比例尺是不可或缺的一項要件，不同比例尺的地圖，涵蓋的範圍與能呈現的詳細程度皆不同。下列哪一個比例尺的涵蓋範圍最大？",options:["圖上2公分代表20公里","五萬分之一","圖上1公分代表2公里","1：25,000"],correct:0},
+        {q:"阿諾到臺北旅遊時，在飯店大廳看到世界主要城市時鐘（如圖(十三)），時鐘上標出不同的時間。根據絕對位置推論，下列哪一城市與臺灣的時差最大？",image:"images/geo1/q29.png",options:["倫敦（0°）","舊金山（120°W）","雪梨（150°E）","里約（46°W）"],correct:1},
+        {q:"圖(十四)為童話世界廣場園區示意圖。若園區設立在臺灣，下午時太陽總是從山的那一頭落下。請根據此一條件判斷，此圖的方向標應如何標示？",image:"images/geo1/q30.png",image2:"images/geo1/q30opts.png",options:["A","B","C","D"],correct:2},
+        {q:"小華和朋友要到日本東京自助旅行，事前在收集旅遊資訊時，整理出四張地圖，哪一張的比例尺最小？",options:["亞洲分區地圖","東京旅遊地圖","世界氣候全圖","日本行政區圖"],correct:2},
+        {q:"地圖要素能夠幫助人們獲得更詳盡的資訊，地理老師請同學發表說明地圖要素，下列哪一位同學的說法可能會被老師糾正？",image:"images/geo1/q31.png",options:["A","B","C","D"],correct:2}
+      ]
+    }
+
+  ]
+};
+
+let currentMode = "quiz"; // quiz | print
+
+const contentEl = document.getElementById("content");
+const scoreBar = document.getElementById("scoreBar");
+const scoreText = document.getElementById("scoreText");
+
+function render(){
+  window.examAnswersRevealed = false;
+  contentEl.innerHTML = "";
+  DATA.sections.forEach((sec, si)=> contentEl.appendChild(renderSection(sec, si)));
+  if(currentMode==="quiz"){
+    scoreBar.classList.add("show");
+    updateScore();
+  } else {
+    scoreBar.classList.remove("show");
+    contentEl.querySelectorAll(".opt").forEach(o=>o.classList.add("disabled"));
+    contentEl.querySelectorAll(".opt.is-correct").forEach(o=>o.classList.add("correct"));
+  }
+}
+
+function renderSection(sec, si){
+  const block = document.createElement("section");
+  block.className = "block";
+  block.innerHTML = `<h2>${sec.title}</h2><p class="meta">${sec.meta}</p>`;
+
+  if(sec.type==="mc"){
+    sec.items.forEach((it,i)=>{
+      const q = document.createElement("div");
+      q.className = "q";
+      const optsHtml = it.options.map((op,oi)=>`
+        <div class="opt" data-idx="${oi}" data-correct="${oi===it.correct}">
+          <span class="tag">(${String.fromCharCode(65+oi)})</span><span>${op}</span>
+        </div>`).join("");
+      const imgHtml = it.image ? `<img src="${it.image}" alt="題目附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">` : "";
+      const img2Html = it.image2 ? `<img src="${it.image2}" alt="題目附圖2" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">` : "";
+      q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q}</div>
+        ${imgHtml}${img2Html}
+        <div class="opts">${optsHtml}</div>`;
+      q.querySelectorAll(".opt").forEach(optEl=>{
+        if(optEl.dataset.correct==="true") optEl.classList.add("is-correct");
+        optEl.addEventListener("click", ()=>selectOption(q, optEl));
+      });
+      block.appendChild(q);
+    });
+  }
+
+  else if(sec.type==="reading"){
+    sec.passages.forEach(p=>{
+      const passageDiv = document.createElement("div");
+      passageDiv.className = "passage";
+      passageDiv.innerHTML = `${p.label ? `<span class="passage-label">${p.label}</span>`:""}${p.text}${p.image ? `<img src="${p.image}" alt="題組附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-top:10px;border:1px solid var(--paper-line);">`:""}`;
+      block.appendChild(passageDiv);
+      p.items.forEach((it,i)=>{
+        const q = document.createElement("div");
+        q.className = "q";
+        const optsHtml = it.options.map((op,oi)=>`
+          <div class="opt" data-idx="${oi}" data-correct="${oi===it.correct}">
+            <span class="tag">(${String.fromCharCode(65+oi)})</span><span>${op}</span>
+          </div>`).join("");
+        q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q}</div>
+          ${it.image ? `<img src="${it.image}" alt="題目附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">`:""}
+          <div class="opts">${optsHtml}</div>`;
+        q.querySelectorAll(".opt").forEach(optEl=>{
+          if(optEl.dataset.correct==="true") optEl.classList.add("is-correct");
+          optEl.addEventListener("click", ()=>selectOption(q, optEl));
+        });
+        block.appendChild(q);
+      });
+    });
+  }
+
+  return block;
+}
+
+function selectOption(qEl, optEl){
+  if(currentMode!=="quiz") return;
+  if(qEl.dataset.answered==="true") return;
+  qEl.dataset.answered = "true";
+  qEl.querySelectorAll(".opt").forEach(o=>o.classList.add("disabled"));
+  optEl.classList.add("selected");
+  const correctOpt = qEl.querySelector('.opt[data-correct="true"]');
+  qEl.dataset.studentAnswer = optEl.textContent.trim();
+  qEl.dataset.correctAnswer = correctOpt ? correctOpt.textContent.trim() : "";
+  qEl.dataset.isCorrect = (optEl.dataset.correct==="true") ? "true" : "false";
+  updateScore();
+}
+
+function updateScore(){
+  let total = 0, answered = 0, correct = 0;
+  contentEl.querySelectorAll(".q").forEach(q=>{
+    const gradable = q.querySelector(".opts");
+    if(!gradable) return;
+    total++;
+    if(q.dataset.studentAnswer !== undefined){
+      answered++;
+      if(q.dataset.isCorrect === "true") correct++;
+    }
+  });
+  if(window.examAnswersRevealed){
+    scoreText.textContent = `${correct} / ${total}`;
+  } else {
+    scoreText.textContent = `已作答 ${answered} / ${total} 題`;
+  }
+}
+window.updateScore = updateScore;
+
+document.getElementById("resetBtn").addEventListener("click", render);
+document.getElementById("quizModeBtn").addEventListener("click", ()=>{
+  currentMode = "quiz";
+  document.getElementById("quizModeBtn").classList.add("active");
+  document.getElementById("printModeBtn").classList.remove("active");
+  render();
+});
+document.getElementById("printModeBtn").addEventListener("click", ()=>{
+  if(document.getElementById("printModeBtn").disabled) return;
+  currentMode = "print";
+  document.getElementById("printModeBtn").classList.add("active");
+  document.getElementById("quizModeBtn").classList.remove("active");
+  render();
+});
+
+window.unlockPrintMode = function(){
+  document.getElementById("printModeBtn").disabled = false;
+};
+
+render();
+</script>
+<script src="../sync.js"></script>
+</body>
+</html>
