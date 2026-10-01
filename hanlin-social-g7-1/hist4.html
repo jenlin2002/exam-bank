@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>段考題庫｜歷史第4回 - 第3章 大航海時代臺灣原住民與外來者（A卷）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@500;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#faf6ec;
+    --paper-line:#e3dcc8;
+    --ink:#26332b;
+    --ink-soft:#5b6b5f;
+    --chalk-green:#2f4538;
+    --chalk-green-2:#3d5a48;
+    --pen-red:#b8433a;
+    --pen-red-soft:#f4dedb;
+    --ok-green:#3f7d52;
+    --ok-green-soft:#dfeee1;
+    --gold:#b5842a;
+    --radius:10px;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:"Noto Sans TC",sans-serif;
+    line-height:1.7;
+  }
+  header.hero{
+    background:var(--chalk-green);
+    color:#eef2ea;
+    padding:28px 20px 40px;
+    position:relative;
+  }
+  header.hero::after{
+    content:"";
+    position:absolute;
+    left:0; right:0; bottom:-1px;
+    height:14px;
+    background:repeating-linear-gradient(90deg,var(--paper) 0 18px, transparent 18px 20px);
+  }
+  .hero-inner{max-width:880px;margin:0 auto;}
+  .breadcrumb a{color:#cfe0d1;text-decoration:none;font-size:14px;}
+  .breadcrumb a:hover{text-decoration:underline;}
+  h1{
+    font-family:"Noto Serif TC",serif;
+    font-weight:700;
+    font-size:clamp(24px,4vw,34px);
+    margin:10px 0 6px;
+  }
+  .subtitle{color:#cfe0d1;font-size:15px;margin:0;}
+  main{max-width:880px;margin:0 auto;padding:28px 20px 80px;}
+
+  .controls{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:22px;
+  }
+  .mode-toggle{display:flex;border:2px solid var(--chalk-green);border-radius:999px;overflow:hidden;}
+  .mode-toggle button{
+    background:transparent;border:none;padding:8px 16px;font-size:14px;font-weight:700;
+    color:var(--chalk-green);cursor:pointer;font-family:"Noto Sans TC",sans-serif;
+  }
+  .mode-toggle button.active{background:var(--gold);color:#fff;}
+  .mode-toggle button:disabled{opacity:.4;cursor:not-allowed;}
+
+  .score-bar{
+    display:none;
+    align-items:center;
+    justify-content:space-between;
+    background:#fff;
+    border:1px solid var(--paper-line);
+    border-left:5px solid var(--gold);
+    border-radius:var(--radius);
+    padding:12px 18px;
+    margin-bottom:22px;
+    font-size:14px;
+  }
+  .score-bar.show{display:flex;}
+  .score-bar strong{font-size:18px;color:var(--gold);}
+  .score-bar button{
+    background:none;border:1px solid var(--ink-soft);color:var(--ink-soft);
+    border-radius:6px;padding:6px 12px;font-size:13px;cursor:pointer;
+  }
+
+  section.block{
+    background:#fff;
+    border:1px solid var(--paper-line);
+    border-radius:var(--radius);
+    padding:22px 22px 26px;
+    margin-bottom:20px;
+  }
+  .block h2{
+    font-family:"Noto Serif TC",serif;
+    font-size:19px;
+    margin:0 0 4px;
+    color:var(--chalk-green);
+  }
+  .block .meta{color:var(--ink-soft);font-size:13px;margin:0 0 16px;}
+
+  .q{margin-bottom:18px;padding-bottom:16px;border-bottom:1px dashed var(--paper-line);}
+  .q:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0;}
+  .q-text{font-size:15.5px;margin-bottom:8px;white-space:pre-line;}
+  .q-num{color:var(--gold);font-weight:700;margin-right:4px;}
+
+  .opts{display:grid;gap:8px;}
+  .opt{
+    display:flex;gap:8px;align-items:flex-start;
+    border:1.5px solid var(--paper-line);
+    border-radius:8px;
+    padding:9px 12px;
+    cursor:pointer;
+    font-size:14.5px;
+    background:#fffdf8;
+  }
+  .opt:hover{border-color:var(--chalk-green-2);}
+  .opt.selected{border-color:var(--chalk-green-2);background:#eef3ea;}
+  .opt.correct{border-color:var(--ok-green);background:var(--ok-green-soft);}
+  .opt.wrong{border-color:var(--pen-red);background:var(--pen-red-soft);}
+  .opt .tag{font-weight:700;color:var(--ink-soft);}
+  .opt.correct .tag{color:var(--ok-green);}
+  .opt.wrong .tag{color:var(--pen-red);}
+  .opt.disabled{cursor:default;}
+
+  .passage{
+    background:#f5f2e8;border-radius:8px;padding:14px 16px;margin-bottom:14px;
+    font-size:14.5px;white-space:pre-line;
+  }
+  .passage-label{font-weight:700;color:var(--chalk-green);margin-bottom:4px;display:block;}
+
+  .footer-link{
+    display:block;text-align:center;margin-top:30px;color:var(--chalk-green);
+    text-decoration:none;font-weight:700;font-size:14px;
+  }
+  .footer-link:hover{text-decoration:underline;}
+
+  @media print{
+    header.hero, .controls, .score-bar, .mini-btn, .footer-link{display:none !important;}
+    body{background:#fff;}
+    section.block{border:none;box-shadow:none;padding:8px 0;margin-bottom:14px;}
+    .opt.correct{background:none;border:none;font-weight:700;}
+    .opt.correct::after{content:" ← 正解";color:var(--pen-red);}
+    .opt{border:none;padding:2px 0;}
+    main{max-width:100%;padding:0 24px;}
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="breadcrumb"><a href="https://jenlin2002.github.io/">🏠 回總目錄</a> ／ <a href="../hanlin-social-g7-1.html" style="color:#cfe0d1;">段考題庫</a></div>
+    <h1>歷史・第4回</h1>
+    <p class="subtitle">第3章 大航海時代臺灣原住民與外來者｜翰林版七年級社會（一）Ａ卷</p>
+  </div>
+</header>
+
+<main>
+  <div class="controls">
+    <div class="mode-toggle">
+      <button id="quizModeBtn" class="active">✏️ 測驗模式</button>
+      <button id="printModeBtn" disabled title="完成測驗並送出成績後才能查看">🖨️ 完整題目與解答（送出成績後解鎖）</button>
+    </div>
+  </div>
+
+  <div class="score-bar" id="scoreBar">
+    <div>目前得分：<strong id="scoreText">0 / 0</strong>（僅計算選擇題）</div>
+    <button id="resetBtn">重新作答</button>
+  </div>
+
+  <div id="content"></div>
+
+  <a class="footer-link" href="../hanlin-social-g7-1.html">← 回段考題庫總覽</a>
+</main>
+
+<script>
+
+window.EXAM_META = { version: "A卷", examLabel: "歷史第4回" };
+const DATA = {
+  sections: [
+    {
+      type:"mc",
+      title:"一、單題",
+      meta:"60%，每題3分",
+      items:[
+        {q:"圖(一)是《漫畫臺灣》一書中的一則漫畫：「你們是替公司開墾的，土地所有權都歸公司所有。」「土地要繳的稅這麼多，生活愈來愈困難了。難道要任由紅毛番這樣欺負我們嗎？」「我們要團結起來打倒荷蘭人！」依圖判斷，這是在描述下列何者的反抗事件？",image:"images/hist4/q1.png",options:["郭懷一","沈有容","顏思齊","鄭芝龍"],correct:0},
+        {q:"歷史課時，同學們探討「17世紀中期以後，原住民逐漸以耕種為務的原因」，下列何人的說法不正確？\n(A)農業的發展\n(B)土地的開墾\n(C)學習漢人的農耕技術\n(D)與荷蘭人從事稻米貿易",options:["農業的發展","土地的開墾","學習漢人的農耕技術","與荷蘭人從事稻米貿易"],correct:3},
+        {q:"右列是歷史老師上課的內容：「在面對外來政權時，有些原住民部落會選擇與荷蘭人合作，甚至藉由外來勢力提升自身地位，並獲得物資共同鎮壓敵對部落。」老師可以列舉下列何者當作例子？",options:["麻豆社","新港社","大肚王","郭懷一"],correct:1},
+        {q:"歷史老師上課提到：「他們屬於凱達格蘭族，擅長操舟航行，學習不同語言以從事交易。」上述老師講述的是下列何者？",options:["馬賽人","新港社","麻豆社","大肚王"],correct:0},
+        {q:"圖(二)是1777年臺灣南部原住民與漢人簽訂土地契約，此類土地文書又稱為「番仔契」。文書中原住民所使用的文字是下列何人統治臺灣的證明？",image:"images/hist4/q5.png",options:["英國人","荷蘭人","西班牙人","葡萄牙人"],correct:1},
+        {q:"關於《新港文書》，下列哪一族群留下文獻最多？",options:["凱達格蘭族","噶瑪蘭族","阿美族","西拉雅族"],correct:3},
+        {q:"1652年，漢人反抗荷蘭統治，荷蘭徵調當地原住民協助作戰。下列何者最可能響應荷蘭長官的調遣？",options:["大肚王","麻豆社","新港社","馬賽人"],correct:2},
+        {q:"圖(三)的古文獻殘頁，是歐洲人為了方便傳教及教化，幫助「原住民」用羅馬字母拼寫自己語言而發明的文字。上述「原住民」為何？",image:"images/hist4/q8.png",options:["凱達格蘭族","西拉雅族","阿美族","魯凱族"],correct:1},
+        {q:"右列內容敘述的是某時期的臺灣社會：「一位行政長官正授予幾位原住民長老權杖，長老們對行政長官宣誓：『我們效忠公司，為公司推行政令。』」請問：文中的場景出現在下列何人統治臺灣的時候？",options:["顏思齊","荷蘭人","西班牙人","鄭成功"],correct:1},
+        {q:"某一時期曾有官員向上級呈報來臺巡視的成果：「教化成績最高的番社，有80%的住民受到基督教育，其中40%能理解所學的教義；原住民受洗禮者達5,900人，受教育的學生600餘名，並從中提拔50名當教師。」上述情景應出現在下列哪個時期？",options:["15世紀後期","16世紀後期","17世紀中期","18世紀中期"],correct:2},
+        {q:"17世紀的臺灣，透過荷、西宗教活動的傳播，使得原住民生活中留有西方文化的影響。例如圖(四)中何地的原住民話語裡，留存不少西班牙語彙？",image:"images/hist4/q11.png",options:["甲","乙","丙","丁"],correct:0},
+        {q:"雀雀到小琉球旅遊，發現島上以閩南人居多。但卻有「烏鬼洞」、「番仔曆」等地名，也有「烏鬼番」等傳說。於是上網查到一段資料：「1630～1640年代，當時的殖民者因船民在島上遇害，遂自臺灣調軍鎮壓，導致島上原住民遭到屠殺，被迫遷移。」資料中的「殖民者」應是下列何者？",options:["荷蘭","日本","英國","西班牙"],correct:0},
+        {q:"右列是歷史老師上課的內容：「在面對外來政權，他們選擇對抗，多次與荷蘭人爆發衝突；在1635年遭荷蘭軍隊擊敗，被迫簽訂協約，接受荷蘭人的統治。」請問：老師講述的應該是下列何者的反抗經過？",options:["麻豆社","新港社","大肚王","馬賽人"],correct:0},
+        {q:"早期臺灣原住民的經濟活動，以漁獵和游耕為主。其中游耕的方式具有下列哪個特色？",options:["利用牛隻耕田","砍伐樹林並焚燒","定期施肥不休耕","引河水灌溉農地"],correct:1},
+        {q:"大航海時代，荷蘭人占據臺灣之後，採取何種方式統轄原住民？",options:["控制土地嚴禁買賣，徵收重稅","畫定自治區範圍，由各社酋長統治","控管經濟貿易，並以武力高壓統治","透過各社長老間接管理，並施以宗教教化"],correct:3},
+        {q:"歷史課時，老師請同學說出大航海時代臺灣主要對外貿易商品，下列何人的回答最正確？\n(A)鹿皮(B)香料(C)樟腦(D)茶葉",options:["鹿皮","香料","樟腦","茶葉"],correct:0},
+        {q:"大航海時代，某天主教傳教士寫下對北臺灣的觀察：「在淡水河附近的村落，可取得大量的硫磺，我國軍隊進駐以前，當地原住民開採硫磺賣給漢人，漢人用花布和其他東西交換。去年，他們載走大約5,000擔硫磺回中國，作成火藥，因應戰爭所需。」由上述判斷，這位傳教士來自下列何國？",options:["荷蘭","西班牙","英國","葡萄牙"],correct:1},
+        {q:"由於東亞貿易的興盛，原住民開始與外來者頻繁接觸，使其生活方式受到衝擊而逐漸改變，始於下列何時？",options:["15世紀後期","16世紀後期","17世紀後期","18世紀後期"],correct:1},
+        {q:"荷蘭至鄭氏統治期間，漢人大面積開墾土地，農業發展使原住民族的傳統生活方式受到影響，其中衝擊最大的是分布在圖(五)中何地的原住民族？",image:"images/hist4/q19.png",options:["甲","乙","丙","丁"],correct:2},
+        {q:"1661年鄭氏渡海攻打荷蘭聯合東印度公司的軍隊，在未攻下大員時，就面臨軍隊糧食不足的問題，便下令往北屯墾，就地取糧或種植，因此與中部原住民發生激烈衝突。上述原住民指的是下列何者？",options:["麻豆社","新港社","馬賽人","大肚王"],correct:3}
+      ]
+    },
+    {
+      type:"reading",
+      title:"二、題組",
+      meta:"12%，每題3分",
+      passages:[
+        {
+          label:"(一)",
+          text:"中研院在基隆和平島進行考古研究，和平島是北臺灣最早出現西方人的地方，研究員盼能挖掘17世紀「聖薩爾瓦多城暨修道院」更完整的遺址。目前為止，一共挖出四具西方人骨骸，骨骸雙手環胸的祈禱姿勢，頭部朝西仰躺，可推測是過去歐洲人的宗教習慣；因古人相信靈體能再生，下葬時，會把屍體頭部朝向西方，這樣坐起來時便可看見東方升起的太陽。考古團隊還指出，歐洲人有將遺體埋於修道院的傳統。",
+          items:[
+            {q:"上述提及的四具骨骸最可能是何國人士？",options:["英國","法國","葡萄牙","西班牙"],correct:3},
+            {q:"上述修道院最可能屬於哪個宗教？",options:["基督教","天主教","伊斯蘭教","猶太教"],correct:1}
+          ]
+        },
+        {
+          label:"(二)",
+          text:"麻豆社居住地擁有一座位置極佳的內海河港，麻豆社早從14世紀起，便開始與漢人進行貿易，以當地物產與漢人交易布、鹽、瓷器等物品。但到了17世紀，西方強權開始把手伸向亞太地區，麻豆社面對入侵的外來勢力，已難以抵擋。",
+          items:[
+            {q:"上述提及的原住民族曾與漢人交易，其物產最可能是下列何者？",options:["茶葉","樟腦","香料","鹿皮"],correct:3},
+            {q:"上述提到的外來勢力最可能是指下列何者？",options:["日本人","荷蘭人","西班牙人","葡萄牙人"],correct:1}
+          ]
+        }
+      ]
+    },
+    {
+      type:"mc",
+      title:"三、進階思考題",
+      meta:"28%，每題4分",
+      items:[
+        {q:"同學們探討17世紀荷蘭人對臺灣原住民的統治政策，下列何人的說法最正確？",options:["阿強：直接派官治理原住民部落","小唐：建立中央會議制度","小杰：荷蘭人設置教堂並成立學校","晶銘：抗荷事件引發原住民全力支持漢人"],correct:2},
+        {q:"1620年代，荷蘭西印度公司曾在今北美洲東岸紐約市曼哈頓島上建立一座城堡，以保護移民與商人。同一時期，荷蘭東印度公司亦在臺灣建立城堡，作為貿易據點。上述荷蘭人在臺灣建立據點的動機之一，是收購該地出產的哪一特產，以供歐洲市場之需？",options:["香料","鹿皮","絲綢","瓷器"],correct:1},
+        {q:"大航海時代的臺灣是各方競逐的焦點，各方勢力無不想在臺灣獲取最大的利益，下列探討各國對臺灣的經營，哪一敘述最正確？",options:["荷蘭人為促進農業生產，引進耕牛","荷蘭人在北部傳播天主教信仰，信徒日增","西班牙人在臺灣貿易成果豐碩，遂朝向全臺發展","西班牙人以羅馬字母拼寫原住民的語言，教化原民"],correct:0},
+        {q:"曉筑撰寫以「荷蘭人統治臺灣」為主題的報告，蒐集相關資料，其中何者最正確？",options:["新港社事件奠定其在南臺灣的統治權","曾爆發沈有容領導漢人抗荷事件","與葡萄牙人聯合驅逐西班牙人的勢力","為傳播基督教，以新港文字拼寫《聖經》"],correct:3},
+        {q:"圖(六)是阿德上歷史課抄寫臺灣在大航海時期，臺灣原住民族被統治的相關資料，內容只有下列何者正確？\n(甲)由荷蘭人指定漢人擔任頭目\n(乙)進行直接統治\n(丙)這些頭目每年須參加中央會議\n(丁)在會議中，賦予頭目象徵權力的權杖",options:["(甲)","(乙)","(丙)","(丁)"],correct:3},
+        {q:"網路上的資料不一定正確，德苓上網查詢荷蘭人對臺灣原住民的統治政策，其中何者錯誤？",options:["歸順的社透過長老統治原住民","積極對原住民傳播西方的宗教","採宗教教化原住民，不採武力征服","教導原住民新港文以利於傳教事業推展"],correct:2},
+        {q:"下表是荷蘭在臺時期，對原住民傳教成果的統計，由表中資料可讀出下列哪一項訊息？\n社名　　　人口數(人)　受洗者(人)\n新港社　　1,047　　　1,047\n蕭壠社　　2,600　　　282\n目加溜灣社　1,000　　　261\n麻豆社　　3,000　　　215",options:["新港社原住民的宗教信仰改變最大","荷蘭人使用武力脅迫人民改變信仰","各原住民社群皆保有其原有的宗教","原住民社群受洗者的人數日漸降低"],correct:0}
+      ]
+    }
+
+  ]
+};
+
+let currentMode = "quiz"; // quiz | print
+
+const contentEl = document.getElementById("content");
+const scoreBar = document.getElementById("scoreBar");
+const scoreText = document.getElementById("scoreText");
+
+function render(){
+  window.examAnswersRevealed = false;
+  contentEl.innerHTML = "";
+  DATA.sections.forEach((sec, si)=> contentEl.appendChild(renderSection(sec, si)));
+  if(currentMode==="quiz"){
+    scoreBar.classList.add("show");
+    updateScore();
+  } else {
+    scoreBar.classList.remove("show");
+    contentEl.querySelectorAll(".opt").forEach(o=>o.classList.add("disabled"));
+    contentEl.querySelectorAll(".opt.is-correct").forEach(o=>o.classList.add("correct"));
+  }
+}
+
+function renderSection(sec, si){
+  const block = document.createElement("section");
+  block.className = "block";
+  block.innerHTML = `<h2>${sec.title}</h2><p class="meta">${sec.meta}</p>`;
+
+  if(sec.type==="mc"){
+    sec.items.forEach((it,i)=>{
+      const q = document.createElement("div");
+      q.className = "q";
+      const optsHtml = it.options.map((op,oi)=>`
+        <div class="opt" data-idx="${oi}" data-correct="${oi===it.correct}">
+          <span class="tag">(${String.fromCharCode(65+oi)})</span><span>${op}</span>
+        </div>`).join("");
+      const imgHtml = it.image ? `<img src="${it.image}" alt="題目附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">` : "";
+      const img2Html = it.image2 ? `<img src="${it.image2}" alt="題目附圖2" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">` : "";
+      q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q}</div>
+        ${imgHtml}${img2Html}
+        <div class="opts">${optsHtml}</div>`;
+      q.querySelectorAll(".opt").forEach(optEl=>{
+        if(optEl.dataset.correct==="true") optEl.classList.add("is-correct");
+        optEl.addEventListener("click", ()=>selectOption(q, optEl));
+      });
+      block.appendChild(q);
+    });
+  }
+
+  else if(sec.type==="reading"){
+    sec.passages.forEach(p=>{
+      const passageDiv = document.createElement("div");
+      passageDiv.className = "passage";
+      passageDiv.innerHTML = `${p.label ? `<span class="passage-label">${p.label}</span>`:""}${p.text}${p.image ? `<img src="${p.image}" alt="題組附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-top:10px;border:1px solid var(--paper-line);">`:""}`;
+      block.appendChild(passageDiv);
+      p.items.forEach((it,i)=>{
+        const q = document.createElement("div");
+        q.className = "q";
+        const optsHtml = it.options.map((op,oi)=>`
+          <div class="opt" data-idx="${oi}" data-correct="${oi===it.correct}">
+            <span class="tag">(${String.fromCharCode(65+oi)})</span><span>${op}</span>
+          </div>`).join("");
+        q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q}</div>
+          ${it.image ? `<img src="${it.image}" alt="題目附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">`:""}
+          <div class="opts">${optsHtml}</div>`;
+        q.querySelectorAll(".opt").forEach(optEl=>{
+          if(optEl.dataset.correct==="true") optEl.classList.add("is-correct");
+          optEl.addEventListener("click", ()=>selectOption(q, optEl));
+        });
+        block.appendChild(q);
+      });
+    });
+  }
+
+  return block;
+}
+
+function selectOption(qEl, optEl){
+  if(currentMode!=="quiz") return;
+  if(qEl.dataset.answered==="true") return;
+  qEl.dataset.answered = "true";
+  qEl.querySelectorAll(".opt").forEach(o=>o.classList.add("disabled"));
+  optEl.classList.add("selected");
+  const correctOpt = qEl.querySelector('.opt[data-correct="true"]');
+  qEl.dataset.studentAnswer = optEl.textContent.trim();
+  qEl.dataset.correctAnswer = correctOpt ? correctOpt.textContent.trim() : "";
+  qEl.dataset.isCorrect = (optEl.dataset.correct==="true") ? "true" : "false";
+  updateScore();
+}
+
+function updateScore(){
+  let total = 0, answered = 0, correct = 0;
+  contentEl.querySelectorAll(".q").forEach(q=>{
+    const gradable = q.querySelector(".opts");
+    if(!gradable) return;
+    total++;
+    if(q.dataset.studentAnswer !== undefined){
+      answered++;
+      if(q.dataset.isCorrect === "true") correct++;
+    }
+  });
+  if(window.examAnswersRevealed){
+    scoreText.textContent = `${correct} / ${total}`;
+  } else {
+    scoreText.textContent = `已作答 ${answered} / ${total} 題`;
+  }
+}
+window.updateScore = updateScore;
+
+document.getElementById("resetBtn").addEventListener("click", render);
+document.getElementById("quizModeBtn").addEventListener("click", ()=>{
+  currentMode = "quiz";
+  document.getElementById("quizModeBtn").classList.add("active");
+  document.getElementById("printModeBtn").classList.remove("active");
+  render();
+});
+document.getElementById("printModeBtn").addEventListener("click", ()=>{
+  if(document.getElementById("printModeBtn").disabled) return;
+  currentMode = "print";
+  document.getElementById("printModeBtn").classList.add("active");
+  document.getElementById("quizModeBtn").classList.remove("active");
+  render();
+});
+
+window.unlockPrintMode = function(){
+  document.getElementById("printModeBtn").disabled = false;
+};
+
+render();
+</script>
+<script src="../sync.js"></script>
+</body>
+</html>
