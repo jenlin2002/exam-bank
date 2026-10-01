@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>段考題庫｜地理第8回 - 第6章 水文（A卷）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@500;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#faf6ec;
+    --paper-line:#e3dcc8;
+    --ink:#26332b;
+    --ink-soft:#5b6b5f;
+    --chalk-green:#2f4538;
+    --chalk-green-2:#3d5a48;
+    --pen-red:#b8433a;
+    --pen-red-soft:#f4dedb;
+    --ok-green:#3f7d52;
+    --ok-green-soft:#dfeee1;
+    --gold:#b5842a;
+    --radius:10px;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:"Noto Sans TC",sans-serif;
+    line-height:1.7;
+  }
+  header.hero{
+    background:var(--chalk-green);
+    color:#eef2ea;
+    padding:28px 20px 40px;
+    position:relative;
+  }
+  header.hero::after{
+    content:"";
+    position:absolute;
+    left:0; right:0; bottom:-1px;
+    height:14px;
+    background:repeating-linear-gradient(90deg,var(--paper) 0 18px, transparent 18px 20px);
+  }
+  .hero-inner{max-width:880px;margin:0 auto;}
+  .breadcrumb a{color:#cfe0d1;text-decoration:none;font-size:14px;}
+  .breadcrumb a:hover{text-decoration:underline;}
+  h1{
+    font-family:"Noto Serif TC",serif;
+    font-weight:700;
+    font-size:clamp(24px,4vw,34px);
+    margin:10px 0 6px;
+  }
+  .subtitle{color:#cfe0d1;font-size:15px;margin:0;}
+  main{max-width:880px;margin:0 auto;padding:28px 20px 80px;}
+
+  .controls{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:22px;
+  }
+  .mode-toggle{display:flex;border:2px solid var(--chalk-green);border-radius:999px;overflow:hidden;}
+  .mode-toggle button{
+    background:transparent;border:none;padding:8px 16px;font-size:14px;font-weight:700;
+    color:var(--chalk-green);cursor:pointer;font-family:"Noto Sans TC",sans-serif;
+  }
+  .mode-toggle button.active{background:var(--gold);color:#fff;}
+  .mode-toggle button:disabled{opacity:.4;cursor:not-allowed;}
+
+  .score-bar{
+    display:none;
+    align-items:center;
+    justify-content:space-between;
+    background:#fff;
+    border:1px solid var(--paper-line);
+    border-left:5px solid var(--gold);
+    border-radius:var(--radius);
+    padding:12px 18px;
+    margin-bottom:22px;
+    font-size:14px;
+  }
+  .score-bar.show{display:flex;}
+  .score-bar strong{font-size:18px;color:var(--gold);}
+  .score-bar button{
+    background:none;border:1px solid var(--ink-soft);color:var(--ink-soft);
+    border-radius:6px;padding:6px 12px;font-size:13px;cursor:pointer;
+  }
+
+  section.block{
+    background:#fff;
+    border:1px solid var(--paper-line);
+    border-radius:var(--radius);
+    padding:22px 22px 26px;
+    margin-bottom:20px;
+  }
+  .block h2{
+    font-family:"Noto Serif TC",serif;
+    font-size:19px;
+    margin:0 0 4px;
+    color:var(--chalk-green);
+  }
+  .block .meta{color:var(--ink-soft);font-size:13px;margin:0 0 16px;}
+
+  .q{margin-bottom:18px;padding-bottom:16px;border-bottom:1px dashed var(--paper-line);}
+  .q:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0;}
+  .q-text{font-size:15.5px;margin-bottom:8px;white-space:pre-line;}
+  .q-num{color:var(--gold);font-weight:700;margin-right:4px;}
+
+  .opts{display:grid;gap:8px;}
+  .opt{
+    display:flex;gap:8px;align-items:flex-start;
+    border:1.5px solid var(--paper-line);
+    border-radius:8px;
+    padding:9px 12px;
+    cursor:pointer;
+    font-size:14.5px;
+    background:#fffdf8;
+  }
+  .opt:hover{border-color:var(--chalk-green-2);}
+  .opt.selected{border-color:var(--chalk-green-2);background:#eef3ea;}
+  .opt.correct{border-color:var(--ok-green);background:var(--ok-green-soft);}
+  .opt.wrong{border-color:var(--pen-red);background:var(--pen-red-soft);}
+  .opt .tag{font-weight:700;color:var(--ink-soft);}
+  .opt.correct .tag{color:var(--ok-green);}
+  .opt.wrong .tag{color:var(--pen-red);}
+  .opt.disabled{cursor:default;}
+
+  .passage{
+    background:#f5f2e8;border-radius:8px;padding:14px 16px;margin-bottom:14px;
+    font-size:14.5px;white-space:pre-line;
+  }
+  .passage-label{font-weight:700;color:var(--chalk-green);margin-bottom:4px;display:block;}
+
+  .footer-link{
+    display:block;text-align:center;margin-top:30px;color:var(--chalk-green);
+    text-decoration:none;font-weight:700;font-size:14px;
+  }
+  .footer-link:hover{text-decoration:underline;}
+
+  @media print{
+    header.hero, .controls, .score-bar, .mini-btn, .footer-link{display:none !important;}
+    body{background:#fff;}
+    section.block{border:none;box-shadow:none;padding:8px 0;margin-bottom:14px;}
+    .opt.correct{background:none;border:none;font-weight:700;}
+    .opt.correct::after{content:" ← 正解";color:var(--pen-red);}
+    .opt{border:none;padding:2px 0;}
+    main{max-width:100%;padding:0 24px;}
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="breadcrumb"><a href="https://jenlin2002.github.io/">🏠 回總目錄</a> ／ <a href="../hanlin-social-g7-1.html" style="color:#cfe0d1;">段考題庫</a></div>
+    <h1>地理・第8回</h1>
+    <p class="subtitle">第6章 水文｜翰林版七年級社會（一）Ａ卷</p>
+  </div>
+</header>
+
+<main>
+  <div class="controls">
+    <div class="mode-toggle">
+      <button id="quizModeBtn" class="active">✏️ 測驗模式</button>
+      <button id="printModeBtn" disabled title="完成測驗並送出成績後才能查看">🖨️ 完整題目與解答（送出成績後解鎖）</button>
+    </div>
+  </div>
+
+  <div class="score-bar" id="scoreBar">
+    <div>目前得分：<strong id="scoreText">0 / 0</strong>（僅計算選擇題）</div>
+    <button id="resetBtn">重新作答</button>
+  </div>
+
+  <div id="content"></div>
+
+  <a class="footer-link" href="../hanlin-social-g7-1.html">← 回段考題庫總覽</a>
+</main>
+
+<script>
+
+window.EXAM_META = { version: "A卷", examLabel: "地理第8回" };
+const DATA = {
+  sections: [
+    {
+      type:"mc",
+      title:"一、單題",
+      meta:"60%，每題3分",
+      items:[
+        {q:"圖(一)為某地方政府發布的水情燈號調整圖，主因為該區主要河川自然特性使供水不足。根據資訊判斷，該條河川具有何種特徵？",image:"images/geo8/q1.png",options:["流量變化大","年輸沙量大","乾季時間短","流域面積小"],correct:0},
+        {q:"圖(二)中河川支流遭不法人士違法整地開發，破壞水質，★為事發地點，甲乙丙丁為四個農田用水取水點。根據地圖資訊，下列哪一取水點的水質可能受到影響？",image:"images/geo8/q2.png",options:["甲","乙","丙","丁"],correct:3},
+        {q:"2013年春天，中央氣象局首次在苗栗銅鑼地區發布冰雹警告，冰雹伴隨著雷雨落下，直徑可達6公分。冰雹屬於下列何種水循環過程？",options:["蒸發","蒸散","凝結","降水"],correct:3},
+        {q:"臺灣雖然年降水量豐富，但水資源依然不足，尤其南部地區常常因缺水而實施限水措施。下列何項氣候因素與缺水原因最為相關？",options:["夏季氣溫過高","夏季高壓籠罩","冬季氣溫過低","冬季降水偏少"],correct:3},
+        {q:"幸福國欲在圖(三)中的ㄅ地區興建水庫，以解決水資源不足問題，為了避免過多的泥沙流入水庫，應在圖中哪個河段修築攔沙壩，以延長該水庫的使用壽命？",image:"images/geo8/q5.png",options:["甲","乙","丙","丁"],correct:2},
+        {q:"新聞報導：「臺灣自農曆春節以來，由於用水量激增，加上春耕以及未下雨之故，導致水庫水位持續下降，即使臺灣容量最大水庫，其蓄水量也只剩下不到四成。」報導中所指的水庫可能是哪一座？",options:["曾文水庫","石門水庫","翡翠水庫","日月潭水庫"],correct:0},
+        {q:"淡水河與蘭陽溪是臺灣北部的兩條重要河川，其分水嶺的具體位置為阿玉山、棲蘭山、巴博庫魯山、拉拉山、北插天山等海拔約1,000～2,000公尺以上的高山嶺線。上述的分水嶺應屬於下列哪一山脈的範圍？",options:["中央山脈","玉山山脈","雪山山脈","海岸山脈"],correct:2},
+        {q:"聯合國警告：氣候變遷使全球水循環失去平衡，使極端氣候頻繁出現。其中由於氣溫上升，地表蒸發增加，土壤愈來愈乾燥，成為威脅生存的旱災。根據圖(五)的水循環示意圖，上述的災害主因為哪一階段水循環失衡所造成？",image:"images/geo8/q8.png",options:["甲","乙","丙","丁"],correct:0},
+        {q:"淵淵上網搜尋臺灣各地河川的逕流量和含沙量，發現近30年來某些河川下游的含沙量竟然減少了80%以上。上述可能和下列何者有關？",options:["上游地區砍伐森林","年降水量逐年減少","地震活動頻率增加","興建水庫和攔沙壩"],correct:3},
+        {q:"圖(六)的虛線內的區域代表下列哪一水文概念？",image:"images/geo8/q10.png",options:["水系","流域","分水嶺","集水區"],correct:1},
+        {q:"學者指出：「臺灣是一個降雨豐富的缺水國家。」由圖(七)可知雨水利用率僅有20.3%。根據水循環概念，關於臺灣水資源利用的敘述，何者正確？",image:"images/geo8/q11.png",options:["可利用水資源以水庫為主","多數降水最終注入了海洋","因地勢高聳而使蒸發旺盛","高效率完整使用逕流資源"],correct:1},
+        {q:"逕流量是當地降水量與蒸發量的差額。阿頓在冬季時進行臺灣環島一圈，他會發現哪條河川逕流量最大？",options:["臺南的曾文溪","臺北的淡水河","屏東的高屏溪","花蓮的秀姑巒溪"],correct:1},
+        {q:"臺灣地區的河川航運利用價值不高，唯淡水河早期航運可上溯到大漢溪。淡水河之所以具備航運價值與下列哪一原因密切相關？",options:["支流眾多","流域廣大","流速緩慢","流量穩定"],correct:3},
+        {q:"小智翻閱臺灣的地形圖時，會發現臺灣河川水系的圖形與下列何者大致相符？",image:"images/geo8/q14.png",options:["A","B","C","D"],correct:0},
+        {q:"臺灣南部河川遭受汙染的程度，往往比北部嚴重，因為南部河川的汙染物常滯留在河床，這與當地河川的何種特性最為相關？",options:["河川長度長","流量變化大","河川流域廣","河流流速快"],correct:1},
+        {q:"洪患是臺灣常見的自然災害之一，洪患多在暴雨、融雪後，水流宣洩不及而在河川中下游低窪地區發生。根據上述，下列哪一現象可能會造成洪患的發生？",options:["地表逕流快速增加","雨水持續滲入土壤","河水注入下游湖泊","減少河川上游開發"],correct:0},
+        {q:"圖(八)為全球陸地上的水資源分布比例圖。圖中甲、乙分別代表下列何者？",image:"images/geo8/q17.png",options:["地下水、海水","地下水、冰雪","冰雪、地下水","湖泊、大氣中的水氣"],correct:1},
+        {q:"圖(九)是淡水河的流域示意圖，甲、乙、丙、丁是流域中四個集水點。其中哪一集水點的汙染情形可能最為嚴重？",image:"images/geo8/q18.png",options:["甲","乙","丙","丁"],correct:0},
+        {q:"右表為臺灣主要河川的相關資料，根據其特色加以判斷，何者應為高屏溪？\n河川　主流長度(公里)　流域面積(平方公里)\n甲　　171　　　　　3,257\n乙　　186　　　　　3,156\n丙　　124　　　　　1,236\n丁　　73　　　　　　978",options:["甲","乙","丙","丁"],correct:0},
+        {q:"臺灣雖然降水量豐富，但水資源依然不足，導致常常發生缺水的窘境。以永續發展的觀點來看，下列何者是解決臺灣水資源不足的最佳方法？",options:["多建造水庫","大量海水淡化","做好水土保持","大量抽取地下水"],correct:2}
+      ]
+    },
+    {
+      type:"reading",
+      title:"二、題組",
+      meta:"12%，每題3分",
+      passages:[
+        {
+          label:"(一)",
+          text:"中央山脈及雪山山脈這兩大山系在臺灣島的東側包夾著蘭陽溪谷，在臺灣島的西側則包夾著大甲溪谷，兩條溪流以海拔1,948公尺的「思源埡口」為界，圖(十)為兩河川的流域分布。",
+          image:"images/geo8/passage1.png",
+          items:[
+            {q:"上文提及的思源埡口應屬於河流系統中的哪一分類？",options:["水系","流域","集水區","分水嶺"],correct:3},
+            {q:"思源埡口應位於圖中的哪一位置？",options:["甲","乙","丙","丁"],correct:2}
+          ]
+        },
+        {
+          label:"(二)",
+          text:"臺灣河川因分水嶺走向而東西分流入海，河川大大小小共有150多條，其中長度較長、流域面積較大的主要河川約有20條，如圖(士)所示。其中部分河川還因受降水季節不均而出現季節限定，僅在雨季時期可見河水滾滾畫面。",
+          image:"images/geo8/passage2.png",
+          items:[
+            {q:"上述提及的分水嶺，應為哪一座山脈？",options:["玉山山脈","中央山脈","雪山山脈","海岸山脈"],correct:1},
+            {q:"上文提及的季節限定河川，最可能出現在圖中的哪一流域？",options:["甲","乙","丙","丁"],correct:2}
+          ]
+        }
+      ]
+    },
+    {
+      type:"mc",
+      title:"三、進階思考題",
+      meta:"28%，每題4分",
+      items:[
+        {q:"「臺灣的總面積約36,000平方公里，形狀狹長，地形以山地為主，約占47%。」臺灣的何種地理特徵與此一事實有關？",options:["國土南北狹長","降水分布不均","西部平原廣闊","河川短小流急"],correct:3},
+        {q:"臺灣境內的主要河川均稱為「溪」，如濁水溪、高屏溪等，只有北部地區的淡水河、冬山河稱為「河」。上述的河川名稱差異與下列哪一項降雨特色有關？",options:["北部瞬間降水量大","北部年降水量最大","北部降水集中於某一季節","北部降水季節分布平均"],correct:3},
+        {q:"目前臺灣最常使用的水資源來自於河川及地下水。這兩種水資源若受到地表過度開發，砍伐森林植被，將會造成下列哪一影響？",options:["河川滯留地表時間加長，地下水滲透量增多","河川滯留地表時間縮短，地下水滲透量減少","河川滯留地表時間加長，地下水滲透量減少","河川滯留地表時間縮短，地下水滲透量增多"],correct:1},
+        {q:"水庫除了發電、防洪、飲水、灌溉等用途，有些水庫更有觀光亮點吸引遊客，如石門水庫。但這座大規模的水庫近年來因出現嚴重問題，不排除邁向壽終正寢的命運。上文中的「嚴重問題」是指何者？",options:["人為汙染","地層下陷","長年缺水","泥沙淤積"],correct:3},
+        {q:"安安是一位登山新手，在參與登山訓練課程時聽到：「溯溪活動在夏季非常受歡迎，但是豐水期水量較大，是對登山技術的一大考驗。因此若是初學者建議可選擇枯水期，比較容易溯行。」若安安欲在寒假進行溯溪，圖(士)中哪一條溪流對於他來說困難度較高？",image:"images/geo8/q29.png",options:["甲","乙","丙","丁"],correct:0},
+        {q:"根據學者調查，臺灣沿海地區的地層下陷每年下降10～21公分，以雲林、屏東兩縣最為嚴重，其中屏東地區下陷的背後原因與超抽地下水息息相關。除了地層下陷之外，超抽地下水也有可能造成下列哪一影響？",options:["土壤鹽化","洪患加劇","泥沙淤積","水土保持"],correct:0},
+        {q:"這個地區可說是臺灣最重要糧倉，其糧食年產值逾全國1/3。2026年初「雲嘉南灌溉系統串接工程」竣工通水，使該地區的農業供水更加穩定，此工程讓國最大的兩個灌溉系統成功串連。上述提及的工程所串連的河川包括下列何者？",options:["淡水河、蘭陽溪","淡水河、大甲溪","濁水溪、曾文溪","曾文溪、高屏溪"],correct:2}
+      ]
+    }
+
+  ]
+};
+
+let currentMode = "quiz"; // quiz | print
+
+const contentEl = document.getElementById("content");
+const scoreBar = document.getElementById("scoreBar");
+const scoreText = document.getElementById("scoreText");
+
+function render(){
+  window.examAnswersRevealed = false;
+  contentEl.innerHTML = "";
+  DATA.sections.forEach((sec, si)=> contentEl.appendChild(renderSection(sec, si)));
+  if(currentMode==="quiz"){
+    scoreBar.classList.add("show");
+    updateScore();
+  } else {
+    scoreBar.classList.remove("show");
+    contentEl.querySelectorAll(".opt").forEach(o=>o.classList.add("disabled"));
+    contentEl.querySelectorAll(".opt.is-correct").forEach(o=>o.classList.add("correct"));
+  }
+}
+
+function renderSection(sec, si){
+  const block = document.createElement("section");
+  block.className = "block";
+  block.innerHTML = `<h2>${sec.title}</h2><p class="meta">${sec.meta}</p>`;
+
+  if(sec.type==="mc"){
+    sec.items.forEach((it,i)=>{
+      const q = document.createElement("div");
+      q.className = "q";
+      const optsHtml = it.options.map((op,oi)=>`
+        <div class="opt" data-idx="${oi}" data-correct="${oi===it.correct}">
+          <span class="tag">(${String.fromCharCode(65+oi)})</span><span>${op}</span>
+        </div>`).join("");
+      const imgHtml = it.image ? `<img src="${it.image}" alt="題目附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">` : "";
+      const img2Html = it.image2 ? `<img src="${it.image2}" alt="題目附圖2" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">` : "";
+      q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q}</div>
+        ${imgHtml}${img2Html}
+        <div class="opts">${optsHtml}</div>`;
+      q.querySelectorAll(".opt").forEach(optEl=>{
+        if(optEl.dataset.correct==="true") optEl.classList.add("is-correct");
+        optEl.addEventListener("click", ()=>selectOption(q, optEl));
+      });
+      block.appendChild(q);
+    });
+  }
+
+  else if(sec.type==="reading"){
+    sec.passages.forEach(p=>{
+      const passageDiv = document.createElement("div");
+      passageDiv.className = "passage";
+      passageDiv.innerHTML = `${p.label ? `<span class="passage-label">${p.label}</span>`:""}${p.text}${p.image ? `<img src="${p.image}" alt="題組附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-top:10px;border:1px solid var(--paper-line);">`:""}`;
+      block.appendChild(passageDiv);
+      p.items.forEach((it,i)=>{
+        const q = document.createElement("div");
+        q.className = "q";
+        const optsHtml = it.options.map((op,oi)=>`
+          <div class="opt" data-idx="${oi}" data-correct="${oi===it.correct}">
+            <span class="tag">(${String.fromCharCode(65+oi)})</span><span>${op}</span>
+          </div>`).join("");
+        q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q}</div>
+          ${it.image ? `<img src="${it.image}" alt="題目附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">`:""}
+          <div class="opts">${optsHtml}</div>`;
+        q.querySelectorAll(".opt").forEach(optEl=>{
+          if(optEl.dataset.correct==="true") optEl.classList.add("is-correct");
+          optEl.addEventListener("click", ()=>selectOption(q, optEl));
+        });
+        block.appendChild(q);
+      });
+    });
+  }
+
+  return block;
+}
+
+function selectOption(qEl, optEl){
+  if(currentMode!=="quiz") return;
+  if(qEl.dataset.answered==="true") return;
+  qEl.dataset.answered = "true";
+  qEl.querySelectorAll(".opt").forEach(o=>o.classList.add("disabled"));
+  optEl.classList.add("selected");
+  const correctOpt = qEl.querySelector('.opt[data-correct="true"]');
+  qEl.dataset.studentAnswer = optEl.textContent.trim();
+  qEl.dataset.correctAnswer = correctOpt ? correctOpt.textContent.trim() : "";
+  qEl.dataset.isCorrect = (optEl.dataset.correct==="true") ? "true" : "false";
+  updateScore();
+}
+
+function updateScore(){
+  let total = 0, answered = 0, correct = 0;
+  contentEl.querySelectorAll(".q").forEach(q=>{
+    const gradable = q.querySelector(".opts");
+    if(!gradable) return;
+    total++;
+    if(q.dataset.studentAnswer !== undefined){
+      answered++;
+      if(q.dataset.isCorrect === "true") correct++;
+    }
+  });
+  if(window.examAnswersRevealed){
+    scoreText.textContent = `${correct} / ${total}`;
+  } else {
+    scoreText.textContent = `已作答 ${answered} / ${total} 題`;
+  }
+}
+window.updateScore = updateScore;
+
+document.getElementById("resetBtn").addEventListener("click", render);
+document.getElementById("quizModeBtn").addEventListener("click", ()=>{
+  currentMode = "quiz";
+  document.getElementById("quizModeBtn").classList.add("active");
+  document.getElementById("printModeBtn").classList.remove("active");
+  render();
+});
+document.getElementById("printModeBtn").addEventListener("click", ()=>{
+  if(document.getElementById("printModeBtn").disabled) return;
+  currentMode = "print";
+  document.getElementById("printModeBtn").classList.add("active");
+  document.getElementById("quizModeBtn").classList.remove("active");
+  render();
+});
+
+window.unlockPrintMode = function(){
+  document.getElementById("printModeBtn").disabled = false;
+};
+
+render();
+</script>
+<script src="../sync.js"></script>
+</body>
+</html>
