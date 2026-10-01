@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>段考題庫｜歷史第5回 - 第4章 清帝國統治政策的變遷（A卷）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@500;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#faf6ec;
+    --paper-line:#e3dcc8;
+    --ink:#26332b;
+    --ink-soft:#5b6b5f;
+    --chalk-green:#2f4538;
+    --chalk-green-2:#3d5a48;
+    --pen-red:#b8433a;
+    --pen-red-soft:#f4dedb;
+    --ok-green:#3f7d52;
+    --ok-green-soft:#dfeee1;
+    --gold:#b5842a;
+    --radius:10px;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:"Noto Sans TC",sans-serif;
+    line-height:1.7;
+  }
+  header.hero{
+    background:var(--chalk-green);
+    color:#eef2ea;
+    padding:28px 20px 40px;
+    position:relative;
+  }
+  header.hero::after{
+    content:"";
+    position:absolute;
+    left:0; right:0; bottom:-1px;
+    height:14px;
+    background:repeating-linear-gradient(90deg,var(--paper) 0 18px, transparent 18px 20px);
+  }
+  .hero-inner{max-width:880px;margin:0 auto;}
+  .breadcrumb a{color:#cfe0d1;text-decoration:none;font-size:14px;}
+  .breadcrumb a:hover{text-decoration:underline;}
+  h1{
+    font-family:"Noto Serif TC",serif;
+    font-weight:700;
+    font-size:clamp(24px,4vw,34px);
+    margin:10px 0 6px;
+  }
+  .subtitle{color:#cfe0d1;font-size:15px;margin:0;}
+  main{max-width:880px;margin:0 auto;padding:28px 20px 80px;}
+
+  .controls{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:22px;
+  }
+  .mode-toggle{display:flex;border:2px solid var(--chalk-green);border-radius:999px;overflow:hidden;}
+  .mode-toggle button{
+    background:transparent;border:none;padding:8px 16px;font-size:14px;font-weight:700;
+    color:var(--chalk-green);cursor:pointer;font-family:"Noto Sans TC",sans-serif;
+  }
+  .mode-toggle button.active{background:var(--gold);color:#fff;}
+  .mode-toggle button:disabled{opacity:.4;cursor:not-allowed;}
+
+  .score-bar{
+    display:none;
+    align-items:center;
+    justify-content:space-between;
+    background:#fff;
+    border:1px solid var(--paper-line);
+    border-left:5px solid var(--gold);
+    border-radius:var(--radius);
+    padding:12px 18px;
+    margin-bottom:22px;
+    font-size:14px;
+  }
+  .score-bar.show{display:flex;}
+  .score-bar strong{font-size:18px;color:var(--gold);}
+  .score-bar button{
+    background:none;border:1px solid var(--ink-soft);color:var(--ink-soft);
+    border-radius:6px;padding:6px 12px;font-size:13px;cursor:pointer;
+  }
+
+  section.block{
+    background:#fff;
+    border:1px solid var(--paper-line);
+    border-radius:var(--radius);
+    padding:22px 22px 26px;
+    margin-bottom:20px;
+  }
+  .block h2{
+    font-family:"Noto Serif TC",serif;
+    font-size:19px;
+    margin:0 0 4px;
+    color:var(--chalk-green);
+  }
+  .block .meta{color:var(--ink-soft);font-size:13px;margin:0 0 16px;}
+
+  .q{margin-bottom:18px;padding-bottom:16px;border-bottom:1px dashed var(--paper-line);}
+  .q:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0;}
+  .q-text{font-size:15.5px;margin-bottom:8px;white-space:pre-line;}
+  .q-num{color:var(--gold);font-weight:700;margin-right:4px;}
+
+  .opts{display:grid;gap:8px;}
+  .opt{
+    display:flex;gap:8px;align-items:flex-start;
+    border:1.5px solid var(--paper-line);
+    border-radius:8px;
+    padding:9px 12px;
+    cursor:pointer;
+    font-size:14.5px;
+    background:#fffdf8;
+  }
+  .opt:hover{border-color:var(--chalk-green-2);}
+  .opt.selected{border-color:var(--chalk-green-2);background:#eef3ea;}
+  .opt.correct{border-color:var(--ok-green);background:var(--ok-green-soft);}
+  .opt.wrong{border-color:var(--pen-red);background:var(--pen-red-soft);}
+  .opt .tag{font-weight:700;color:var(--ink-soft);}
+  .opt.correct .tag{color:var(--ok-green);}
+  .opt.wrong .tag{color:var(--pen-red);}
+  .opt.disabled{cursor:default;}
+
+  .passage{
+    background:#f5f2e8;border-radius:8px;padding:14px 16px;margin-bottom:14px;
+    font-size:14.5px;white-space:pre-line;
+  }
+  .passage-label{font-weight:700;color:var(--chalk-green);margin-bottom:4px;display:block;}
+
+  .footer-link{
+    display:block;text-align:center;margin-top:30px;color:var(--chalk-green);
+    text-decoration:none;font-weight:700;font-size:14px;
+  }
+  .footer-link:hover{text-decoration:underline;}
+
+  @media print{
+    header.hero, .controls, .score-bar, .mini-btn, .footer-link{display:none !important;}
+    body{background:#fff;}
+    section.block{border:none;box-shadow:none;padding:8px 0;margin-bottom:14px;}
+    .opt.correct{background:none;border:none;font-weight:700;}
+    .opt.correct::after{content:" ← 正解";color:var(--pen-red);}
+    .opt{border:none;padding:2px 0;}
+    main{max-width:100%;padding:0 24px;}
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="breadcrumb"><a href="https://jenlin2002.github.io/">🏠 回總目錄</a> ／ <a href="../hanlin-social-g7-1.html" style="color:#cfe0d1;">段考題庫</a></div>
+    <h1>歷史・第5回</h1>
+    <p class="subtitle">第4章 清帝國統治政策的變遷｜翰林版七年級社會（一）Ａ卷</p>
+  </div>
+</header>
+
+<main>
+  <div class="controls">
+    <div class="mode-toggle">
+      <button id="quizModeBtn" class="active">✏️ 測驗模式</button>
+      <button id="printModeBtn" disabled title="完成測驗並送出成績後才能查看">🖨️ 完整題目與解答（送出成績後解鎖）</button>
+    </div>
+  </div>
+
+  <div class="score-bar" id="scoreBar">
+    <div>目前得分：<strong id="scoreText">0 / 0</strong>（僅計算選擇題）</div>
+    <button id="resetBtn">重新作答</button>
+  </div>
+
+  <div id="content"></div>
+
+  <a class="footer-link" href="../hanlin-social-g7-1.html">← 回段考題庫總覽</a>
+</main>
+
+<script>
+
+window.EXAM_META = { version: "A卷", examLabel: "歷史第5回" };
+const DATA = {
+  sections: [
+    {
+      type:"mc",
+      title:"一、單題",
+      meta:"60%，每題3分",
+      items:[
+        {q:"某電視公司準備拍攝《施琅的功與過》紀錄片，下列哪一個情節應該會出現在影片中？",options:["興修水利設施","平定民變事件","率兵攻取臺灣","主張放棄臺灣"],correct:2},
+        {q:"1684年，清帝國將臺灣納入版圖，為防止臺灣再度成為動亂之源，採取了下列哪個政策？",options:["鎖國政策","寓兵於農","海禁政策","為防臺而治臺"],correct:3},
+        {q:"立志是1886年來臺打拚的有為青年。再過幾天就是父親的60歲大壽，住在淡水的他想向住在福州的父親祝壽，他可前往何地的郵政總局寄信？",options:["臺北府","臺南府","嘉義縣","新竹縣"],correct:0},
+        {q:"某國中舉行校外教學活動。行程參觀依序為赤崁樓→安平古堡→億載金城。根據上述，此次校外教學活動的地點在圖(一)中何地？",image:"images/hist5/q4.png",options:["甲","乙","丙","丁"],correct:2},
+        {q:"《臺灣府志》記載：府城以南，諸峰往南蜿蜒重疊，從高處往下看像飛鳳展翅，因而稱此山為「鳳山」，後因境內有此山而作為縣名「鳳山縣」。上述這段記載應該始於何時？",options:["臺灣建省後","清嘉慶年間","清雍正年間","清康熙年間"],correct:3},
+        {q:"清帝國早期，雖有劃界封山的措施，但番界卻不斷往山區移動，上述此種現象可以反映哪一事實？",options:["漢人拓墾範圍不斷擴大","官府協助漢人入山開墾","朝廷鼓勵漢人和原住民通婚","原住民以打獵為生，漸往深山遷移"],correct:0},
+        {q:"清帝國將臺灣納入版圖後，設置一府三縣，並劃入至下列哪一省分管轄？",options:["浙江","福建","廣東","廣西"],correct:1},
+        {q:"「清代臺灣社會有一種無田宅、無妻子、不士、不衣、不工、不賈、不負載道路，而嫖賭、摸竊、械鬥等無所不為的人。」上述描述的是指下列何者？",options:["海商","倭寇","海盜","羅漢腳"],correct:3},
+        {q:"在臺灣目前現存的西式近代建築中，位於打狗的英國領事館官邸，其年代最為久遠，為清帝國時期英國在該區掌理領事業務工作的重要據點。上述古蹟最早成立於哪一事件後？",options:["牡丹社事件","施琅攻臺","臺灣開港通商","臺灣建省"],correct:2},
+        {q:"曉明在觀賞清朝歷史劇時，聽到下列這段對話內容。請問：他觀賞的是哪一部戲？\n皇帝：臺灣僅彈丸之地，得之無所加，不得無所損。\n大臣：臺灣雖小，卻能屏障東南省分，戰略價值極高，請皇上三思啊！",options:["《康熙帝國》","《雍正王朝》","《戲說乾隆》","《嘉慶遊記》"],correct:0},
+        {q:"清帝國初期，並未以社會、經濟發展需求為主要考量調整行政區劃，之後卻因遭海盜入侵，基於國防考量而在圖(二)的何地增設行政區？",image:"images/hist5/q11.png",options:["甲","乙","丙","丁"],correct:0},
+        {q:"臺中市石岡區的土牛國小，至今仍保存一塊乾隆年間所立的界碑。這個石碑與清帝國前期哪一項政策有關？",options:["禁止漢人攜眷來臺","開墾需先申請執照","實施劃界封山政策","鼓勵興築水利設施"],correct:2},
+        {q:"歷史課進行有獎搶答活動，老師給了三個提示（如圖三）：\n●發生於同治元年。\n●規模最大的三次民變。\n●是臺灣歷時最久的民變。\n曉風要如何回答才能得到獎品？",options:["朱一貴事件","郭懷一事件","戴潮春事件","林爽文事件"],correct:2},
+        {q:"爸爸帶全家到玉山國家公園的八通關古道健行，這是清帝國後期開闢三條通往後山道路的其中一條。當時開闢上述古道的原因為何？",options:["開放通商口岸","實施劃界封山","實施海禁政策","加強管理原住民"],correct:3},
+        {q:"「他為防衛臺灣府城，首先聘請法國工程師在安平興建放置西洋巨炮的堡壘。完工後，他親自在城門外題字（如圖四）。」上文敘述的是何人的作為？",image:"images/hist5/q15.png",options:["沈葆楨","劉銘傳","施琅","林爽文"],correct:0},
+        {q:"圖(五)是清帝國時期爆發的對外戰爭形勢圖，此一戰事對臺灣造成何種影響？",image:"images/hist5/q16.png",options:["實施渡臺禁令","進行開山撫番","新增設淡水廳","臺灣改建行省"],correct:3},
+        {q:"關於清廷改變「為防臺而治臺」的政策的關鍵因素，下列哪一位同學的說法最恰當？\n(A)械鬥頻繁。(B)民變時起。(C)外力入侵。(D)漢原衝突。",options:["械鬥頻繁","民變時起","外力入侵","漢原衝突"],correct:2},
+        {q:"右列是某位學生的敘述：「我們學校在臺北城裡，隔壁就是西學堂，離電報學堂還有一段路。學校裡上的課都是漢文、閩南語、還有官話。畢業以後，我就可以回家鄉作官。」這樣的情節最早可能發生在何時？",options:["英法聯軍後","清法戰爭後","牡丹社事件後","戴潮春事件後"],correct:1},
+        {q:"下列為大碩在臺灣史書上看到的1874年《中日北京專約》部分內容。該條約的簽訂，使日本正式併吞何地？\n(1)給遇難者家屬賠償金。\n(2)給予日本在臺所建的道路、房舍等補償費。\n(3)承認日本出兵臺灣的行為是「保民義舉」。",options:["臺灣","琉球","越南","緬甸"],correct:1},
+        {q:"民哲在網路上看到圖(六)的內容：「乾隆51年，因清廷加緊查緝天地會，迫使□□起事，攻占彰化、諸羅縣等地，而南部的天地會眾也紛紛響應，清廷派福康安收復失地，平定此亂事。」請問：文中的缺空處應填入下列何人？",options:["朱一貴","郭懷一","戴潮春","林爽文"],correct:3}
+      ]
+    },
+    {
+      type:"reading",
+      title:"二、題組",
+      meta:"12%，每題3分",
+      passages:[
+        {
+          label:"(一)",
+          text:"牡丹社事件中，臺灣原住民族在石門古戰場抵抗敵軍的入侵，其中，有四名戰士頭骨輾轉收藏在英國愛丁堡大學。2023年牡丹鄉及原民會等派員前往英國完成「返還收藏之牡丹社群祖先遺骸」儀式，在英國古堡內進行排灣族祭儀，堪稱史上首見，部落族人透過傳統信仰儀式接引祖先回到牡丹家鄉，安息故土。",
+          items:[
+            {q:"上述的「敵軍」是指下列何者？",options:["日本人","法國人","荷蘭人","西班牙人"],correct:0},
+            {q:"上述石門古戰場應位於圖(七)中何地？",image:"images/hist5/passage1_item2.png",options:["甲","乙","丙","丁"],correct:3}
+          ]
+        },
+        {
+          label:"(二)",
+          text:"康熙末年，「鴨母王」朱一貴因不滿官府橫徵暴斂、欺壓百姓，決心號召群眾起義，以「反清復明」為號召，聚眾千餘人，進占臺灣府城，國號「大明」。後來由於內鬨且缺乏嚴密的組織，不到兩個月即遭清軍擊退。",
+          items:[
+            {q:"上述提及的「臺灣府城」應位於圖(八)中何處？",image:"images/hist5/passage2_item3.png",options:["甲","乙","丙","丁"],correct:2},
+            {q:"經歷上述事件後，造成下列何種影響？",options:["行政區增設彰化縣、淡水廳","漢人決定與原住民聯合抗清","漢人陸續加入鄭氏反清行列","清廷在臺灣展開現代化建設"],correct:0}
+          ]
+        }
+      ]
+    },
+    {
+      type:"mc",
+      title:"三、進階思考題",
+      meta:"28%，每題4分",
+      items:[
+        {q:"圖(九)是阿雄在課本看到臺灣某時期的行政區圖，下列有關該圖的敘述，何者正確？",image:"images/hist5/q25.png",options:["是牡丹社事件後的行政區","當時清廷實施為防臺而治臺的政策","為臺灣設省，首任巡撫劉銘傳所進行的調整","花蓮到臺東的鐵路已經通車"],correct:2},
+        {q:"愛玲整理清帝國時期臺灣發生的重要史事，如右表。這些事件的起因皆與下列何國的侵略有關？\n1858年　開港通商\n1885年　臺灣設省",options:["法國","西班牙","日本","荷蘭"],correct:0},
+        {q:"小塔是生活在19世紀末期的臺北人，下列何者不可能是他的生活經驗？",options:["搭輪船到東南亞做生意","在臺北的郵政總局上班","搭火車到高雄探望親友","打電報給中國福州朋友"],correct:2},
+        {q:"林老師在上歷史課時，以圖(十)來講解某一事件的經過。請問：此一事件的發生，對臺灣有下列何種深遠的影響？",image:"images/hist5/q28.png",options:["派遣官員強化防務","開放臺灣五口通商","清廷將臺灣改建行省","清廷將臺灣納入版圖"],correct:0},
+        {q:"上歷史課時，老師請同學說出有關清帝國前期的原住民政策，下列何人的說法最正確？\n(A)積極開山撫番，化番為民。\n(B)設立孔廟，以教化原住民。\n(C)鼓勵漢人與原住民貿易通婚。\n(D)劃界封山，以隔離漢人與原住民。",options:["積極開山撫番，化番為民","設立孔廟，以教化原住民","鼓勵漢人與原住民貿易通婚","劃界封山，以隔離漢人與原住民"],correct:3},
+        {q:"清帝國初期某份官方的報告：「統計臺灣人口結構，只有臺灣府城所屬的地區有夫妻、子女等家庭關係，其他諸羅縣、彰化縣以上一直到淡水廳，統計婦女不及數百人，而在臺數十萬無父母、妻子之人，並無相維繫之情，欲其無事也難矣。」上述報告中「男女比例失衡」的現象，直到哪一歷史事件後才有明顯改善？",options:["朱一貴事件","牡丹社事件","林爽文事件","戴潮春事件"],correct:1},
+        {q:"圖(十一)為四個清帝國初期的漢人，若依朝廷的法令規定，這當中只有何人有資格來到臺灣？\n南南：我已取得渡臺證照。\n大榮：我家財萬貫。\n阿陽：我準備帶著妻子一起過去。\n大明：我在臺灣有親戚朋友。",options:["南南","大榮","阿陽","大明"],correct:0}
+      ]
+    }
+
+  ]
+};
+
+let currentMode = "quiz"; // quiz | print
+
+const contentEl = document.getElementById("content");
+const scoreBar = document.getElementById("scoreBar");
+const scoreText = document.getElementById("scoreText");
+
+function render(){
+  window.examAnswersRevealed = false;
+  contentEl.innerHTML = "";
+  DATA.sections.forEach((sec, si)=> contentEl.appendChild(renderSection(sec, si)));
+  if(currentMode==="quiz"){
+    scoreBar.classList.add("show");
+    updateScore();
+  } else {
+    scoreBar.classList.remove("show");
+    contentEl.querySelectorAll(".opt").forEach(o=>o.classList.add("disabled"));
+    contentEl.querySelectorAll(".opt.is-correct").forEach(o=>o.classList.add("correct"));
+  }
+}
+
+function renderSection(sec, si){
+  const block = document.createElement("section");
+  block.className = "block";
+  block.innerHTML = `<h2>${sec.title}</h2><p class="meta">${sec.meta}</p>`;
+
+  if(sec.type==="mc"){
+    sec.items.forEach((it,i)=>{
+      const q = document.createElement("div");
+      q.className = "q";
+      const optsHtml = it.options.map((op,oi)=>`
+        <div class="opt" data-idx="${oi}" data-correct="${oi===it.correct}">
+          <span class="tag">(${String.fromCharCode(65+oi)})</span><span>${op}</span>
+        </div>`).join("");
+      const imgHtml = it.image ? `<img src="${it.image}" alt="題目附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">` : "";
+      const img2Html = it.image2 ? `<img src="${it.image2}" alt="題目附圖2" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">` : "";
+      q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q}</div>
+        ${imgHtml}${img2Html}
+        <div class="opts">${optsHtml}</div>`;
+      q.querySelectorAll(".opt").forEach(optEl=>{
+        if(optEl.dataset.correct==="true") optEl.classList.add("is-correct");
+        optEl.addEventListener("click", ()=>selectOption(q, optEl));
+      });
+      block.appendChild(q);
+    });
+  }
+
+  else if(sec.type==="reading"){
+    sec.passages.forEach(p=>{
+      const passageDiv = document.createElement("div");
+      passageDiv.className = "passage";
+      passageDiv.innerHTML = `${p.label ? `<span class="passage-label">${p.label}</span>`:""}${p.text}${p.image ? `<img src="${p.image}" alt="題組附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-top:10px;border:1px solid var(--paper-line);">`:""}`;
+      block.appendChild(passageDiv);
+      p.items.forEach((it,i)=>{
+        const q = document.createElement("div");
+        q.className = "q";
+        const optsHtml = it.options.map((op,oi)=>`
+          <div class="opt" data-idx="${oi}" data-correct="${oi===it.correct}">
+            <span class="tag">(${String.fromCharCode(65+oi)})</span><span>${op}</span>
+          </div>`).join("");
+        q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q}</div>
+          ${it.image ? `<img src="${it.image}" alt="題目附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">`:""}
+          <div class="opts">${optsHtml}</div>`;
+        q.querySelectorAll(".opt").forEach(optEl=>{
+          if(optEl.dataset.correct==="true") optEl.classList.add("is-correct");
+          optEl.addEventListener("click", ()=>selectOption(q, optEl));
+        });
+        block.appendChild(q);
+      });
+    });
+  }
+
+  return block;
+}
+
+function selectOption(qEl, optEl){
+  if(currentMode!=="quiz") return;
+  if(qEl.dataset.answered==="true") return;
+  qEl.dataset.answered = "true";
+  qEl.querySelectorAll(".opt").forEach(o=>o.classList.add("disabled"));
+  optEl.classList.add("selected");
+  const correctOpt = qEl.querySelector('.opt[data-correct="true"]');
+  qEl.dataset.studentAnswer = optEl.textContent.trim();
+  qEl.dataset.correctAnswer = correctOpt ? correctOpt.textContent.trim() : "";
+  qEl.dataset.isCorrect = (optEl.dataset.correct==="true") ? "true" : "false";
+  updateScore();
+}
+
+function updateScore(){
+  let total = 0, answered = 0, correct = 0;
+  contentEl.querySelectorAll(".q").forEach(q=>{
+    const gradable = q.querySelector(".opts");
+    if(!gradable) return;
+    total++;
+    if(q.dataset.studentAnswer !== undefined){
+      answered++;
+      if(q.dataset.isCorrect === "true") correct++;
+    }
+  });
+  if(window.examAnswersRevealed){
+    scoreText.textContent = `${correct} / ${total}`;
+  } else {
+    scoreText.textContent = `已作答 ${answered} / ${total} 題`;
+  }
+}
+window.updateScore = updateScore;
+
+document.getElementById("resetBtn").addEventListener("click", render);
+document.getElementById("quizModeBtn").addEventListener("click", ()=>{
+  currentMode = "quiz";
+  document.getElementById("quizModeBtn").classList.add("active");
+  document.getElementById("printModeBtn").classList.remove("active");
+  render();
+});
+document.getElementById("printModeBtn").addEventListener("click", ()=>{
+  if(document.getElementById("printModeBtn").disabled) return;
+  currentMode = "print";
+  document.getElementById("printModeBtn").classList.add("active");
+  document.getElementById("quizModeBtn").classList.remove("active");
+  render();
+});
+
+window.unlockPrintMode = function(){
+  document.getElementById("printModeBtn").disabled = false;
+};
+
+render();
+</script>
+<script src="../sync.js"></script>
+</body>
+</html>
