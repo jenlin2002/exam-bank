@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>段考題庫｜地理第6回 - 第3~4章總複習（A卷）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@500;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#faf6ec;
+    --paper-line:#e3dcc8;
+    --ink:#26332b;
+    --ink-soft:#5b6b5f;
+    --chalk-green:#2f4538;
+    --chalk-green-2:#3d5a48;
+    --pen-red:#b8433a;
+    --pen-red-soft:#f4dedb;
+    --ok-green:#3f7d52;
+    --ok-green-soft:#dfeee1;
+    --gold:#b5842a;
+    --radius:10px;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:"Noto Sans TC",sans-serif;
+    line-height:1.7;
+  }
+  header.hero{
+    background:var(--chalk-green);
+    color:#eef2ea;
+    padding:28px 20px 40px;
+    position:relative;
+  }
+  header.hero::after{
+    content:"";
+    position:absolute;
+    left:0; right:0; bottom:-1px;
+    height:14px;
+    background:repeating-linear-gradient(90deg,var(--paper) 0 18px, transparent 18px 20px);
+  }
+  .hero-inner{max-width:880px;margin:0 auto;}
+  .breadcrumb a{color:#cfe0d1;text-decoration:none;font-size:14px;}
+  .breadcrumb a:hover{text-decoration:underline;}
+  h1{
+    font-family:"Noto Serif TC",serif;
+    font-weight:700;
+    font-size:clamp(24px,4vw,34px);
+    margin:10px 0 6px;
+  }
+  .subtitle{color:#cfe0d1;font-size:15px;margin:0;}
+  main{max-width:880px;margin:0 auto;padding:28px 20px 80px;}
+
+  .controls{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:22px;
+  }
+  .mode-toggle{display:flex;border:2px solid var(--chalk-green);border-radius:999px;overflow:hidden;}
+  .mode-toggle button{
+    background:transparent;border:none;padding:8px 16px;font-size:14px;font-weight:700;
+    color:var(--chalk-green);cursor:pointer;font-family:"Noto Sans TC",sans-serif;
+  }
+  .mode-toggle button.active{background:var(--gold);color:#fff;}
+  .mode-toggle button:disabled{opacity:.4;cursor:not-allowed;}
+
+  .score-bar{
+    display:none;
+    align-items:center;
+    justify-content:space-between;
+    background:#fff;
+    border:1px solid var(--paper-line);
+    border-left:5px solid var(--gold);
+    border-radius:var(--radius);
+    padding:12px 18px;
+    margin-bottom:22px;
+    font-size:14px;
+  }
+  .score-bar.show{display:flex;}
+  .score-bar strong{font-size:18px;color:var(--gold);}
+  .score-bar button{
+    background:none;border:1px solid var(--ink-soft);color:var(--ink-soft);
+    border-radius:6px;padding:6px 12px;font-size:13px;cursor:pointer;
+  }
+
+  section.block{
+    background:#fff;
+    border:1px solid var(--paper-line);
+    border-radius:var(--radius);
+    padding:22px 22px 26px;
+    margin-bottom:20px;
+  }
+  .block h2{
+    font-family:"Noto Serif TC",serif;
+    font-size:19px;
+    margin:0 0 4px;
+    color:var(--chalk-green);
+  }
+  .block .meta{color:var(--ink-soft);font-size:13px;margin:0 0 16px;}
+
+  .q{margin-bottom:18px;padding-bottom:16px;border-bottom:1px dashed var(--paper-line);}
+  .q:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0;}
+  .q-text{font-size:15.5px;margin-bottom:8px;white-space:pre-line;}
+  .q-num{color:var(--gold);font-weight:700;margin-right:4px;}
+
+  .opts{display:grid;gap:8px;}
+  .opt{
+    display:flex;gap:8px;align-items:flex-start;
+    border:1.5px solid var(--paper-line);
+    border-radius:8px;
+    padding:9px 12px;
+    cursor:pointer;
+    font-size:14.5px;
+    background:#fffdf8;
+  }
+  .opt:hover{border-color:var(--chalk-green-2);}
+  .opt.selected{border-color:var(--chalk-green-2);background:#eef3ea;}
+  .opt.correct{border-color:var(--ok-green);background:var(--ok-green-soft);}
+  .opt.wrong{border-color:var(--pen-red);background:var(--pen-red-soft);}
+  .opt .tag{font-weight:700;color:var(--ink-soft);}
+  .opt.correct .tag{color:var(--ok-green);}
+  .opt.wrong .tag{color:var(--pen-red);}
+  .opt.disabled{cursor:default;}
+
+  .passage{
+    background:#f5f2e8;border-radius:8px;padding:14px 16px;margin-bottom:14px;
+    font-size:14.5px;white-space:pre-line;
+  }
+  .passage-label{font-weight:700;color:var(--chalk-green);margin-bottom:4px;display:block;}
+
+  .footer-link{
+    display:block;text-align:center;margin-top:30px;color:var(--chalk-green);
+    text-decoration:none;font-weight:700;font-size:14px;
+  }
+  .footer-link:hover{text-decoration:underline;}
+
+  @media print{
+    header.hero, .controls, .score-bar, .mini-btn, .footer-link{display:none !important;}
+    body{background:#fff;}
+    section.block{border:none;box-shadow:none;padding:8px 0;margin-bottom:14px;}
+    .opt.correct{background:none;border:none;font-weight:700;}
+    .opt.correct::after{content:" ← 正解";color:var(--pen-red);}
+    .opt{border:none;padding:2px 0;}
+    main{max-width:100%;padding:0 24px;}
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="breadcrumb"><a href="https://jenlin2002.github.io/">🏠 回總目錄</a> ／ <a href="../hanlin-social-g7-1.html" style="color:#cfe0d1;">段考題庫</a></div>
+    <h1>地理・第6回</h1>
+    <p class="subtitle">第3~4章 總複習｜翰林版七年級社會（一）Ａ卷</p>
+  </div>
+</header>
+
+<main>
+  <div class="controls">
+    <div class="mode-toggle">
+      <button id="quizModeBtn" class="active">✏️ 測驗模式</button>
+      <button id="printModeBtn" disabled title="完成測驗並送出成績後才能查看">🖨️ 完整題目與解答（送出成績後解鎖）</button>
+    </div>
+  </div>
+
+  <div class="score-bar" id="scoreBar">
+    <div>目前得分：<strong id="scoreText">0 / 0</strong>（僅計算選擇題）</div>
+    <button id="resetBtn">重新作答</button>
+  </div>
+
+  <div id="content"></div>
+
+  <a class="footer-link" href="../hanlin-social-g7-1.html">← 回段考題庫總覽</a>
+</main>
+
+<script>
+
+window.EXAM_META = { version: "A卷", examLabel: "地理第6回" };
+const DATA = {
+  sections: [
+    {
+      type:"mc",
+      title:"一、單題",
+      meta:"60%，每題3分",
+      items:[
+        {q:"該島嶼由海底火山噴發後而形成，其位置為我國、中國、日本三國經濟海域範圍重疊處，而引發爭議。上述提及的離島應為圖(一)中何者？",image:"images/geo6/q1.png",options:["甲","乙","丙","丁"],correct:2},
+        {q:"圖(二)為屏東縣部分沿海海域，圖中的甲區原本為養殖漁業，近年來政府為了促進觀光業發展，改為國家風景區。根據海岸特徵判斷，圖中甲區為哪種海岸地形？",image:"images/geo6/q2.png",options:["沙丘","潟湖","沙洲","珊瑚礁"],correct:1},
+        {q:"臺灣位於太平洋上的離島，如綠島，有天然的海底溫泉。造成此地有海底溫泉的原因為下列何者？",options:["大陸棚廣大","黑潮暖流經過","位於板塊接觸帶","緯度低海水溫暖"],correct:2},
+        {q:"在中央山脈與海岸山脈的包圍下，有著得天獨厚的氣候條件，不僅孕育出香甜的好米，其製成的池上、關山便當，更是遊客的最愛。上述是描述哪一個地形區？",options:["彰化平原","嘉南平原","花東縱谷平原","屏東平原"],correct:2},
+        {q:"新北市萬金石馬拉松是臺灣第一及唯一獲國際田徑總會銀標籤認證的國際級馬拉松。根據其舉辦地點可知，該海岸屬於下列何種類型？",options:["沙岸","岬灣海岸","斷層海岸","珊瑚礁海岸"],correct:1},
+        {q:"「2016年，全臺離海岸線最近的深澳線八斗子站復駛，該站附近的海岸線曲折，岬角與灣澳眾多，深具觀光及遊憩的價值。」由上文推論，八斗子站位於圖(三)中的哪段海岸？",image:"images/geo6/q6.png",options:["甲","乙","丙","丁"],correct:0},
+        {q:"全球許多國家位於板塊接觸帶上，這些國家會與臺灣哪一項地理特徵類似？",options:["多沖積扇地形","多火山、地震","多寬闊的平原","多石灰岩地形"],correct:1},
+        {q:"勤儉刻苦、好客的客家族群主要分布在桃園、新竹、苗栗等地帶，當地豐富的客家文化成為重要的觀光資源。上述這些客家族群主要活動於哪些地形區？",options:["平原、盆地","盆地、丘陵","丘陵、台地","台地、平原"],correct:2},
+        {q:"臺灣日治時期有許多晒鹽的產業，近年來逐漸轉型發展成觀光業，像是七股鹽山、北門井子腳鹽田等。上述產業主要分布在臺灣哪一段海岸？",options:["北部海岸","南部海岸","東部海岸","西部海岸"],correct:3},
+        {q:"圖(四)是典典整理的高等線繪製規則，姊姊檢查發現有錯誤，根據圖中內容判斷，其中何者需被修正？",image:"images/geo6/q10.png",options:["甲","乙","丙","丁"],correct:1},
+        {q:"2023年卡努颱風引進強勁水氣，使得南投某加油站遭受大量土石淹沒，已是建站以來的第七次。第一次是在921震災後隔年，山區因土石鬆動而在豪雨下發生嚴重土石流。上述災害造成土石鬆動的原因與下列何者最為相關？",options:["海浪侵蝕崩塌","四面環海水氣充足","地殼板塊運動","開闢農場水土流失"],correct:2},
+        {q:"圖(五)為某地區的等高線地形圖，依等高線的特徵判斷，圖中虛線最可能為何種地表景觀？",image:"images/geo6/q12.png",options:["山脊","河谷","台地","斷層"],correct:0},
+        {q:"郁永河《裨海紀遊》記載：「二十五日，買小舟登陸，近岸水益淺，小舟復不進，易牛車，從淺水中牽挽達岸。」由上文敘述推論，圖(六)中何者最可能是郁永河登陸地點？",image:"images/geo6/q13.png",options:["甲","乙","丙","丁"],correct:2},
+        {q:"柏宏為某離島的海軍補給兵，因該島四周為淺礁海岸，載運補給物資需以小船接駁上岸。柏宏在臺灣本島接受軍事補給訓練時，其訓練地點應選擇圖(七)中何處的海岸較為相似？",image:"images/geo6/q14.png",options:["甲","乙","丙","丁"],correct:2},
+        {q:"阿朗壹古道是過去臺灣南部前往東部的要道，倚山臨太平洋，沿途除了稀有的保育類動植物外，爬上山崖陡坡就可俯瞰陡直的海岸線。上述古道經過何種類型的海岸？",options:["沙岸","岬灣海岸","斷層海岸","珊瑚礁海岸"],correct:2},
+        {q:"若以圖(八)中「甲→乙」為基準，橫切畫出地形剖面圖，應該最接近下列哪一張圖？",image:"images/geo6/q16.png",image2:"images/geo6/q16opts.png",options:["A","B","C","D"],correct:0},
+        {q:"班上最近來了一位新同學，他在班上自我介紹時說：「我的家鄉位於臺灣最大平原上，到處可見農田景觀，附近還有一座北回歸線紀念碑，每逢假日前來參觀照相紀念的遊客絡繹不絕……。」根據上文推論，這位新同學的家鄉應該是下列哪個縣市？",options:["臺南市","嘉義縣","雲林縣","臺東縣"],correct:1},
+        {q:"圖(九)為地理老師在黑板上畫的島嶼形成原因示意圖，他最有可能是要介紹下列哪一個離島？",image:"images/geo6/q18.png",options:["琉球嶼","澎湖群島","馬祖列嶼","釣魚臺列嶼"],correct:2},
+        {q:"位於雲林與嘉義交界的峭壁雄風，因地球內營力活動時岩層斷裂所形成的崩壁，岩壁表面設有踏足點及從岩頂垂下的繩索供遊客攀爬。有關上述景點形成的原因與下列何者有關？",options:["歐亞板塊與菲律賓海板塊擠壓","河水上游侵蝕力強而切穿岩層","火山噴發後形成的柱狀玄武岩","地殼抬升使海底珊瑚露出地表"],correct:0},
+        {q:"阿羿在大掃除時發現祖先流傳的藏寶圖，圖中僅有一條條的線以及少許數字，如圖(十)。其中還夾帶著文字線索：「沿著河流即可找到寶藏。」寶藏應埋藏在圖中的何處？",image:"images/geo6/q20.png",options:["甲","乙","丙","丁"],correct:3}
+      ]
+    },
+    {
+      type:"reading",
+      title:"二、題組",
+      meta:"12%，每題3分",
+      passages:[
+        {
+          label:"(一)",
+          text:"阿倫想要挑戰圖(土)中臺灣第一條長距離步道——山海圳，由平原海口出發，一路向上至終點處為海拔3,952公尺的東亞最高峰，既可探索400年前的台江內海歷史文化風情，又可穿越山林間欣賞山岳美景。",
+          image:"images/geo6/q21passage.png",
+          items:[
+            {q:"下列哪一景色是在步道起點可觀賞到的？",options:["退潮時招潮蟹在紅樹林灘地間覓食","漁民在珊瑚礁石間的潮池孔隙捕撈","沖積平原出現在壯麗的陡峭海岸間","海風海浪侵蝕形成崎嶇蜿蜒的岬灣"],correct:0},
+            {q:"阿倫由海口沿步道路線往內陸到達終點，依序將穿越哪些山脈？",options:["雪山山脈、玉山山脈","玉山山脈、中央山脈","阿里山山脈、中央山脈","阿里山山脈、玉山山脈"],correct:3}
+          ]
+        },
+        {
+          label:"(二)",
+          text:"農林航空測量所是航空攝影專責政府單位，2022年購入新型飛機，搭配價值3千萬的航攝相機，並加裝長程油箱，飛航高度達1萬公尺的高空，航距延伸2,600浬，可到達國土最南端島嶼。具多樣化且彈性的航遙測裝備搭載功能，將有助於協助政府執行各飛航高度及各類遙測取像任務。",
+          items:[
+            {q:"上述團隊取得的圖像資料屬於下列何種類型？",options:["地形剖面圖","分層設色圖","航空照片","衛星影像"],correct:2},
+            {q:"若該團隊由臺灣本島出發，向西南方航行，最遠可到達我國的哪一座島嶼進行取像工作？",options:["東沙群島","南沙群島","馬祖列嶼","釣魚臺列嶼"],correct:1}
+          ]
+        }
+      ]
+    },
+    {
+      type:"mc",
+      title:"三、進階思考題",
+      meta:"28%，每題4分",
+      items:[
+        {q:"臺灣有個小鎮不但有太平雲梯可以眺望臺灣最大的平原，還有位於海拔高度1,314公尺的涼亭是著名打卡景點。上述小鎮最有可能是下列何者？",options:["新北瑞芳","新竹關西","苗栗苑裡","嘉義梅山"],correct:3},
+        {q:"地形作用力是指改變地表形貌的力量，可分為內營力與外營力。下列為世界各地所發生的各種地理現象，其中屬於內營力所造成的現象為何？",options:["印尼火山爆發，造成多人的傷亡","連日暴雨造成澳洲山區土石崩落","智利沙灘因海浪侵蝕而流失減少","流水將上游泥沙帶至下游處堆積"],correct:0},
+        {q:"臺灣本島的位置約介於22°N〜25°N，120°E〜122°E之間。今天有張藏寶圖標示寶藏位在臺灣的某座島嶼上，其經緯座標為（24.30°N，118.25°E）。該島的成因應為下列何者？",options:["海底火山噴發","河流泥沙堆積","珊瑚礁露出海面","中國沿海丘陵沒入海中"],correct:3},
+        {q:"將不同海拔高度的區域，用不同顏色來表示的地圖，稱為分層設色圖。若要製作臺灣地形分層設色圖時，圖(士)中哪一線段通過的顏色最多？",image:"images/geo6/q28.png",options:["甲","乙","丙","丁"],correct:1},
+        {q:"小甄在登山日記裡寫到：「站在菲律賓海板塊前緣的山脈稜線上，遠眺臺灣島的脊梁山脈、俯瞰縱谷平原，山巒疊障、綠野平疇的美景，讓人身心感覺舒暢。」該段日記應是位於圖(士)中何處所書寫？",image:"images/geo6/q29.png",options:["甲","乙","丙","丁"],correct:3},
+        {q:"冠帆在日記中寫著：「早上看到灣澳內有許多貨櫃船進行裝卸，中午遠望海上有個外形狀似海龜的島嶼，下午靠近海的地方多是高聳的峭壁。」他最有可能是沿著下列哪些縣市依序進行海岸之旅？",options:["基隆→宜蘭→花蓮","花蓮→臺東→屏東","高雄→屏東→臺東","臺中→苗栗→新竹"],correct:0},
+        {q:"圖(土)是柏軒在解謎遊戲中得到的圖卡，是一張未完成的分層設色圖，曲線為等高線，根據圖中資訊，下列何者為正確的謎題答案？",image:"images/geo6/q31.png",options:["圖中等高線間距為200公尺","甲乙兩地屬於相同地形類型","此圖繪製時需使用三種顏色","圖中最高點為海拔2,000公尺"],correct:2}
+      ]
+    }
+
+  ]
+};
+
+let currentMode = "quiz"; // quiz | print
+
+const contentEl = document.getElementById("content");
+const scoreBar = document.getElementById("scoreBar");
+const scoreText = document.getElementById("scoreText");
+
+function render(){
+  window.examAnswersRevealed = false;
+  contentEl.innerHTML = "";
+  DATA.sections.forEach((sec, si)=> contentEl.appendChild(renderSection(sec, si)));
+  if(currentMode==="quiz"){
+    scoreBar.classList.add("show");
+    updateScore();
+  } else {
+    scoreBar.classList.remove("show");
+    contentEl.querySelectorAll(".opt").forEach(o=>o.classList.add("disabled"));
+    contentEl.querySelectorAll(".opt.is-correct").forEach(o=>o.classList.add("correct"));
+  }
+}
+
+function renderSection(sec, si){
+  const block = document.createElement("section");
+  block.className = "block";
+  block.innerHTML = `<h2>${sec.title}</h2><p class="meta">${sec.meta}</p>`;
+
+  if(sec.type==="mc"){
+    sec.items.forEach((it,i)=>{
+      const q = document.createElement("div");
+      q.className = "q";
+      const optsHtml = it.options.map((op,oi)=>`
+        <div class="opt" data-idx="${oi}" data-correct="${oi===it.correct}">
+          <span class="tag">(${String.fromCharCode(65+oi)})</span><span>${op}</span>
+        </div>`).join("");
+      const imgHtml = it.image ? `<img src="${it.image}" alt="題目附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">` : "";
+      const img2Html = it.image2 ? `<img src="${it.image2}" alt="題目附圖2" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">` : "";
+      q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q}</div>
+        ${imgHtml}${img2Html}
+        <div class="opts">${optsHtml}</div>`;
+      q.querySelectorAll(".opt").forEach(optEl=>{
+        if(optEl.dataset.correct==="true") optEl.classList.add("is-correct");
+        optEl.addEventListener("click", ()=>selectOption(q, optEl));
+      });
+      block.appendChild(q);
+    });
+  }
+
+  else if(sec.type==="reading"){
+    sec.passages.forEach(p=>{
+      const passageDiv = document.createElement("div");
+      passageDiv.className = "passage";
+      passageDiv.innerHTML = `${p.label ? `<span class="passage-label">${p.label}</span>`:""}${p.text}${p.image ? `<img src="${p.image}" alt="題組附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-top:10px;border:1px solid var(--paper-line);">`:""}`;
+      block.appendChild(passageDiv);
+      p.items.forEach((it,i)=>{
+        const q = document.createElement("div");
+        q.className = "q";
+        const optsHtml = it.options.map((op,oi)=>`
+          <div class="opt" data-idx="${oi}" data-correct="${oi===it.correct}">
+            <span class="tag">(${String.fromCharCode(65+oi)})</span><span>${op}</span>
+          </div>`).join("");
+        q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q}</div>
+          ${it.image ? `<img src="${it.image}" alt="題目附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">`:""}
+          <div class="opts">${optsHtml}</div>`;
+        q.querySelectorAll(".opt").forEach(optEl=>{
+          if(optEl.dataset.correct==="true") optEl.classList.add("is-correct");
+          optEl.addEventListener("click", ()=>selectOption(q, optEl));
+        });
+        block.appendChild(q);
+      });
+    });
+  }
+
+  return block;
+}
+
+function selectOption(qEl, optEl){
+  if(currentMode!=="quiz") return;
+  if(qEl.dataset.answered==="true") return;
+  qEl.dataset.answered = "true";
+  qEl.querySelectorAll(".opt").forEach(o=>o.classList.add("disabled"));
+  optEl.classList.add("selected");
+  const correctOpt = qEl.querySelector('.opt[data-correct="true"]');
+  qEl.dataset.studentAnswer = optEl.textContent.trim();
+  qEl.dataset.correctAnswer = correctOpt ? correctOpt.textContent.trim() : "";
+  qEl.dataset.isCorrect = (optEl.dataset.correct==="true") ? "true" : "false";
+  updateScore();
+}
+
+function updateScore(){
+  let total = 0, answered = 0, correct = 0;
+  contentEl.querySelectorAll(".q").forEach(q=>{
+    const gradable = q.querySelector(".opts");
+    if(!gradable) return;
+    total++;
+    if(q.dataset.studentAnswer !== undefined){
+      answered++;
+      if(q.dataset.isCorrect === "true") correct++;
+    }
+  });
+  if(window.examAnswersRevealed){
+    scoreText.textContent = `${correct} / ${total}`;
+  } else {
+    scoreText.textContent = `已作答 ${answered} / ${total} 題`;
+  }
+}
+window.updateScore = updateScore;
+
+document.getElementById("resetBtn").addEventListener("click", render);
+document.getElementById("quizModeBtn").addEventListener("click", ()=>{
+  currentMode = "quiz";
+  document.getElementById("quizModeBtn").classList.add("active");
+  document.getElementById("printModeBtn").classList.remove("active");
+  render();
+});
+document.getElementById("printModeBtn").addEventListener("click", ()=>{
+  if(document.getElementById("printModeBtn").disabled) return;
+  currentMode = "print";
+  document.getElementById("printModeBtn").classList.add("active");
+  document.getElementById("quizModeBtn").classList.remove("active");
+  render();
+});
+
+window.unlockPrintMode = function(){
+  document.getElementById("printModeBtn").disabled = false;
+};
+
+render();
+</script>
+<script src="../sync.js"></script>
+</body>
+</html>
