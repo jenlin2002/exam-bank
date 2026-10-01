@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>段考題庫｜歷史第7回 - 第5章 清帝國時期農商業的發展（A卷）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@500;700&family=Noto+Sans+TC:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#faf6ec;
+    --paper-line:#e3dcc8;
+    --ink:#26332b;
+    --ink-soft:#5b6b5f;
+    --chalk-green:#2f4538;
+    --chalk-green-2:#3d5a48;
+    --pen-red:#b8433a;
+    --pen-red-soft:#f4dedb;
+    --ok-green:#3f7d52;
+    --ok-green-soft:#dfeee1;
+    --gold:#b5842a;
+    --radius:10px;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:"Noto Sans TC",sans-serif;
+    line-height:1.7;
+  }
+  header.hero{
+    background:var(--chalk-green);
+    color:#eef2ea;
+    padding:28px 20px 40px;
+    position:relative;
+  }
+  header.hero::after{
+    content:"";
+    position:absolute;
+    left:0; right:0; bottom:-1px;
+    height:14px;
+    background:repeating-linear-gradient(90deg,var(--paper) 0 18px, transparent 18px 20px);
+  }
+  .hero-inner{max-width:880px;margin:0 auto;}
+  .breadcrumb a{color:#cfe0d1;text-decoration:none;font-size:14px;}
+  .breadcrumb a:hover{text-decoration:underline;}
+  h1{
+    font-family:"Noto Serif TC",serif;
+    font-weight:700;
+    font-size:clamp(24px,4vw,34px);
+    margin:10px 0 6px;
+  }
+  .subtitle{color:#cfe0d1;font-size:15px;margin:0;}
+  main{max-width:880px;margin:0 auto;padding:28px 20px 80px;}
+
+  .controls{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:22px;
+  }
+  .mode-toggle{display:flex;border:2px solid var(--chalk-green);border-radius:999px;overflow:hidden;}
+  .mode-toggle button{
+    background:transparent;border:none;padding:8px 16px;font-size:14px;font-weight:700;
+    color:var(--chalk-green);cursor:pointer;font-family:"Noto Sans TC",sans-serif;
+  }
+  .mode-toggle button.active{background:var(--gold);color:#fff;}
+  .mode-toggle button:disabled{opacity:.4;cursor:not-allowed;}
+
+  .score-bar{
+    display:none;
+    align-items:center;
+    justify-content:space-between;
+    background:#fff;
+    border:1px solid var(--paper-line);
+    border-left:5px solid var(--gold);
+    border-radius:var(--radius);
+    padding:12px 18px;
+    margin-bottom:22px;
+    font-size:14px;
+  }
+  .score-bar.show{display:flex;}
+  .score-bar strong{font-size:18px;color:var(--gold);}
+  .score-bar button{
+    background:none;border:1px solid var(--ink-soft);color:var(--ink-soft);
+    border-radius:6px;padding:6px 12px;font-size:13px;cursor:pointer;
+  }
+
+  section.block{
+    background:#fff;
+    border:1px solid var(--paper-line);
+    border-radius:var(--radius);
+    padding:22px 22px 26px;
+    margin-bottom:20px;
+  }
+  .block h2{
+    font-family:"Noto Serif TC",serif;
+    font-size:19px;
+    margin:0 0 4px;
+    color:var(--chalk-green);
+  }
+  .block .meta{color:var(--ink-soft);font-size:13px;margin:0 0 16px;}
+
+  .q{margin-bottom:18px;padding-bottom:16px;border-bottom:1px dashed var(--paper-line);}
+  .q:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0;}
+  .q-text{font-size:15.5px;margin-bottom:8px;white-space:pre-line;}
+  .q-num{color:var(--gold);font-weight:700;margin-right:4px;}
+
+  .opts{display:grid;gap:8px;}
+  .opt{
+    display:flex;gap:8px;align-items:flex-start;
+    border:1.5px solid var(--paper-line);
+    border-radius:8px;
+    padding:9px 12px;
+    cursor:pointer;
+    font-size:14.5px;
+    background:#fffdf8;
+  }
+  .opt:hover{border-color:var(--chalk-green-2);}
+  .opt.selected{border-color:var(--chalk-green-2);background:#eef3ea;}
+  .opt.correct{border-color:var(--ok-green);background:var(--ok-green-soft);}
+  .opt.wrong{border-color:var(--pen-red);background:var(--pen-red-soft);}
+  .opt .tag{font-weight:700;color:var(--ink-soft);}
+  .opt.correct .tag{color:var(--ok-green);}
+  .opt.wrong .tag{color:var(--pen-red);}
+  .opt.disabled{cursor:default;}
+
+  .passage{
+    background:#f5f2e8;border-radius:8px;padding:14px 16px;margin-bottom:14px;
+    font-size:14.5px;white-space:pre-line;
+  }
+  .passage-label{font-weight:700;color:var(--chalk-green);margin-bottom:4px;display:block;}
+
+  .footer-link{
+    display:block;text-align:center;margin-top:30px;color:var(--chalk-green);
+    text-decoration:none;font-weight:700;font-size:14px;
+  }
+  .footer-link:hover{text-decoration:underline;}
+
+  @media print{
+    header.hero, .controls, .score-bar, .mini-btn, .footer-link{display:none !important;}
+    body{background:#fff;}
+    section.block{border:none;box-shadow:none;padding:8px 0;margin-bottom:14px;}
+    .opt.correct{background:none;border:none;font-weight:700;}
+    .opt.correct::after{content:" ← 正解";color:var(--pen-red);}
+    .opt{border:none;padding:2px 0;}
+    main{max-width:100%;padding:0 24px;}
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="breadcrumb"><a href="https://jenlin2002.github.io/">🏠 回總目錄</a> ／ <a href="../hanlin-social-g7-1.html" style="color:#cfe0d1;">段考題庫</a></div>
+    <h1>歷史・第7回</h1>
+    <p class="subtitle">第5章 清帝國時期農商業的發展｜翰林版七年級社會（一）Ａ卷</p>
+  </div>
+</header>
+
+<main>
+  <div class="controls">
+    <div class="mode-toggle">
+      <button id="quizModeBtn" class="active">✏️ 測驗模式</button>
+      <button id="printModeBtn" disabled title="完成測驗並送出成績後才能查看">🖨️ 完整題目與解答（送出成績後解鎖）</button>
+    </div>
+  </div>
+
+  <div class="score-bar" id="scoreBar">
+    <div>目前得分：<strong id="scoreText">0 / 0</strong>（僅計算選擇題）</div>
+    <button id="resetBtn">重新作答</button>
+  </div>
+
+  <div id="content"></div>
+
+  <a class="footer-link" href="../hanlin-social-g7-1.html">← 回段考題庫總覽</a>
+</main>
+
+<script>
+
+window.EXAM_META = { version: "A卷", examLabel: "歷史第7回" };
+const DATA = {
+  sections: [
+    {
+      type:"mc",
+      title:"一、單題",
+      meta:"60%，每題3分",
+      items:[
+        {q:"小筑假日到臺南安平一遊，參觀安平樹屋，上網查到下列資料。根據內容判斷，清代開港通商後，此洋行主要進口下列哪一商品？\n「安平樹屋原為英商德記洋行的倉庫，現況規模為日治初期所興建。經百餘年的滄桑歲月，倉庫牆面滿布榕樹氣根，高聳的榕樹、樹冠彷彿成為倉庫的屋頂，也讓安平樹屋擁有難得一見的神祕氣息。」",options:["鴉片","茶葉","香料","軍火"],correct:0},
+        {q:"自荷治時期、鄭氏時期到清帝國時期，下列何者是臺灣對外貿易時主要出口的商品？",options:["香料","茶葉","樟腦","蔗糖"],correct:3},
+        {q:"歷史課上進行有獎徵答活動，右列是老師的提問：「在清帝國後期，臺灣哪一項商品的產量曾達到世界第一？」同學要如何回答，才能得到獎品？",options:["茶葉","蔗糖","樟腦","稻米"],correct:2},
+        {q:"2023年12月，為慶祝葫蘆墩開圳300週年，臺中市政府特別規畫葫蘆墩圳古蹟走讀踩線團，透過騎自行車的方式深入探訪百年水圳的歷史文化與古圳風光，此水圳是清帝國時期由漢人和平埔族合資修築。上述水圳原名可能是下列何者？",options:["瑠公圳","曹公圳","八堡圳","貓霧揀圳"],correct:3},
+        {q:"清帝國時期，水圳灌溉面積廣大，使水田面積大幅增加，同時也讓下列哪一作物的產量大增？",options:["稻米、甘蔗","茶葉、樟腦","稻米、茶葉","甘蔗、樟腦"],correct:0},
+        {q:"傅恆複習臺灣史時，整理出右列內容，其中哪個歷史事件發生的時間最早？\n甲、臺灣建省\n乙、廢除渡臺禁令\n丙、牡丹社事件\n丁、開放通商口岸",options:["甲","乙","丙","丁"],correct:3},
+        {q:"清代開港通商後，國際貿易快速成長，由於茶與樟腦的出口，使得臺灣的政治、經濟重心轉移到圖(一)中何地？",image:"images/hist7/q7.png",options:["甲","乙","丙","丁"],correct:0},
+        {q:"「引進新店溪的河水灌溉，大大小小河道遍布臺北地區，使農業時代的臺北盆地或為阡陌良田，歷史已經超過兩百七十年，而今日幾乎已經全部填平或荒廢，僅在新北市新店區殘留幾小段水道。」上文敘述的是下列哪個水利建設？",options:["瑠公圳","八堡圳","曹公圳","貓霧揀圳"],correct:0},
+        {q:"由圖(二)演變到圖(三)的關鍵因素為何？\n圖(二)港口貿易：一府、二鹿、三艋舺\n圖(三)港口貿易：雞籠、淡水、安平、打狗",options:["臺灣建省","開港通商","廢除渡臺禁令","廢除劃界封山"],correct:1},
+        {q:"彰化縣文化局將藏身在鹿港曲巷中的歷史建築——「鶴棲別墅」打造成「郊行博物館」，並展出鹿港獨特的郊商風貌與文化，展現當年千帆入港的貿易繁華。回顧歷史，上述「郊」組織成立的性質為何？",options:["同一墾戶或合夥墾號","同一姓氏或拓墾地區","同一貿易區域或貿易商品","同一宗族組織或原鄉信仰"],correct:2},
+        {q:"19世紀，茶葉曾是引領臺灣經濟起飛的重要資源，為持續推廣臺灣茶葉歷史文化，某資深設計師設計一款以□□茶行為背景的桌遊，利用當地歷史故事和茶師的連結，讓玩家邀遊茶與歷史的百年風華。上述報導中的□□指的是下列何地？",options:["安平","打狗","鹿港","大稻埕"],correct:3},
+        {q:"瑞玲複習臺灣史時，整理出下列古今地名的對照，其中僅有哪一項正確？",options:["雞籠──宜蘭","大員──高雄","艋舺──萬華","打狗──安平"],correct:2},
+        {q:"清帝國領臺後，臺灣的主要貿易對象是中國，而其主要進口商品為下列何者？",options:["鴉片、紡織品","鴉片、藥材","紡織品、藥材","香料、藥材"],correct:2},
+        {q:"清帝國時期，永慶經營與中國大陸的進出口貿易，他出口下列哪一種臺灣商品最受歡迎？",options:["稻米","鹿皮","藥材","紡織品"],correct:0},
+        {q:"清帝國時期，來臺漢人合資開墾土地的情形相當普遍，下列哪一地名的由來與上述開墾情況最相關？",options:["艋舺","頭份","鹿港","蛤仔難"],correct:1},
+        {q:"下表是臺灣某時期，部分洋行在臺的營運狀況。若考慮當時商品產區，這些商品最可能大多從下列何地出口？\n名稱　　　　　　主要出口商品\n寶順洋行　　　　茶\n美利士洋行　　　樟腦\n公泰洋行　　　　樟腦\n費爾．哈士迪斯洋行　樟腦、煤",options:["淡水","鹿港","安平","打狗"],correct:0},
+        {q:"榆喬在網頁上看到圖(四)是一張清代銷往海外的臺灣烏龍茶的商標。請問：上述商品在當時主要銷往何地？",image:"images/hist7/q17.png",options:["日本","英國","中國","美國"],correct:3},
+        {q:"以下是某書對臺灣的描述：「此時期臺灣居民不得與外國往來，而且統治者為了管制移民、稽查海盜，還限定臺灣與中國大陸的對渡港口。當時臺灣所輸出的稻米幾乎全部銷往福建及其附近地區，糖則主要運銷華中、華北和東北。」當時限定的唯一對渡港口是圖(五)中何地？",image:"images/hist7/q18.png",options:["甲","乙","丙","丁"],correct:2},
+        {q:"「金廣福公館」是一處位於新竹縣北埔鄉的古蹟，是清帝國時閩粵合股設立的拓墾組織，該組織在成立之初可能會經手下列哪一事務？",options:["仲裁漢人與外國商人的貿易糾紛","發行墾照給渡臺的漢人進行拓墾","招收開墾佃農及合資開墾的事宜","負責與臺北府洽談茶葉出口事宜"],correct:2},
+        {q:"青年國中戶外教學是參觀曹公圳，導覽老師介紹著：「此水圳是道光年間，由縣令曹瑾主導開鑿並引洪水灌溉。現今的曹公路、曹公國小、曹公祠都是為了紀念他。」上述的地點在圖(六)中何地？",image:"images/hist7/q20.png",options:["甲","乙","丙","丁"],correct:3}
+      ]
+    },
+    {
+      type:"reading",
+      title:"二、題組",
+      meta:"12%，每題3分",
+      passages:[
+        {
+          label:"(一)",
+          text:"為慶祝彰化建縣300週年，彰化縣政府特別邀知名劇團以彰化母親河「八堡圳」開鑿故事，改編「八堡圳」傳奇紀念大戲，作品中有兩位重要人物：一位是歷史人物□□□，劇中描述他帶領族人歷經千辛萬苦的水圳開鑿過程；另一位傳奇人物——林先生，懷抱不居功、不求名利的情操，都將在舞臺上呈現。",
+          items:[
+            {q:"上述的歷史人物指的是下列何者？",options:["曹瑾","郭錫瑠","施世榜","張達京"],correct:2},
+            {q:"上述開鑿的水利設施有下列哪個特色？",options:["是官方主導興建的水圳","是清代灌溉規模最大的水圳","是中部地區唯一的灌溉渠道","是漢人與原住民合作修築的水圳"],correct:1}
+          ]
+        },
+        {
+          label:"(二)",
+          text:"開港通商後，臺灣再度進入國際貿易市場，海關、領事館等機構正式出現。不僅讓各國商人可以到通商口岸進行買賣，西方的傳教士也能自由進出傳教。",
+          items:[
+            {q:"英國商人陶德於19世紀後期來臺貿易經商，專做茶葉買賣。請問：當時臺灣的茶葉加工後，會由圖(七)中的何地出口？",image:"images/hist7/passage2.png",options:["甲","乙","丙","丁"],correct:1},
+            {q:"根據圖(七)，李大成是鳳山縣南部的糖商，他可利用鄰近的哪個港口出口蔗糖？",options:["甲","乙","丙","丁"],correct:3}
+          ]
+        }
+      ]
+    },
+    {
+      type:"mc",
+      title:"三、進階思考題",
+      meta:"28%，每題4分",
+      items:[
+        {q:"圖(八)為雅德在歷史課本上看到的一張臺灣港口示意圖，由此可推知當時臺灣經濟、社會的發展，其樂做出以下結論，但其中哪一項有誤？",image:"images/hist7/q25.png",options:["臺灣開發順序為甲→乙→丙","主要的貿易對象是中國大陸","貿易商在三大港口設置「郊」","進口物品主要為藥材與紡織品"],correct:0},
+        {q:"梧桐完成以「清帝國領臺初期的商業貿易」為主題的報告，內容包括當時臺灣商業組織與貿易重心、區域發展的趨勢，其中最可能出現下列哪一敘述？",options:["為了避免惡性競爭而設立「郊」","布郊是由在臺南貿易的商人組成","出口商品以茶、蔗糖和樟腦為主","貿易對象主要是美國、東南亞"],correct:0},
+        {q:"映蓉假日時觀賞《唐山過臺灣》歷史劇，劇中的主角安康是康熙末年定居於今臺南地區的漢人。在劇中安康最可能有哪一種遭遇？",options:["單身渡海來臺合資拓墾","因參與郭懷一事件被捕","可以擔任淡水廳的官職","須加入泉郊才能到廈門作生意"],correct:0},
+        {q:"臺灣早期的俗諺：「一府二鹿三艋舺」，此項說法反映出下列何種意義？",options:["土地拓墾的面積","城市人口的多寡","水利設施的興建","貿易港口的發展"],correct:3},
+        {q:"圖(九)為臺灣開港通商後，海關統計三大主要出口商品出口總值。綜觀此時期的貿易發展，以下資料何項正確？",image:"images/hist7/q29.png",options:["出口值最高的甲為稻米","乙為糖，出口歷史悠久","丙為茶葉，由打狗出口","甲、乙主要由淡水出口"],correct:1},
+        {q:"開港通商後，有「北臺第二富豪」之稱的李春生，經營開港後臺灣最大宗的出口商品而致富。下列有關他所經營的產業敘述，何者正確？",options:["在大稻埕加工茶葉","透過「郊」與外國貿易","出口的商品以稻米為主","經營的商品由安平出口"],correct:0},
+        {q:"文華的歷史報告中，探討開港通商對臺灣歷史發展的影響，下列何者錯誤？",options:["外人在通商口岸設立洋行，發展貿易","臺灣出口值漸增，國際貿易呈現出超","臺灣的經濟重心逐漸轉移到北部地區","一府二鹿三艋舺，是當時主要出口港"],correct:3}
+      ]
+    }
+
+  ]
+};
+
+let currentMode = "quiz"; // quiz | print
+
+const contentEl = document.getElementById("content");
+const scoreBar = document.getElementById("scoreBar");
+const scoreText = document.getElementById("scoreText");
+
+function render(){
+  window.examAnswersRevealed = false;
+  contentEl.innerHTML = "";
+  DATA.sections.forEach((sec, si)=> contentEl.appendChild(renderSection(sec, si)));
+  if(currentMode==="quiz"){
+    scoreBar.classList.add("show");
+    updateScore();
+  } else {
+    scoreBar.classList.remove("show");
+    contentEl.querySelectorAll(".opt").forEach(o=>o.classList.add("disabled"));
+    contentEl.querySelectorAll(".opt.is-correct").forEach(o=>o.classList.add("correct"));
+  }
+}
+
+function renderSection(sec, si){
+  const block = document.createElement("section");
+  block.className = "block";
+  block.innerHTML = `<h2>${sec.title}</h2><p class="meta">${sec.meta}</p>`;
+
+  if(sec.type==="mc"){
+    sec.items.forEach((it,i)=>{
+      const q = document.createElement("div");
+      q.className = "q";
+      const optsHtml = it.options.map((op,oi)=>`
+        <div class="opt" data-idx="${oi}" data-correct="${oi===it.correct}">
+          <span class="tag">(${String.fromCharCode(65+oi)})</span><span>${op}</span>
+        </div>`).join("");
+      const imgHtml = it.image ? `<img src="${it.image}" alt="題目附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">` : "";
+      const img2Html = it.image2 ? `<img src="${it.image2}" alt="題目附圖2" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">` : "";
+      q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q}</div>
+        ${imgHtml}${img2Html}
+        <div class="opts">${optsHtml}</div>`;
+      q.querySelectorAll(".opt").forEach(optEl=>{
+        if(optEl.dataset.correct==="true") optEl.classList.add("is-correct");
+        optEl.addEventListener("click", ()=>selectOption(q, optEl));
+      });
+      block.appendChild(q);
+    });
+  }
+
+  else if(sec.type==="reading"){
+    sec.passages.forEach(p=>{
+      const passageDiv = document.createElement("div");
+      passageDiv.className = "passage";
+      passageDiv.innerHTML = `${p.label ? `<span class="passage-label">${p.label}</span>`:""}${p.text}${p.image ? `<img src="${p.image}" alt="題組附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-top:10px;border:1px solid var(--paper-line);">`:""}`;
+      block.appendChild(passageDiv);
+      p.items.forEach((it,i)=>{
+        const q = document.createElement("div");
+        q.className = "q";
+        const optsHtml = it.options.map((op,oi)=>`
+          <div class="opt" data-idx="${oi}" data-correct="${oi===it.correct}">
+            <span class="tag">(${String.fromCharCode(65+oi)})</span><span>${op}</span>
+          </div>`).join("");
+        q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q}</div>
+          ${it.image ? `<img src="${it.image}" alt="題目附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">`:""}
+          <div class="opts">${optsHtml}</div>`;
+        q.querySelectorAll(".opt").forEach(optEl=>{
+          if(optEl.dataset.correct==="true") optEl.classList.add("is-correct");
+          optEl.addEventListener("click", ()=>selectOption(q, optEl));
+        });
+        block.appendChild(q);
+      });
+    });
+  }
+
+  return block;
+}
+
+function selectOption(qEl, optEl){
+  if(currentMode!=="quiz") return;
+  if(qEl.dataset.answered==="true") return;
+  qEl.dataset.answered = "true";
+  qEl.querySelectorAll(".opt").forEach(o=>o.classList.add("disabled"));
+  optEl.classList.add("selected");
+  const correctOpt = qEl.querySelector('.opt[data-correct="true"]');
+  qEl.dataset.studentAnswer = optEl.textContent.trim();
+  qEl.dataset.correctAnswer = correctOpt ? correctOpt.textContent.trim() : "";
+  qEl.dataset.isCorrect = (optEl.dataset.correct==="true") ? "true" : "false";
+  updateScore();
+}
+
+function updateScore(){
+  let total = 0, answered = 0, correct = 0;
+  contentEl.querySelectorAll(".q").forEach(q=>{
+    const gradable = q.querySelector(".opts");
+    if(!gradable) return;
+    total++;
+    if(q.dataset.studentAnswer !== undefined){
+      answered++;
+      if(q.dataset.isCorrect === "true") correct++;
+    }
+  });
+  if(window.examAnswersRevealed){
+    scoreText.textContent = `${correct} / ${total}`;
+  } else {
+    scoreText.textContent = `已作答 ${answered} / ${total} 題`;
+  }
+}
+window.updateScore = updateScore;
+
+document.getElementById("resetBtn").addEventListener("click", render);
+document.getElementById("quizModeBtn").addEventListener("click", ()=>{
+  currentMode = "quiz";
+  document.getElementById("quizModeBtn").classList.add("active");
+  document.getElementById("printModeBtn").classList.remove("active");
+  render();
+});
+document.getElementById("printModeBtn").addEventListener("click", ()=>{
+  if(document.getElementById("printModeBtn").disabled) return;
+  currentMode = "print";
+  document.getElementById("printModeBtn").classList.add("active");
+  document.getElementById("quizModeBtn").classList.remove("active");
+  render();
+});
+
+window.unlockPrintMode = function(){
+  document.getElementById("printModeBtn").disabled = false;
+};
+
+render();
+</script>
+<script src="../sync.js"></script>
+</body>
+</html>
