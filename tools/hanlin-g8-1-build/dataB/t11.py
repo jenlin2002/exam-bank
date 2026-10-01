@@ -1,0 +1,70 @@
+META = dict(n=11, h1="第11回・Review Test 3", subtitle="Unit 5～Unit 6 總複習")
+SECTIONS = [
+  dict(type="vocab", title="一、文意字彙", meta="20分，每題2分", items=[
+    dict(q="The bottle of juice only cost ten dollars. It was very ch___p, so I bought two.", answer="cheap"),
+    dict(q="My grandma made me a s___r for my birthday last year. I like to wear it in winter because it's warm.", answer="sweater"),
+    dict(q="Something was wrong with the food. My stomach h___t after I ate it.", answer="hurt"),
+    dict(q="Today is May 31. T___w is the first day of June.", answer="Tomorrow"),
+    dict(q="What is that terrible s___d? Do you hear it too?", answer="sound"),
+    dict(q="These pants are too big for me, and they keep falling down. I need a b___t.", answer="belt"),
+    dict(q="A: Let's go for a ride on your s___r. B: Sorry. I don't have a helmet（安全帽）for you.", answer="scooter"),
+    dict(q="A: What did you do at the beach? B: We went s___ling on a boat. The sea was beautiful.", answer="sailing"),
+    dict(q="Toby didn't see the big sign above him. When he stood up, his head（頭）h___t the sign.", answer="hit"),
+    dict(q="I was a teacher for years. In my e___e, students love to learn by doing.", answer="experience"),
+  ]),
+  dict(type="mc", title="二、文法選擇", meta="22分，每題2分", items=[
+    dict(q="Nick ___ eighty thousand dollars ___ his trip to London.", options=["paid; on","spent; on","cost; for","took; in"], correct=1),
+    dict(q="Rita usually goes to work by ___. There's a station next to her house.", options=["train","a bus","the metro","motorcycle"], correct=2),
+    dict(q="Let's meet at my office at 7 p.m. It's the tall building ___ the hospital and the toy store.", options=["around","above","between","on the corner of"], correct=2),
+    dict(q="A: We can go to the post office ___. B: No. It's close. Let's walk.", options=["around the corner","on Saturday","on foot","by taxi"], correct=3),
+    dict(q="Louisa spent two hours ___ from her house to the beach.", options=["drive","drives","driving","to drive"], correct=2),
+    dict(q="I won't ___ a thousand dollars ___ this shirt. It's too expensive.", options=["spend; for","pay; on","cost; to","pay; for"], correct=3),
+    dict(q="I love this painting of mine. It took me ten hours ___ it.", options=["to finish","finishing","finished","finish"], correct=0),
+    dict(q="A: The total for these clothes ___ a thousand dollars. B: Do you take cards?", options=["are","is","costs","pay"], correct=1),
+    dict(q="A: Why didn't you take out the trash? B: I was too busy ___ the movie.", options=["watched","to watch","watch","watching"], correct=3),
+    dict(q="A: I want to give Mike this hat. B: He is sleeping now. When he ___ up, I will give it to him.", options=["will wake","woke","wakes","is waking"], correct=2),
+    dict(q="Washing all these clothes ___ me an hour.", options=["spent","paid","took","cost"], correct=2),
+  ]),
+  dict(type="mc", title="三、對話選擇", meta="8分，每題2分", items=[
+    dict(q="A: How long will it take to fly from Taiwan to the USA? B: ___", options=["We'll spend some time there.","About fourteen hours.","It costs around thirty-five thousand.","You can take an airplane there."], correct=1),
+    dict(q="A: It's a hundred dollars. How would you like to pay? B: ___", options=["In cash.","I want it to go.","OK. I'll take one.","Here's your change."], correct=0),
+    dict(q="A: Excuse me. ___ B: Walk along this street. It's to the left of the theater.", options=["What is on your left?","Where is the theater?","How often do you go to the library?","How can I get to the metro station?"], correct=3),
+    dict(q="A: Are you going to dress up for the party tonight? B: No. ___", options=["I don't wear glasses.","I won't go hiking tonight.","I bought something nice to wear.","I will just wear a T-shirt and jeans."], correct=3),
+  ]),
+  dict(type="cloze", title="四、克漏字選擇", meta="12分，每題2分",
+    passage="(Makoto is moving into the dormitory today.)\nMakoto: Excuse me. I'm lost. My room is Room 109. ___1___\nPeter: It's on the first floor. This is the ground floor, so you need to go ___2___ the stairs to the first floor. Room 109 is ___3___ Room 108 and Room 110.\n(Later that day)\nPeter: Hey, do you want to go ___4___ with me? I'm going to get some food from the supermarket nearby. It will only ___5___ five minutes to get there on foot.\nMakoto: Sure. That would be ___6___!\n\n【字詞】dormitory 宿舍",
+    items=[
+      dict(options=["Where is my mail?","Which is my room?","How can I get there?","How long will it take to get there?"], correct=2),
+      dict(options=["up","down","along","straight"], correct=0),
+      dict(options=["across","next to","between","on the corner"], correct=2),
+      dict(options=["hiking","jogging","surfing","shopping"], correct=3),
+      dict(options=["pay","take","cost","spend"], correct=1),
+      dict(options=["ugly","lost","funny","wonderful"], correct=3),
+  ]),
+  dict(type="reading", title="五、閱讀測驗", meta="20分，每題4分", passages=[
+    dict(label="【A】", text="    Today is Wednesday. On Friday morning, my friend Judy is going to visit me from the USA. She'll stay at Green Hotel, and I'll treat her to dinner at Emma's Kitchen. She'll go sightseeing in the city for the next three days. On Tuesday, the last day of her trip, I'm going to take her to a department store to get some gifts for her friends and family. Finally, her trip will end when she leaves that night.\n\n【字詞】stay 暫住", image="images/test11b/r_map.png",
+      items=[
+        dict(q="What do we know about Judy?", options=["She will spend four days in Taiwan.","She will travel around Taipei by metro.","She will go shopping the day after tomorrow.","She will visit some sights this weekend."], correct=3),
+        dict(q="Which is the right way to the department store from the hotel?", options=["Go straight for two blocks. Turn right on Renai Street. It's across from the park.","Go straight and turn right on Fuhe Road. Turn right on Xinyi Street. It's on the corner.","Go down Zhongshan Road and turn right on Renai Street. Go for two blocks, and it's on the left.","Go down Zhongshan Road. Turn right on Fuhe Road and turn left on Xinyi Street. It's next to the post office."], correct=2),
+      ]),
+    dict(label="【B】Every Monday, Tina's mom gives her a thousand dollars. Here is her total spending for today.", text="",
+      table=dict(title="", head=["5/15 (Mon.)","Spending"], rows=[
+        ["A T-shirt","$100"],["A skirt","$200"],["A cup of milk tea","$35"],["Bus fare","$15"],["Other (a book)","$150"]],
+        note="【字詞】fare 車費"),
+      items=[
+        dict(q="How much did Tina spend on clothes today?", options=["One hundred dollars.","Six hundred dollars.","Three hundred dollars.","Two hundred dollars."], correct=2),
+        dict(q="What do we know from the reading?", options=["Tina didn't take a bus today.","Tina bought a book for her friend.","Tina paid fifteen dollars for a drink.","The skirt cost Tina two hundred dollars."], correct=3),
+        dict(q="How much money can Tina use for the rest（剩下的）of the week?", options=["Five hundred dollars.","Four hundred dollars.","One hundred and fifteen dollars.","Three hundred and thirty-five dollars."], correct=0),
+      ]),
+  ]),
+  dict(type="guided", title="六、依提示作答", meta="9分，每題3分", items=[
+    dict(prompt="We will go to the island by ship.", hint="（用take改寫）", answer="We will take a ship to the island."),
+    dict(prompt="The girl spent half an hour biking to school.", hint="（用It...改寫）", answer="It took the girl half an hour to bike to school. / It took half an hour for the girl to bike to school."),
+    dict(prompt="I paid a lot of money for that pair of pants.", hint="（用spend改寫）", answer="I spent a lot of money on that pair of pants."),
+  ]),
+  dict(type="translation", title="七、翻譯", meta="9分，每題3分", items=[
+    dict(zh="這些滑稽的襪子在特價。", answer="These funny socks are on sale."),
+    dict(zh="我用一個低價買了那枚戒指。", answer="I bought the ring at / for a low price."),
+    dict(zh="那間銀行在一間消防局對面。", answer="The bank is across from a fire station."),
+  ]),
+]

@@ -1,0 +1,66 @@
+META = dict(n=6, h1="第6回・Unit 4", subtitle="What Do You Want to Be in the Future?")
+SECTIONS = [
+  dict(type="vocab", title="一、文意字彙", meta="20分，每題2分", items=[
+    dict(q="Many people here are f___n; they catch fish at sea.", answer="fishermen"),
+    dict(q="I can't eat another cake. My s___h is full of food.", answer="stomach"),
+    dict(q="Mom, there's something wrong with my front teeth. Can you take me to the d___t for a check-up?", answer="dentist"),
+    dict(q="My uncle is a successful car s___n. He sold forty cars just last month.", answer="salesman"),
+    dict(q="A: What c___y do you want to visit? B: I want to visit Australia.", answer="country"),
+    dict(q="My grandparents were f___rs twenty years ago. They grew bananas.", answer="farmers"),
+    dict(q="Hundreds of s___rs died each day during the war（戰爭）.", answer="soldiers"),
+    dict(q="A: Watch out for the cars! It's a busy street. B: Don't w___y! I'm being very careful.", answer="worry"),
+    dict(q="A: Did you get the postcard from Ms. Johnson? B: Yes. The m___n just delivered it to me this morning.", answer="mailman"),
+    dict(q="Amy's r___es are all coming to her birthday party, like her uncles and cousins.", answer="relatives"),
+  ]),
+  dict(type="mc", title="二、文法選擇", meta="20分，每題2分", items=[
+    dict(q="I enjoy ___ a cup of coffee in the afternoon.", options=["have","had","having","to have"], correct=2),
+    dict(q="A: What do you plan ___ this Saturday? B: Not much. How about you?", options=["do","did","doing","to do"], correct=3),
+    dict(q="Helen was sorry for ___ late for school.", options=["×","be","to be","being"], correct=3),
+    dict(q="It's good ___ you ___ exercise every day.", options=["to; to","for; with","for; to","to; with"], correct=2),
+    dict(q="___ is a good way to learn English. It's easy and fun.", options=["Go to cram school","Watching movies","Speak and write","English lessons"], correct=1),
+    dict(q="Kevin is ___ the eighth grade. This is his second year of junior high school.", options=["at","in","to","from"], correct=1),
+    dict(q="Meg was a famous actress（女演員）, but she gave up ___ because of her health.", options=["act","to act","acting","and acted"], correct=2),
+    dict(q="I'm thinking about ___ to the party. I'm so tired, so I want to go to bed now.", options=["to go","not to go","going","not going"], correct=3),
+    dict(q="David played video games after he finished ___ his homework.", options=["do","does","to do","doing"], correct=3),
+    dict(q="Joyce is a lawyer, and she fights ___ women's rights.", options=["to","for","on","from"], correct=1),
+  ]),
+  dict(type="mc", title="三、對話選擇", meta="6分，每題2分", items=[
+    dict(q="A: Are you making fun of me? B: ___", options=["Yes, you are fun.","It's nice to meet you, too.","Yes, I'm making you a card.","Sorry, I'm just pulling your leg."], correct=3),
+    dict(q="A: I have butterflies about the singing contest. B: ___ You're good at singing.", options=["Don't be nervous.","Please give up now.","No one believes in you.","I love catching butterflies."], correct=0),
+    dict(q="A: ___ B: Becoming a doctor is my dream.", options=["What do you do?","What do you want to be?","What do you like doing?","Who do you want to be?"], correct=1),
+  ]),
+  dict(type="cloze", title="四、克漏字選擇【A】", meta="15分，每題3分",
+    passage="Jessica and Jacob are good friends, and they often talk about their future ___1___. Jessica wants to work with Jacob, and Jacob likes that ___2___. Jessica ___3___ to sing, and she wants to be a singer. On the other hand, Jacob is really good at ___4___, so he can be her manager. Together, they can ___5___ a successful team.\n\n【字詞】manager 經紀人",
+    items=[
+      dict(options=["jobs","grades","rights","bosses"], correct=0),
+      dict(options=["idea","plan","right","thing"], correct=0),
+      dict(options=["hates","loves","keeps","enjoys"], correct=1),
+      dict(options=["plan","plans","to plan","planning"], correct=3),
+      dict(options=["keep","grow","become","interview"], correct=2),
+  ]),
+  dict(type="cloze", title="四、克漏字選擇【B】", meta="12分，每題3分", start=6,
+    passage="Susan and her classmates visited a TV station last Friday. There, they met a famous reporter, Anita Jones. They wanted to know about her, ___6___. She was happy to have a talk with them.\nAnita came from a poor family. For a long time, her life was very difficult, but she never gave up studying. At age fourteen, ___7___ because she wanted to speak out for the poor. She put her all into studying. ___8___ Now she helps poor people by reporting their stories on TV.\nAfter the visit, Susan decided to study hard. Anita's story struck a chord with her. ___9___\n\n【字詞】struck a chord 引起共鳴（strike過去式）",
+    items=[
+      dict(options=["but she didn't have time for them","but she didn't want to talk to them","so they interviewed her about her life","so she started to talk about the history of the TV station"], correct=2),
+      dict(options=["she planned to be a reporter","she decided not to go to school","she became a successful reporter","she made a lot of money from her job"], correct=0),
+      dict(options=["However, no one believed in her.","Luckily, she got a job to be a secretary in a TV factory.","After many years of hard work, she finally became a reporter.","Little by little, her dream changed, and she didn't want to help the poor."], correct=2),
+      dict(options=["She hates talking to Anita.","She doesn't believe in hard work now.","She doesn't want people to make fun of her.","She wants to be a good reporter just like Anita."], correct=3),
+  ]),
+  dict(type="reading", title="五、閱讀測驗", meta="12分，每題4分", passages=[
+    dict(label="", text="    \"What do you want to be when you grow up?\" Many students can't answer this question because they never think about it. In their life, they have only one job: to study. Because of this, many schools now have Career Day.\n    On Career Day, some schools ask parents to come to school and give a presentation. Then students can ask those parents about their jobs. Other schools take their students to visit different companies or offices on Career Day. This way, students can learn about different jobs.\n    Different schools have different activities for Career Day. However, <u>all roads lead to Rome</u>. Their goal is the same: they want the students to know the answer to \"What do you want to be when you grow up?\"\n\n【字詞】ask 邀請；詢問　presentation 演講　lead to 通往　goal 目標",
+      items=[
+        dict(q="What is the goal of Career Day?", options=["To provide students with a great job.","To give students ideas of good and bad jobs.","To teach students about giving a presentation.","To ask students to think about their future career."], correct=3),
+        dict(q="Which person may be giving a presentation on Career Day?", options=["John: What does \"career\" mean? Let's go ask our teacher.","Larry: Your homework for today is to write about your dream job.","Katy: I want to know about your job. You're a writer. Do you work at home?","Amy: I became a lawyer ten years ago. What do you want to know about being a lawyer?"], correct=3),
+        dict(q="What does \"<u>all roads lead to Rome</u>\" mean?", options=["It's important to make a travel plan.","It's easy to go to Rome for a vacation.","You need to know your goal to be successful.","There are different ways of doing the same thing."], correct=3),
+      ]),
+  ]),
+  dict(type="guided", title="六、依提示作答", meta="6分，每題3分", items=[
+    dict(prompt="Writing in Chinese is difficult for me.", hint="（用虛主詞it改寫）", answer="It's difficult for me to write in Chinese."),
+    dict(prompt="Ben <u>hated</u> finding his mail on the floor.", hint="（時態不變，畫線部分用keep改寫）", answer="Ben kept finding his mail on the floor."),
+  ]),
+  dict(type="translation", title="七、翻譯", meta="9分，每題3分", items=[
+    dict(zh="我擔心失去我的工作。", answer="I worry about losing my job."),
+    dict(zh="Zoe 希望未來成為一位律師。", answer="Zoe hopes to become / be a lawyer in the future."),
+    dict(zh="我的弟弟正在學習駕駛一輛卡車。", answer="My brother is learning to drive a truck (now)."),
+  ]),
+]

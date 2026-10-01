@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>段考題庫｜第11回 - Review 3（一）（C卷）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@500;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#faf6ec;
+    --paper-line:#e3dcc8;
+    --ink:#26332b;
+    --ink-soft:#5b6b5f;
+    --chalk-green:#2f4538;
+    --chalk-green-2:#3d5a48;
+    --pen-red:#b8433a;
+    --pen-red-soft:#f4dedb;
+    --ok-green:#3f7d52;
+    --ok-green-soft:#dfeee1;
+    --gold:#b5842a;
+    --radius:10px;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:"Noto Sans TC",sans-serif;
+    line-height:1.7;
+  }
+  header.hero{
+    background:var(--chalk-green);
+    color:#eef2ea;
+    padding:28px 20px 40px;
+    position:relative;
+  }
+  header.hero::after{
+    content:"";
+    position:absolute;
+    left:0; right:0; bottom:-1px;
+    height:14px;
+    background:repeating-linear-gradient(90deg,var(--paper) 0 18px, transparent 18px 20px);
+  }
+  .hero-inner{max-width:880px;margin:0 auto;}
+  .breadcrumb a{color:#cfe0d1;text-decoration:none;font-size:14px;}
+  .breadcrumb a:hover{text-decoration:underline;}
+  h1{
+    font-family:"Noto Serif TC",serif;
+    font-weight:700;
+    font-size:clamp(24px,4vw,34px);
+    margin:10px 0 6px;
+  }
+  .subtitle{color:#cfe0d1;font-size:15px;margin:0;}
+  main{max-width:880px;margin:0 auto;padding:28px 20px 80px;}
+
+  .controls{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:22px;
+  }
+  .mode-toggle{display:flex;border:2px solid var(--chalk-green);border-radius:999px;overflow:hidden;}
+  .mode-toggle button{
+    background:transparent;border:none;padding:8px 16px;font-size:14px;font-weight:700;
+    color:var(--chalk-green);cursor:pointer;font-family:"Noto Sans TC",sans-serif;
+  }
+  .mode-toggle button.active{background:var(--gold);color:#fff;}
+  .mode-toggle button:disabled{opacity:.4;cursor:not-allowed;}
+
+  .score-bar{
+    display:none;
+    align-items:center;
+    justify-content:space-between;
+    background:#fff;
+    border:1px solid var(--paper-line);
+    border-left:5px solid var(--gold);
+    border-radius:var(--radius);
+    padding:12px 18px;
+    margin-bottom:22px;
+    font-size:14px;
+  }
+  .score-bar.show{display:flex;}
+  .score-bar strong{font-size:18px;color:var(--gold);}
+  .score-bar button{
+    background:none;border:1px solid var(--ink-soft);color:var(--ink-soft);
+    border-radius:6px;padding:6px 12px;font-size:13px;cursor:pointer;
+  }
+
+  section.block{
+    background:#fff;
+    border:1px solid var(--paper-line);
+    border-radius:var(--radius);
+    padding:22px 22px 26px;
+    margin-bottom:20px;
+  }
+  .block h2{
+    font-family:"Noto Serif TC",serif;
+    font-size:19px;
+    margin:0 0 4px;
+    color:var(--chalk-green);
+  }
+  .block .meta{color:var(--ink-soft);font-size:13px;margin:0 0 16px;}
+  .block audio{width:100%;margin-bottom:16px;}
+
+  .q{margin-bottom:18px;padding-bottom:16px;border-bottom:1px dashed var(--paper-line);}
+  .q:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0;}
+  .q-text{font-size:15.5px;margin-bottom:8px;}
+  .q-num{color:var(--gold);font-weight:700;margin-right:4px;}
+
+  .opts{display:grid;gap:8px;}
+  .wordbank{display:flex;flex-wrap:wrap;gap:8px;background:#f5f2e8;border:1px solid var(--paper-line);
+    border-radius:8px;padding:12px 14px;margin-bottom:16px;}
+  .wb-word{font-family:"Noto Sans TC",sans-serif;font-size:14px;font-weight:700;color:var(--chalk-green);
+    background:#fff;border:1px solid var(--paper-line);border-radius:6px;padding:4px 12px;}
+  .opt{
+    display:flex;gap:8px;align-items:flex-start;
+    border:1.5px solid var(--paper-line);
+    border-radius:8px;
+    padding:9px 12px;
+    cursor:pointer;
+    font-size:14.5px;
+    background:#fffdf8;
+  }
+  .opt:hover{border-color:var(--chalk-green-2);}
+  .opt.selected{border-color:var(--chalk-green-2);background:#eef3ea;}
+  .opt.correct{border-color:var(--ok-green);background:var(--ok-green-soft);}
+  .opt.wrong{border-color:var(--pen-red);background:var(--pen-red-soft);}
+  .opt .tag{font-weight:700;color:var(--ink-soft);}
+  .opt.correct .tag{color:var(--ok-green);}
+  .opt.wrong .tag{color:var(--pen-red);}
+  .opt.disabled{cursor:default;}
+
+  input.blank, input.line-answer{
+    font-family:"Noto Sans TC",sans-serif;
+    border:none;border-bottom:2px solid var(--chalk-green-2);
+    background:transparent;font-size:15px;padding:2px 4px;
+    width:150px;
+  }
+  input.line-answer{width:100%;margin-top:4px;}
+  .check-row{display:flex;gap:8px;margin-top:6px;flex-wrap:wrap;align-items:center;}
+  .mini-btn{
+    background:var(--chalk-green);color:#fff;border:none;border-radius:6px;
+    padding:6px 14px;font-size:13px;cursor:pointer;font-family:"Noto Sans TC",sans-serif;
+  }
+  .mini-btn.secondary{background:transparent;color:var(--chalk-green);border:1.5px solid var(--chalk-green);}
+  .feedback{font-size:13.5px;font-weight:700;}
+  .feedback.ok{color:var(--ok-green);}
+  .feedback.no{color:var(--pen-red);}
+  .answer-reveal{
+    display:none;margin-top:6px;font-size:14px;color:var(--chalk-green-2);
+    background:#eef3ea;border-radius:6px;padding:8px 12px;
+  }
+  .answer-reveal.show{display:block;}
+
+  .passage{
+    background:#f5f2e8;border-radius:8px;padding:14px 16px;margin-bottom:14px;
+    font-size:14.5px;white-space:pre-line;
+  }
+  .passage-label{font-weight:700;color:var(--chalk-green);margin-bottom:4px;display:block;}
+  .data-table{width:100%;border-collapse:collapse;margin-top:10px;font-size:13.5px;background:#fff;}
+  .data-table th, .data-table td{border:1px solid var(--paper-line);padding:6px 8px;text-align:center;}
+  .data-table th{background:#eef3ea;color:var(--chalk-green);}
+
+  .footer-link{
+    display:block;text-align:center;margin-top:30px;color:var(--chalk-green);
+    text-decoration:none;font-weight:700;font-size:14px;
+  }
+  .footer-link:hover{text-decoration:underline;}
+
+  @media print{
+    header.hero, .controls, .score-bar, .check-row, .mini-btn, .footer-link{display:none !important;}
+    body{background:#fff;}
+    section.block{border:none;box-shadow:none;padding:8px 0;margin-bottom:14px;}
+    .opt.correct{background:none;border:none;font-weight:700;}
+    .opt.correct::after{content:" ← 正解";color:var(--pen-red);}
+    .opt{border:none;padding:2px 0;}
+    .answer-reveal{display:block !important;background:none;padding:2px 0;}
+    main{max-width:100%;padding:0 24px;}
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="breadcrumb"><a href="https://jenlin2002.github.io/">🏠 回總目錄</a> ／ <a href="../kangxuan-g8-1.html" style="color:#cfe0d1;">段考題庫</a></div>
+    <h1>第11回・Review 3（一）＊附聽力測驗</h1>
+    <p class="subtitle">Review 3（Lesson 5~6 總複習）｜康軒版八年級英語（三）Ｃ卷</p>
+  </div>
+</header>
+
+<main>
+  <div class="controls">
+    <div class="mode-toggle">
+      <button id="quizModeBtn" class="active">✏️ 測驗模式</button>
+      <button id="printModeBtn" disabled title="完成測驗並送出成績後才能查看">🖨️ 完整題目與解答（送出成績後解鎖）</button>
+    </div>
+  </div>
+
+  <div class="score-bar" id="scoreBar">
+    <div>目前得分：<strong id="scoreText">0 / 0</strong>（僅計算選擇題與字彙填空）</div>
+    <button id="resetBtn">重新作答</button>
+  </div>
+
+  <div id="content"></div>
+
+  <a class="footer-link" href="../kangxuan-g8-1.html">← 回段考題庫總覽</a>
+</main>
+
+<script>
+
+window.EXAM_META = { version: "C卷", examLabel: "第11回" };
+const DATA = {
+  sections: [
+    {
+      type:"mc",
+      title:"一、聽力測驗【A】",
+      meta:"聽CD中的句子，選出CD中的單字・CD:38",
+      audio:"audio/test11c/track1.mp3",
+      items:[
+        {q:"", options:["south","health","north"], correct:2},
+        {q:"", options:["vendor","vacation","remember"], correct:1},
+        {q:"", options:["train","plane","trip"], correct:1},
+        {q:"", options:["bank","bakery","bike"], correct:0},
+        {q:"", options:["ship","cream","cheap"], correct:2}
+      ]
+    },
+    {
+      type:"mc",
+      title:"一、聽力測驗【B】",
+      meta:"聽CD中的對話或短文及一個相關問題後，選出一個最適當的答案・CD:39",
+      audio:"audio/test11c/track2.mp3",
+      items:[
+        {q:"", options:["It will be hot.","It will be rainy.","It will be cold."], correct:2},
+        {q:"", options:["She loves shopping.","She loves being out in nature.","She loves playing sports."], correct:0},
+        {q:"", options:["They will drive there.","They will ride a bike there.","They will walk there."], correct:2},
+        {q:"", options:["They spent too much money shopping.","They spent an hour looking for a parking space.","They took a wrong way to the department store."], correct:1},
+        {q:"", options:["Japan.","The USA.","Singapore."], correct:0}
+      ]
+    },
+    {
+      type: "vocab",
+      title: "二、選字填空",
+      meta: "20分，每題2分",
+      wordbank: ["bakery","temple","rowed","sold","remember","shake","scooter","straight","favorite","west"],
+      items: [
+        {q:"The robot is Tony's ___ toy. He plays with it every day.", answer:"favorite"},
+        {q:"That girl is my classmate, but I don't ___ her name.", answer:"remember"},
+        {q:"In many countries, people always ___ hands when they first meet.", answer:"shake"},
+        {q:"Please don't turn right here. Just walk ___ down the street. The shoe shop is on your left.", answer:"straight"},
+        {q:"Jane loves the pancakes in this ___. They're delicious.", answer:"bakery"},
+        {q:"A: Why did you ride a bike to work today? B: I ___ my car yesterday.", answer:"sold"},
+        {q:"The old ___ is big and beautiful. Many tourists（觀光客）like it.", answer:"temple"},
+        {q:"Look at the map. The church is to the ___ of our hotel, not to the east.", answer:"west"},
+        {q:"Everyone must put on a helmet（安全帽）before riding a ___. It can keep you safe.", answer:"scooter"},
+        {q:"Last weekend, Michael ___ a boat and fished on the lake with his friends.", answer:"rowed"}
+      ]
+    },
+    {
+      type:"mc",
+      title:"三、語法測驗",
+      meta:"20分，每題2分",
+      items:[
+        {q:"Max: ___ you go swimming with me at the beach later? Vicky: No, I ___.",options:["Will; will","Did; didn't","Will; won't","Are; am not"],correct:2},
+        {q:"There is a bookstore ___ from our school. Let's buy some English books there.",options:["across","next","cross","in front"],correct:0},
+        {q:"Lori: ___ is Rachel going to do this evening? Terry: She's going to see a movie with her friends, so she can't join our group chat.",options:["Where","How","When","What"],correct:3},
+        {q:"Mr. Brown goes to the gym ___ every two days. He practices playing basketball there.",options:["with bicycle","by a bicycle","by bicycle","in a bicycle"],correct:2},
+        {q:"There ___ a group chat for the new students at the school library tomorrow night.",options:["will be","will have","is going to","are going to be"],correct:0},
+        {q:"Alice: ___ do I get to the motorcycle shop? Henry: Turn left at the second corner. It's between the train station and the city park.",options:["How","What","Why","Where"],correct:0},
+        {q:"People under 18 years old can't ___. That is the rule in Taiwan.",options:["drive car","drive a car","take car","take a car"],correct:1},
+        {q:"Rene ___ all day preparing for the big test. Sadly, she only got a sixty-five in the end.",options:["cost","took","spent","paid"],correct:2},
+        {q:"___, Wilson will team up with Oscar for the tennis game. They both have a special gift for sports.",options:["Yesterday","Tomorrow","Last month","Two days ago"],correct:1},
+        {q:"Jackie bought a new watch, and ___ three thousand and nine hundred dollars.",options:["it took him","it paid","he cost","it cost him"],correct:3}
+      ]
+    },
+    {
+      type:"mc",
+      title:"四、完成句子與對話",
+      meta:"10分，每題2分",
+      items:[
+        {q:"Frank: Are there any gift shops near here? Chloe: Yes, there is one. Walk out of the hotel and ___. Then you'll find it on your right.",options:["remember to bring enough money with you","go past the playground","look at the nice clerk","buy me a bowl of beef noodles"],correct:1},
+        {q:"Joey: ___ Is that ticket under the chair yours? Ken: Oh, yes, thank you.",options:["Good idea!","Excuse me, sir.","Forget it.","Where are you?"],correct:1},
+        {q:"Amy: Are we going camping in Nantou with the Lins? Ben: No, they're too busy. ___",options:["Why don't you go with me?","It won't take them much time.","Will the Lins go with us?","We'll go there on our own."],correct:3},
+        {q:"Susie: Can you give me a hand in the kitchen? ___ Dave: No, I don't think so. You always cook lots of dishes.",options:["It won't take you much time.","Won't that be very expensive?","That was a serious health problem.","I can't wait for you too long."],correct:0},
+        {q:"Betty: Did you finish your music video? ___ Quad: Sure. It's on my Instagram.",options:["Hey, look!","Almost!","Can I take a look?","Same here!"],correct:2}
+      ]
+    },
+    {
+      type:"guided",
+      title:"五、依提示作答",
+      meta:"10分，每題2分",
+      items:[
+        {prompt:"Susan walked to the art museum every week before.",hint:"（畫線處用介系詞片語改寫句子：walked）",answer:"Susan went to the art museum on foot every week before."},
+        {prompt:"Harry will buy some food in the supermarket tonight.",hint:"（畫線處用be動詞改寫句子：will）",answer:"Harry is going to buy some food in the supermarket tonight."},
+        {prompt:"Vincent takes the metro to work every day.",hint:"（依畫線部分造原問句：takes the metro）",answer:"How does Vincent go to work every day?"},
+        {prompt:"Janet drew a monster in her book. It took her ten minutes.",hint:"（用spent合併句子）",answer:"Janet spent ten minutes drawing a monster in her book."},
+        {prompt:"Kevin bought those books. They cost him only one hundred dollars.",hint:"（用spent合併句子）",answer:"Kevin spent only one hundred dollars on those books."}
+      ]
+    },
+    {
+      type:"guided-multi",
+      title:"六、引導式翻譯",
+      meta:"每格1分",
+      items:[
+        {zh:"那位老人以前沒有駕駛飛機的經驗。",lines:["That old man had no experience of {{flying}} an {{airplane}} before."]},
+        {zh:"今天下午我們即將動身前往曼谷。",lines:["We are going to {{leave}} {{for}} Bangkok this afternoon."]},
+        {zh:"這間餐廳只接受現金。",lines:["The {{restaurant}} only accepts {{cash}}."]},
+        {zh:"請不要在博物館裡奔跑。你們應該遵守規定。",lines:["Please don't run in the museum. You should {{follow}} the {{rules}}."]},
+        {zh:"圖書館對面有一間花店。",lines:["There's a flower shop {{across}} {{from}} the library."]}
+      ]
+    },
+    {
+      type:"reading",
+      title:"七、閱讀測驗",
+      meta:"10分，每題2分",
+      passages:[
+        {
+          label:"",
+          text:"Dear Dr. Know-It-All,                                                                                    Oct. 20\n    I have a good friend, Janice. We studied in the same elementary school before. This early July, I moved to Rose Town, so we go to different junior high schools now. We don't have much time getting together after school like before. We can only spend weekends studying in Smart Library across from Peace Church.\n    Last month was my fourteenth birthday. We took a one-day trip to King Zoo, and we went there by bus. I also invited my new classmate, Sofia, to join us. During the trip, we all had a great time. However, Janice sent me a long message that night. In it, she wrote, \"I'm not happy because you invited Sofia without asking me first. You don't care about my feelings....\" After reading it, I called her and told her my idea, \"More people, more fun!\" But with a jealous mind, she didn't accept it. In fact, this problem happened lots of times before, and we fought about it again and again.\n    Dr. Know-It-All, what can I do now? I don't want to lose this good friend, but I feel really tired of the same problem.\n\nMany thanks,\nKelly from Rose Town\n\n【字詞】invite 邀請　feelings 情感　jealous mind 善妒心　accept 接受　tired 厭倦的",
+          items:[
+            {q:"Look at the map. Which one is Smart Library?",image:"images/test11c/map.png",options:["①.","②.","③.","④."],correct:0},
+            {q:"How did the three girls go to King Zoo last month?",options:["They took a train.","They took a bus.","They took a taxi.","They took the metro."],correct:1},
+            {q:"Why did Janice feel sad after the trip last month?",options:["Kelly forgot to send her a message.","She lost her house key in the zoo.","She left her smartphone in the zoo.","Kelly didn't tell her first before inviting Sofia."],correct:3},
+            {q:"Who is \"this good friend\" in the letter?",options:["Kelly.","Janice.","Sofia.","Dr. Know-It-All."],correct:1},
+            {q:"Which is true?",options:["Kelly is an eighteen-year-old teenager now.","Sofia didn't have much fun on the trip.","Janice and Kelly live in different towns now.","Kelly wrote Dr. Know-It-All the letter in early July."],correct:2}
+          ]
+        }
+      ]
+    }
+
+  ]
+};
+
+let currentMode = "quiz"; // quiz | print
+
+const contentEl = document.getElementById("content");
+const scoreBar = document.getElementById("scoreBar");
+const scoreText = document.getElementById("scoreText");
+
+function render(){
+  window.examAnswersRevealed = false;
+  contentEl.innerHTML = "";
+  DATA.sections.forEach((sec, si)=> contentEl.appendChild(renderSection(sec, si)));
+  if(currentMode==="quiz"){
+    scoreBar.classList.add("show");
+    updateScore();
+  } else {
+    scoreBar.classList.remove("show");
+    contentEl.querySelectorAll(".answer-reveal").forEach(e=>e.classList.add("show"));
+    contentEl.querySelectorAll(".opt").forEach(o=>o.classList.add("disabled"));
+    contentEl.querySelectorAll(".opt.is-correct").forEach(o=>o.classList.add("correct"));
+  }
+}
+
+function renderTable(t){
+  if(!t) return "";
+  const headHtml = `<tr>${t.head.map(h=>`<th>${h}</th>`).join("")}</tr>`;
+  const rowsHtml = t.rows.map(r=>`<tr>${r.map((c,ci)=>ci===0?`<th>${c}</th>`:`<td>${c}</td>`).join("")}</tr>`).join("");
+  return `${t.title ? `<div style="font-weight:700;text-align:center;color:var(--chalk-green);margin-bottom:6px;">${t.title}</div>`:""}
+    <table class="data-table"><thead>${headHtml}</thead><tbody>${rowsHtml}</tbody></table>
+    ${t.note ? `<div style="margin-top:8px;color:var(--ink-soft);font-size:13px;">${t.note}</div>` : ""}`;
+}
+
+function renderSection(sec, si){
+  const block = document.createElement("section");
+  block.className = "block";
+  block.innerHTML = `<h2>${sec.title}</h2><p class="meta">${sec.meta}</p>`;
+
+  if(sec.audio){
+    const audioEl = document.createElement("audio");
+    audioEl.controls = true;
+    audioEl.src = sec.audio;
+    block.appendChild(audioEl);
+  }
+
+  if(sec.wordbank){
+    const wb = document.createElement("div");
+    wb.className = "wordbank";
+    wb.innerHTML = sec.wordbank.map(w=>`<span class="wb-word">${w}</span>`).join("");
+    block.appendChild(wb);
+  }
+
+  if(sec.type==="vocab"){
+    sec.items.forEach((it,i)=>{
+      const q = document.createElement("div");
+      q.className = "q";
+      q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q}
+        &nbsp; <input type="text" class="blank" data-answer="${it.answer}" placeholder="填入單字">
+        <span class="feedback"></span></div>
+        <div class="answer-reveal">正解：${it.answer}</div>`;
+      const input = q.querySelector("input");
+      input.addEventListener("input", ()=>checkBlank(input));
+      block.appendChild(q);
+    });
+  }
+
+  else if(sec.type==="mc"){
+    sec.items.forEach((it,i)=>{
+      const q = document.createElement("div");
+      q.className = "q";
+      const optsHtml = it.options.map((op,oi)=>`
+        <div class="opt" data-idx="${oi}" data-correct="${oi===it.correct}">
+          <span class="tag">(${String.fromCharCode(65+oi)})</span><span>${op}</span>
+        </div>`).join("");
+      q.innerHTML = `<div class="q-text">${it.q ? `<span class="q-num">${i+1}.</span>${it.q}` : `<span class="q-num">${i+1}.</span>`}</div>
+        ${it.image ? `<img src="${it.image}" alt="題目附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">`:""}
+        <div class="opts">${optsHtml}</div>`;
+      q.querySelectorAll(".opt").forEach(optEl=>{
+        if(optEl.dataset.correct==="true") optEl.classList.add("is-correct");
+        optEl.addEventListener("click", ()=>selectOption(q, optEl));
+      });
+      block.appendChild(q);
+    });
+  }
+
+  else if(sec.type==="guided" || sec.type==="translation"){
+    sec.items.forEach((it,i)=>{
+      const q = document.createElement("div");
+      q.className = "q";
+      const prompt = sec.type==="guided" ? `${it.prompt} <em style="color:var(--ink-soft);font-style:normal;">${it.hint}</em>` : it.zh;
+      q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${prompt}</div>
+        <input type="text" class="line-answer" placeholder="請輸入英文句子">
+        <div class="check-row"><button class="mini-btn secondary reveal-btn" style="display:none;">對答案</button></div>
+        <div class="answer-reveal">正解：${it.answer}</div>`;
+      q.querySelector(".reveal-btn").addEventListener("click", (e)=>{
+        q.querySelector(".answer-reveal").classList.add("show");
+      });
+      block.appendChild(q);
+    });
+  }
+
+  else if(sec.type==="guided-multi"){
+    sec.items.forEach((it,i)=>{
+      const q = document.createElement("div");
+      q.className = "q";
+      const linesHtml = it.lines.map(line=>{
+        const parts = line.split(/\{\{(.*?)\}\}/g);
+        return parts.map((part,pi)=> pi%2===1
+          ? `<input type="text" class="micro-blank" data-answer="${part}" style="width:${Math.max(60,part.length*13)}px;">`
+          : part
+        ).join("");
+      }).join("<br>");
+      q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.zh ? it.zh+"<br>" : ""}${linesHtml}</div>
+        <div class="answer-reveal">正解：${it.lines.map(l=>l.replace(/\{\{(.*?)\}\}/g,"$1")).join("　")}</div>`;
+      q.querySelectorAll(".micro-blank").forEach(inp=>{
+        inp.addEventListener("input", ()=>checkMultiBlank(q));
+      });
+      block.appendChild(q);
+    });
+  }
+
+  else if(sec.type==="reading"){
+    sec.passages.forEach(p=>{
+      const passageDiv = document.createElement("div");
+      passageDiv.className = "passage";
+      passageDiv.innerHTML = `${p.label ? `<span class="passage-label">${p.label}</span>`:""}${p.text}${p.table ? renderTable(p.table) : ""}`;
+      block.appendChild(passageDiv);
+      p.items.forEach((it,i)=>{
+        const q = document.createElement("div");
+        q.className = "q";
+        const optsHtml = it.options.map((op,oi)=>`
+          <div class="opt" data-idx="${oi}" data-correct="${oi===it.correct}">
+            <span class="tag">(${String.fromCharCode(65+oi)})</span><span>${op}</span>
+          </div>`).join("");
+        q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q}</div>
+          ${it.image ? `<img src="${it.image}" alt="題目附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">`:""}
+          <div class="opts">${optsHtml}</div>`;
+        q.querySelectorAll(".opt").forEach(optEl=>{
+          if(optEl.dataset.correct==="true") optEl.classList.add("is-correct");
+          optEl.addEventListener("click", ()=>selectOption(q, optEl));
+        });
+        block.appendChild(q);
+      });
+    });
+  }
+
+  return block;
+}
+
+function selectOption(qEl, optEl){
+  if(currentMode!=="quiz") return;
+  if(qEl.dataset.answered==="true") return;
+  qEl.dataset.answered = "true";
+  qEl.querySelectorAll(".opt").forEach(o=>o.classList.add("disabled"));
+  optEl.classList.add("selected");
+  const correctOpt = qEl.querySelector('.opt[data-correct="true"]');
+  qEl.dataset.studentAnswer = optEl.textContent.trim();
+  qEl.dataset.correctAnswer = correctOpt ? correctOpt.textContent.trim() : "";
+  qEl.dataset.isCorrect = (optEl.dataset.correct==="true") ? "true" : "false";
+  updateScore();
+}
+
+function checkBlank(input){
+  const val = input.value.trim().toLowerCase();
+  const ans = input.dataset.answer.trim().toLowerCase();
+  const qEl = input.closest(".q");
+  if(val.length===0){ if(qEl) delete qEl.dataset.studentAnswer; updateScore(); return; }
+  if(qEl){
+    qEl.dataset.studentAnswer = input.value.trim();
+    qEl.dataset.correctAnswer = input.dataset.answer;
+    qEl.dataset.isCorrect = (val===ans) ? "true" : "false";
+  }
+  updateScore();
+}
+
+function checkMultiBlank(qEl){
+  const inputs = Array.from(qEl.querySelectorAll(".micro-blank"));
+  const anyEmpty = inputs.some(inp=>inp.value.trim().length===0);
+  if(anyEmpty){ delete qEl.dataset.studentAnswer; updateScore(); return; }
+  const allCorrect = inputs.every(inp=> inp.value.trim().toLowerCase() === inp.dataset.answer.trim().toLowerCase());
+  qEl.dataset.studentAnswer = inputs.map(inp=>inp.value.trim()).join(" / ");
+  qEl.dataset.correctAnswer = inputs.map(inp=>inp.dataset.answer).join(" / ");
+  qEl.dataset.isCorrect = allCorrect ? "true" : "false";
+  updateScore();
+}
+
+function updateScore(){
+  let total = 0, answered = 0, correct = 0;
+  contentEl.querySelectorAll(".q").forEach(q=>{
+    const gradable = q.querySelector(".opts") || q.querySelector("input.blank") || q.querySelector("input.micro-blank");
+    if(!gradable) return;
+    total++;
+    if(q.dataset.studentAnswer !== undefined){
+      answered++;
+      if(q.dataset.isCorrect === "true") correct++;
+    }
+  });
+  if(window.examAnswersRevealed){
+    scoreText.textContent = `${correct} / ${total}`;
+  } else {
+    scoreText.textContent = `已作答 ${answered} / ${total} 題`;
+  }
+}
+window.updateScore = updateScore;
+
+document.getElementById("resetBtn").addEventListener("click", render);
+document.getElementById("quizModeBtn").addEventListener("click", ()=>{
+  currentMode = "quiz";
+  document.getElementById("quizModeBtn").classList.add("active");
+  document.getElementById("printModeBtn").classList.remove("active");
+  render();
+});
+document.getElementById("printModeBtn").addEventListener("click", ()=>{
+  if(document.getElementById("printModeBtn").disabled) return;
+  currentMode = "print";
+  document.getElementById("printModeBtn").classList.add("active");
+  document.getElementById("quizModeBtn").classList.remove("active");
+  render();
+});
+
+window.unlockPrintMode = function(){
+  document.getElementById("printModeBtn").disabled = false;
+};
+
+render();
+</script>
+<script src="../sync.js"></script>
+</body>
+</html>

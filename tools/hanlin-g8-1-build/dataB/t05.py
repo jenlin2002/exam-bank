@@ -1,0 +1,67 @@
+META = dict(n=5, h1="第5回・Unit 3", subtitle="Mom Was Doing the Dishes at Half Past Twelve")
+SECTIONS = [
+  dict(type="vocab", title="一、文意字彙", meta="22分，每題2分", items=[
+    dict(q="A: I just had a shower. Can I d___y my hair with this towel（毛巾）? B: Sure.", answer="dry"),
+    dict(q="Everyone l___t the restaurant after the dinner party ended.", answer="left"),
+    dict(q="The desk has two d___rs, so you can put some books and pencils inside.", answer="drawers"),
+    dict(q="There was a lot of trash, so my sister s___t the stairs before I mopped them.", answer="swept"),
+    dict(q="I can't m___e this table on my own. It's too heavy.", answer="move"),
+    dict(q="Nate didn't get enough sleep, so he was very tired and fell a___p during math class.", answer="asleep"),
+    dict(q="Do you want good health? Here's a t___p: get enough sleep every night.", answer="tip"),
+    dict(q="The woman c___t some fish in the river and cooked them.", answer="caught"),
+    dict(q="The boy had health p___ms and was sick for a long time.", answer="problems"),
+    dict(q="John cried because his sister b___e his robot, and he couldn't fix it.", answer="broke"),
+    dict(q="I met that man before, but I don't r___r his name. Is it Eric?", answer="remember"),
+  ]),
+  dict(type="mc", title="二、文法選擇", meta="22分，每題2分", items=[
+    dict(q="Ray was sleeping ___ his mother called, so he didn't hear it.", options=["after","when","or","because"], correct=1),
+    dict(q="Elena ___ the violin at seven o'clock last night.", options=["plays","can play","is playing","was playing"], correct=3),
+    dict(q="A: Someone ___ you this morning. B: Really? Who was it?", options=["look for","looks for","is looking for","was looking for"], correct=3),
+    dict(q="A: Is it twelve o'clock? B: Not yet（還沒）. It's half ___ eleven.", options=["to","at","past","from"], correct=2),
+    dict(q="When Larry ___ into the living room, I was watching TV.", options=["walking","walks","walked","was walking"], correct=2),
+    dict(q="A: I went to your house at 4 p.m. yesterday, but no one answered the door. B: Sorry, I ___ a shower at that time.", options=["take","am taking","took","was taking"], correct=3),
+    dict(q="How was the movie? B: I can't tell you anything about it. I slept ___ it.", options=["in","past","on","through"], correct=3),
+    dict(q="It was two thirty in the afternoon. The kids ___ at the playground.", options=["play","played","are playing","were playing"], correct=3),
+    dict(q="It was raining this morning. ___, we still went to the city.", options=["Finally","However","In fact","Besides"], correct=1),
+    dict(q="No one was home, so Vicky ___ when she heard a cry inside the house.", options=["jumped","jumps","jump","was jumping"], correct=0),
+    dict(q="I ___ Linda at the park an hour ago. She was playing basketball.", options=["saw","see","was seeing","am seeing"], correct=0),
+  ]),
+  dict(type="mc", title="三、對話選擇", meta="8分，每題2分", items=[
+    dict(q="A: What were you doing at ten this morning? B: ___", options=["I was studying.","I read a book.","It was really early.","I was too tired."], correct=0),
+    dict(q="A: Amy almost died when she fell into the river. B: That's terrible! ___", options=["She's dead?","Is she all right?","Who did she save?","Was there trash in the river?"], correct=1),
+    dict(q="A: You're so quiet. What's wrong? B: ___ I'm just doing my homework.", options=["Nothing.","That's wrong.","I'm so scared.","I have a big problem."], correct=0),
+    dict(q="A: Were you cleaning your room at half past two yesterday? B: Yes. ___", options=["I was resting on my bed.","I was doing math homework then.","I was mopping the floor at that time.","I was doing the dishes at three thirty."], correct=2),
+  ]),
+  dict(type="cloze", title="四、克漏字選擇", meta="15分，每題3分",
+    passage="Housework is no fun, but it can give you a good exercise. ___1___, it burns calories when you do housework. Now, let's take a look.\n\nDo the dishes\nPeople love a good meal but hate the clean-up after the meal. ___2___, you can burn a lot of calories from those bowls and plates. When you wash them for ___3___, you can burn 58 to 69 calories. So for an hour, you can burn 116 to 138 calories.\n\nClean the floor\nThis easy task can burn about 156 calories every hour for you. Then what are you waiting for? Get a ___4___ or a broom and clean the floor!\n\n___5___\nIt's just like a walk, but now you do it with your dog or cat. You can burn 150 calories every hour.\n\n【字詞】housework 家事　calorie 卡路里　task 任務　broom 掃帚",
+    items=[
+      dict(options=["Sadly","In fact","However","On the other hand"], correct=1),
+      dict(options=["However","Sadly","By the way","Little by little"], correct=0),
+      dict(options=["ten minutes","twenty minutes","half an hour","a quarter of an hour"], correct=2),
+      dict(options=["mop","dish","problem","window"], correct=0),
+      dict(options=["Feed animals","Walk your pets","Climb the stairs","Wash your clothes"], correct=1),
+  ]),
+  dict(type="reading", title="五、閱讀測驗", meta="21分，每題3分", passages=[
+    dict(label="【A】", text="    Yesterday was Father's Day. Kevin and his sister, Annie, made a big dinner for their dad. They started with chicken soup at half past four. First, they cut the chicken and some vegetables. Then they put all the <u>ingredients</u> in a pot of water and put it on the stove. After that, they washed the rice. At a quarter to five, they were making some fried fish and egg salad. They also cut some oranges and apples. They checked the soup a few times, and at a quarter past five, they turned off the stove, and the dinner was ready. That night, Kevin's dad had a great dinner with his son and daughter.\n\n【字詞】cut 切　vegetable 蔬菜　pot 鍋子　stove 火爐　fried 油炸的",
+      items=[
+        dict(q="When did Kevin and Annie make fried food?", options=["At 4:30.","At 4:45.","At 5:15.","At 5:30."], correct=1),
+        dict(q="What DIDN'T Kevin and his family have for the Father's Day dinner?", options=["Rice.","Fruit salad.","Fried fish.","Vegetables."], correct=1),
+        dict(q="How much time did Kevin and Annie spend（花費）on the chicken soup?", options=["30 minutes.","35 minutes.","40 minutes.","45 minutes."], correct=3),
+        dict(q="What does \"<u>ingredients</u>\" mean in the reading?", options=["Fish and eggs.","Rice and water.","Oranges and apples.","Chicken and vegetables."], correct=3),
+      ]),
+    dict(label="【B】Police Report #1572 by Officer Jay Ronald", text="What: a <u>brawl</u>\nWhen: about 6:30 p.m., April 4\nWhere: Mama's Kitchen\n\nThe restaurant called the police at 6:30 p.m. When I arrived, two women were fighting like cats and dogs. One was on the other's back, and the other was pulling her hair. They broke a chair and some glasses and plates. I stopped them and gave them each a citation. After they cooled down, they said sorry to the restaurant owner and left.\nOfficer Ronald\n\n【字詞】arrive 抵達　citation 罰單　owner 擁有者",
+      items=[
+        dict(q="Which is a \"<u>brawl</u>\"?", options=["A fight.","A meal.","A party.","A restaurant."], correct=0),
+        dict(q="Why did the restaurant call the police?", options=["Someone broke their windows.","Their cook put glass in the food.","There were people making trouble.","There were many street cats and dogs."], correct=2),
+        dict(q="What do we know from the report?", options=["Mama's Kitchen only opened at night.","Mama's Kitchen gave a citation to both women.","The police officer arrived after the women cooled down.","The police got a call from Mama's Kitchen at half past six."], correct=3),
+      ]),
+  ]),
+  dict(type="guided", title="六、依提示作答", meta="6分，每題3分", items=[
+    dict(prompt="I was <u>talking to Mike</u> when you saw me on the street.", hint="（依畫線部分造原問句）", answer="What were you doing when I saw you on the street?"),
+    dict(prompt="The baseball game starts at <u>five forty-five</u>.", hint="（畫線部分以逆讀法改寫）", answer="The baseball game starts at a quarter to six / fifteen (minutes) to six."),
+  ]),
+  dict(type="translation", title="七、翻譯", meta="6分，每題3分", items=[
+    dict(zh="我爸爸那個時候正在掛衣服。", answer="My father was hanging the clothes then / at that time."),
+    dict(zh="昨晚當我媽媽叫醒我時，我正在做一個糟糕的夢。（When...）", answer="When my mother woke me up last night, I was having a terrible / bad dream."),
+  ]),
+]

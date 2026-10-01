@@ -1,0 +1,72 @@
+META = dict(n=10, h1="第10回・Unit 6", subtitle="I'll Take Two Pairs of Gloves")
+SECTIONS = [
+  dict(type="vocab", title="一、文意字彙", meta="20分，每題2分", items=[
+    dict(q="Alice never wears skirts; she always wears p___ts or shorts.", answer="pants"),
+    dict(q="I have trouble reading and seeing things. I might need a pair of g___es.", answer="glasses"),
+    dict(q="I bought my computer from this shop because the price was very l___w.", answer="low"),
+    dict(q="Let's not take a taxi. We can s___e money by walking to the store.", answer="save"),
+    dict(q="This train is very f___t. It can get to Taipei from Kaohsiung in two hours.", answer="fast"),
+    dict(q="The painting on the wall was u___y, so the woman took it down and hung a beautiful one.", answer="ugly"),
+    dict(q="Someone didn't use a coaster（杯墊）, so there is a r___g of water on the coffee table.", answer="ring"),
+    dict(q="Amy only had soup for dinner because it h___t to eat after her visit to the dentist.", answer="hurt"),
+    dict(q="M___t students in my school wear their own clothes to school; only a few students wear uniforms（制服）.", answer="Most"),
+    dict(q="A: Are you free t___t? B: I have dinner plans from 6 to 8 p.m. After that, I'm free.", answer="tonight"),
+  ]),
+  dict(type="mc", title="二、文法選擇", meta="26分，每題2分", items=[
+    dict(q="My computer wasn't working, so I spent an hour ___ it.", options=["with","in","fixing","to fix"], correct=2),
+    dict(q="I'm going to see a movie with my parents, but my sister ___.", options=["won't","isn't","didn't","doesn't"], correct=1),
+    dict(q="A: Did you ask Kathy to join our party tomorrow? B: Yes, but she's in India, so she ___ with us tomorrow.", options=["isn't","wasn't","won't be","isn't going to"], correct=2),
+    dict(q="Yuki and her family will come back to Taiwan ___. I can't wait to see them.", options=["in two days","a week ago","last month","the day before yesterday"], correct=0),
+    dict(q="A: How much did you spend ___ this umbrella? B: I don't remember.", options=["for","in","at","on"], correct=3),
+    dict(q="Sorry. I was busy last week. Let's meet up this weekend, and we'll talk ___.", options=["last week","then","right now","at this moment"], correct=1),
+    dict(q="I bought these books ___ a good price. I only paid one hundred dollars ___ them.", options=["with; at","in; with","on; on","at; for"], correct=3),
+    dict(q="A: This box of chocolate ___ me eight hundred dollars. B: That's a lot.", options=["took","paid","cost","spent"], correct=2),
+    dict(q="A: You're late. B: Sorry. Finding the right dress to wear ___ a long time.", options=["took","spent","cost","paid"], correct=0),
+    dict(q="I found a great restaurant. The food is cheap and yummy. ___, the restaurant is close to our house.", options=["Finally","However","What's more","In fact"], correct=2),
+    dict(q="A: How long did ___ take the police to find the lost boy? B: About two days.", options=["you","he","they","it"], correct=3),
+    dict(q="Jimmy ___ a coat before he left the house because it was cold out there.", options=["put on","wore","got on","turned off"], correct=0),
+    dict(q="Amy spent a lot of money on the meal. The total ___ about $10,000.", options=["were","was","spent","will be"], correct=1),
+  ]),
+  dict(type="mc", title="三、對話選擇", meta="8分，每題2分", items=[
+    dict(q="A: Look! This black skirt will be great for your birthday party. B: Wonderful! ___", options=["I'll get a pair.","I'll take it off.","Then I won't buy it.","I'll take it then."], correct=3),
+    dict(q="A: What a cool hat! ___ B: Three hundred dollars.", options=["Was it cheap?","How much did it cost you?","How many do you have?","How much time did you spend on it?"], correct=1),
+    dict(q="A: May I take your order? B: Yes. ___", options=["I'm ready to go.","I will take that dress.","I'd like a chicken burger.","I ordered a drink for you."], correct=2),
+    dict(q="A: That will be five hundred dollars in total. ___ B: By card.", options=["How much is your change?","Do you need anything else?","How much money do you have?","How would you like to pay?"], correct=3),
+  ]),
+  dict(type="cloze", title="四、克漏字選擇", meta="14分，每題2分",
+    passage="(At a clothes store)\nDan: Hi. I ___1___ to London this December. It snows there in winter, so I need some thick clothes. Where can I find ___2___ socks?\nClerk: Here. They are ___3___.\nDan: Great. My lucky day. How much ___4___?\nClerk: They are thirty dollars a pair.\nDan: That's cheap. ___5___ three.\nClerk: Great! I'll put them in a bag for you. ___6___\nDan: In cash. Here's a hundred dollars.\nClerk: Thank you. Here's your ___7___.",
+    items=[
+      dict(options=["don't go","went","won't go","am going"], correct=3),
+      dict(options=["a pair","two","one","pairs of"], correct=3),
+      dict(options=["on sale","expensive","at a high price","all out"], correct=0),
+      dict(options=["is the total","do I pay","do you spend","do they cost"], correct=3),
+      dict(options=["I will pay","I will take","It's going to cost","I'm going to spend"], correct=1),
+      dict(options=["How much did they cost you?","Do you want them for here or to go?","Will you buy the socks with this hat?","Would you like to pay in cash or by card?"], correct=3),
+      dict(options=["pay","order","total","change"], correct=3),
+  ]),
+  dict(type="reading", title="五、閱讀測驗", meta="15分，每題3分", passages=[
+    dict(label="【A】Today is Saturday, May 18. Here is Celine's schedule for next week.", text="",
+      table=dict(title="", head=["May 19","May 20","May 21","May 22","May 23","May 24","May 25"], rows=[
+        ["11 a.m.<br>Go shopping with Tina.<br>*Buy a belt for Grandpa's birthday!","6 p.m.<br>Go to the dentist.","Have a piano lesson at three thirty.","1. Have lunch with Lucy at Papa's Pizza.<br>2. Go to the library.","","7 p.m.<br>Go to the movies with Sam.","Visit Grandpa.<br>（Grandpa's birthday!）"]],
+        note="【字詞】schedule 行程表"),
+      items=[
+        dict(q="What is Celine's plan for tomorrow?", options=["She will go to the movies with Sam.","She will have lunch with Lucy at eleven.","She is going to buy a gift for her grandpa.","She is going to her grandpa's birthday party."], correct=2),
+        dict(q="Which is true（真實的）?", options=["Celine will eat pizza for lunch on Wednesday.","Celine is going to her grandpa's house tomorrow.","Celine is going to see a dentist on Monday morning.","Celine will go to piano class on Wednesday afternoon."], correct=0),
+      ]),
+    dict(label="【B】", text="    Rita went shopping for Christmas gifts at Lai Lai Department Store today. First, she bought some shirts for her dad, and then she bought a skirt for her mom. After she had lunch at the food court, she went to buy a doll for her sister. She still had two thousand dollars after that, so she decided to buy a pair of hiking shoes for her trip to the mountains next month on the first floor. Then, on her way home, she walked past a hat stand and saw a beautiful <u>hat</u>. Rita loved it a lot, but it wasn't cheap. She used all her remaining money to buy it.\n\n（樓層導覽）6F Restaurants／5F Movie Theater and Food Court／4F Children's Toys／3F Women's Wear／2F Men's Wear／1F <u>Footwear</u>／B1 Supermarket\n\n【字詞】food court 美食街　stand 攤位　remaining 剩餘的", image="",
+      items=[
+        dict(q="What is \"<u>footwear</u>\"?", options=["Sales.","Shoes.","Restaurants.","Things for children."], correct=1),
+        dict(q="Rita went to different floors of the store. What was the order（順序）?", options=["2F→3F→6F→4F→1F","1F→3F→5F→4F→1F","2F→3F→5F→4F→1F","2F→3F→5F→3F→1F"], correct=2),
+        dict(q="Look at this flyer（傳單）. How much did Rita spend on the <u>hat</u> at the stand?", image="images/test10b/r_flyer.png", options=["400 dollars.","500 dollars.","800 dollars.","1,200 dollars."], correct=2),
+      ]),
+  ]),
+  dict(type="guided", title="六、依提示作答", meta="9分，每題3分", items=[
+    dict(prompt="Anna is going to <u>join the music festival</u> this weekend.", hint="（依畫線部分造原問句）", answer="What is Anna going to do this weekend?"),
+    dict(prompt="Ken bought some caps last week.", hint="（用next week改寫）", answer="Ken will / is going to buy some caps next week."),
+    dict(prompt="This sweater cost me five hundred dollars.", hint="（用spend改寫）", answer="I spent five hundred dollars on / buying this sweater."),
+  ]),
+  dict(type="translation", title="七、翻譯", meta="8分，每題4分", items=[
+    dict(zh="搬進我的新房子將會花我一天的時間。（It will...）", answer="It will take me a day to move into my new house. / It will take a day for me to move into my new house."),
+    dict(zh="Taylor 花了十分鐘掛起那些牛仔褲和洋裝。（spend）", answer="Taylor spent ten minutes hanging those jeans and dresses."),
+  ]),
+]

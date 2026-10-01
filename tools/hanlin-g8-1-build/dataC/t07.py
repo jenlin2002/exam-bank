@@ -1,0 +1,63 @@
+META = dict(n=7, h1="第7回・Review Test 2", subtitle="Unit 3～Unit 4、節慶單元 總複習")
+SECTIONS = [
+  dict(type="mc", title="一、文意字彙", meta="20分，每題2分", items=[
+    dict(q="I know the man, but I don't ___ his name. What's his name?", options=["dream","decide","believe","remember"], correct=3),
+    dict(q="Let's not ___ about the future; just try to do the right thing now.", options=["mop","find","grow","worry"], correct=3),
+    dict(q="The boss has a good ___. She answers phone calls and makes plans for him.", options=["soldier","dentist","secretary","fisherman"], correct=2),
+    dict(q="Everyone has the ___ to speak, but they need to take turns.", options=["tip","right","job","past"], correct=1),
+    dict(q="Mr. Chang is a ___ farmer. Many people buy his fruit, so he makes a lot of money.", options=["poor","scared","terrible","successful"], correct=3),
+    dict(q="I didn't see Joe. He ___ before I went to his office.", options=["left","caught","grew","dried"], correct=0),
+    dict(q="The girl was very sad because the boys ___ her.", options=["dreamed of","believed in","worried about","made fun of"], correct=3),
+    dict(q="It's not easy to sell these books, but the salesman never ___.", options=["gives up","cools down","puts it on","takes it easy"], correct=0),
+    dict(q="I have a ___ with this math question. Can you help me?", options=["hope","plan","grade","problem"], correct=3),
+    dict(q="Sophie didn't ___ the clothes after she washed them. The clothes are still in the basket（籃子）.", options=["wipe","break","hang","feed"], correct=2),
+  ]),
+  dict(type="mc", title="二、文法選擇", meta="20分，每題2分", items=[
+    dict(q="Lydia ___ the dishes at two o'clock this afternoon.", options=["do","does","doing","was doing"], correct=3),
+    dict(q="A: ___ the boys sweeping the floor at that time? B: Yes.", options=["Are","Were","Do","Did"], correct=1),
+    dict(q="I usually go to bed at half ___ eleven.", options=["to","at","by","past"], correct=3),
+    dict(q="It's a quarter ___ twelve. Let's feed the pets.", options=["to","at","of","for"], correct=0),
+    dict(q="Diane was hanging the clothes ___ her mother called.", options=["because","when","but","so"], correct=1),
+    dict(q="David doesn't want ___ a factory worker in the future.", options=["is","be","to be","being"], correct=2),
+    dict(q="Ms. Wang needs ___ the floor today.", options=["sweep","sweeping","to sweep","and sweeps"], correct=2),
+    dict(q="Jerry has a bad tooth, but he hates ___ to the dentist.", options=["go","going","goes","went"], correct=1),
+    dict(q="We only practiced ___ basketball for an hour because we were tired.", options=["play","to play","playing","played"], correct=2),
+    dict(q="___ is difficult for Jay ___ Chinese.", options=["It; to learn","It; learning","This; to learn","This; learning"], correct=0),
+  ]),
+  dict(type="mc", title="三、對話選擇", meta="10分，每題2分", items=[
+    dict(q="A: What does the kid want to be when he grows up? B: ___", options=["He needs to grow up.","He plans to be a reporter.","He wants to grow trees.","He hopes to be successful."], correct=1),
+    dict(q="A: Did you finish cleaning the room before four o'clock? B: ___", options=["Yes, I finished at six ten.","No. I finished at half past three.","Yes, I finished at a quarter after four.","No. I finished at a quarter to five."], correct=3),
+    dict(q="A: I have a job interview this afternoon. I'm so nervous. B: ___ You are ready for this.", options=["See?","Good idea.","All right.","Take it easy."], correct=3),
+    dict(q="A: I can't find my money! Someone took it! B: ___ Where did you put your money? Let's check again.", options=["Cool down.","I knew it.","It was me.","Were you dreaming?"], correct=0),
+    dict(q="A: What do you enjoy doing with your family? B: ___", options=["Going to the movies together.","I was singing on stage with them.","Just keep practicing the guitar.","It was nice to swim on sunny days."], correct=0),
+  ]),
+  dict(type="guided", title="四、依提示作答", meta="12分，每題3分", items=[
+    dict(prompt="To make a career plan is important.", hint="（用虛主詞It...改寫）", answer="It is important to make a career plan."),
+    dict(prompt="It was fun for the children to interview people.", hint="（用動名詞V-ing作主詞改寫）", answer="Interviewing people was fun for the children."),
+    dict(prompt="They were <u>climbing up the stairs</u> when the building started to shake.", hint="（依畫線部分造原問句）", answer="What were they doing when the building started to shake?"),
+    dict(prompt="I fed my pets before <u>5:30</u>.", hint="（將畫線時間用時間的逆讀法改寫）", answer="I fed my pets before half past five."),
+  ]),
+  dict(type="guided-multi", title="五、引導式翻譯", meta="22分，每格2分", items=[
+    dict(zh="當一名卡車司機是保羅夢想的工作。", lines=["{{Being}} a {{truck}} {{driver}} is Paul's dream job."]),
+    dict(zh="威爾森女士在年輕時決定成為一名舞者。", lines=["Ms. Wilson {{decided}} to {{become}} a dancer at a young age."]),
+    dict(zh="他喜歡修理房子，但是他討厭洗碗。", lines=["He loves {{fixing}} the house, but he hates {{doing}} the {{dishes}}."]),
+    dict(zh="我不擅長種植物，所以我將來不想當農夫。", lines=["I'm not good at {{growing}} plants, so I don't want to be a farmer {{in}} the {{future}}."]),
+  ]),
+  dict(type="cloze", title="六、克漏字選擇", meta="10分，每題2分",
+    passage="Trick-or-treating is a lot of fun. Like many children, I enjoy ___1___ to ask for candy on Halloween. ___2___, last year's trick-or-treating wasn't fun at all. In fact, it was scary.\nLast year, I wore a vampire costume, and my sister wore a witch costume. We were near the front door of a haunted house when ___3___ jumped at us. He was wearing a jack-o'-lantern mask, and he took my candy bag. I couldn't ___4___ because I was so scared. Just then my sister cried, \"Run!\" So we ran all the way home. It was a ___5___ Halloween.\n\n【字詞】vampire 吸血鬼　witch 巫婆",
+    items=[
+      dict(options=["singing a song","buying a mask","going door to door","making jack-o'-lanterns"], correct=2),
+      dict(options=["So","And","Also","However"], correct=3),
+      dict(options=["somebody","something","everything","everybody"], correct=0),
+      dict(options=["wipe","break","move","worry"], correct=2),
+      dict(options=["dry","busy","cool","terrible"], correct=3),
+  ]),
+  dict(type="reading", title="七、閱讀測驗", meta="6分，每題2分", passages=[
+    dict(label="", text="<b>Joan Tam</b>\nJoan owns a small costume shop. She enjoys dressing up. She is good at dancing and acting.\n\n<b>Daniel Ace</b>\nDaniel has a busy job. He interviews people and writes about their news and stories. In his free time, he loves reading and listening to music.\n\n<b>Emily Mac</b>\nEmily's job is to find and sell houses to people. She enjoys her job and likes talking to people. She makes good money from the job.\n\n<b>Ian Gerdon</b>\nIan is studying law at school, but he doesn't plan to be a lawyer. He plays the violin and hopes to be a great violin player one day.\n\n【字詞】dress up 打扮　news 新聞　law 法律　as 作為",
+      items=[
+        dict(q="What does Ian do?", options=["He's a lawyer.","He's a student.","He's a salesman.","He's a guitar player."], correct=1),
+        dict(q="What CAN'T we learn from the reading?", options=["Daniel is a busy reporter.","Emily isn't good at selling houses.","Ian wants to be a great violin player.","Joan likes to put on different clothes."], correct=1),
+        dict(q="Here's a talk between two people.<div style=\"background:#fff;border:1px solid var(--paper-line);border-radius:8px;padding:10px 14px;font-style:italic;margin:8px 0;\">A: Good evening. May I help you?<br>B: Yes. I'm looking for a costume to wear at a Halloween party. I plan to dress up as a vampire.<br>A: I see. How about this one?<br>B: It's cool. I like it!</div>Who is A?", options=["Ian.","Joan.","Emily.","Daniel."], correct=1),
+      ]),
+  ]),
+]

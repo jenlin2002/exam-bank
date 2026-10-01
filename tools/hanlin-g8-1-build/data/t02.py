@@ -1,0 +1,87 @@
+META = dict(n=2, h1="第2回・Unit 2", subtitle="You Can Learn About Game Design After You Join the Club")
+SECTIONS = [
+  dict(type="vocab", title="一、文意字彙", meta="【A部分 基礎題】10分，每題1分", items=[
+    dict(q="My favorite s___t is PE, not art.", answer="subject"),
+    dict(q="We have drinks for you, and there are two c___ces: tea and coffee. Please come and get your drink.", answer="choices"),
+    dict(q="Don't drink too much coffee. It's bad for your h___h.", answer="health"),
+    dict(q="Lily was a teacher before; she t___t math in high school.", answer="taught"),
+    dict(q="My uncle is a computer e___r. He designs computer systems（系統）.", answer="engineer"),
+    dict(q="My dog died not long ago, and I cried for days. It was a d___t time for me.", answer="difficult"),
+    dict(q="Our English l___ns are easy and fun. They are popular with many students.", answer="lessons"),
+    dict(q="The story is i___g. Many kids like it.", answer="interesting"),
+    dict(q="Helen and Nina are the s___e age; they are both 15.", answer="same"),
+    dict(q="I had a good time during the art f___l. I met my favorite artist（藝術家）and visited lots of museums for free.", answer="festival"),
+  ]),
+  dict(type="mc", title="二、文法選擇", meta="22分，每題2分", items=[
+    dict(q="Brad ___ his hands before he holds his kid.", options=["washed","washes","washing","is washing"], correct=1),
+    dict(q="Betty cried out when she ___ a bug in her soup.", options=["saw","sees","seeing","is seeing"], correct=0),
+    dict(q="Carl cleaned his room ___ he walked out of his house.", options=["before","when","so","after"], correct=0),
+    dict(q="___ she went to bed, she brushed her teeth.", options=["After","Later","Before","Then"], correct=2),
+    dict(q="Don't eat or drink ___ you are in a museum.", options=["after","before","so","when"], correct=3),
+    dict(q="A: Hello, is Jack there? B: ___, please. He's coming.", options=["Sign up","Pull out","Hold on","Call back"], correct=2),
+    dict(q="___ he was young ___ there were many fish in the sea.", options=["When; ×","Before; ,","Before; ×","When; ,"], correct=3),
+    dict(q="A: Hello, may I speak to Ms. Jones, please? B: ___ she speaking.", options=["It is","There is","This is","That is"], correct=2),
+    dict(q="Hana exercised at 10:30 and had lunch at 12:00. She had lunch ___ she exercised.", options=["before","after","when","because"], correct=1),
+    dict(q="Their math teacher is Mrs. Strickland, and ours ___ Mr. Watson.", options=["is","be","are","were"], correct=0),
+    dict(q="A: Is this your cup? B: No. That's Perla's. ___ over there.", options=["Hers","Mine","Hers is","Mine is"], correct=3),
+  ]),
+  dict(type="mc", title="三、對話選擇", meta="4分，每題2分", items=[
+    dict(q="A: With your help, the kids had a great Christmas party. Thank you so much. B: ___ I enjoyed the party, too.", options=["Not at all.","How strange!","That's not the same.","Are you pulling my leg?"], correct=0),
+    dict(q="A: Hello, this is Maya Hawkins from MT Company. How may I help you? B: ___ A: Sorry, he's not in right now. Can you call back later?", options=["Who's calling, please?","When can I call Mr. Smith?","Did Mr. Smith work here before?","May I speak to Mr. Smith, please?"], correct=3),
+  ]),
+  dict(type="guided-multi", title="四、依提示填入所有格代名詞", meta="11分，每格1分", items=[
+    dict(zh="(his guitar)", lines=["A: Is that guitar Kenny's? B: Yes, it's {{his}}."]),
+    dict(zh="(their parents)", lines=["My parents are teachers, and {{theirs}} are, too."]),
+    dict(zh="(her bedroom)", lines=["This is my bedroom, and {{hers}} is by the door."]),
+    dict(zh="(your robot / my robot)", lines=["A: Is this {{yours}}? B: Yes, that's {{mine}}."]),
+    dict(zh="(our bags / the girls' bags)", lines=["These bags are not {{ours}}; they are {{the}} {{girls'}}."]),
+    dict(zh="(Jill and Joe's kid)", lines=["The kid over there is {{Jill}} {{and}} {{Joe's}}."]),
+  ]),
+  dict(type="guided", title="五、看圖詳答問題", meta="4分，每題2分", items=[
+    dict(prompt="What did the girl study before she watched TV?", hint="（看圖回答）", image="images/test2/sec5_1.png", answer="She studied science (before she watched TV)."),
+    dict(prompt="What does the boy do after he walks his dog?", hint="（看圖回答）", image="images/test2/sec5_2.png", answer="He has / eats dinner (after he walks his dog)."),
+  ]),
+  dict(type="guided", title="六、依提示作答", meta="4分，每題2分", items=[
+    dict(prompt="Kate visits the history museum. / Kate has free time.", hint="（用when置於句中合併）", answer="Kate visits the history museum when she has free time."),
+    dict(prompt="This violin is <u>my aunt's</u>.", hint="（依畫線部分造原問句）", answer="Whose violin is this / that / it?"),
+  ]),
+  dict(type="translation", title="七、整句式翻譯", meta="8分，每題4分", items=[
+    dict(zh="當他聽說這個足球社，他想到我並打電話給我。", answer="When he heard about the soccer club, he thought of me and called me."),
+    dict(zh="A：你正在找什麼？B：我的相機。我拍照後把它放在桌上。", answer="A: What are you looking for? B: My camera. I put it on the table / desk after I took pictures."),
+  ]),
+  dict(type="mc", title="一、單題", meta="【B部分 活用題】10分，每題2分", items=[
+    dict(q="A: Who's John Hall? B: He's a friend of ___.", options=["I","my","me","mine"], correct=3),
+    dict(q="A: Did you hear that? Someone（有人）is ___ for help. B: Let's go check it out.", options=["calling","pulling","learning","thinking"], correct=0),
+    dict(q="A: Did you make this cake ___ your own? B: Yes! No one helped me.", options=["of","in","on","for"], correct=2),
+    dict(q="After the accident（意外）, I learned a ___. I am careful when I ride a horse now.", options=["club","lesson","show","history"], correct=1),
+    dict(q="A: ___ Where are you going? It's eight at night. B: I'm taking Boomer to the park for a walk.", options=["Hold on!","I'll be back.","Not at all!","Make up your mind."], correct=0),
+  ]),
+  dict(type="cloze", title="二、克漏字選擇", meta="12分，每題3分",
+    passage="Adeline: May I speak to James, please?\nJames: Hello, this is he. ___1___\nAdeline: It's Adeline.\nJames: Hey, Adeline! ___2___\nAdeline: James, can you help me, please?\nJames: ___3___ Why are you crying?\nAdeline: I can't find my dog, Loki.\nJames: Don't cry, Adeline. Let's go ___4___ together.\nAdeline: Thank you, James. Can you meet me at the park now?\nJames: Sure. See you later.\n\n【字詞】find 找到",
+    items=[
+      dict(options=["Is that you?","Who's calling?","Is Adeline there?","Can I talk to you?"], correct=1),
+      dict(options=["What's up?","Please hold on.","Whose dog is it?","Please call back later."], correct=0),
+      dict(options=["Who's sad?","What's wrong?","Did you hear me?","Are you talking to me?"], correct=1),
+      dict(options=["look for him","pull his leg","think about him","sign up for him"], correct=0),
+  ]),
+  dict(type="reading", title="三、依短文或圖表選出適當的答案", meta="15分，每題3分", passages=[
+    dict(label="【A】This is part of Sophie's school schedule.", text="",
+      table=dict(title="", head=["","Monday","Tuesday","Wednesday"], rows=[
+        ["8:30 – 9:15","English","Math","Art"],
+        ["9:25 – 10:10","PE","Computer","History"],
+        ["10:20 – 11:05","Science","Chinese","Music"],
+        ["11:15 – 12:00","Math","School clubs","Chinese"],
+        ["12:00 – 13:20","lunch break","lunch break","lunch break"]],
+        note="【字詞】school schedule 課表　break 休息時間"),
+      items=[
+        dict(q="It is Monday. Sophie is playing soccer with everyone in the class. Which class is she in now?", options=["PE class.","Math class.","Science class.","Chinese class."], correct=0),
+        dict(q="Which is NOT true（真實的）about Sophie's school schedule?", options=["Sophie has PE class after English class on Mondays.","Sophie needs her math book on Mondays and Tuesdays.","On Wednesdays, before Sophie goes to history class, she has art class.","Sophie can have lunch right after the Chinese class ends on Tuesdays."], correct=3),
+      ]),
+    dict(label="【B】", text="    On a small island, there was a very special junior high school. It was special not because they taught special classes there. It was very special because there was only one student in the school. The only student there was 15-year-old Shibuya. He learned all subjects like students in any other schools.\n    The island was full of people over 65 years old, and Shibuya was the only kid there. He went to school on his own every day, but he was happy with his school life. The teachers there were like his friends. They also had school lunch together. \"I don't have friends my age on this island, but I am happy here. Life here can be <u>entertaining</u>. I fish with my dad after school. Sometimes I go for a swim. People on the island teach me a lot, and everyone treats me like their family,\" said Shibuya.\n    After Shibuya graduated from the school, people closed the school. The school will open again when there is a new student.\n\n【字詞】over 超過　fish 釣魚　treat 對待　graduate 畢業　will 將會",
+      items=[
+        dict(q="What does <u>entertaining</u> mean?", options=["Same.","Magic.","Difficult.","Interesting."], correct=3),
+        dict(q="Which may be from Shibuya's diary（日記）when he was on the island?", options=["I am so sad today. Yoko is my only classmate here at this school, but she doesn't talk to me now.","Life is very difficult. I don't have any friends here, and I have too much homework every day. I miss my life at my old school.","Today I played basketball with Mr. Sato at school. At lunch today, we also talked a lot about basketball. I learned so much from him.","Today I learned about different plants from Mrs. Ono. People on the island seldom talk to me. Only Mrs. Ono treats me like her family."], correct=2),
+        dict(q="What do we know from the reading?", options=["There was only one teacher on the island.","Shibuya enjoyed his school life on the island.","People closed the school before Shibuya graduated.","After Shibuya graduated, the school had only one student."], correct=1),
+      ]),
+  ]),
+]

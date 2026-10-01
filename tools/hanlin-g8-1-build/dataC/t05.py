@@ -1,0 +1,73 @@
+META = dict(n=5, h1="第5回・Unit 3", subtitle="Mom Was Doing the Dishes at Half Past Twelve")
+SECTIONS = [
+  dict(type="vocab", title="一、文意字彙", meta="18分，每題2分", items=[
+    dict(q="A: Where is my room? B: Your room number is 605; it's on the sixth f___r.", answer="floor"),
+    dict(q="Tina ate n___ng for lunch because she wasn't hungry.", answer="nothing"),
+    dict(q="The man cried when he heard the t___le news（消息）. He was very sad.", answer="terrible"),
+    dict(q="The computer has a p___m, and I'm fixing it.", answer="problem"),
+    dict(q="The food is a___t ready. Just wait for a few minutes, and then we can eat.", answer="almost"),
+    dict(q="My friend is s___d of dogs. He always hides when he sees one.", answer="scared"),
+    dict(q="The church is in the mountains, so we climbed up many s___rs before we got（抵達）there.", answer="stairs"),
+    dict(q="I usually don't r___r my dreams, but I did yesterday. They were about my classmates.", answer="remember"),
+    dict(q="My dad c___t a big fish at the lake yesterday, and we ate it for lunch today.", answer="caught"),
+  ]),
+  dict(type="guided-multi", title="二、依例用「先分後時」的方式寫出時間", meta="9分，每題3分・例：It is ten past/after nine.", image="images/test5c/sec2_clocks.png", items=[
+    dict(zh="時鐘 1", lines=["It is {{a quarter to four}}."]),
+    dict(zh="時鐘 2", lines=["It is {{a quarter past four/a quarter after four}}."]),
+    dict(zh="時鐘 3", lines=["It is {{ten to nine}}."]),
+  ]),
+  dict(type="mc", title="三、文法選擇", meta="20分，每題2分", items=[
+    dict(q="My grandpa was sleeping when I ___ his door.", options=["open","opened","am opening","opening"], correct=1),
+    dict(q="A: What was Helen doing then? B: She ___ the piano.", options=["playing","played","was playing","is playing"], correct=2),
+    dict(q="A: What ___ you doing at four o'clock yesterday afternoon? B: I forgot（忘記）.", options=["are","were","did","can"], correct=1),
+    dict(q="The girl ___ the dishes when she ___ the plate.", options=["does; broke","is doing; broke","did; is breaking","was doing; broke"], correct=3),
+    dict(q="A: What time did you feed the pets? B: I ___ them at half ___ five.", options=["fed; to","fed; past","feed; to","was feeding; after"], correct=1),
+    dict(q="Jerry ___ the bathroom when his brother ___ him.", options=["was using; calls","used; was calling","is using; called","was using; called"], correct=3),
+    dict(q="David ___ a bad dream at three last night.", options=["has","is having","was having","were having"], correct=2),
+    dict(q="A: ___ Nina and Alex talking on the phone then? B: Yeah.", options=["Is","Was","Are","Were"], correct=3),
+    dict(q="A: Is it 2:55 now? B: That's right. It's five ___ three.", options=["past","before","to","after"], correct=2),
+    dict(q="Amy couldn't talk to me at that time because she ___ something important.", options=["did","is doing","was doing","were doing"], correct=2),
+  ]),
+  dict(type="guided-multi", title="四、看圖填入下列提示字，完成短文（注意動詞形態）", meta="6分，每格1分・提示字：do / hang / mop / fix / take / wipe / go", image="images/test5c/sec4_mia.png", items=[
+    dict(zh="", lines=["Mia was busy all day yesterday. At a quarter to ten, she was {{mopping}} the floor. At half past one in the afternoon, Mia was {{wiping}} the window. After that, she {{did}} the dishes, and then she took a nap. Before dinner, she {{hung}} the clothes. After dinner, she {{took}} out the trash and then showered. When she {{went}} to bed, she was tired but happy because she finished a lot of housework."]),
+  ]),
+  dict(type="guided", title="五、依提示作答", meta="12分，每題3分", items=[
+    dict(prompt="What time was it when Mr. Parker left?", hint="（用「還差一刻鐘十一點」回答）", answer="It was a quarter to eleven (when he left)."),
+    dict(prompt="The man broke the bowl. The man was fixing the drawer.", hint="（用... when he broke... 合併兩句）", answer="The man was fixing the drawer when he broke the bowl."),
+    dict(prompt="Dan and I played video games yesterday afternoon.", hint="（加入「四點十分」改寫句子：先分後時）", answer="Dan and I were playing video games at ten after / past four yesterday afternoon."),
+    dict(prompt="Mrs. Davis was <u>working at home</u> when she saw the strange man.", hint="（依畫線部分造原問句）", answer="What was Mrs. Davis doing when she saw the strange man?"),
+  ]),
+  dict(type="translation", title="六、翻譯", meta="12分，每題4分", items=[
+    dict(zh="這些訣竅可以使你避免一些問題。（save）", answer="These tips can save you from some problems."),
+    dict(zh="當你打電話給我的時候，我正在弄乾我的頭髮。（... when...）", answer="I was drying my hair when you called me."),
+    dict(zh="昨天四點半的時候，學生們正在拖教室的地板。（先分後時）", answer="The students were mopping the classroom floor at half past four yesterday."),
+  ]),
+  dict(type="cloze", title="七、克漏字選擇", meta="14分，每題2分",
+    passage="(Joe comes back home with his friend Elly.)\nJoe: Dad? Bobby? I'm back! Bobby!\nElly: Where's Bobby? I don't see him.\nJoe: He was sleeping in the living room when I ___1___ about an hour ago.\nElly: Maybe your dad took him for a walk.\nJoe: Or maybe he ran out. He did that once. Maybe ___2___ took him! Oh no!\nElly: ___3___ We don't know for sure. Call your dad or check the video ___4___ your home monitor.\nJoe: All right. He's not answering. Let's check the video then.\n(Joe and Elly watch the video.)\nElly: ___5___ Bobby was sleeping, and then your dad came home.\nJoe: He made coffee and stood next to Bobby.\nElly: Oh no! Look! Bobby jumped up on your dad, and the coffee spilled on Bobby!\nJoe: Oh my! Bobby cried out because the coffee was hot!\nElly: Your dad ___6___. Maybe he took him to the vet.\nJoe: ___7___ Something bad happened to Bobby. Poor Bobby!\n\n【字詞】spill 灑出　vet 獸醫",
+    items=[
+      dict(options=["left","leave","is leaving","was leaving"], correct=0),
+      dict(options=["one","person","someone","nothing"], correct=2),
+      dict(options=["Of course.","What's up?","Cool down.","It was you!"], correct=2),
+      dict(options=["of","in","for","from"], correct=3),
+      dict(options=["Stop!","It was you.","I can't help it.","You can say that again."], correct=0),
+      dict(options=["broke the coffee cup","didn't see that at all","was fine when he left","ran out the door with Bobby"], correct=3),
+      dict(options=["I knew it!","You did it.","Take it easy.","It didn't work."], correct=0),
+  ]),
+  dict(type="reading", title="八、閱讀測驗", meta="9分，每題3分", passages=[
+    dict(label="", text="    Peter works at a restaurant. The workers there clean the restaurant's bathroom between 2:30 and 3 p.m. There is a cleaning checklist. Every time after they clean, they sign the checklist and write down the cleaning time. Here is last week's checklist:",
+      table=dict(title="ABC Restaurant Bathroom Cleaning Checklist", head=["Day","Floor","Windows","Toilet","Name","Time"], rows=[
+        ["Mon.","—","—","—","—","—"],
+        ["Tues.","✓","","✓","A","2:30–2:40"],
+        ["Wed.","✓","","✓","Victor","2:40–2:55"],
+        ["Thurs.","✓","✓","✓","B","2:40–3:15"],
+        ["Fri.","✓","","✓","C","2:50–3:00"],
+        ["Sat.","✓","","✓","D","2:40–2:55"],
+        ["Sun.","✓","","✓","John","2:35–2:55"]],
+        note="【字詞】cleaning 清潔　checklist 檢核清單　toilet 馬桶　infer 推論"),
+      items=[
+        dict(q="One day after three o'clock, Peter was still cleaning the bathroom. Where did Peter sign?", options=["A.","B.","C.","D."], correct=1),
+        dict(q="What can we learn from last week's checklist?", options=["Victor didn't clean the toilet last week.","Someone was cleaning the floor at 2:45 p.m. last Friday.","John was cleaning the bathroom at 2:40 p.m. last Sunday.","Someone cleaned the bathroom for twenty minutes last Friday."], correct=2),
+        dict(q="What can we infer from the reading?", options=["The restaurant is open from Tuesday to Sunday.","The workers cleaned the bathroom in the evening.","The workers can't clean the bathroom after three o'clock.","The workers usually clean the bathroom for twenty minutes."], correct=0),
+      ]),
+  ]),
+]

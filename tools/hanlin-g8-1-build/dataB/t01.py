@@ -1,0 +1,68 @@
+META = dict(n=1, h1="第1回・Unit 1", subtitle="How Was the Weather in Australia?")
+SECTIONS = [
+  dict(type="vocab", title="一、文意字彙", meta="20分，每題2分", items=[
+    dict(q="The rainy s___n in India is from June to September. There's a lot of rain during these months.", answer="season"),
+    dict(q="A: May I take your o___r? B: Yes. Can I have a cup of hot chocolate?", answer="order"),
+    dict(q="Dr. Lawson is not at work; she's on v___n in the USA now.", answer="vacation"),
+    dict(q="Your hands are cold. Here, wear these g___es.", answer="gloves"),
+    dict(q="Officer, help! That s___e man is following me.", answer="strange"),
+    dict(q="A: Let's go fly a kite. B: There's not enough w___d today. The kite won't（將不會）fly.", answer="wind"),
+    dict(q="In Taiwan, a___n is from September to November.", answer="autumn"),
+    dict(q="Kate is not speaking to me because she is m___d at me. I lost her favorite pen.", answer="mad"),
+    dict(q="It's s___y and cold on this mountain all year long, so it is always white.", answer="snowy"),
+    dict(q="We often have h___y rain in the afternoon in summer, so don't go out in the afternoon.", answer="heavy"),
+  ]),
+  dict(type="mc", title="二、文法選擇", meta="20分，每題2分", items=[
+    dict(q="___ a lot of rain last week. I didn't go out for three days.", options=["There were","It had","It has","There was"], correct=3),
+    dict(q="A: I'm writing Tom ___ a card. Can you send it ___ me later? B: Sure. There's a post office（郵局）on my way to work.", options=["×; to","for; to","×; for","for; for"], correct=2),
+    dict(q="A: Sorry, I don't have my pencil case. Could you ___ a pen to me? B: Of course. Here you go.", options=["get","lend","show","borrow"], correct=1),
+    dict(q="A: My mom gave me this jacket for Christmas. B: How ___! I love the color.", options=["jacket","lovely","a jacket","a nice jacket"], correct=1),
+    dict(q="A: What do you usually do ___ a beautiful spring day like today? B: I read ___ the sun.", options=["in; during","on; in","in; in","on; during"], correct=1),
+    dict(q="I always make dinner ___ my family, and they love my food a lot.", options=["for","×","to","of"], correct=0),
+    dict(q="___ usually cold and rainy here in November. Always have an umbrella with you.", options=["It has","There is","It is","We have"], correct=2),
+    dict(q="A: Hello, can you show ___ me the new book by Sam Wilson? B: Of course. It's right over there.", options=["to","for","at","×"], correct=3),
+    dict(q="I need a bag for school. Could you buy me ___ at the store?", options=["it","one","to it","for a bag"], correct=1),
+    dict(q="The writer writes many books ___ kids. You can buy one for your son at any bookstore.", options=["to","from","by","for"], correct=3),
+  ]),
+  dict(type="mc", title="三、對話選擇", meta="6分，每題2分", items=[
+    dict(q="A: How's the weather today? B: ___ Take a jacket with you.", options=["I love winter.","It's cloudy and cool.","Today is really warm.","I'm having a great time."], correct=1),
+    dict(q="A: Sorry, Miss. ___ B: Sorry. We're busy today. It's coming up.", options=["Can I order my meal now?","What is the soup of the day?","My coffee is not hot enough.","When can our food be ready?"], correct=3),
+    dict(q="A: The cake is so yummy. ___ B: Sure. Let's get you a box to go.", options=["Is there sugar in it?","Where can I get one?","Let's enjoy it together.","May I have another slice?"], correct=3),
+  ]),
+  dict(type="guided-multi", title="四、填入適當的介系詞", meta="5分，每題1分", items=[
+    dict(zh="", lines=["Students, give your phones {{to}} me, please."]),
+    dict(zh="", lines=["Joe is cooking chicken soup {{for}} his brother. He is sick in bed."]),
+    dict(zh="", lines=["Today my teacher showed a picture of his baby son {{to}} us. He's really cute."]),
+    dict(zh="", lines=["A: My cousin Peggy sent this big box of chocolate {{to}} me from Poland. B: How sweet of her!"]),
+    dict(zh="", lines=["A: Mom, can you buy this comic book {{for}} me? B: Sorry, but I don't have enough money. Maybe next time."]),
+  ]),
+  dict(type="cloze", title="五、克漏字選擇", meta="10分，每題2分",
+    passage="Eddie: Hey, that is my umbrella on your desk. Why did you take it?\nMindy: What are you talking about? I borrowed ___1___ this morning.\nEddie: Huh? What do you ___2___? I don't remember that.\nMindy: It ___3___ a lot this morning, and I didn't have an umbrella. So, you lent me one. ___4___, you insisted because you had two umbrellas.\nEddie: Right! I forgot about it ___5___ after. I had a busy day.\nMindy: Haha. Here. Thanks for the umbrella.\n\n【字詞】remember 記得　insist 堅持　forget 忘記（過去式為forgot）",
+    items=[
+      dict(options=["it to you","it from you","you the umbrella","the umbrella for you"], correct=1),
+      dict(options=["hate","mean","read","speak"], correct=1),
+      dict(options=["rainy","snowy","rained","snowed"], correct=2),
+      dict(options=["Sadly","Luckily","In fact","On the other hand"], correct=2),
+      dict(options=["soon","very","enough","long"], correct=0),
+  ]),
+  dict(type="reading", title="六、閱讀測驗", meta="15分，每題3分", passages=[
+    dict(label="", text="Dear Leo,\nHow is everything in Australia? We're good in Taipei. Yesterday was Gina's birthday, so your son planned a surprise party for his sister.\nIt was sunny yesterday morning—not a cloud in the sky. First, Gina's friends and I went to the park next to our house. Then Eric took Gina there for a walk after breakfast. Gina's friends and I hid behind the trees, and we jumped out and said \"Happy birthday!\" to her. It was a big surprise for Gina, and she was very happy. Then we had lunch under a tree. But heavy rain fell after lunch. We ran to a gazebo and waited there for two hours. During that time, we ate a big chocolate cake. Kent, Gina's friend from elementary school, made the cake for her. What a birthday!\nWhen can you come back? The kids miss their father, and I miss my husband.\nMegan\n\n（收件人：Leo Baker, No. 29, Park Rd., Sydney 2043, Australia）\n\n【字詞】plan 計畫　surprise 驚喜　gazebo 涼亭",
+      items=[
+        dict(q="Who wrote this postcard?", options=["Eric.","Gina.","Leo's son.","Leo's wife."], correct=3),
+        dict(q="What do we know about Leo Baker?", options=["He's Gina's brother.","He was in Taipei yesterday.","He has a son and a daughter.","He made his daughter a cake for her birthday."], correct=2),
+        dict(q="Which is NOT true（何者為非）about Gina's party?", options=["The party was at a park.","Gina's dad didn't go to the party.","Gina's brother planned the party.","Gina knew about the party before the party."], correct=3),
+        dict(q="Why did they eat the birthday cake in a gazebo?", options=["Because of the rain.","The sun was too hot.","Megan bought it there.","There were a table and chairs."], correct=0),
+        dict(q="This chart（圖表）shows the weather this week. What day was Gina's birthday?", image="images/test1b/q5_chart.png", options=["Monday.","Wednesday.","Thursday.","Friday."], correct=2),
+      ]),
+  ]),
+  dict(type="guided", title="七、依提示作答", meta="12分，每題4分", items=[
+    dict(prompt="How was the weather two days ago?", hint="（用What...改寫）", answer="What was the weather like two days ago?"),
+    dict(prompt="It doesn't rain a lot in the mountains.", hint="（用They...改寫）", answer="They don't have a lot of rain in the mountains."),
+    dict(prompt="Jerry didn't buy me a birthday gift.", hint="（加入介系詞改寫）", answer="Jerry didn't buy a birthday gift for me."),
+  ]),
+  dict(type="translation", title="八、翻譯", meta="12分，每題4分", items=[
+    dict(zh="今天早上風大又陽光普照。", answer="It was windy and sunny this morning. / There was a lot of wind and sun this morning."),
+    dict(zh="我討厭冬天的天氣。", answer="I hate the weather in winter. / I hate winter weather."),
+    dict(zh="我們昨晚在雪中玩耍。我們有個有趣的夜晚。", answer="We played in the snow last night. We had a fun night."),
+  ]),
+]

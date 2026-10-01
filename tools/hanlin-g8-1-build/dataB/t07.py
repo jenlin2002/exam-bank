@@ -1,0 +1,65 @@
+META = dict(n=7, h1="第7回・Review Test 2", subtitle="Unit 3～Unit 4、節慶單元 總複習")
+SECTIONS = [
+  dict(type="vocab", title="一、文意字彙", meta="20分，每題2分", items=[
+    dict(q="Children from six to fifteen years old can go to school because they have the r___t to education.", answer="right"),
+    dict(q="Mr. Lopez h___g up a beautiful painting on the wall.", answer="hung"),
+    dict(q="I had p___ms with science, so Jessica gave me some studying tips.", answer="problems"),
+    dict(q="A: I f___d this bag of candy by the door. Is it yours? B: No, it's not mine.", answer="found"),
+    dict(q="Plants need the sun and water to g___w.", answer="grow"),
+    dict(q="Ms. Fan is a s___y. She plans things and makes phone calls for her boss.", answer="secretary"),
+    dict(q="My brother always does his homework at the last m___t. In fact, he finished his math homework five minutes before the class started yesterday.", answer="moment"),
+    dict(q="Can you close the w___w, please? It's raining, and the water is coming in.", answer="window"),
+    dict(q="I ate too much food, and now my s___h is very full.", answer="stomach"),
+    dict(q="Your clothes are wet（濕的）. Please don't w___e your hands on your clothes after you wash them.", answer="wipe"),
+  ]),
+  dict(type="mc", title="二、文法選擇", meta="20分，每題2分", items=[
+    dict(q="Jared ___ a shower when his sister came home.", options=["took","was taking","takes","take"], correct=1),
+    dict(q="I love sweet food. It's difficult ___ me ___ give up candy.", options=["to; to","for; ×","to; ×","for; to"], correct=3),
+    dict(q="Chloe tried ___ the cup before it fell to the floor.", options=["catch","catches","caught","to catch"], correct=3),
+    dict(q="Ken doesn't like bugs, so he ___ when he saw the butterfly.", options=["cried","was crying","cries","is crying"], correct=0),
+    dict(q="It's fun ___ about becoming a successful lawyer sometimes.", options=["dreams","dream","to dream","dreaming"], correct=2),
+    dict(q="___ up early to exercise every day is not an easy thing.", options=["Get","Getting","Gets","Got"], correct=1),
+    dict(q="A: What do you plan on ___ for the four-day weekend? B: I want to sleep all day.", options=["to do","doing","do","does"], correct=1),
+    dict(q="A: Where were you an hour ago? I was looking for you. B: I was having lunch with my relatives ___.", options=["then","right now","yesterday","when you fell asleep"], correct=0),
+    dict(q="Maya cleans the house at 9 a.m. every day, so she ___ the floor when I visited her this morning.", options=["mops","can mop","was mopping","is mopping"], correct=2),
+    dict(q="The man kept ___ the same song. I don't want to hear it again.", options=["sing","sang","to sing","singing"], correct=3),
+  ]),
+  dict(type="mc", title="三、對話選擇", meta="4分，每題2分", items=[
+    dict(q="A: What were you doing at seven o'clock last night? B: ___", options=["I wanted to have a party.","I had a great time at the party.","I started making dinner at six.","I was planning my dinner party."], correct=3),
+    dict(q="A: Can we go to lunch now? B: ___ Give me a minute.", options=["I'm almost ready.","Let's go now.","I don't want to have dinner.","Please don't leave me."], correct=0),
+  ]),
+  dict(type="cloze", title="四、克漏字選擇", meta="10分，每題2分",
+    passage="Carrie is a junior high school student. She loves ___1___ and has a beautiful voice. She decided ___2___ a singer at age six. ___3___, she got butterflies when she performed in front of people, so she took an acting class to practice ___4___. After six months, she was finally comfortable with performing and signed up for a singing contest. She was ready to follow her ___5___.\n\n【字詞】voice 嗓音　perform 表演　comfortable 舒適的",
+    items=[
+      dict(options=["sing","write","singing","to write"], correct=2),
+      dict(options=["became","becomes","becoming","to become"], correct=3),
+      dict(options=["Luckily","Finally","However","Besides"], correct=2),
+      dict(options=["to sing songs","to read stories","being on stage","writing a story"], correct=2),
+      dict(options=["pet","idea","hope","dream"], correct=3),
+  ]),
+  dict(type="reading", title="五、閱讀測驗", meta="18分，每題3分", passages=[
+    dict(label="【A】", text="(Mrs. Wood is on the phone with her son.)\nMrs. Wood: Sebastian, are you OK? Is your sister with you? She didn't answer my call.\nSebastian: Yes, Molly is with me. We're fine and out of the building. She is not happy.\nMrs. Wood: How come?\nSebastian: She was taking a shower when the earthquake happened. She didn't have time to put on something, so she came out in her <u>birthday suit</u>.\nMrs. Wood: What? She's wearing nothing? It's cold out there.\nSebastian: Don't worry. She has a towel on her, and I gave her my jacket. Are you OK?\nMrs. Wood: I'm fine, but that was a terrible experience. I was leaving the office when it happened. Lots of things fell and broke. I need to sweep the floor and clean up, so I can't make dinner.\nSebastian: It's OK. I can order a pizza.\n\n【字詞】earthquake 地震　towel 毛巾　experience 經歷",
+      items=[
+        dict(q="Why is Mrs. Wood calling Sebastian?", options=["To look for Molly.","To order a pizza for him.","To check on him and his sister.","To talk to him about her terrible experience."], correct=2),
+        dict(q="When someone is in their <u>birthday suit</u>, they ___.", options=["are not happy","are taking a shower","don't have any clothes on","don't have time to do anything"], correct=2),
+        dict(q="What CAN'T we know from the reading?", options=["Molly didn't answer the call because she wasn't happy.","Mrs. Wood can't make dinner because of the earthquake.","Mrs. Wood was at her office when the earthquake happened.","Sebastian and Molly are out of the building because of the earthquake."], correct=0),
+      ]),
+    dict(label="【B】", text="    Yesterday was Halloween, and Bobby invited Tommy to his house to watch some movies. When Tommy came to Bobby's house, the front door was open. \"Hello, are you home, Bobby?\" he said. No one answered. Then he heard something from Bobby's room, so he went up the stairs. When he opened the door, he saw Bobby in a black mask. He was checking a drawer. \"Here you are, Bobby,\" Tommy said and went up to him. Suddenly, Bobby ran past Tommy and went out the door. \"Cool down, man,\" Tommy cried out. He was trying to run up to Bobby when he got a message on his phone. It was from Bobby. \"Sorry, I'm late. I just finished work. I'm going home now,\" the message said. Tommy was <u>terrified</u> and couldn't stop shaking. Finally, he called the police.\n\n【字詞】invite 邀請　suddenly 突然　message 訊息",
+      items=[
+        dict(q="What does it mean when someone is <u>terrified</u>?", options=["They're tired.","They're cold.","They're successful.","They're scared."], correct=3),
+        dict(q="Why did Tommy call the police?", options=["Bobby didn't close his front door.","Tommy couldn't find Bobby.","Bobby tried to fight with Tommy.","The person in the mask wasn't Bobby."], correct=3),
+        dict(q="Which is true（真實的）?", options=["Bobby's house has only one floor.","Bobby broke his drawer, so he was fixing it.","Tommy went to Bobby's house to watch movies.","When Tommy went into Bobby's house, no one was there."], correct=2),
+      ]),
+  ]),
+  dict(type="guided", title="六、依提示作答", meta="16分，每題4分", items=[
+    dict(prompt="Selena danced. / Selena gave it up last year.", hint="（合併兩句）", answer="Selena gave up dancing last year."),
+    dict(prompt="What is your brother good at?", hint="（用「修理汽車」回答）", answer="He is good at fixing cars."),
+    dict(prompt="Moving this table with only one hand isn't easy.", hint="（用虛主詞it改寫）", answer="It's not easy to move this table with only one hand."),
+    dict(prompt="What time does your guitar lesson start?", hint="（以逆讀法用「九點四十五分」回答）", answer="It starts at a quarter to ten / fifteen (minutes) to ten."),
+  ]),
+  dict(type="translation", title="七、翻譯", meta="12分，每題4分", items=[
+    dict(zh="他決定在三點半時洗碗盤。（時間用逆讀法）", answer="He decided to do the dishes at half past three."),
+    dict(zh="沒有很多人相信 Becky 成為一位有名記者的夢想。", answer="Not many people believe(d) in Becky's dream of becoming a famous reporter."),
+    dict(zh="當時，那名駕駛正開著一輛卡車駛遍整座城市。", answer="The driver was driving a truck all over the city then / at the time."),
+  ]),
+]

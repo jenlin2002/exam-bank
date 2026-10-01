@@ -1,0 +1,75 @@
+META = dict(n=5, h1="第5回・Unit 3", subtitle="Mom Was Doing the Dishes at Half Past Twelve")
+SECTIONS = [
+  dict(type="vocab", title="一、文意字彙", meta="【A部分 基礎題】13分，每題1分", items=[
+    dict(q="Today is December 30. It is al___t the end of the year.", answer="almost"),
+    dict(q="Don't m___e. There's a bug in your hair. Let（讓）me get it out for you.", answer="move"),
+    dict(q="Meg's dad died 20 years ago, but she still misses him a lot and often d___ms of him in her sleep.", answer="dreams"),
+    dict(q="A: Hey, Joe. Can you help me with these math p___ms? B: Sorry, I can't. I'm poor at math.", answer="problems"),
+    dict(q="A: Is Rita there? B: No. She just l___t.", answer="left"),
+    dict(q="A: Where did you put your markers? B: In the first d___r of my desk.", answer="drawer"),
+    dict(q="A: Do you r___r the new classmate's name? B: Yes. Her name's Lilly.", answer="remember"),
+    dict(q="The window is too dirty（髒的）. I can't see th___h it.", answer="through"),
+    dict(q="A: How do you like that new restaurant? B: Their food is t___e. Don't eat there.", answer="terrible"),
+    dict(q="Fanny's office is on the tenth f___r.", answer="floor"),
+    dict(q="A: Can you see my ball in the hole in the tree? B: No. There is n___g in the hole.", answer="nothing"),
+    dict(q="Jason s___ved many people's lives; he was a great doctor.", answer="saved"),
+    dict(q="A: I c___t two fish in the lake, and I cooked them. B: Lovely! Let's have fish for dinner!", answer="caught"),
+  ]),
+  dict(type="mc", title="二、文法選擇", meta="22分，每題2分", items=[
+    dict(q="A: Is it a quarter ___ twelve? B: Yes. It's twelve fifteen.", options=["to","at","before","after"], correct=3),
+    dict(q="Someone ___ listening to music in the room.", options=["is","are","do","does"], correct=0),
+    dict(q="A: ___ you taking a shower at that time? B: Yes, I was.", options=["Was","Were","Did","Are"], correct=1),
+    dict(q="A: Is it ten ___ seven now? B: Yes. It's six fifty.", options=["to","after","past","with"], correct=0),
+    dict(q="A: The movie starts at two o'clock. B: Oh no, we are late. It's ten ___ two now.", options=["to","at","past","before"], correct=2),
+    dict(q="A: ___ was doing the dishes at that time? B: Verona ___.", options=["Who; was","Who; did","What; did","What; was"], correct=0),
+    dict(q="Pam ___ the clothes when her friends came.", options=["hangs","hung","is hanging","was hanging"], correct=3),
+    dict(q="Karen was feeding her pet when she ___ the plate.", options=["breaks","broke","is breaking","was breaking"], correct=1),
+    dict(q="A: What were they doing when the phone rang（鈴響）? B: They ___ the kitchen.", options=["cleaned","are cleaning","did clean","were cleaning"], correct=3),
+    dict(q="A: What ___ you ___ at 5 p.m. yesterday? B: I was on my way home from school.", options=["are; doing","did; do","were; doing","could; do"], correct=2),
+    dict(q="A: I called you many times this morning, but you didn't answer. Didn't you hear your phone? B: Sorry. I ___ sleeping.", options=["am","was","do","did"], correct=1),
+  ]),
+  dict(type="mc", title="三、對話選擇", meta="6分，每題2分", items=[
+    dict(q="A: I'm so nervous. I can't sing in front of everyone. B: ___ You can do it.", options=["Take it easy.","That's terrible.","What are your tips?","The day finally ended."], correct=0),
+    dict(q="A: ___ B: No. I was drying my hair.", options=["Is your hair dry?","Were you studying then?","Didn't you dry your hair?","What were you doing in your room?"], correct=1),
+    dict(q="A: ___ B: Yes. It's half past eight.", options=["What time is it?","Isn't it eight thirty now?","Is it eight minutes to three?","When did the concert start?"], correct=1),
+  ]),
+  dict(type="guided", title="四、看圖詳答問題", meta="9分，每題3分・(Last Sunday afternoon at half past two)", image="images/test5/sec4_house.png", items=[
+    dict(prompt="What was John doing?", hint="（看圖回答）", answer="He was sweeping the floor."),
+    dict(prompt="Was George doing the dishes?", hint="（看圖回答）", answer="No, he wasn't. He was wiping the window."),
+    dict(prompt="What was Sarah doing?", hint="（看圖回答）", answer="She was washing the clothes."),
+  ]),
+  dict(type="guided", title="五、依提示作答", meta="6分，每題3分", items=[
+    dict(prompt="I was <u>cooking</u> when the baby cried.", hint="（依畫線部分造原問句）", answer="What were you doing when the baby cried?"),
+    dict(prompt="Carol was fixing her car at three thirty.", hint="（時間用past改寫）", answer="Carol was fixing her car at half past three."),
+  ]),
+  dict(type="translation", title="六、整句式翻譯", meta="8分，每題4分", items=[
+    dict(zh="差十五分鐘九點時，她正在拖樓梯。（a quarter...）", answer="She was mopping the stairs at a quarter to nine."),
+    dict(zh="當他們正在一座大城市裡旅行時，他們的母親打電話給他們。（... when their mother...）", answer="They were traveling in a big city when their mother called them."),
+  ]),
+  dict(type="mc", title="一、單題", meta="【B部分 活用題】8分，每題2分", items=[
+    dict(q="Don't live in the ___. Enjoy the moment（此刻）now.", options=["half","past","quarter","problem"], correct=1),
+    dict(q="Besides English classes, Rita learns English ___ songs and movies in English.", options=["of","for","through","between"], correct=2),
+    dict(q="It's raining, but I don't have an umbrella with me. I ___ it on the bus.", options=["left","saved","swept","remembered"], correct=0),
+    dict(q="A: Why was Ms. Carter mad at Kyle? B: He ___ two class rules. He was late this morning, and he didn't do his homework.", options=["left","hung","broke","moved"], correct=2),
+  ]),
+  dict(type="cloze", title="二、克漏字選擇", meta="12分，每題3分",
+    passage="Sandra: Dad, you are so ___1___. I called you, but you didn't pick up the phone.\nMr. Price: I'm sorry. I was driving, so I couldn't pick it up.\nSandra: You drove for over half an hour? How come? Our house is not that far from my school.\nMr. Price: Maybe I ___2___ something else. When did you call me?\nSandra: Thirty minutes ago. ___3___\nMr. Price: Ah, I was sleeping on the sofa ___4___. I'm sorry.\nSandra: It's okay.\n\n【字詞】pick up 接（電話）；撿拾　drive 開車（過去式為drove）　over 超過　far 遠的",
+    items=[
+      dict(options=["late","early","right","scared"], correct=0),
+      dict(options=["do","did","am doing","was doing"], correct=3),
+      dict(options=["What did you do?","How are you doing?","What were you watching?","What were you doing then?"], correct=3),
+      dict(options=["when you called","before you came home","after you left your classroom","when you walked into the house"], correct=0),
+  ]),
+  dict(type="reading", title="三、依短文選出適當的答案", meta="16分，每題4分", passages=[
+    dict(label="【A】", text="    One day when little Jeremy was playing at the beach, he met a pirate. The pirate was sitting on the beach and drinking. The pirate only had one leg and one eye. He also had a hook for a hand. \"Mr. Pirate, how did you lose your leg?\" little Jeremy asked the pirate. \"I was swimming, and I saw a big mean fish in the water. My men pulled me back to the boat before the fish got me, but it got my leg,\" said the pirate. \"What about the hook on your hand? How did you lose your hand?\" little Jeremy asked the pirate. \"I was fighting with someone. I lost my hand during the fight, but that guy lost his life,\" said the pirate. \"Wow! How about your eye? Did you lose your eye during a fight, too?\" asked little Jeremy. \"I was eating fruit, and the juice went into my eye,\" said the pirate. \"How did you lose your eye because of the juice?\" asked Jeremy. \"Oh!\" said the pirate, \"I rubbed my eye, and it was my first day with the hook.\"\n\n【字詞】pirate 海盜　hook 鉤子　ask 詢問　mean 兇惡的　rub 揉搓",
+      items=[
+        dict(q="What was the pirate doing when he lost his leg?", options=["He was eating.","He was swimming.","He was rowing a boat.","He was fighting with someone."], correct=1),
+        dict(q="What do we know from the reading?", options=["Jeremy was there when the pirate lost his hand.","Jeremy was talking to the pirate when he saw a big fish.","The pirate lost his eye because he rubbed it with his hook.","The pirate was swimming at the beach when he met Jeremy."], correct=2),
+      ]),
+    dict(label="【B】", text="    It was late at night. No one was on the street, and it was dark. When I was walking home from work, I heard someone behind me, so I looked back. It was a guy. He was following me. He even said something in a strange voice. I was so scared. I put my hand in my bag. \"Where is my key?\" I thought. I couldn't find my key, so I called my dad at home. He then waited for me at the door. I was very close to my house, so I sped up. However, he sped up, too. I ran to my house and saw my dad there. We went into the house and closed the door. What a terrible night!\n– Rosa\n\n    I was very sick, and I was also tired from a long day's work. I was walking home very late at night. Not many people were on the street, and there was only a girl walking in front of me. Something dropped from her bag. It was her key. \"Wait... wait...,\" I said to her after I picked up her key. But my voice was strange because I was so sick. The girl didn't hear me. She was talking on her phone. Soon, she sped up, so I sped up, too. I had her key in my hand. Then she went into a building and closed the door. \"Which floor does she live on?\" I thought. I could not give the key back to her.\n– Hector\n\n【字詞】voice 聲音　key 鑰匙　speed up 加速（過去式為sped）　drop 掉落",
+      items=[
+        dict(q="What was Rosa's dad doing when she walked to her house?", options=["He was following a guy.","He was walking behind her.","He was standing at the door.","He was getting a key from his bag."], correct=2),
+        dict(q="What do we know from the reading?", options=["Hector had Rosa's key.","Rosa didn't see Hector at all.","The guy behind Rosa was a bad guy.","Hector and Rosa lived in the same building."], correct=0),
+      ]),
+  ]),
+]

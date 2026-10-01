@@ -1,0 +1,63 @@
+META = dict(n=3, h1="第3回・Review Test 1", subtitle="Unit 1～Unit 2 總複習")
+SECTIONS = [
+  dict(type="vocab", title="一、文意字彙", meta="22分，每題2分", items=[
+    dict(q="A: Can we play another game? This one is too d___t for me. B: Sure. Let's play this easy one.", answer="difficult"),
+    dict(q="My mother was an elementary teacher many years ago. She t___t English.", answer="taught"),
+    dict(q="This sofa is too h___y; I can't move（移動）it on my own.", answer="heavy"),
+    dict(q="A: How many languages（語言）do you s___k? B: Just English.", answer="speak"),
+    dict(q="The weather doesn't change much during the four s___ns here; it's always cold and windy.", answer="seasons"),
+    dict(q="Ben is a kind man. He often gives money and food to the p___r.", answer="poor"),
+    dict(q="Math isn't my favorite s___t in school; Chinese is.", answer="subject"),
+    dict(q="Students don't go to school in July and August because it's summer v___n.", answer="vacation"),
+    dict(q="A: Do you sell drinks here? B: Yes, we have a few c___es, like tea, coffee, and juice.", answer="choices"),
+    dict(q="A: What are you watching on TV? B: <i>Ms. Engineer</i>. It's my favorite TV s___w.", answer="show"),
+    dict(q="A: Didn't Jack want coffee? B: He changed his m___d and ordered tea.", answer="mind"),
+  ]),
+  dict(type="mc", title="二、文法選擇", meta="20分，每題2分", items=[
+    dict(q="A: I bought a chocolate cake ___ Helen for her birthday. What about you? B: I wrote ___ her a card.", options=["for; to","to; ×","to; to","for; ×"], correct=3),
+    dict(q="I don't like the weather here in summer. ___ usually hot and rainy.", options=["It has","There is","We are","It is"], correct=3),
+    dict(q="My sister took my umbrella to work this morning, so my parents lent me ___.", options=["ours","the one","theirs","my umbrella"], correct=0),
+    dict(q="A: Check out these postcards. Dad gave them to me. B: How ___! I want one, too.", options=["lovely","mad","did you get them","beautiful are they"], correct=0),
+    dict(q="The robot club is looking for new people. Sign ___ now and get a cup ___ free!", options=["in; on","up; for","up; in","in; for"], correct=1),
+    dict(q="After Jack ___ around the USA for a month, he is now back in Taiwan.", options=["travels","traveled","is traveling","on his travels"], correct=1),
+    dict(q="A: What ___ the weather ___ yesterday? B: Very warm.", options=["is; ×","was; like","was; ×","is; like"], correct=1),
+    dict(q="George usually comes home ___ his wife and kids do, so he can make dinner and wait for them.", options=["before","after","during","when"], correct=0),
+    dict(q="A: Did you make these sandwiches? B: Yes. I made ___.", options=["them for you","for you","you for them","them to you"], correct=0),
+    dict(q="My cousin is very good at the piano; in fact, she is a ___ winner of a piano contest in Taiwan.", options=["fourth","four times","four-time","fourth time"], correct=2),
+  ]),
+  dict(type="mc", title="三、對話選擇", meta="10分，每題2分", items=[
+    dict(q="A: Hello, this is Ben. Is Ryan there? B: ___ There's no Ryan here.", options=["Yes. Hold on, please.","Can you call back later?","You have the wrong number.","Who are you looking for?"], correct=2),
+    dict(q="A: Whose soccer ball is that over there? B: ___", options=["That is ours.","It's my favorite sport.","That's Jason over there.","I often play soccer with Jane."], correct=0),
+    dict(q="A: Did you have rain yesterday? B: ___", options=["Yes, it's raining now.","No, I didn't have it.","No. The weather is nice.","Yes. It rained all day."], correct=3),
+    dict(q="A: Hi. Is this Sandra? B: ___", options=["Yes. This is she.","Yes. Please hold on.","Nice to meet you, too","I'm not home right now."], correct=0),
+    dict(q="A: Hey, nice to see you here. ___ B: Everything's great, thanks. How about you?", options=["You know what?","What's up?","May I speak to Meg?","Is something wrong?"], correct=1),
+  ]),
+  dict(type="cloze", title="四、克漏字選擇", meta="12分，每題2分",
+    passage="Frank: Mom, I lost my umbrella today.\nMom: What? I ___1___ it for you two days ago.\nFrank: I'm sorry, but it just disappeared.\nMom: ___2___ on your day. When did you last see it?\nFrank: I had it when I had a sword fight with Steve.\nMom: Frank! Umbrellas are not toys. What did you do ___3___ you had the sword fight?\nFrank: I went to the school lab for ___4___ class. Wait! I used the umbrella on my way to the lab because it was ___5___.\nMom: Then what happened after class?\nFrank: Ms. Smith called me to her office. Ah, it's in Ms. Smith's office! I didn't have my umbrella with me ___6___.\nMom: Good. Go get it now!\n\n【字詞】disappear 消失　sword 劍　toy 玩具",
+    items=[
+      dict(options=["sent","bought","wrote","showed"], correct=1),
+      dict(options=["Sign up","Miss out","Speak out","Think back"], correct=3),
+      dict(options=["so","after","before","because"], correct=1),
+      dict(options=["art","soccer","science","history"], correct=2),
+      dict(options=["rainy","cold","cloudy","windy"], correct=0),
+      dict(options=["during class","when I came out","after the class ended","before I talked to Ms. Smith"], correct=1),
+  ]),
+  dict(type="reading", title="五、閱讀測驗", meta="16分，每題4分", passages=[
+    dict(label="Q&A for GoX 2", text="<b>Q: How is the GoX 2 in different weather?</b>\nA: You can use the camera in all seasons. It takes beautiful pictures on sunny, cloudy, and even snowy days. Just put it in a dry and warm place when it isn't in use.\n<b>Q: Can I send pictures to my phone?</b>\nA: Yes! You can send pictures from your GoX 2 to your phone with Bluetooth. It's very easy.\n<b>Q: Is the GoX 2 heavy?</b>\nA: Not at all! You can put it in your bag and take it to work or on vacation with no trouble.\n<b>Q: Can the GoX 2 take pictures in dark places?</b>\nA: Yes. When there's <u>low light</u>, the camera turns on a special feature on its own. It can create bright pictures even when the room is dark.\n<b>Q: Where can I buy a GoX 2?</b>\nA: You can visit our stores or you can order one <u>here</u>.\n<b>Q: What can I do when my camera is not working?</b>\nA: Please give us a call at 0800-123-456. Our team will help you with any trouble.\n\n【字詞】dry 乾的　Bluetooth 藍芽傳輸　feature 功能",
+      items=[
+        dict(q="Who might need the reading?", options=["Ben. He has a GoX 2, but he doesn't use it often.","Penny. She always takes pictures with her phone.","Amy. She sold her GoX 2 because she's not a fan of it.","Ken. He may buy a GoX 2, but he's still thinking about it."], correct=3),
+        dict(q="When there's <u>low light</u> in a room, the room is ___.", options=["dark","bright","special","beautiful"], correct=0),
+        dict(q="Which is right about the GoX 2?", options=["It's a camera.","It's big and heavy.","It doesn't have Bluetooth.","People can't use it in winter."], correct=0),
+        dict(q="Ken is calling the number 0800-123-456. What could be the reason（原因）?", options=["He is buying a GoX 2.","He is looking for a camera store.","There's something wrong with his camera.","He is sending a picture from his camera to a phone."], correct=2),
+      ]),
+  ]),
+  dict(type="guided", title="六、依提示作答", meta="12分，每題4分", items=[
+    dict(prompt="Ruby showed us her new gloves today.", hint="（加入介系詞改寫）", answer="Ruby showed her new gloves to us today."),
+    dict(prompt="My brother lent this jacket to me.", hint="（用borrow改寫）", answer="I borrowed this jacket from my brother."),
+    dict(prompt="This cool drink is <u>Peter's order</u>, and this cold soup is <u>my order</u>.", hint="（畫線部分改為所有格代名詞）", answer="This cool drink is Peter's, and this cold soup is mine."),
+  ]),
+  dict(type="translation", title="七、翻譯", meta="8分，每題4分", items=[
+    dict(zh="歷史對我來說一點也不有趣。", answer="History is not interesting to me at all. / History is not fun for me at all."),
+    dict(zh="我們不能去那音樂節，因為現在有雪又有風。", answer="We can't go to the music festival because it's snowy and windy now."),
+  ]),
+]
