@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>段考題庫｜地理第4回 - 地形（A卷）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@500;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#faf6ec;
+    --paper-line:#e3dcc8;
+    --ink:#26332b;
+    --ink-soft:#5b6b5f;
+    --chalk-green:#2f4538;
+    --chalk-green-2:#3d5a48;
+    --pen-red:#b8433a;
+    --pen-red-soft:#f4dedb;
+    --ok-green:#3f7d52;
+    --ok-green-soft:#dfeee1;
+    --gold:#b5842a;
+    --radius:10px;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:"Noto Sans TC",sans-serif;
+    line-height:1.7;
+  }
+  header.hero{
+    background:var(--chalk-green);
+    color:#eef2ea;
+    padding:28px 20px 40px;
+    position:relative;
+  }
+  header.hero::after{
+    content:"";
+    position:absolute;
+    left:0; right:0; bottom:-1px;
+    height:14px;
+    background:repeating-linear-gradient(90deg,var(--paper) 0 18px, transparent 18px 20px);
+  }
+  .hero-inner{max-width:880px;margin:0 auto;}
+  .breadcrumb a{color:#cfe0d1;text-decoration:none;font-size:14px;}
+  .breadcrumb a:hover{text-decoration:underline;}
+  h1{
+    font-family:"Noto Serif TC",serif;
+    font-weight:700;
+    font-size:clamp(24px,4vw,34px);
+    margin:10px 0 6px;
+  }
+  .subtitle{color:#cfe0d1;font-size:15px;margin:0;}
+  main{max-width:880px;margin:0 auto;padding:28px 20px 80px;}
+
+  .controls{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:22px;
+  }
+  .mode-toggle{display:flex;border:2px solid var(--chalk-green);border-radius:999px;overflow:hidden;}
+  .mode-toggle button{
+    background:transparent;border:none;padding:8px 16px;font-size:14px;font-weight:700;
+    color:var(--chalk-green);cursor:pointer;font-family:"Noto Sans TC",sans-serif;
+  }
+  .mode-toggle button.active{background:var(--gold);color:#fff;}
+  .mode-toggle button:disabled{opacity:.4;cursor:not-allowed;}
+
+  .score-bar{
+    display:none;
+    align-items:center;
+    justify-content:space-between;
+    background:#fff;
+    border:1px solid var(--paper-line);
+    border-left:5px solid var(--gold);
+    border-radius:var(--radius);
+    padding:12px 18px;
+    margin-bottom:22px;
+    font-size:14px;
+  }
+  .score-bar.show{display:flex;}
+  .score-bar strong{font-size:18px;color:var(--gold);}
+  .score-bar button{
+    background:none;border:1px solid var(--ink-soft);color:var(--ink-soft);
+    border-radius:6px;padding:6px 12px;font-size:13px;cursor:pointer;
+  }
+
+  section.block{
+    background:#fff;
+    border:1px solid var(--paper-line);
+    border-radius:var(--radius);
+    padding:22px 22px 26px;
+    margin-bottom:20px;
+  }
+  .block h2{
+    font-family:"Noto Serif TC",serif;
+    font-size:19px;
+    margin:0 0 4px;
+    color:var(--chalk-green);
+  }
+  .block .meta{color:var(--ink-soft);font-size:13px;margin:0 0 16px;}
+
+  .q{margin-bottom:18px;padding-bottom:16px;border-bottom:1px dashed var(--paper-line);}
+  .q:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0;}
+  .q-text{font-size:15.5px;margin-bottom:8px;}
+  .q-num{color:var(--gold);font-weight:700;margin-right:4px;}
+
+  .opts{display:grid;gap:8px;}
+  .opt{
+    display:flex;gap:8px;align-items:flex-start;
+    border:1.5px solid var(--paper-line);
+    border-radius:8px;
+    padding:9px 12px;
+    cursor:pointer;
+    font-size:14.5px;
+    background:#fffdf8;
+  }
+  .opt:hover{border-color:var(--chalk-green-2);}
+  .opt.selected{border-color:var(--chalk-green-2);background:#eef3ea;}
+  .opt.correct{border-color:var(--ok-green);background:var(--ok-green-soft);}
+  .opt.wrong{border-color:var(--pen-red);background:var(--pen-red-soft);}
+  .opt .tag{font-weight:700;color:var(--ink-soft);}
+  .opt.correct .tag{color:var(--ok-green);}
+  .opt.wrong .tag{color:var(--pen-red);}
+  .opt.disabled{cursor:default;}
+
+  .passage{
+    background:#f5f2e8;border-radius:8px;padding:14px 16px;margin-bottom:14px;
+    font-size:14.5px;white-space:pre-line;
+  }
+  .passage-label{font-weight:700;color:var(--chalk-green);margin-bottom:4px;display:block;}
+
+  .footer-link{
+    display:block;text-align:center;margin-top:30px;color:var(--chalk-green);
+    text-decoration:none;font-weight:700;font-size:14px;
+  }
+  .footer-link:hover{text-decoration:underline;}
+
+  @media print{
+    header.hero, .controls, .score-bar, .mini-btn, .footer-link{display:none !important;}
+    body{background:#fff;}
+    section.block{border:none;box-shadow:none;padding:8px 0;margin-bottom:14px;}
+    .opt.correct{background:none;border:none;font-weight:700;}
+    .opt.correct::after{content:" ← 正解";color:var(--pen-red);}
+    .opt{border:none;padding:2px 0;}
+    main{max-width:100%;padding:0 24px;}
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="breadcrumb"><a href="https://jenlin2002.github.io/">🏠 回總目錄</a> ／ <a href="../hanlin-social-g7-1.html" style="color:#cfe0d1;">段考題庫</a></div>
+    <h1>地理・第4回</h1>
+    <p class="subtitle">第3章 地形｜翰林版七年級社會（一）Ａ卷</p>
+  </div>
+</header>
+
+<main>
+  <div class="controls">
+    <div class="mode-toggle">
+      <button id="quizModeBtn" class="active">✏️ 測驗模式</button>
+      <button id="printModeBtn" disabled title="完成測驗並送出成績後才能查看">🖨️ 完整題目與解答（送出成績後解鎖）</button>
+    </div>
+  </div>
+
+  <div class="score-bar" id="scoreBar">
+    <div>目前得分：<strong id="scoreText">0 / 0</strong>（僅計算選擇題）</div>
+    <button id="resetBtn">重新作答</button>
+  </div>
+
+  <div id="content"></div>
+
+  <a class="footer-link" href="../hanlin-social-g7-1.html">← 回段考題庫總覽</a>
+</main>
+
+<script>
+
+window.EXAM_META = { version: "A卷", examLabel: "地理第4回" };
+const DATA = {
+  sections: [
+    {
+      type:"mc",
+      title:"一、單題",
+      meta:"60%，每題3分",
+      items:[
+        {q:"白沙屯媽祖出巡沒有固定的路線與日程，堪稱臺灣最特殊的進香隊伍，圖(一)為某年的進香路線圖。由圖中可判斷，媽祖鑾轎回程路線所行經的地形種類依序為何？",image:"images/geo4/q1.png",options:["平原→台地→丘陵","丘陵→平原→台地","平原→山地→丘陵","丘陵→台地→平原"],correct:0},
+        {q:"臺灣本島多高山，每年的地震也相當頻繁，主要是受到哪兩大板塊交互作用所造成的？",options:["歐亞板塊、印澳板塊","菲律賓海板塊、太平洋板塊","太平洋板塊、印澳板塊","歐亞板塊、菲律賓海板塊"],correct:3},
+        {q:"山脈通常會成為河川的分水嶺，若由圖(二)的臺灣水系分布圖可看出島嶼中間有一條明顯的分界線，此線兩側河川分別向西注入臺灣海峽，或向東注入太平洋。圖中的分界線應為哪一座山脈？",image:"images/geo4/q3.png",options:["雪山山脈","海岸山脈","玉山山脈","中央山脈"],correct:3},
+        {q:"林老師一家人搭飛機，要從臺北松山機場到蘭嶼，假設飛機以直線飛行，會最先經過下列哪個地區？",options:["玉山山脈","雪山山脈","中央山脈","海岸山脈"],correct:1},
+        {q:"921大地震造成臺灣全島嚴重傷亡，此後臺灣正式開始重視防震相關建設以及教育。上述災害發生原因是屬於何種營力作用？",options:["沖積作用","板塊運動","侵蝕作用","火山運動"],correct:1},
+        {q:"小玉從高雄搭高鐵到臺北，在路程中會看到哪一個平原景觀？",options:["屏東平原","嘉南平原","宜蘭平原","花東縱谷平原"],correct:1},
+        {q:"綜藝節目外景隊要在臺灣拍攝節目，他們將從雲林逆時針方向到臺東。他們沿途不會經過下列哪一區域？",options:["大肚台地","阿里山山脈","恆春台地","嘉南平原"],correct:0},
+        {q:"延恩在手遊關卡中得到四張破關地圖，地圖的最高點皆為藏寶點，因擔心體力值不足，打算從坡度最緩、對體力消耗最少的地形開始挑戰，下列哪一張圖會是延恩的首選？",image:"images/geo4/q8.png",options:["A","B","C","D"],correct:3},
+        {q:"小花在進行地理知識王的測驗，該題為判斷臺灣地形特徵，下列哪一張圖卡應為正確答案？",image:"images/geo4/q9.png",options:["A","B","C","D"],correct:0},
+        {q:"廢棄魚池、農地或偏僻山區、海岸，因管理不易而時常有不法業者傾倒廢棄物，國土管理署透過地理圖資進行影像判釋比對違規資訊，以杜絕違法行為。根據上述，國土管理署應是使用何種圖資進行監測？",options:["等高線地圖","地形剖面圖","衛星影像","全球時區圖"],correct:2},
+        {q:"老師提供了一些繪圖資料給學生，圖(三)是大野參考這些資料後所繪製的地形圖，他繪製該圖最可能會用到下列哪一資料？",image:"images/geo4/q11.png",options:["衛星影像","等高線地形圖","比例尺","經緯度分布圖"],correct:1},
+        {q:"臺灣西部的河川中下游，常見的地形有沖積扇、沖積平原、三角洲，這些地形是由下列哪一種作用形成？",options:["火山活動","風化作用","堆積作用","侵蝕作用"],correct:2},
+        {q:"2017年的尼莎颱風給臺灣帶來強風豪雨，造成連接宜蘭至花蓮的蘇花公路多處路段坍方。上述公路主要是沿著圖(四)哪一座山脈的峭壁所開鑿？",image:"images/geo4/q13.png",options:["甲","乙","丙","丁"],correct:1},
+        {q:"王老師在準備地理課資料時，為了要讓學生了解臺灣本島的地質特徵，他應該在教材中加入哪個敘述？",options:["臺灣島為東西狹長的島嶼","海拔3,000m以上高山林立","平原所占的面積大於山地","大多數山脈呈現東西走向"],correct:1},
+        {q:"小伶在筆記上整理了苗栗丘陵跟玉山山脈兩個地區的差異比較，下列何者敘述正確？",options:["丘陵的坡度較山地和緩","丘陵的地質較山地鬆軟","丘陵的面積較山地狹小","丘陵的高度較山地高聳"],correct:0},
+        {q:"圖(五)為某地的等高線地形圖。若駕駛直升機自空中往地表拍攝，其飛行高度維持在1,000公尺，在通過圖上哪一點的上空時，距離地表最近，所拍到的景物最清楚？",image:"images/geo4/q16.png",options:["甲","乙","丙","丁"],correct:3},
+        {q:"圖(六)中，甲的地形抬升形成後，經由風和水媒介，逐漸演變為乙地形。影響甲、乙地形面貌的主要營力分別為下列何者？",image:"images/geo4/q17.png",options:["外營力、內營力","內營力、內營力","內營力、外營力","外營力、外營力"],correct:2},
+        {q:"小齊到內政部國土測繪中心的網站搜尋家鄉附近的等高線地形圖，他發現家裡附近的等高線分布相當密集，表示該地具有何種特色？",options:["坡度愈陡","河川愈多","距海愈遠","地勢愈低"],correct:0},
+        {q:"墾丁國家公園管理處想在圖(七)中選擇一處設立瞭望臺，瞭望臺的選址大多位於該處最高點。瞭望臺設置在圖中何處最佳？",image:"images/geo4/q19.png",options:["甲","乙","丙","丁"],correct:0},
+        {q:"細懸浮微粒（PM2.5）濃度是空氣品質檢測的重要指標，在中央氣象局的天氣預報中指出某都市因盆地地形較為封閉，汙染物不易擴散，因此PM2.5檢測值偏高。上文中的某都市可能是下列何者？",options:["臺中","桃園","高雄","花蓮"],correct:0}
+      ]
+    },
+    {
+      type:"reading",
+      title:"二、題組",
+      meta:"12%，每題3分",
+      passages:[
+        {
+          label:"(一)",
+          text:"新聞報導：「地層抬升而使河川水源減少，前人在這片平坦的土地上挖出了上萬個灌溉用埤塘，現在則只剩下三千口，因為違規整地而數量還在下降中，現今透過無人機空拍的方式即時監測，希望能保留臺灣的珍貴資源。」",
+          items:[
+            {q:"上述提及的無人機作業範圍，應位於哪一種地形？",image:"images/geo4/q21q1.png",options:["A","B","C","D"],correct:0},
+            {q:"上述提到的即時監測所使用的畫面，屬於下列哪一類的地形表示方法？",image:"images/geo4/q22opts.png",options:["A","B","C","D"],correct:3}
+          ]
+        },
+        {
+          label:"(二)",
+          text:"阿哲計畫環島一周，他從高雄往南出發，穿越了南迴公路後，經過臺東繼續往花蓮的方向前進，在這段路程中，他發現左右兩側都有山脈包夾，景色令人心曠神怡。",
+          items:[
+            {q:"從高雄到臺東的路上，他穿越了哪座山脈的南段？",options:["海岸山脈","中央山脈","雪山山脈","玉山山脈"],correct:1},
+            {q:"在臺東往花蓮路程中發現的景色，是因為他正行駛在哪種地形上？",options:["丘陵","盆地","平原","台地"],correct:2}
+          ]
+        }
+      ]
+    },
+    {
+      type:"mc",
+      title:"三、進階思考題",
+      meta:"28%，每題4分",
+      items:[
+        {q:"晴雯想體驗在溪河中乘坐橡皮圈隨著水流順流而下，欣賞沿途風光，曉雯能在圖(八)中哪一路線體驗到該活動？",image:"images/geo4/q25.png",options:["甲","乙","丙","丁"],correct:2},
+        {q:"朱老師想跟同學展示臺灣常見的等高線地形圖，他不需要準備下列哪張地形圖？",image:"images/geo4/q26.png",options:["A","B","C","D"],correct:1},
+        {q:"圖(九)為某沿海地區的住家分布圖，某日因外海發生大地震，當地政府對沿海地區發布海嘯警報，根據預測，海嘯將侵襲海拔100公尺以下的地區，此時圖中應有幾戶人家必須緊急撤離？",image:"images/geo4/q27.png",options:["5戶","6戶","7戶","8戶"],correct:0},
+        {q:"苗栗某製茶品牌以一款臺灣紅茶奪得國際茶品競賽的最大獎，傲視印度、斯里蘭卡等傳統紅茶聖地。上述獲獎品牌原料來源地的地形環境與何者最相符？",image:"images/geo4/q28.png",options:["A","B","C","D"],correct:1},
+        {q:"台江內海位於今日臺南境內，原為一個外海有沙洲阻隔的潟湖，後因曾文溪改道帶來的大量泥沙淤積，形成了今日臺南安南區一帶的陸地。根據地形作用力判斷，上述與下列何者屬同一種營力？",options:["喜馬拉雅山的地震","大屯火山群的噴發","非洲東部板塊運動","大甲溪上游沖積扇"],correct:3},
+        {q:"地形順口溜：「地形變化，內外力加。滄海桑田，內部力大。」顯示不只世事多變遷，連地形也一樣。下列四張照片，哪一張主要是由內營力所引起？",image:"images/geo4/q30.png",options:["A","B","C","D"],correct:2},
+        {q:"《不老騎士》紀錄片描述平均81歲的長者展開騎摩托車環島的夢想。當他們在花蓮停留後一路往北走，經過了「一片綠草如茵的平原」，應是指哪個平原？",options:["宜蘭平原","彰化平原","高雄平原","屏東平原"],correct:0}
+      ]
+    }
+
+  ]
+};
+
+let currentMode = "quiz"; // quiz | print
+
+const contentEl = document.getElementById("content");
+const scoreBar = document.getElementById("scoreBar");
+const scoreText = document.getElementById("scoreText");
+
+function render(){
+  window.examAnswersRevealed = false;
+  contentEl.innerHTML = "";
+  DATA.sections.forEach((sec, si)=> contentEl.appendChild(renderSection(sec, si)));
+  if(currentMode==="quiz"){
+    scoreBar.classList.add("show");
+    updateScore();
+  } else {
+    scoreBar.classList.remove("show");
+    contentEl.querySelectorAll(".opt").forEach(o=>o.classList.add("disabled"));
+    contentEl.querySelectorAll(".opt.is-correct").forEach(o=>o.classList.add("correct"));
+  }
+}
+
+function renderSection(sec, si){
+  const block = document.createElement("section");
+  block.className = "block";
+  block.innerHTML = `<h2>${sec.title}</h2><p class="meta">${sec.meta}</p>`;
+
+  if(sec.type==="mc"){
+    sec.items.forEach((it,i)=>{
+      const q = document.createElement("div");
+      q.className = "q";
+      const optsHtml = it.options.map((op,oi)=>`
+        <div class="opt" data-idx="${oi}" data-correct="${oi===it.correct}">
+          <span class="tag">(${String.fromCharCode(65+oi)})</span><span>${op}</span>
+        </div>`).join("");
+      const imgHtml = it.image ? `<img src="${it.image}" alt="題目附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">` : "";
+      const img2Html = it.image2 ? `<img src="${it.image2}" alt="題目附圖2" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">` : "";
+      q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q}</div>
+        ${imgHtml}${img2Html}
+        <div class="opts">${optsHtml}</div>`;
+      q.querySelectorAll(".opt").forEach(optEl=>{
+        if(optEl.dataset.correct==="true") optEl.classList.add("is-correct");
+        optEl.addEventListener("click", ()=>selectOption(q, optEl));
+      });
+      block.appendChild(q);
+    });
+  }
+
+  else if(sec.type==="reading"){
+    sec.passages.forEach(p=>{
+      const passageDiv = document.createElement("div");
+      passageDiv.className = "passage";
+      passageDiv.innerHTML = `${p.label ? `<span class="passage-label">${p.label}</span>`:""}${p.text}${p.image ? `<img src="${p.image}" alt="題組附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-top:10px;border:1px solid var(--paper-line);">`:""}`;
+      block.appendChild(passageDiv);
+      p.items.forEach((it,i)=>{
+        const q = document.createElement("div");
+        q.className = "q";
+        const optsHtml = it.options.map((op,oi)=>`
+          <div class="opt" data-idx="${oi}" data-correct="${oi===it.correct}">
+            <span class="tag">(${String.fromCharCode(65+oi)})</span><span>${op}</span>
+          </div>`).join("");
+        q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q}</div>
+          ${it.image ? `<img src="${it.image}" alt="題目附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">`:""}
+          <div class="opts">${optsHtml}</div>`;
+        q.querySelectorAll(".opt").forEach(optEl=>{
+          if(optEl.dataset.correct==="true") optEl.classList.add("is-correct");
+          optEl.addEventListener("click", ()=>selectOption(q, optEl));
+        });
+        block.appendChild(q);
+      });
+    });
+  }
+
+  return block;
+}
+
+function selectOption(qEl, optEl){
+  if(currentMode!=="quiz") return;
+  if(qEl.dataset.answered==="true") return;
+  qEl.dataset.answered = "true";
+  qEl.querySelectorAll(".opt").forEach(o=>o.classList.add("disabled"));
+  optEl.classList.add("selected");
+  const correctOpt = qEl.querySelector('.opt[data-correct="true"]');
+  qEl.dataset.studentAnswer = optEl.textContent.trim();
+  qEl.dataset.correctAnswer = correctOpt ? correctOpt.textContent.trim() : "";
+  qEl.dataset.isCorrect = (optEl.dataset.correct==="true") ? "true" : "false";
+  updateScore();
+}
+
+function updateScore(){
+  let total = 0, answered = 0, correct = 0;
+  contentEl.querySelectorAll(".q").forEach(q=>{
+    const gradable = q.querySelector(".opts");
+    if(!gradable) return;
+    total++;
+    if(q.dataset.studentAnswer !== undefined){
+      answered++;
+      if(q.dataset.isCorrect === "true") correct++;
+    }
+  });
+  if(window.examAnswersRevealed){
+    scoreText.textContent = `${correct} / ${total}`;
+  } else {
+    scoreText.textContent = `已作答 ${answered} / ${total} 題`;
+  }
+}
+window.updateScore = updateScore;
+
+document.getElementById("resetBtn").addEventListener("click", render);
+document.getElementById("quizModeBtn").addEventListener("click", ()=>{
+  currentMode = "quiz";
+  document.getElementById("quizModeBtn").classList.add("active");
+  document.getElementById("printModeBtn").classList.remove("active");
+  render();
+});
+document.getElementById("printModeBtn").addEventListener("click", ()=>{
+  if(document.getElementById("printModeBtn").disabled) return;
+  currentMode = "print";
+  document.getElementById("printModeBtn").classList.add("active");
+  document.getElementById("quizModeBtn").classList.remove("active");
+  render();
+});
+
+window.unlockPrintMode = function(){
+  document.getElementById("printModeBtn").disabled = false;
+};
+
+render();
+</script>
+<script src="../sync.js"></script>
+</body>
+</html>
