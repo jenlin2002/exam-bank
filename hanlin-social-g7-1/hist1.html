@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>段考題庫｜歷史第1回 - 第1章 史前臺灣與原住民文化（A卷）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@500;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#faf6ec;
+    --paper-line:#e3dcc8;
+    --ink:#26332b;
+    --ink-soft:#5b6b5f;
+    --chalk-green:#2f4538;
+    --chalk-green-2:#3d5a48;
+    --pen-red:#b8433a;
+    --pen-red-soft:#f4dedb;
+    --ok-green:#3f7d52;
+    --ok-green-soft:#dfeee1;
+    --gold:#b5842a;
+    --radius:10px;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:"Noto Sans TC",sans-serif;
+    line-height:1.7;
+  }
+  header.hero{
+    background:var(--chalk-green);
+    color:#eef2ea;
+    padding:28px 20px 40px;
+    position:relative;
+  }
+  header.hero::after{
+    content:"";
+    position:absolute;
+    left:0; right:0; bottom:-1px;
+    height:14px;
+    background:repeating-linear-gradient(90deg,var(--paper) 0 18px, transparent 18px 20px);
+  }
+  .hero-inner{max-width:880px;margin:0 auto;}
+  .breadcrumb a{color:#cfe0d1;text-decoration:none;font-size:14px;}
+  .breadcrumb a:hover{text-decoration:underline;}
+  h1{
+    font-family:"Noto Serif TC",serif;
+    font-weight:700;
+    font-size:clamp(24px,4vw,34px);
+    margin:10px 0 6px;
+  }
+  .subtitle{color:#cfe0d1;font-size:15px;margin:0;}
+  main{max-width:880px;margin:0 auto;padding:28px 20px 80px;}
+
+  .controls{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:22px;
+  }
+  .mode-toggle{display:flex;border:2px solid var(--chalk-green);border-radius:999px;overflow:hidden;}
+  .mode-toggle button{
+    background:transparent;border:none;padding:8px 16px;font-size:14px;font-weight:700;
+    color:var(--chalk-green);cursor:pointer;font-family:"Noto Sans TC",sans-serif;
+  }
+  .mode-toggle button.active{background:var(--gold);color:#fff;}
+  .mode-toggle button:disabled{opacity:.4;cursor:not-allowed;}
+
+  .score-bar{
+    display:none;
+    align-items:center;
+    justify-content:space-between;
+    background:#fff;
+    border:1px solid var(--paper-line);
+    border-left:5px solid var(--gold);
+    border-radius:var(--radius);
+    padding:12px 18px;
+    margin-bottom:22px;
+    font-size:14px;
+  }
+  .score-bar.show{display:flex;}
+  .score-bar strong{font-size:18px;color:var(--gold);}
+  .score-bar button{
+    background:none;border:1px solid var(--ink-soft);color:var(--ink-soft);
+    border-radius:6px;padding:6px 12px;font-size:13px;cursor:pointer;
+  }
+
+  section.block{
+    background:#fff;
+    border:1px solid var(--paper-line);
+    border-radius:var(--radius);
+    padding:22px 22px 26px;
+    margin-bottom:20px;
+  }
+  .block h2{
+    font-family:"Noto Serif TC",serif;
+    font-size:19px;
+    margin:0 0 4px;
+    color:var(--chalk-green);
+  }
+  .block .meta{color:var(--ink-soft);font-size:13px;margin:0 0 16px;}
+
+  .q{margin-bottom:18px;padding-bottom:16px;border-bottom:1px dashed var(--paper-line);}
+  .q:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0;}
+  .q-text{font-size:15.5px;margin-bottom:8px;white-space:pre-line;}
+  .q-num{color:var(--gold);font-weight:700;margin-right:4px;}
+
+  .opts{display:grid;gap:8px;}
+  .opt{
+    display:flex;gap:8px;align-items:flex-start;
+    border:1.5px solid var(--paper-line);
+    border-radius:8px;
+    padding:9px 12px;
+    cursor:pointer;
+    font-size:14.5px;
+    background:#fffdf8;
+  }
+  .opt:hover{border-color:var(--chalk-green-2);}
+  .opt.selected{border-color:var(--chalk-green-2);background:#eef3ea;}
+  .opt.correct{border-color:var(--ok-green);background:var(--ok-green-soft);}
+  .opt.wrong{border-color:var(--pen-red);background:var(--pen-red-soft);}
+  .opt .tag{font-weight:700;color:var(--ink-soft);}
+  .opt.correct .tag{color:var(--ok-green);}
+  .opt.wrong .tag{color:var(--pen-red);}
+  .opt.disabled{cursor:default;}
+
+  .passage{
+    background:#f5f2e8;border-radius:8px;padding:14px 16px;margin-bottom:14px;
+    font-size:14.5px;white-space:pre-line;
+  }
+  .passage-label{font-weight:700;color:var(--chalk-green);margin-bottom:4px;display:block;}
+
+  .footer-link{
+    display:block;text-align:center;margin-top:30px;color:var(--chalk-green);
+    text-decoration:none;font-weight:700;font-size:14px;
+  }
+  .footer-link:hover{text-decoration:underline;}
+
+  @media print{
+    header.hero, .controls, .score-bar, .mini-btn, .footer-link{display:none !important;}
+    body{background:#fff;}
+    section.block{border:none;box-shadow:none;padding:8px 0;margin-bottom:14px;}
+    .opt.correct{background:none;border:none;font-weight:700;}
+    .opt.correct::after{content:" ← 正解";color:var(--pen-red);}
+    .opt{border:none;padding:2px 0;}
+    main{max-width:100%;padding:0 24px;}
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="breadcrumb"><a href="https://jenlin2002.github.io/">🏠 回總目錄</a> ／ <a href="../hanlin-social-g7-1.html" style="color:#cfe0d1;">段考題庫</a></div>
+    <h1>歷史・第1回</h1>
+    <p class="subtitle">第1章 史前臺灣與原住民文化｜翰林版七年級社會（一）Ａ卷</p>
+  </div>
+</header>
+
+<main>
+  <div class="controls">
+    <div class="mode-toggle">
+      <button id="quizModeBtn" class="active">✏️ 測驗模式</button>
+      <button id="printModeBtn" disabled title="完成測驗並送出成績後才能查看">🖨️ 完整題目與解答（送出成績後解鎖）</button>
+    </div>
+  </div>
+
+  <div class="score-bar" id="scoreBar">
+    <div>目前得分：<strong id="scoreText">0 / 0</strong>（僅計算選擇題）</div>
+    <button id="resetBtn">重新作答</button>
+  </div>
+
+  <div id="content"></div>
+
+  <a class="footer-link" href="../hanlin-social-g7-1.html">← 回段考題庫總覽</a>
+</main>
+
+<script>
+
+window.EXAM_META = { version: "A卷", examLabel: "歷史第1回" };
+const DATA = {
+  sections: [
+    {
+      type:"mc",
+      title:"一、單題",
+      meta:"60%，每題3分",
+      items:[
+        {q:"某大學教授帶領學生深入考究卑南文化和長濱文化的史前人類食器和食材，並研發秫福鍋巴飯、鬼頭刀生魚片、燻烤魚等數種佳餚，希望餐點能被推廣，發展當地觀光飲食新亮點。上述做法可促進圖(一)中何地的觀光業？",image:"images/hist1/q1.png",options:["甲","乙","丙","丁"],correct:3},
+        {q:"考古學家根據發掘出來的遺物與遺跡，推測史前人類的生活情形，並研究不同文化層之間的關聯。請問：下列哪個文化應會在最下層？",options:["長濱文化","大坌坑文化","圓山文化","十三行文化"],correct:0},
+        {q:"圖(二)為清代的《職貢圖》，由清代文人繪製的圖像中，可觀察圖中人物的服飾與舉止皆受漢人影響。由此可知，圖中人物是下列何者？",image:"images/hist1/q3.png",options:["生番","熟番","高砂族","高山族"],correct:1},
+        {q:"老師請同學針對圖(三)中框出的區域，以及生活在此區域的各個族群進行報告。下列何地的族群不應該列入資料蒐集的範圍中？",image:"images/hist1/q4.png",options:["澳洲","菲律賓","紐西蘭","夏威夷"],correct:0},
+        {q:"臺灣新石器時代的農作物中，因種子較大、乾燥後能長期保存而被當成人類主食的是下列何種作物？",options:["玉米","稻米","小麥","番薯"],correct:1},
+        {q:"表(一)中代表不同史前文化的經濟活動，其中何者最適合用來描述舊石器時代人類的生活？\n甲：以採集、狩獵、漁撈方式維生\n乙：以鐵製工具用於狩獵、農耕、捕魚\n丙：以捕魚為主，已能種植農作物\n丁：大量栽培稻米，也從事狩獵、漁撈",options:["甲","乙","丙","丁"],correct:0},
+        {q:"臺灣大學考古團隊探尋大坌坑文化、圓山文化和十三行文化等史前文化遺址。請問：此考古團隊研究的地點主要分布在圖(四)中的何地？",image:"images/hist1/q7.png",options:["甲","乙","丙","丁"],correct:0},
+        {q:"臺灣歷史由史前時代發展到歷史時代的關鍵，下列哪一說法最正確？",options:["石器的製作方式","文字發明的有無","鐵製器具的出現","生產方式的改變"],correct:1},
+        {q:"圖(五)中博物館的「參展主題」文化：「以十三行文化為參展主題的十三行博物館，將鎮館之寶『人面陶罐』重新設計，逗趣新造型深受民眾喜愛。」是屬於下列哪一個時期？",options:["歷史時代","舊石器時代","新石器時代","金屬器時代"],correct:3},
+        {q:"新石器時期人類的生活型態有重大改變，尤其是下列何者的出現，使人類在食物取得上，發展成可自主生產的形式？",options:["磨製石器","農業活動","飼養家畜","燒製陶器"],correct:1},
+        {q:"光紫在臺灣史前文化博物館中看到距今5000年前以繩紋裝飾的陶器文物，此展覽廳展示的最可能是哪一史前文化的考古發現？",options:["十三行文化","大坌坑文化","圓山文化","長濱文化"],correct:1},
+        {q:"臺灣某一史前文化遺址發現玻璃手環、瑪瑙珠飾、中國銅錢等外來物品，如圖(六)所示，可發現在文化上顯示下列哪一意義？",image:"images/hist1/q12.png",options:["當時人們已與其他地區貿易往來密切","當地先民器具的製作技術精湛","臺灣本島內的交易非常頻繁","當時先民已建立輝煌的帝國"],correct:0},
+        {q:"民國103年行政院將「拉阿魯哇族」及「卡那卡那富族」列為臺灣原住民族，此兩族長久以來被學者畫分在鄒族之中。上述族群在日治時期被稱為下列何者？",options:["高山族","生番","高砂族","山地同胞"],correct:2},
+        {q:"新聞報導：「艾莉颱風造成臺東大雨成災，史前博物館展示當地出土、超過3000年的史前人類石棺也差點泡水不保。」上述提及的石棺應是哪一文化遺址的文物？",options:["卑南文化","長濱文化","圓山文化","十三行文化"],correct:0},
+        {q:"圖(七)是現今官方認定的臺灣原住民族群傳統分布圖。有關這些族群的敘述，下列何者正確？",image:"images/hist1/q15.png",options:["很早就與漢人接觸","仍然保存不少原有文化","日治時期被稱為山地同胞","分布於臺灣山區與西部平原"],correct:1},
+        {q:"表(二)列出2010年臺灣的原住民族常住人口，在四大區域的前三大族，表中的原住民在清帝國時期被稱為下列何者？\n　　　東　　　　中　　　　南　　　　北\n阿美族(52.5%)　布農族(27.1%)　排灣族(54.9%)　阿美族(43.3%)\n太魯閣族(13.8%)　泰雅族(26.2%)　阿美族(14.8%)　泰雅族(28.5%)\n布農族(7.9%)　　阿美族(16.4%)　布農族(9.4%)　排灣族(9.3%)",options:["生番","熟番","高砂族","山地同胞"],correct:0},
+        {q:"「2011年，考古學家在馬祖北邊的亮島挖出距今8300多年前的人類骨骸，還發現貝塚，以及石器、陶片、骨器等古物。」根據上述內容，臺灣哪一史前文化遺址也有發現貝塚遺址？",options:["圓山文化","卑南文化","十三行文化","長濱文化"],correct:0},
+        {q:"清帝國時期，將臺灣原住民區分為生番與熟番，是以下列何者來畫分？",options:["人口多寡","居住地區","文字種類","是否納稅、服勞役"],correct:3},
+        {q:"小葉複習臺灣史時，整理了臺灣原住民稱呼的表格，表(三)中何者與其他三者意義不同？\n甲：生番\n乙：高砂族\n丙：平埔族\n丁：山地同胞",options:["甲","乙","丙","丁"],correct:2},
+        {q:"圖(八)是臺灣史前文化遺址出土的部分文物。若依照文化的演變歷程，圖中三項文物出現的時間順序為何？\n(甲)玻璃手環　(乙)人獸形玉質耳飾　(丙)打製石器",image:"images/hist1/q20.png",options:["(甲)(乙)(丙)","(乙)(丙)(甲)","(丙)(甲)(乙)","(丙)(乙)(甲)"],correct:3}
+      ]
+    },
+    {
+      type:"reading",
+      title:"二、題組",
+      meta:"12%，每題3分",
+      passages:[
+        {
+          label:"(一)",
+          text:"據說某族祖先原住在其他地方，某次族人發現一隻大白鹿，便一路翻山越嶺追逐好幾天，正當精疲力盡時，眼前出現一片美麗山水，湖中還有取之不盡的魚蝦，此處就是南投的日月潭，從此某族便遷居於此。",
+          items:[
+            {q:"上文有關某族的敘述，最適合以下列何者來說明？",options:["族群歷史的傳承","族群名稱的演變","族群文字的創制","族群的經濟活動"],correct:0},
+            {q:"上文內容與下列哪一原住民族群的傳說有關？",options:["西拉雅族","排灣族","阿美族","邵族"],correct:3}
+          ]
+        },
+        {
+          label:"(二)",
+          text:"考古學家根據挖掘出的遺物與遺跡，推測史前人類的生活情形，而繪製圖(九)是臺灣史前文化層示意圖。",
+          image:"images/hist1/passage2.png",
+          items:[
+            {q:"圖中由丙演進到乙，有以下何種改變？",options:["用火照明","使用磨製石器","漁獵為生","有貿易活動"],correct:1},
+            {q:"圖中由乙演進到甲最主要的關鍵因素為何？",options:["已知熟食","定居生活","種植穀物","使用金屬器"],correct:3}
+          ]
+        }
+      ]
+    },
+    {
+      type:"mc",
+      title:"三、進階思考題",
+      meta:"28%，每題4分",
+      items:[
+        {q:"羽彣將圖(十)中的五張卡片分為三類，其分類的依據最可能是下列何者？\n（第一類：十三行文化；第二類：卑南文化、大坌坑文化、長濱文化、圓山文化分為兩組，一組為卑南文化、大坌坑文化、圓山文化，另一組為長濱文化；第三類：十三行文化獨立一組）",image:"images/hist1/q25.png",options:["發現文物的多寡","製作器物的技術","貨物交易的方式","遺址分布的位置"],correct:1},
+        {q:"老師請同學說明新石器時代與舊石器時代的不同之處，哪一位同學的說法最適當？\n(A)使用打製石器。(B)已知用火熟食。(C)過著漁獵生活。(D)懂得農耕定居。",options:["使用打製石器","已知用火熟食","過著漁獵生活","懂得農耕定居"],correct:3},
+        {q:"表(四)呈現史前人類生活情形的變化，若要以「舊石器時代→新石器時代」的方式，表示舊石器時代至新石器時代的文化變遷，表中甲、乙、丙、丁何者最為適切？\n甲：種植根莖類作物→種植稻米\n乙：打製石器→磨製石器\n丙：燒製陶器→冶煉鐵器\n丁：不知用火→用火煮食",options:["甲","乙","丙","丁"],correct:1},
+        {q:"小齡的學習單出現圖(十一)。關於圖中所標示文化的敘述，何者錯誤？",image:"images/hist1/q28.png",options:["屬新石器時代文化","已知如何燒製陶器","懂得使用鐵刀捕獵","已經有農業的出現"],correct:2},
+        {q:"位於臺南科學園區的南關里遺址，其所發掘的文物在歷史上具有下列何種重要意義？",options:["代表採集生活的開端","象徵打製石器的出現","反映稻米農作的發展","顯示鐵器時代的開始"],correct:2},
+        {q:"生活在右列史前文化遺址的人類，有下列何種共同的生活工具？\n(甲)長濱文化　(乙)圓山文化　(丙)十三行文化",options:["打製的石器","燒製的陶器","煉鐵的器具","耕作的農具"],correct:0},
+        {q:"老師上課時，在黑板上列舉了兩個臺灣原住民族，如圖(十二)：「西拉雅族」、「凱達格蘭族」，並請同學說出這兩個族群的共同特色。下列哪一位同學的說法最正確？",options:["小南：屬高山族","大榮：與漢人接觸較晚","小陽：均分布在臺灣東部","大明：清帝國時期均有納稅"],correct:3}
+      ]
+    }
+
+  ]
+};
+
+let currentMode = "quiz"; // quiz | print
+
+const contentEl = document.getElementById("content");
+const scoreBar = document.getElementById("scoreBar");
+const scoreText = document.getElementById("scoreText");
+
+function render(){
+  window.examAnswersRevealed = false;
+  contentEl.innerHTML = "";
+  DATA.sections.forEach((sec, si)=> contentEl.appendChild(renderSection(sec, si)));
+  if(currentMode==="quiz"){
+    scoreBar.classList.add("show");
+    updateScore();
+  } else {
+    scoreBar.classList.remove("show");
+    contentEl.querySelectorAll(".opt").forEach(o=>o.classList.add("disabled"));
+    contentEl.querySelectorAll(".opt.is-correct").forEach(o=>o.classList.add("correct"));
+  }
+}
+
+function renderSection(sec, si){
+  const block = document.createElement("section");
+  block.className = "block";
+  block.innerHTML = `<h2>${sec.title}</h2><p class="meta">${sec.meta}</p>`;
+
+  if(sec.type==="mc"){
+    sec.items.forEach((it,i)=>{
+      const q = document.createElement("div");
+      q.className = "q";
+      const optsHtml = it.options.map((op,oi)=>`
+        <div class="opt" data-idx="${oi}" data-correct="${oi===it.correct}">
+          <span class="tag">(${String.fromCharCode(65+oi)})</span><span>${op}</span>
+        </div>`).join("");
+      const imgHtml = it.image ? `<img src="${it.image}" alt="題目附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">` : "";
+      const img2Html = it.image2 ? `<img src="${it.image2}" alt="題目附圖2" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">` : "";
+      q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q}</div>
+        ${imgHtml}${img2Html}
+        <div class="opts">${optsHtml}</div>`;
+      q.querySelectorAll(".opt").forEach(optEl=>{
+        if(optEl.dataset.correct==="true") optEl.classList.add("is-correct");
+        optEl.addEventListener("click", ()=>selectOption(q, optEl));
+      });
+      block.appendChild(q);
+    });
+  }
+
+  else if(sec.type==="reading"){
+    sec.passages.forEach(p=>{
+      const passageDiv = document.createElement("div");
+      passageDiv.className = "passage";
+      passageDiv.innerHTML = `${p.label ? `<span class="passage-label">${p.label}</span>`:""}${p.text}${p.image ? `<img src="${p.image}" alt="題組附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-top:10px;border:1px solid var(--paper-line);">`:""}`;
+      block.appendChild(passageDiv);
+      p.items.forEach((it,i)=>{
+        const q = document.createElement("div");
+        q.className = "q";
+        const optsHtml = it.options.map((op,oi)=>`
+          <div class="opt" data-idx="${oi}" data-correct="${oi===it.correct}">
+            <span class="tag">(${String.fromCharCode(65+oi)})</span><span>${op}</span>
+          </div>`).join("");
+        q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q}</div>
+          ${it.image ? `<img src="${it.image}" alt="題目附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">`:""}
+          <div class="opts">${optsHtml}</div>`;
+        q.querySelectorAll(".opt").forEach(optEl=>{
+          if(optEl.dataset.correct==="true") optEl.classList.add("is-correct");
+          optEl.addEventListener("click", ()=>selectOption(q, optEl));
+        });
+        block.appendChild(q);
+      });
+    });
+  }
+
+  return block;
+}
+
+function selectOption(qEl, optEl){
+  if(currentMode!=="quiz") return;
+  if(qEl.dataset.answered==="true") return;
+  qEl.dataset.answered = "true";
+  qEl.querySelectorAll(".opt").forEach(o=>o.classList.add("disabled"));
+  optEl.classList.add("selected");
+  const correctOpt = qEl.querySelector('.opt[data-correct="true"]');
+  qEl.dataset.studentAnswer = optEl.textContent.trim();
+  qEl.dataset.correctAnswer = correctOpt ? correctOpt.textContent.trim() : "";
+  qEl.dataset.isCorrect = (optEl.dataset.correct==="true") ? "true" : "false";
+  updateScore();
+}
+
+function updateScore(){
+  let total = 0, answered = 0, correct = 0;
+  contentEl.querySelectorAll(".q").forEach(q=>{
+    const gradable = q.querySelector(".opts");
+    if(!gradable) return;
+    total++;
+    if(q.dataset.studentAnswer !== undefined){
+      answered++;
+      if(q.dataset.isCorrect === "true") correct++;
+    }
+  });
+  if(window.examAnswersRevealed){
+    scoreText.textContent = `${correct} / ${total}`;
+  } else {
+    scoreText.textContent = `已作答 ${answered} / ${total} 題`;
+  }
+}
+window.updateScore = updateScore;
+
+document.getElementById("resetBtn").addEventListener("click", render);
+document.getElementById("quizModeBtn").addEventListener("click", ()=>{
+  currentMode = "quiz";
+  document.getElementById("quizModeBtn").classList.add("active");
+  document.getElementById("printModeBtn").classList.remove("active");
+  render();
+});
+document.getElementById("printModeBtn").addEventListener("click", ()=>{
+  if(document.getElementById("printModeBtn").disabled) return;
+  currentMode = "print";
+  document.getElementById("printModeBtn").classList.add("active");
+  document.getElementById("quizModeBtn").classList.remove("active");
+  render();
+});
+
+window.unlockPrintMode = function(){
+  document.getElementById("printModeBtn").disabled = false;
+};
+
+render();
+</script>
+<script src="../sync.js"></script>
+</body>
+</html>
