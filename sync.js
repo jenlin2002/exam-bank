@@ -62,6 +62,32 @@
     }
   }
 
+  // 依提示作答／翻譯題（input.line-answer）：打字時記錄作答內容，
+  // 否則送出前的「尚未作答」檢查永遠過不了。用事件委派，「重新作答」重繪後仍有效。
+  // 句子題無法完全自動判分：只有和正解（或「 / 」分隔的其中一個完整句）一致才記為答對，
+  // 其餘記為答錯，老師可在試算表裡看學生的原始作答再批改。
+  function normSentence(s){
+    return s.toLowerCase().replace(/[’‘]/g, "'").replace(/[.?!。？！]+$/g, "").replace(/\s+/g, " ").trim();
+  }
+  document.addEventListener("input", (e)=>{
+    const input = e.target;
+    if(!input.matches || !input.matches("input.line-answer")) return;
+    const q = input.closest(".q");
+    if(!q) return;
+    const val = input.value.trim();
+    if(!val){
+      delete q.dataset.studentAnswer;
+    } else {
+      const reveal = q.querySelector(".answer-reveal");
+      const answer = reveal ? reveal.textContent.replace(/^\s*正解：/, "").trim() : "";
+      const options = [answer].concat(answer.split(" / "));
+      q.dataset.studentAnswer = val;
+      q.dataset.correctAnswer = answer;
+      q.dataset.isCorrect = options.some(a => normSentence(a) === normSentence(val)) ? "true" : "false";
+    }
+    if(typeof window.updateScore === "function") window.updateScore();
+  });
+
   window.revealExamAnswers = function(){
     window.examAnswersRevealed = true;
     document.querySelectorAll(".q").forEach(q=>{
