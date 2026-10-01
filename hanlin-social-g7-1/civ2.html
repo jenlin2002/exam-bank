@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>段考題庫｜公民第2回 - 第2章 人性尊嚴與人權保障（A卷）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@500;700&family=Noto+Sans+TC:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#faf6ec;
+    --paper-line:#e3dcc8;
+    --ink:#26332b;
+    --ink-soft:#5b6b5f;
+    --chalk-green:#2f4538;
+    --chalk-green-2:#3d5a48;
+    --pen-red:#b8433a;
+    --pen-red-soft:#f4dedb;
+    --ok-green:#3f7d52;
+    --ok-green-soft:#dfeee1;
+    --gold:#b5842a;
+    --radius:10px;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:"Noto Sans TC",sans-serif;
+    line-height:1.7;
+  }
+  header.hero{
+    background:var(--chalk-green);
+    color:#eef2ea;
+    padding:28px 20px 40px;
+    position:relative;
+  }
+  header.hero::after{
+    content:"";
+    position:absolute;
+    left:0; right:0; bottom:-1px;
+    height:14px;
+    background:repeating-linear-gradient(90deg,var(--paper) 0 18px, transparent 18px 20px);
+  }
+  .hero-inner{max-width:880px;margin:0 auto;}
+  .breadcrumb a{color:#cfe0d1;text-decoration:none;font-size:14px;}
+  .breadcrumb a:hover{text-decoration:underline;}
+  h1{
+    font-family:"Noto Serif TC",serif;
+    font-weight:700;
+    font-size:clamp(24px,4vw,34px);
+    margin:10px 0 6px;
+  }
+  .subtitle{color:#cfe0d1;font-size:15px;margin:0;}
+  main{max-width:880px;margin:0 auto;padding:28px 20px 80px;}
+
+  .controls{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:22px;
+  }
+  .mode-toggle{display:flex;border:2px solid var(--chalk-green);border-radius:999px;overflow:hidden;}
+  .mode-toggle button{
+    background:transparent;border:none;padding:8px 16px;font-size:14px;font-weight:700;
+    color:var(--chalk-green);cursor:pointer;font-family:"Noto Sans TC",sans-serif;
+  }
+  .mode-toggle button.active{background:var(--gold);color:#fff;}
+  .mode-toggle button:disabled{opacity:.4;cursor:not-allowed;}
+
+  .score-bar{
+    display:none;
+    align-items:center;
+    justify-content:space-between;
+    background:#fff;
+    border:1px solid var(--paper-line);
+    border-left:5px solid var(--gold);
+    border-radius:var(--radius);
+    padding:12px 18px;
+    margin-bottom:22px;
+    font-size:14px;
+  }
+  .score-bar.show{display:flex;}
+  .score-bar strong{font-size:18px;color:var(--gold);}
+  .score-bar button{
+    background:none;border:1px solid var(--ink-soft);color:var(--ink-soft);
+    border-radius:6px;padding:6px 12px;font-size:13px;cursor:pointer;
+  }
+
+  section.block{
+    background:#fff;
+    border:1px solid var(--paper-line);
+    border-radius:var(--radius);
+    padding:22px 22px 26px;
+    margin-bottom:20px;
+  }
+  .block h2{
+    font-family:"Noto Serif TC",serif;
+    font-size:19px;
+    margin:0 0 4px;
+    color:var(--chalk-green);
+  }
+  .block .meta{color:var(--ink-soft);font-size:13px;margin:0 0 16px;}
+
+  .q{margin-bottom:18px;padding-bottom:16px;border-bottom:1px dashed var(--paper-line);}
+  .q:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0;}
+  .q-text{font-size:15.5px;margin-bottom:8px;white-space:pre-line;}
+  .q-num{color:var(--gold);font-weight:700;margin-right:4px;}
+
+  .opts{display:grid;gap:8px;}
+  .opt{
+    display:flex;gap:8px;align-items:flex-start;
+    border:1.5px solid var(--paper-line);
+    border-radius:8px;
+    padding:9px 12px;
+    cursor:pointer;
+    font-size:14.5px;
+    background:#fffdf8;
+  }
+  .opt:hover{border-color:var(--chalk-green-2);}
+  .opt.selected{border-color:var(--chalk-green-2);background:#eef3ea;}
+  .opt.correct{border-color:var(--ok-green);background:var(--ok-green-soft);}
+  .opt.wrong{border-color:var(--pen-red);background:var(--pen-red-soft);}
+  .opt .tag{font-weight:700;color:var(--ink-soft);}
+  .opt.correct .tag{color:var(--ok-green);}
+  .opt.wrong .tag{color:var(--pen-red);}
+  .opt.disabled{cursor:default;}
+
+  .passage{
+    background:#f5f2e8;border-radius:8px;padding:14px 16px;margin-bottom:14px;
+    font-size:14.5px;white-space:pre-line;
+  }
+  .passage-label{font-weight:700;color:var(--chalk-green);margin-bottom:4px;display:block;}
+
+  .footer-link{
+    display:block;text-align:center;margin-top:30px;color:var(--chalk-green);
+    text-decoration:none;font-weight:700;font-size:14px;
+  }
+  .footer-link:hover{text-decoration:underline;}
+
+  @media print{
+    header.hero, .controls, .score-bar, .mini-btn, .footer-link{display:none !important;}
+    body{background:#fff;}
+    section.block{border:none;box-shadow:none;padding:8px 0;margin-bottom:14px;}
+    .opt.correct{background:none;border:none;font-weight:700;}
+    .opt.correct::after{content:" ← 正解";color:var(--pen-red);}
+    .opt{border:none;padding:2px 0;}
+    main{max-width:100%;padding:0 24px;}
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="breadcrumb"><a href="https://jenlin2002.github.io/">🏠 回總目錄</a> ／ <a href="../hanlin-social-g7-1.html" style="color:#cfe0d1;">段考題庫</a></div>
+    <h1>公民・第2回</h1>
+    <p class="subtitle">第2章 人性尊嚴與人權保障｜翰林版七年級社會（一）Ａ卷</p>
+  </div>
+</header>
+
+<main>
+  <div class="controls">
+    <div class="mode-toggle">
+      <button id="quizModeBtn" class="active">✏️ 測驗模式</button>
+      <button id="printModeBtn" disabled title="完成測驗並送出成績後才能查看">🖨️ 完整題目與解答（送出成績後解鎖）</button>
+    </div>
+  </div>
+
+  <div class="score-bar" id="scoreBar">
+    <div>目前得分：<strong id="scoreText">0 / 0</strong>（僅計算選擇題）</div>
+    <button id="resetBtn">重新作答</button>
+  </div>
+
+  <div id="content"></div>
+
+  <a class="footer-link" href="../hanlin-social-g7-1.html">← 回段考題庫總覽</a>
+</main>
+
+<script>
+
+window.EXAM_META = { version: "A卷", examLabel: "公民第2回" };
+const DATA = {
+  sections: [
+    {
+      type:"mc",
+      title:"一、單題",
+      meta:"60%，每題3分",
+      items:[
+        {q:"飛上天空當空服員是不少女生的夢想，然而空服員值勤時常遇到被觸摸臀部、手被緊握不放或被要電話的客人。這些客人的作為已構成下列何者？",options:["性別刻板印象","性騷擾","性別歧視","性侵害"],correct:1},
+        {q:"「電視廣告中的女主角大多以家庭角色出現，代言清潔、化妝品及日常用品，而男主角在職業角色上的比例大於女性，較常代言建築、機器及運動用品廣告。」上述的廣告表現出何種意涵？",options:["性別平等","性別歧視","性騷擾","性別刻板印象"],correct:3},
+        {q:"人性尊嚴為基本人權之一，其最簡單的定義為何？",options:["把軍隊視為保衛人權和國家的基本工具","只要是人，就應該享有人性尊嚴","專指生命安全、個人自由的保障","每個人的需求，都應該被完全滿足"],correct:1},
+        {q:"下列何人的行為可能已經構成「性騷擾」？",options:["小凡跳健康操時與安真擊掌","小凱突然把同學的褲子脫下","小顏撿到女同學的衛生用品","小頌午休看到男同學的睡相"],correct:1},
+        {q:"課堂上討論主題為「家務分工」，一位女同學的分享如圖(一)：「我媽媽都不讓弟弟做家事，卻要求我煮飯、洗衣服、拖地。」這與下列哪一性別概念有關？",options:["性別歧視","生理性別","性別角色","性別刻板印象"],correct:0},
+        {q:"每個人都會享有基本人權，下列何者是人權保障的核心價值？",options:["參政權","人身自由","人性尊嚴","人人生而平等"],correct:2},
+        {q:"公民老師要同學在課堂上發表各國對人性尊嚴的規範，下列哪一位同學的發言正確？",options:["小晴：所有國家都以《憲法》來進行規範","小喬：民主國家都以宣言來進行規範","小如：我國透過總統元旦談話來揭示保障人權","小賢：我國在《憲法》和法律中落實人權保障"],correct:3},
+        {q:"圖(二)為奇多搜尋到的網路新聞，根據圖中內容判斷，甲是指下列何者？\n「中華郵政公司為彰顯我國對甲議題的重視，並積極配合政策的推動，發行『甲郵票』。郵票的主題涵蓋了『世界人權宣言』、『消除對婦女一切形式歧視公約』、『兒童權利公約』以及『身心障礙者權利公約』，每枚郵票的面值皆為6元。行政院長在發行典禮上表示，我國非常重視甲保障，並期望臺灣能夠與國際接軌，甚至成為國際上的典範。」",options:["性別平等","人權","公民權益","性騷擾"],correct:1},
+        {q:"美美幫老師拿作業回辦公室，老師會輕撫美美的手並道謝，但美美對於老師的舉動覺得很不舒服，認為這是性騷擾，此時美美可依據何法提出申訴？",options:["《民法》","《性別平等工作法》","《憲法》","《性別平等教育法》"],correct:3},
+        {q:"圖(三)顯示在傳統的父權社會文化下，對男女生的不同要求：「男生要念理科。」「女人要溫柔，才會受人疼愛。」「男生不可以愛哭喔。」此呈現出何種性別議題？",options:["性別歧視","性別平等","性別友善","社會性別"],correct:1},
+        {q:"「盲目隨輿論起舞，未審先判，代表著對真相毫無思辨能力。」斗大的媒體標題，提醒社會大眾不要隨著媒體人云亦云，以避免理所當然地對某些人未審先判，而造成何種結果？",options:["侵犯人性尊嚴的不公平對待","藐視司法權的公平公正公開","給媒體至高無上的審判權力","新聞資訊的流通將受到限制"],correct:0},
+        {q:"台積電內部陞遷從未考慮性別因素，為了鼓勵女性加入，台積電曾經舉辦女性專屬招募說明會，並提供育嬰假留職停薪及哺乳室等女性私密空間。上述企業的作法，較符合下列何種概念？",options:["加深性別刻板印象","提升女性勞工的權益","強化女性生理特質","增強女性的差別待遇"],correct:1},
+        {q:"下列四人有關人權與人性尊嚴的敘述，何者正確？",options:["大雄：人權是生而為人所應享有","靜香：人性尊嚴須透過後天努力","胖虎：黑奴是奴隸所以不須尊重","小夫：貧民不需要任何人性尊嚴"],correct:0},
+        {q:"圖(四)是某部電影的簡介，從內容判斷，這部電影說明下列哪一項性別議題？\n「1975年，在明尼蘇達州礦坑工作的裘絲，與其他女同事們長期忍受男同事的性騷擾。為了工作，女礦工們只能忍氣吞聲。裘絲最後在1984年挺身而出，成功控告那些男同事。」",options:["教育的性別平權","職場的就業平等","家庭的平權關係","社區的兩性共治"],correct:1},
+        {q:"陳老師上公民課時請同學舉例說明有關「人權與人性尊嚴」的認知，下列四位同學的說法，何者正確？",options:["晴晴：有權有勢的人就可以把次等公民當成工具","聿聿：受刑人因犯罪沒有人性尊嚴，不須被尊重","峻賢：人們必須透過國家法律才能獲得人性尊嚴","明倫：人人生而自由，在尊嚴和權利上一律平等"],correct:3},
+        {q:"罕病律師陳俊翰因病離世，他生前致力於《身心障礙與權益保障法》的修法與參與、罕病藥物擴大給付的呼籲等社會公益，他認為：「一個好的社會，是能讓所有人都有能力追求自己的理想，不被障礙所限。」根據上述，陳律師是表達哪一種核心理念？",options:["尊重人性尊嚴","依照天賦能力","重視多元文化","強調公平競爭"],correct:0},
+        {q:"1948年聯合國通過《世界人權宣言》，此宣言具有何種意義？",options:["開啟國際人權的保障體制","意味世界自由和平的到來","不公平對待的行為是正確","人權已全面普及到各國家"],correct:0},
+        {q:"表(一)是陳老師上公民課時摘錄的表格比較，從內容判斷，老師當時要探討的是哪一概念？\n女性：女主內，肩負家事責任；擅長語文、文學等科目\n男性：男主外，扛下經濟重擔；擅長物理、數學等科目",options:["生理性別","性別歧視","性別刻板印象","人性尊嚴"],correct:2},
+        {q:"圖(五)是因愛玩洋娃娃的小剛所引發的兩派說法，由對話內容判斷，下列何項敘述正確？\n媽媽：「洋娃娃是給女生玩的，男生要去打球。」\n小季：「他做他喜歡的事，有什麼不對？」",options:["小剛媽媽的言語表現出「性別歧視」","小季的說法跳脫「社會性別」","媽媽迎合世俗觀點，並未傷害人性尊嚴","小季的說法可能會限制個人的發展"],correct:1},
+        {q:"根據圖(六)內容判斷，何者說明最為正確？\n「第二次世界大戰期間，德國納粹殘害猶太人，集中營慘絕人寰的作為，迄今仍為世人所髮指。基於此歷史背景，各國紛紛將人性尊嚴入憲，作為基本權利之核心。」",options:["性別歧視是保障人性尊嚴","人性尊嚴可以轉讓給他人","人權是生而為人所應享有","世界各國不重視人性尊嚴"],correct:2}
+      ]
+    },
+    {
+      type:"reading",
+      title:"二、題組",
+      meta:"12%，每題3分",
+      passages:[
+        {
+          label:"(一)",
+          text:"YouTuber瑪莉在2017年勇敢前往泰國接受變性手術，之後更入選參加國際跨性別選美大賽。儘管瑪莉在鏡頭上看起來充滿自信，但背後卻有著一段艱辛的過往。大學時，他曾穿女裝逛街，被一位婦人大罵：「怎麼穿成這樣，你對得起你的爸媽嗎？」在之後變性的過程中，還遭到父母的不諒解。如今，他的出色表現，使她在國際舞臺上展現出優雅與魅力。",
+          items:[
+            {q:"瑪莉選擇接受變性手術，這是哪一方面的改變？",options:["社會性別","生理性別","性別歧視","性別平等"],correct:1},
+            {q:"上文提及瑪莉遭受路人的嘲諷及家人的不諒解，這是屬於哪一層面的問題？",options:["社會性別","生理性別","性別歧視","性別平等"],correct:0}
+          ]
+        },
+        {
+          label:"(二)",
+          text:"以下是德國牧師馬丁．尼莫拉第二次世界大戰過後的懺悔文：「起初，納粹抓了共產黨人的時候，我沉默了，因為我不是共產黨人。當他們關了猶太人的時候，我也沉默了，因為我不是猶太人。當他們抓天主教徒的時候，我又沉默了，因為我不是天主教徒。最後當他們奔向我而來，再也沒有人站起來為我說話了。」",
+          items:[
+            {q:"上述德國納粹抓人的行徑，是何種作為？",options:["侵犯人權的表現","實現人民統治意志","保障人性尊嚴","維持社會的秩序"],correct:0},
+            {q:"上述的懺悔文，其主要的內涵為何？",options:["保護他人的人權，與自己的人權沒關係","人權是可以分割的，自己要保護好自己","關注他人的人權，即是保障自己的人權","侵犯他人的人權，可以擴大自己的人權"],correct:2}
+          ]
+        }
+      ]
+    },
+    {
+      type:"mc",
+      title:"三、進階思考題",
+      meta:"28%，每題4分",
+      items:[
+        {q:"圖(七)是網路上流傳的圖片，由圖中內容判斷，下列敘述何者正確？\n「女生主動親男生：浪漫。」「男生主動親女生：變態。」",options:["表現出男生和女生在生理性別方面的差異","社會對男女生行為的解讀是性別偏見","對方的言行若讓自己不舒服就是「性別歧視」","圖右兩人為同校學生，將依《性騷擾防治法》處理"],correct:1},
+        {q:"非裔美國人弗洛依德遭受警察不公平對待而身亡，讓各地民眾重新審視種族歧視的問題，紛紛主張「黑人的命也是命」。上述事件凸顯出下列哪一議題？",options:["人權與人性尊嚴","個人與家庭生活","權利與性別歧視","學校與學生權利"],correct:0},
+        {q:"聯合國設定了「零飢餓」目標，希望到2030年實現全人類的糧食安全，但專家們懷疑這個目標在規定的時間內無法達成。武裝衝突、氣候變化和自然災害導致數百萬人持續處於貧困和營養不良的狀態，全球的飢餓問題不僅沒有改善，反而變得更加嚴重。貧窮、不平等以及無法獲得基本資源如食物、飲用水、衛生、教育和住房等，都是對人性尊嚴的嚴重侮辱。根據上述內容判斷，本文的主旨為下列何者？",options:["應重視人權普遍性的保障，維護人性尊嚴","不論是哪一種族，人的生命是平等的","應尊重不同族群的差異，避免種族歧視行為","制定法律加以約束或制裁侵犯人權的行為"],correct:0},
+        {q:"表(二)中四個當事人皆為性騷擾受害者，根據事發情況與適用法規的配對，下列何者正確？\n選項　事件　　　　　　　　　　適用法規\n甲　飲料店老闆家偉搭公車時被摸大腿　《性騷擾防治法》\n乙　就讀高三的美花在餐飲店打工時遭到店長強行擁抱　《性別平等教育法》\n丙　七年級的成東在學校廁所遭同學脫褲子　《性騷擾防治法》\n丁　鎮東在課堂上開黃色笑話，影響其他同學學習　《性別平等工作法》",options:["甲","乙","丙","丁"],correct:0},
+        {q:"2011年法國立法通過禁止穆斯林女性在公開場合穿戴面罩，希望藉此協助婦女擺脫宗教、家庭的壓制。上文中法國立法的理由，最可能是下列何者？",options:["歧視伊斯蘭教規範","對多元文化的支持","強調女性人權與尊嚴","強調西方文明優越性"],correct:2},
+        {q:"圖(八)反映出現代社會仍然存在男女同工不同酬的現象，下列敘述何者正確？",options:["同工不同酬可由老闆決定，法律不會處罰","同工不同酬表現出工作職場中的不平等","男女同工不同酬僅屬於「性別刻板印象」","同工不同酬違反《性別平等教育法》規定"],correct:1},
+        {q:"巧虎在學校上廁所遭同學故意窺視，讓他覺得被性騷擾。有關此事件的處理流程，下列何者有誤？",options:["巧虎可依《性別平等教育法》規定提出申訴","巧虎可以向學務處尋求協助","由學校性別平等工作委員會調查","加害人接受性別平等的輔導課程"],correct:2}
+      ]
+    }
+
+  ]
+};
+
+let currentMode = "quiz"; // quiz | print
+
+const contentEl = document.getElementById("content");
+const scoreBar = document.getElementById("scoreBar");
+const scoreText = document.getElementById("scoreText");
+
+function render(){
+  window.examAnswersRevealed = false;
+  contentEl.innerHTML = "";
+  DATA.sections.forEach((sec, si)=> contentEl.appendChild(renderSection(sec, si)));
+  if(currentMode==="quiz"){
+    scoreBar.classList.add("show");
+    updateScore();
+  } else {
+    scoreBar.classList.remove("show");
+    contentEl.querySelectorAll(".opt").forEach(o=>o.classList.add("disabled"));
+    contentEl.querySelectorAll(".opt.is-correct").forEach(o=>o.classList.add("correct"));
+  }
+}
+
+function renderSection(sec, si){
+  const block = document.createElement("section");
+  block.className = "block";
+  block.innerHTML = `<h2>${sec.title}</h2><p class="meta">${sec.meta}</p>`;
+
+  if(sec.type==="mc"){
+    sec.items.forEach((it,i)=>{
+      const q = document.createElement("div");
+      q.className = "q";
+      const optsHtml = it.options.map((op,oi)=>`
+        <div class="opt" data-idx="${oi}" data-correct="${oi===it.correct}">
+          <span class="tag">(${String.fromCharCode(65+oi)})</span><span>${op}</span>
+        </div>`).join("");
+      const imgHtml = it.image ? `<img src="${it.image}" alt="題目附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">` : "";
+      const img2Html = it.image2 ? `<img src="${it.image2}" alt="題目附圖2" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">` : "";
+      q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q}</div>
+        ${imgHtml}${img2Html}
+        <div class="opts">${optsHtml}</div>`;
+      q.querySelectorAll(".opt").forEach(optEl=>{
+        if(optEl.dataset.correct==="true") optEl.classList.add("is-correct");
+        optEl.addEventListener("click", ()=>selectOption(q, optEl));
+      });
+      block.appendChild(q);
+    });
+  }
+
+  else if(sec.type==="reading"){
+    sec.passages.forEach(p=>{
+      const passageDiv = document.createElement("div");
+      passageDiv.className = "passage";
+      passageDiv.innerHTML = `${p.label ? `<span class="passage-label">${p.label}</span>`:""}${p.text}${p.image ? `<img src="${p.image}" alt="題組附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-top:10px;border:1px solid var(--paper-line);">`:""}`;
+      block.appendChild(passageDiv);
+      p.items.forEach((it,i)=>{
+        const q = document.createElement("div");
+        q.className = "q";
+        const optsHtml = it.options.map((op,oi)=>`
+          <div class="opt" data-idx="${oi}" data-correct="${oi===it.correct}">
+            <span class="tag">(${String.fromCharCode(65+oi)})</span><span>${op}</span>
+          </div>`).join("");
+        q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q}</div>
+          ${it.image ? `<img src="${it.image}" alt="題目附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">`:""}
+          <div class="opts">${optsHtml}</div>`;
+        q.querySelectorAll(".opt").forEach(optEl=>{
+          if(optEl.dataset.correct==="true") optEl.classList.add("is-correct");
+          optEl.addEventListener("click", ()=>selectOption(q, optEl));
+        });
+        block.appendChild(q);
+      });
+    });
+  }
+
+  return block;
+}
+
+function selectOption(qEl, optEl){
+  if(currentMode!=="quiz") return;
+  if(qEl.dataset.answered==="true") return;
+  qEl.dataset.answered = "true";
+  qEl.querySelectorAll(".opt").forEach(o=>o.classList.add("disabled"));
+  optEl.classList.add("selected");
+  const correctOpt = qEl.querySelector('.opt[data-correct="true"]');
+  qEl.dataset.studentAnswer = optEl.textContent.trim();
+  qEl.dataset.correctAnswer = correctOpt ? correctOpt.textContent.trim() : "";
+  qEl.dataset.isCorrect = (optEl.dataset.correct==="true") ? "true" : "false";
+  updateScore();
+}
+
+function updateScore(){
+  let total = 0, answered = 0, correct = 0;
+  contentEl.querySelectorAll(".q").forEach(q=>{
+    const gradable = q.querySelector(".opts");
+    if(!gradable) return;
+    total++;
+    if(q.dataset.studentAnswer !== undefined){
+      answered++;
+      if(q.dataset.isCorrect === "true") correct++;
+    }
+  });
+  if(window.examAnswersRevealed){
+    scoreText.textContent = `${correct} / ${total}`;
+  } else {
+    scoreText.textContent = `已作答 ${answered} / ${total} 題`;
+  }
+}
+window.updateScore = updateScore;
+
+document.getElementById("resetBtn").addEventListener("click", render);
+document.getElementById("quizModeBtn").addEventListener("click", ()=>{
+  currentMode = "quiz";
+  document.getElementById("quizModeBtn").classList.add("active");
+  document.getElementById("printModeBtn").classList.remove("active");
+  render();
+});
+document.getElementById("printModeBtn").addEventListener("click", ()=>{
+  if(document.getElementById("printModeBtn").disabled) return;
+  currentMode = "print";
+  document.getElementById("printModeBtn").classList.add("active");
+  document.getElementById("quizModeBtn").classList.remove("active");
+  render();
+});
+
+window.unlockPrintMode = function(){
+  document.getElementById("printModeBtn").disabled = false;
+};
+
+render();
+</script>
+<script src="../sync.js"></script>
+</body>
+</html>
