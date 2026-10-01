@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>段考題庫｜第12回 - 聽力三（Unit 5～6）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@500;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#faf6ec; --paper-line:#e3dcc8; --ink:#26332b; --ink-soft:#5b6b5f;
+    --chalk-green:#2f4538; --chalk-green-2:#3d5a48; --pen-red:#b8433a; --pen-red-soft:#f4dedb;
+    --ok-green:#3f7d52; --ok-green-soft:#dfeee1; --gold:#b5842a; --radius:10px;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:"Noto Sans TC",sans-serif;line-height:1.7;}
+  header.hero{background:var(--chalk-green);color:#eef2ea;padding:28px 20px 40px;position:relative;}
+  header.hero::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:14px;
+    background:repeating-linear-gradient(90deg,var(--paper) 0 18px, transparent 18px 20px);}
+  .hero-inner{max-width:880px;margin:0 auto;}
+  .breadcrumb a{color:#cfe0d1;text-decoration:none;font-size:14px;}
+  h1{font-family:"Noto Serif TC",serif;font-weight:700;font-size:clamp(24px,4vw,34px);margin:10px 0 6px;}
+  .subtitle{color:#cfe0d1;font-size:15px;margin:0;}
+  main{max-width:880px;margin:0 auto;padding:28px 20px 80px;}
+
+  .notice{
+    background:#fdf3e3;border:1px solid #ecd9ab;border-left:5px solid var(--gold);
+    border-radius:var(--radius);padding:14px 18px;margin-bottom:22px;font-size:13.5px;color:#6b5424;
+  }
+
+  section.block{background:#fff;border:1px solid var(--paper-line);border-radius:var(--radius);padding:22px 22px 26px;margin-bottom:20px;}
+  .block h2{font-family:"Noto Serif TC",serif;font-size:19px;margin:0 0 4px;color:var(--chalk-green);}
+  .block .meta{color:var(--ink-soft);font-size:13px;margin:0 0 14px;}
+
+  audio{width:100%;margin-bottom:18px;}
+  .grid-img{width:100%;max-width:560px;display:block;margin:0 auto 16px;border-radius:8px;border:1px solid var(--paper-line);}
+
+  .q{margin-bottom:18px;padding-bottom:16px;border-bottom:1px dashed var(--paper-line);}
+  .q:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0;}
+  .q-text{font-size:15.5px;margin-bottom:8px;}
+  .q-num{color:var(--gold);font-weight:700;margin-right:4px;}
+
+  .opts{display:grid;gap:8px;}
+  .opt{display:flex;gap:8px;align-items:flex-start;border:1.5px solid var(--paper-line);border-radius:8px;
+    padding:9px 12px;cursor:pointer;font-size:14.5px;background:#fffdf8;}
+  .opt:hover{border-color:var(--chalk-green-2);}
+  .opt.selected{border-color:var(--chalk-green-2);background:#eef3ea;}
+  .opt.correct{border-color:var(--ok-green);background:var(--ok-green-soft);}
+  .opt.wrong{border-color:var(--pen-red);background:var(--pen-red-soft);}
+  .opt .tag{font-weight:700;color:var(--ink-soft);}
+  .opt.correct .tag{color:var(--ok-green);}
+  .opt.wrong .tag{color:var(--pen-red);}
+  .opt.disabled{cursor:default;}
+
+  input.blank{font-family:"Noto Sans TC",sans-serif;border:none;border-bottom:2px solid var(--chalk-green-2);
+    background:transparent;font-size:15px;padding:2px 4px;width:150px;}
+  .feedback{font-size:13.5px;font-weight:700;margin-left:6px;}
+  .feedback.ok{color:var(--ok-green);}
+  .feedback.no{color:var(--pen-red);}
+
+  .footer-link{display:block;text-align:center;margin-top:30px;color:var(--chalk-green);text-decoration:none;font-weight:700;font-size:14px;}
+  .footer-link:hover{text-decoration:underline;}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="breadcrumb"><a href="https://jenlin2002.github.io/">🏠 回總目錄</a> ／ <a href="../hanlin-g8-1.html" style="color:#cfe0d1;">段考題庫</a></div>
+    <h1>第12回・聽力三</h1>
+    <p class="subtitle">Listening Test 3（Unit 5～Unit 6）｜翰林版八年級英語（三）Ａ卷</p>
+  </div>
+</header>
+
+<main>
+  <section class="block">
+    <h2>第一部分：辨識句意</h2>
+    <p class="meta">28分，每題4分・依據所聽到的內容，選出符合描述的圖片</p>
+    <audio controls src="audio/test12/track1.mp3"></audio>
+    <div id="sec1"></div>
+  </section>
+
+  <section class="block">
+    <h2>第二部分：基本問答</h2>
+    <p class="meta">32分，每題4分・依據所聽到的內容，選出一個最適合的回應</p>
+    <audio controls src="audio/test12/track2.mp3"></audio>
+    <div id="sec2"></div>
+  </section>
+
+  <section class="block">
+    <h2>第三部分：言談理解</h2>
+    <p class="meta">40分，每題5分・依據所聽到的內容和問題，選出一個最適合的答案</p>
+    <audio controls src="audio/test12/track3.mp3"></audio>
+    <div id="sec3"></div>
+  </section>
+
+  <a class="footer-link" href="../hanlin-g8-1.html">← 回段考題庫總覽</a>
+</main>
+
+<script>
+function mc(container, items){
+  items.forEach((it,i)=>{
+    const q = document.createElement("div");
+    q.className = "q";
+    const optsHtml = it.options.map((op,oi)=>`
+      <div class="opt" data-correct="${oi===it.correct}"><span class="tag">(${String.fromCharCode(65+oi)})</span><span>${op}</span></div>`).join("");
+    q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q||""}</div>${it.image ? `<img class="grid-img" src="${it.image}" alt="題目附圖">` : ""}<div class="opts">${optsHtml}</div>`;
+    q.querySelectorAll(".opt").forEach(o=>o.addEventListener("click", ()=>{
+      if(q.dataset.answered==="true") return;
+      q.dataset.answered="true";
+      q.querySelectorAll(".opt").forEach(x=>x.classList.add("disabled"));
+      o.classList.add("selected");
+      const correctOptEl = q.querySelector('.opt[data-correct="true"]');
+      q.dataset.studentAnswer = o.textContent.trim();
+      q.dataset.correctAnswer = correctOptEl ? correctOptEl.textContent.trim() : "";
+      q.dataset.isCorrect = (o.dataset.correct==="true") ? "true" : "false";
+    }));
+    container.appendChild(q);
+  });
+}
+function blank(container, items){
+  items.forEach((it,i)=>{
+    const q = document.createElement("div");
+    q.className = "q";
+    q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q} <input type="text" class="blank" data-answer="${it.answer}"><span class="feedback"></span></div>`;
+    const input = q.querySelector("input");
+    input.addEventListener("input", ()=>{
+      const val = input.value.trim().toLowerCase();
+      if(!val){ delete q.dataset.studentAnswer; return; }
+      q.dataset.studentAnswer = input.value.trim();
+      q.dataset.correctAnswer = it.answer;
+      q.dataset.isCorrect = (val===it.answer.toLowerCase()) ? "true" : "false";
+    });
+    container.appendChild(q);
+  });
+}
+function tf(container, items){
+  items.forEach((it,i)=>{
+    const q = document.createElement("div");
+    q.className = "q";
+    q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>圖${i+1}</div>
+      <div class="opts">
+        <div class="opt" data-correct="${it.answer==='T'}"><span class="tag">T</span><span>符合圖意</span></div>
+        <div class="opt" data-correct="${it.answer==='F'}"><span class="tag">F</span><span>不符合圖意</span></div>
+      </div>`;
+    q.querySelectorAll(".opt").forEach(o=>o.addEventListener("click", ()=>{
+      if(q.dataset.answered==="true") return;
+      q.dataset.answered="true";
+      q.querySelectorAll(".opt").forEach(x=>x.classList.add("disabled"));
+      o.classList.add("selected");
+      const correctOptEl = q.querySelector('.opt[data-correct="true"]');
+      q.dataset.studentAnswer = o.textContent.trim();
+      q.dataset.correctAnswer = correctOptEl ? correctOptEl.textContent.trim() : "";
+      q.dataset.isCorrect = (o.dataset.correct==="true") ? "true" : "false";
+    }));
+    container.appendChild(q);
+  });
+}
+
+// 第一部分：辨識句意
+mc(document.getElementById("sec1"), [
+  {
+    "q": "",
+    "image": "images/test12/p1_q1.png",
+    "options": [
+      "A",
+      "B",
+      "C"
+    ],
+    "correct": 2
+  },
+  {
+    "q": "",
+    "image": "images/test12/p1_q2.png",
+    "options": [
+      "A",
+      "B",
+      "C"
+    ],
+    "correct": 0
+  },
+  {
+    "q": "",
+    "image": "images/test12/p1_q3.png",
+    "options": [
+      "A",
+      "B",
+      "C"
+    ],
+    "correct": 1
+  },
+  {
+    "q": "",
+    "image": "images/test12/p1_q4.png",
+    "options": [
+      "A",
+      "B",
+      "C"
+    ],
+    "correct": 1
+  },
+  {
+    "q": "",
+    "image": "images/test12/p1_q5.png",
+    "options": [
+      "A",
+      "B",
+      "C"
+    ],
+    "correct": 2
+  },
+  {
+    "q": "",
+    "image": "images/test12/p1_q6.png",
+    "options": [
+      "A",
+      "B",
+      "C"
+    ],
+    "correct": 1
+  },
+  {
+    "q": "",
+    "image": "images/test12/p1_q7.png",
+    "options": [
+      "A",
+      "B",
+      "C"
+    ],
+    "correct": 0
+  }
+]);
+
+// 第二部分：基本問答
+mc(document.getElementById("sec2"), [
+  {
+    "options": [
+      "They went on foot.",
+      "Sometimes they go by taxi.",
+      "They got off the train at the wrong stop."
+    ],
+    "correct": 0
+  },
+  {
+    "options": [
+      "It is not easy to take them off.",
+      "They cost me a thousand dollars.",
+      "I spent forty minutes cleaning them."
+    ],
+    "correct": 1
+  },
+  {
+    "options": [
+      "We are jogging at a park now.",
+      "We'll go biking near the river bank.",
+      "We spent an hour fixing the scooter."
+    ],
+    "correct": 1
+  },
+  {
+    "options": [
+      "It took me four hours.",
+      "I didn't pay anything for it. It was free.",
+      "It cost me around three hundred dollars."
+    ],
+    "correct": 0
+  },
+  {
+    "options": [
+      "I was a clerk at a toy store.",
+      "I like going surfing at Blue Beach.",
+      "I try not to spend too much money on clothes."
+    ],
+    "correct": 1
+  },
+  {
+    "options": [
+      "The price of things there is very high.",
+      "We are going to have a great shopping experience.",
+      "The one on the corner of First Street and Park Road."
+    ],
+    "correct": 2
+  },
+  {
+    "options": [
+      "No. That restaurant is really expensive.",
+      "Yes, the restaurant is right next to the hotel.",
+      "No. It takes only ten minutes to walk there."
+    ],
+    "correct": 2
+  },
+  {
+    "options": [
+      "Yes. Everything there is on sale.",
+      "There are three department stores in this city.",
+      "Just go straight for two blocks. It's on the right."
+    ],
+    "correct": 2
+  }
+]);
+
+// 第三部分：言談理解
+mc(document.getElementById("sec3"), [
+  {
+    "options": [
+      "Go sailing.",
+      "Go surfing.",
+      "Go jogging."
+    ],
+    "correct": 2
+  },
+  {
+    "options": [
+      "At a pool.",
+      "At a bookstore.",
+      "At a fire station."
+    ],
+    "correct": 0
+  },
+  {
+    "options": [
+      "She's going to buy a skirt for Evelyn.",
+      "She's going to shop for clothes with Dylan.",
+      "She's going to wear Evelyn's dress tomorrow."
+    ],
+    "correct": 2
+  },
+  {
+    "options": [
+      "He's looking for a bus stop.",
+      "He doesn't have a map with him.",
+      "He's trying to send something at the post office."
+    ],
+    "correct": 0
+  },
+  {
+    "options": [
+      "On foot.",
+      "By metro.",
+      "By motorcycle."
+    ],
+    "correct": 1
+  },
+  {
+    "options": [
+      "A tie, a blue shirt, and a pair of jeans.",
+      "A tie, a black shirt, and a pair of jeans.",
+      "A tie, a blue shirt, and a pair of black pants."
+    ],
+    "correct": 2
+  },
+  {
+    "options": [
+      "She'll take the white coat.",
+      "She'll stop buying new clothes.",
+      "She'll come back to the store soon."
+    ],
+    "correct": 2
+  },
+  {
+    "options": [
+      "He spent five hundred dollars.",
+      "They didn't cost him anything.",
+      "He paid one thousand dollars for them."
+    ],
+    "correct": 0
+  }
+]);
+</script>
+<script>window.EXAM_META = {version:"A卷", examLabel:"第12回"};</script>
+<script src="../sync.js"></script>
+</body>
+</html>

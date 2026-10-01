@@ -1,0 +1,952 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>段考題庫｜第10回 - Unit 6</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@500;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#faf6ec;
+    --paper-line:#e3dcc8;
+    --ink:#26332b;
+    --ink-soft:#5b6b5f;
+    --chalk-green:#2f4538;
+    --chalk-green-2:#3d5a48;
+    --pen-red:#b8433a;
+    --pen-red-soft:#f4dedb;
+    --ok-green:#3f7d52;
+    --ok-green-soft:#dfeee1;
+    --gold:#b5842a;
+    --radius:10px;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:"Noto Sans TC",sans-serif;
+    line-height:1.7;
+  }
+  header.hero{
+    background:var(--chalk-green);
+    color:#eef2ea;
+    padding:28px 20px 40px;
+    position:relative;
+  }
+  header.hero::after{
+    content:"";
+    position:absolute;
+    left:0; right:0; bottom:-1px;
+    height:14px;
+    background:repeating-linear-gradient(90deg,var(--paper) 0 18px, transparent 18px 20px);
+  }
+  .hero-inner{max-width:880px;margin:0 auto;}
+  .breadcrumb a{color:#cfe0d1;text-decoration:none;font-size:14px;}
+  .breadcrumb a:hover{text-decoration:underline;}
+  h1{
+    font-family:"Noto Serif TC",serif;
+    font-weight:700;
+    font-size:clamp(24px,4vw,34px);
+    margin:10px 0 6px;
+  }
+  .subtitle{color:#cfe0d1;font-size:15px;margin:0;}
+  main{max-width:880px;margin:0 auto;padding:28px 20px 80px;}
+
+  .controls{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:22px;
+  }
+  .mode-toggle{display:flex;border:2px solid var(--chalk-green);border-radius:999px;overflow:hidden;}
+  .mode-toggle button{
+    background:transparent;border:none;padding:8px 16px;font-size:14px;font-weight:700;
+    color:var(--chalk-green);cursor:pointer;font-family:"Noto Sans TC",sans-serif;
+  }
+  .mode-toggle button.active{background:var(--gold);color:#fff;}
+  .mode-toggle button:disabled{opacity:.4;cursor:not-allowed;}
+
+  .score-bar{
+    display:none;
+    align-items:center;
+    justify-content:space-between;
+    background:#fff;
+    border:1px solid var(--paper-line);
+    border-left:5px solid var(--gold);
+    border-radius:var(--radius);
+    padding:12px 18px;
+    margin-bottom:22px;
+    font-size:14px;
+  }
+  .score-bar.show{display:flex;}
+  .score-bar strong{font-size:18px;color:var(--gold);}
+  .score-bar button{
+    background:none;border:1px solid var(--ink-soft);color:var(--ink-soft);
+    border-radius:6px;padding:6px 12px;font-size:13px;cursor:pointer;
+  }
+
+  section.block{
+    background:#fff;
+    border:1px solid var(--paper-line);
+    border-radius:var(--radius);
+    padding:22px 22px 26px;
+    margin-bottom:20px;
+  }
+  .block h2{
+    font-family:"Noto Serif TC",serif;
+    font-size:19px;
+    margin:0 0 4px;
+    color:var(--chalk-green);
+  }
+  .block .meta{color:var(--ink-soft);font-size:13px;margin:0 0 16px;}
+  .block audio{width:100%;margin-bottom:16px;}
+
+  .q{margin-bottom:18px;padding-bottom:16px;border-bottom:1px dashed var(--paper-line);}
+  .q:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0;}
+  .q-text{font-size:15.5px;margin-bottom:8px;}
+  .q-num{color:var(--gold);font-weight:700;margin-right:4px;}
+
+  .opts{display:grid;gap:8px;}
+  .wordbank{display:flex;flex-wrap:wrap;gap:8px;background:#f5f2e8;border:1px solid var(--paper-line);
+    border-radius:8px;padding:12px 14px;margin-bottom:16px;}
+  .wb-word{font-family:"Noto Sans TC",sans-serif;font-size:14px;font-weight:700;color:var(--chalk-green);
+    background:#fff;border:1px solid var(--paper-line);border-radius:6px;padding:4px 12px;}
+  .opt{
+    display:flex;gap:8px;align-items:flex-start;
+    border:1.5px solid var(--paper-line);
+    border-radius:8px;
+    padding:9px 12px;
+    cursor:pointer;
+    font-size:14.5px;
+    background:#fffdf8;
+  }
+  .opt:hover{border-color:var(--chalk-green-2);}
+  .opt.selected{border-color:var(--chalk-green-2);background:#eef3ea;}
+  .opt.correct{border-color:var(--ok-green);background:var(--ok-green-soft);}
+  .opt.wrong{border-color:var(--pen-red);background:var(--pen-red-soft);}
+  .opt .tag{font-weight:700;color:var(--ink-soft);}
+  .opt.correct .tag{color:var(--ok-green);}
+  .opt.wrong .tag{color:var(--pen-red);}
+  .opt.disabled{cursor:default;}
+
+  input.blank, input.line-answer{
+    font-family:"Noto Sans TC",sans-serif;
+    border:none;border-bottom:2px solid var(--chalk-green-2);
+    background:transparent;font-size:15px;padding:2px 4px;
+    width:150px;
+  }
+  input.line-answer{width:100%;margin-top:4px;}
+  .check-row{display:flex;gap:8px;margin-top:6px;flex-wrap:wrap;align-items:center;}
+  .mini-btn{
+    background:var(--chalk-green);color:#fff;border:none;border-radius:6px;
+    padding:6px 14px;font-size:13px;cursor:pointer;font-family:"Noto Sans TC",sans-serif;
+  }
+  .mini-btn.secondary{background:transparent;color:var(--chalk-green);border:1.5px solid var(--chalk-green);}
+  .feedback{font-size:13.5px;font-weight:700;}
+  .feedback.ok{color:var(--ok-green);}
+  .feedback.no{color:var(--pen-red);}
+  .answer-reveal{
+    display:none;margin-top:6px;font-size:14px;color:var(--chalk-green-2);
+    background:#eef3ea;border-radius:6px;padding:8px 12px;
+  }
+  .answer-reveal.show{display:block;}
+
+  .passage{
+    background:#f5f2e8;border-radius:8px;padding:14px 16px;margin-bottom:14px;
+    font-size:14.5px;white-space:pre-line;
+  }
+  .passage-label{font-weight:700;color:var(--chalk-green);margin-bottom:4px;display:block;}
+  .data-table{width:100%;border-collapse:collapse;margin-top:10px;font-size:13.5px;background:#fff;}
+  .data-table th, .data-table td{border:1px solid var(--paper-line);padding:6px 8px;text-align:center;}
+  .data-table th{background:#eef3ea;color:var(--chalk-green);}
+
+  .footer-link{
+    display:block;text-align:center;margin-top:30px;color:var(--chalk-green);
+    text-decoration:none;font-weight:700;font-size:14px;
+  }
+  .footer-link:hover{text-decoration:underline;}
+
+  @media print{
+    header.hero, .controls, .score-bar, .check-row, .mini-btn, .footer-link{display:none !important;}
+    body{background:#fff;}
+    section.block{border:none;box-shadow:none;padding:8px 0;margin-bottom:14px;}
+    .opt.correct{background:none;border:none;font-weight:700;}
+    .opt.correct::after{content:" ← 正解";color:var(--pen-red);}
+    .opt{border:none;padding:2px 0;}
+    .answer-reveal{display:block !important;background:none;padding:2px 0;}
+    main{max-width:100%;padding:0 24px;}
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="breadcrumb"><a href="https://jenlin2002.github.io/">🏠 回總目錄</a> ／ <a href="../hanlin-g8-1.html" style="color:#cfe0d1;">段考題庫</a></div>
+    <h1>第10回・Unit 6</h1>
+    <p class="subtitle">I'll Take Two Pairs of Gloves｜翰林版八年級英語（三）Ａ卷</p>
+  </div>
+</header>
+
+<main>
+  <div class="controls">
+    <div class="mode-toggle">
+      <button id="quizModeBtn" class="active">✏️ 測驗模式</button>
+      <button id="printModeBtn" disabled title="完成測驗並送出成績後才能查看">🖨️ 完整題目與解答（送出成績後解鎖）</button>
+    </div>
+  </div>
+
+  <div class="score-bar" id="scoreBar">
+    <div>目前得分：<strong id="scoreText">0 / 0</strong>（僅計算選擇題與字彙填空）</div>
+    <button id="resetBtn">重新作答</button>
+  </div>
+
+  <div id="content"></div>
+
+  <a class="footer-link" href="../hanlin-g8-1.html">← 回段考題庫總覽</a>
+</main>
+
+<script>
+
+window.EXAM_META = { version: "A卷", examLabel: "第10回" };
+const DATA = {
+  sections: [
+  {
+    "type": "vocab",
+    "title": "一、文意字彙",
+    "meta": "【A部分 基礎題】13分，每格1分",
+    "items": [
+      {
+        "q": "Don't lose hope. T___w is another day.",
+        "answer": "Tomorrow"
+      },
+      {
+        "q": "It was cold, so Chris decided to put on a s___r.",
+        "answer": "sweater"
+      },
+      {
+        "q": "The video was f___y, and everyone laughed（大笑）when they watched it.",
+        "answer": "funny"
+      },
+      {
+        "q": "Victor won't go to baseball practice today because he h___t his arm.",
+        "answer": "hurt"
+      },
+      {
+        "q": "I'm not going to buy that cap. Its p___e is too high.",
+        "answer": "price"
+      },
+      {
+        "q": "My feet are big. These s___es are too small for me.",
+        "answer": "shoes"
+      },
+      {
+        "q": "A: Today is Friday. Do you have any plans t___t? B: Yes. I'll go to the movies with my sister at 7 p.m.",
+        "answer": "tonight"
+      },
+      {
+        "q": "I can't see clearly（清楚地）with my g___ses; I need to buy a new pair.",
+        "answer": "glasses"
+      },
+      {
+        "q": "They knocked down（拆除）u___y old buildings and built beautiful new ones.",
+        "answer": "ugly"
+      },
+      {
+        "q": "A: How many students are there in the classroom? B: There are 31 students in t___l.",
+        "answer": "total"
+      },
+      {
+        "q": "The computer is not e___e. It costs only ten t___d NT dollars.",
+        "answers": [
+          "expensive",
+          "thousand"
+        ]
+      },
+      {
+        "q": "They didn't want others to hear them, so they spoke in a l___w voice（聲音）.",
+        "answer": "low"
+      }
+    ]
+  },
+  {
+    "type": "mc",
+    "title": "二、文法選擇",
+    "meta": "32分，每題2分",
+    "items": [
+      {
+        "q": "It took Louis four years ___ this painting.",
+        "options": [
+          "finish",
+          "finished",
+          "to finish",
+          "finishing"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "It cost Hank a lot of money ___ the house.",
+        "options": [
+          "fix",
+          "to fix",
+          "fixed",
+          "fixing"
+        ],
+        "correct": 1
+      },
+      {
+        "q": "There ___ three soccer games in early July.",
+        "options": [
+          "will",
+          "will have",
+          "are going to be",
+          "are going to have"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "Calvin ___ out with his aunt tomorrow evening.",
+        "options": [
+          "eats",
+          "ate",
+          "was eating",
+          "will eat"
+        ],
+        "correct": 3
+      },
+      {
+        "q": "Dan is going to get some sleep, but his wife ___.",
+        "options": [
+          "won't",
+          "doesn't",
+          "wasn't",
+          "isn't"
+        ],
+        "correct": 3
+      },
+      {
+        "q": "The children's concert tomorrow ___ a lot of fun.",
+        "options": [
+          "was",
+          "will be",
+          "will have",
+          "is going to have"
+        ],
+        "correct": 1
+      },
+      {
+        "q": "Joe will visit his grandpa after he ___ to the dentist.",
+        "options": [
+          "went",
+          "goes",
+          "is going",
+          "will go"
+        ],
+        "correct": 1
+      },
+      {
+        "q": "___ going to ___ a welcome party next week.",
+        "options": [
+          "We're; have",
+          "We'll; have",
+          "We're; having",
+          "We'll; having"
+        ],
+        "correct": 0
+      },
+      {
+        "q": "Stella is going to wash her car ___ weekend.",
+        "options": [
+          "on",
+          "at",
+          "last",
+          "next"
+        ],
+        "correct": 3
+      },
+      {
+        "q": "Mrs. Barr spends NT$5,000 ___ dog food every month.",
+        "options": [
+          "on",
+          "in",
+          "at",
+          "with"
+        ],
+        "correct": 0
+      },
+      {
+        "q": "The Waldorf family will go to Kenya ___ half a year.",
+        "options": [
+          "in",
+          "at",
+          "with",
+          "from"
+        ],
+        "correct": 0
+      },
+      {
+        "q": "___ the first train to Hualien, the sisters got up before 5 a.m. today.",
+        "options": [
+          "Catch",
+          "To catch",
+          "Caught",
+          "On catching"
+        ],
+        "correct": 1
+      },
+      {
+        "q": "___ exercising three times a week, Kevin is now healthy and strong.",
+        "options": [
+          "At",
+          "On",
+          "By",
+          "From"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "Ben is tired. He spent five hours ___ the house.",
+        "options": [
+          "clean",
+          "cleans",
+          "to clean",
+          "cleaning"
+        ],
+        "correct": 3
+      },
+      {
+        "q": "Jane has really long hair. Washing her hair always ___ her a lot of time.",
+        "options": [
+          "has",
+          "gets",
+          "takes",
+          "spends"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "A: ___ did it take you to design the game? B: Two months.",
+        "options": [
+          "How soon",
+          "How long",
+          "How often",
+          "What time"
+        ],
+        "correct": 1
+      }
+    ]
+  },
+  {
+    "type": "mc",
+    "title": "三、對話選擇",
+    "meta": "6分，每題2分",
+    "items": [
+      {
+        "q": "A: Remember to give me a call. B: ___ Talk to you later.",
+        "options": [
+          "I will.",
+          "That's funny.",
+          "How nice of you!",
+          "Do you need anything?"
+        ],
+        "correct": 0
+      },
+      {
+        "q": "A: How would you like to pay, sir? B: ___ I don't have enough cash.",
+        "options": [
+          "That's all.",
+          "Isn't it on sale?",
+          "I'll pay by card.",
+          "I bought it at a low price."
+        ],
+        "correct": 2
+      },
+      {
+        "q": "A: The socks are NT$30 a pair. B: That's cheap. ___ A: Here you go.",
+        "options": [
+          "I'll take two.",
+          "I'll take them off.",
+          "Have a nice day!",
+          "Here's your change."
+        ],
+        "correct": 0
+      }
+    ]
+  },
+  {
+    "type": "guided",
+    "title": "四、看圖詳答問題",
+    "meta": "6分，每題3分",
+    "items": [
+      {
+        "prompt": "Ken bought the hat. How much did he pay for it?",
+        "hint": "（看圖回答）",
+        "image": "images/test10/sec4_1.png",
+        "answer": "He paid $699 / 699 dollars for it."
+      },
+      {
+        "prompt": "Will the girl wear jeans to the party?",
+        "hint": "（看圖回答）",
+        "image": "images/test10/sec4_2.png",
+        "answer": "No, she won't. She will wear a skirt (to the party)."
+      }
+    ]
+  },
+  {
+    "type": "guided",
+    "title": "五、依提示作答",
+    "meta": "6分，每題2分",
+    "items": [
+      {
+        "prompt": "The tie cost him <u>2,000 dollars</u>.",
+        "hint": "（依畫線部分造原問句）",
+        "answer": "How much did the tie cost him?"
+      },
+      {
+        "prompt": "It took me three days to make this ring.",
+        "hint": "（用spend改寫）",
+        "answer": "I spent three days making this ring."
+      },
+      {
+        "prompt": "It takes <u>an hour</u> to fly from here to Taiwan.",
+        "hint": "（依畫線部分造原問句）",
+        "answer": "How long does it take to fly from here to Taiwan?"
+      }
+    ]
+  },
+  {
+    "type": "translation",
+    "title": "六、整句式翻譯",
+    "meta": "8分，每題4分",
+    "items": [
+      {
+        "zh": "你將會借一條長褲給我嗎？（Are you...）",
+        "answer": "Are you going to lend a pair of pants to me / me a pair of pants?"
+      },
+      {
+        "zh": "脫掉這件長洋裝要三分鐘。（It will...）",
+        "answer": "It will take three minutes to take off this long dress / take this long dress off."
+      }
+    ]
+  },
+  {
+    "type": "mc",
+    "title": "一、單題",
+    "meta": "【B部分 活用題】6分，每題2分",
+    "items": [
+      {
+        "q": "Look at the picture. The ___ and the ___ are on sale.",
+        "image": "images/test10/b1_sale.png",
+        "options": [
+          "socks; tie",
+          "shoes; belt",
+          "shorts; cap",
+          "glasses; ring"
+        ],
+        "correct": 1
+      },
+      {
+        "q": "A: Do you want to try this dress on? B: ___ Isn't that Mom's dress?",
+        "options": [
+          "That's cheap.",
+          "Wait a second.",
+          "I won't take it off.",
+          "Don't say anything."
+        ],
+        "correct": 1
+      },
+      {
+        "q": "The music festival is popular. There are ___ of people there now.",
+        "options": [
+          "thousand",
+          "thousands",
+          "the thousand",
+          "one thousand"
+        ],
+        "correct": 1
+      }
+    ]
+  },
+  {
+    "type": "cloze",
+    "title": "二、克漏字選擇",
+    "meta": "8分，每題2分",
+    "passage": "Horton: ___1___ my first job interview tomorrow.\nJanelle: Great! I'm so happy for you. ___2___\nHorton: My favorite white T-shirt and blue jeans.\nJanelle: Are you sure? Well, ___3___ job interviews, you might need to wear something formal.\nHorton: Like what?\nJanelle: Like a shirt and ___4___. Maybe a tie, too.\nHorton: A tie? I'm not trying to be a salesman. I'm trying to be a model.\nJanelle: I see. Then your choice is fine. You'll be great!\n\n【字詞】formal 正式的　model 模特兒",
+    "items": [
+      {
+        "options": [
+          "I had",
+          "I'll have",
+          "I was having",
+          "I'm going to be"
+        ],
+        "correct": 1
+      },
+      {
+        "options": [
+          "Do you need help with anything?",
+          "How fast can you change clothes?",
+          "What are you going to wear to the interview?",
+          "Are you going to shop for some new clothes?"
+        ],
+        "correct": 2
+      },
+      {
+        "options": [
+          "on",
+          "for",
+          "with",
+          "from"
+        ],
+        "correct": 1
+      },
+      {
+        "options": [
+          "a beautiful dress",
+          "an expensive ring",
+          "a pair of black pants",
+          "a nice pair of glasses"
+        ],
+        "correct": 2
+      }
+    ]
+  },
+  {
+    "type": "reading",
+    "title": "三、依短文或圖表選出適當的答案",
+    "meta": "15分，每題3分",
+    "passages": [
+      {
+        "label": "【A】Nora's Clothes Shop　Summer Sale (July 21–July 31)",
+        "text": "",
+        "image": "images/test10/b3_sale.png",
+        "items": [
+          {
+            "q": "Chelsea was at Nora's Clothes Shop this morning. She saw a short skirt, but she didn't buy it. She is going back to Nora's to buy it tomorrow because she can get it for half price. What is the date today?",
+            "options": [
+              "July 20.",
+              "July 21.",
+              "July 30.",
+              "July 31."
+            ],
+            "correct": 0
+          },
+          {
+            "q": "Matt went to Nora's Clothes Shop on July 25. He got a T-shirt and four pairs of socks. How much did he spend there?",
+            "options": [
+              "NT$633.",
+              "NT$733.",
+              "NT$800.",
+              "NT$900."
+            ],
+            "correct": 2
+          },
+          {
+            "q": "Ritz wants to shop for her mom's birthday gift during the sale, but she only has three hundred dollars. What can she buy?",
+            "options": [
+              "A skirt.",
+              "A T-shirt.",
+              "A pair of jeans.",
+              "A pair of shorts."
+            ],
+            "correct": 3
+          }
+        ]
+      },
+      {
+        "label": "【B】",
+        "text": "    Do you spend a lot of money on clothes, but you still don't look good in them? Well, you don't need to spend a lot of money to look good. It's never about the price. It's all about putting clothes together. First, you need to know about colors. Some colors <u>match</u> with each other; some don't. Matching colors is not putting the same color together. It's putting different colors together, but they still look great. You can start by wearing black and white or other dark colors and white. A white T-shirt goes well with a pair of blue jeans or a black skirt. That can look good on anyone. Also, knowing your skin color is important, too. People with dark skin look great in bright colors. On the other hand, dark colors look good on people with lighter skin colors. Matching your clothes is an easy way to look good. Next week, I am going to talk more about the use of hats. See you then!\n\n【字詞】look 看起來　anyone 任何人　skin 皮膚　lighter 較淺的",
+        "items": [
+          {
+            "q": "When two things <u>match</u>, they ___.",
+            "options": [
+              "look cheap",
+              "look good together",
+              "are both expensive",
+              "look funny on a person"
+            ],
+            "correct": 1
+          },
+          {
+            "q": "Four people read the article（文章）and wrote down their thoughts（想法）. Who has different thoughts from the writer?<div style=\"background:#fff;border:1px solid var(--paper-line);border-radius:8px;padding:10px 14px;margin-bottom:8px;\"><b>Doris</b>（August 25 7:45 p.m.）<br>I like being in the sun, so my skin is very dark. I don't wear black at all because my skin doesn't look good in that color. I like wearing bright colors to look full of life.</div><div style=\"background:#fff;border:1px solid var(--paper-line);border-radius:8px;padding:10px 14px;margin-bottom:8px;\"><b>Cayden</b>（August 25 11:12 a.m.）<br>Come visit my room, and you will see a lot of white T-shirts. Really, I don't have T-shirts in any other color, and I only have two pairs of jeans. One blue and one black. That's it. I don't need anything else.</div><div style=\"background:#fff;border:1px solid var(--paper-line);border-radius:8px;padding:10px 14px;margin-bottom:8px;\"><b>Kayla</b>（August 20 1:56 p.m.）<br>I like white, but pink is my favorite color. What's wrong with pink on pink? I have many pink clothes. I like wearing a pink dress with pink shoes. I look like a doll, and I love it.</div><div style=\"background:#fff;border:1px solid var(--paper-line);border-radius:8px;padding:10px 14px;margin-bottom:8px;\"><b>Tim</b>（August 17 9:06 p.m.）<br>This helped me a lot. Before, I always wore all black. Black T-shirt, black jeans, and black shoes—everything black. \"I look cool,\" I thought, but I was wrong. This week I started to wear a white T-shirt or white shoes with black jeans. People saw my changes and said to me, \"You look good.\"</div>",
+            "options": [
+              "Doris.",
+              "Cayden.",
+              "Kayla.",
+              "Tim."
+            ],
+            "correct": 2
+          }
+        ]
+      }
+    ]
+  }
+]
+};
+
+let currentMode = "quiz"; // quiz | print
+
+const contentEl = document.getElementById("content");
+const scoreBar = document.getElementById("scoreBar");
+const scoreText = document.getElementById("scoreText");
+
+function render(){
+  window.examAnswersRevealed = false;
+  contentEl.innerHTML = "";
+  DATA.sections.forEach((sec, si)=> contentEl.appendChild(renderSection(sec, si)));
+  if(currentMode==="quiz"){
+    scoreBar.classList.add("show");
+    updateScore();
+  } else {
+    scoreBar.classList.remove("show");
+    contentEl.querySelectorAll(".answer-reveal").forEach(e=>e.classList.add("show"));
+    contentEl.querySelectorAll(".opt").forEach(o=>o.classList.add("disabled"));
+    contentEl.querySelectorAll(".opt.is-correct").forEach(o=>o.classList.add("correct"));
+  }
+}
+
+function renderTable(t){
+  if(!t) return "";
+  const headHtml = `<tr>${t.head.map(h=>`<th>${h}</th>`).join("")}</tr>`;
+  const rowsHtml = t.rows.map(r=>`<tr>${r.map((c,ci)=>ci===0?`<th>${c}</th>`:`<td>${c}</td>`).join("")}</tr>`).join("");
+  return `${t.title ? `<div style="font-weight:700;text-align:center;color:var(--chalk-green);margin-bottom:6px;">${t.title}</div>`:""}
+    <table class="data-table"><thead>${headHtml}</thead><tbody>${rowsHtml}</tbody></table>
+    ${t.note ? `<div style="margin-top:8px;color:var(--ink-soft);font-size:13px;">${t.note}</div>` : ""}`;
+}
+
+function renderSection(sec, si){
+  const block = document.createElement("section");
+  block.className = "block";
+  block.innerHTML = `<h2>${sec.title}</h2><p class="meta">${sec.meta}</p>`;
+
+  if(sec.audio){
+    const audioEl = document.createElement("audio");
+    audioEl.controls = true;
+    audioEl.src = sec.audio;
+    block.appendChild(audioEl);
+  }
+
+  if(sec.image){
+    const im = document.createElement("img");
+    im.src = sec.image; im.alt = "題目附圖";
+    im.style.cssText = "width:100%;max-width:560px;display:block;margin:0 auto 16px;border-radius:8px;border:1px solid var(--paper-line);";
+    block.appendChild(im);
+  }
+
+  if(sec.wordbank){
+    const wb = document.createElement("div");
+    wb.className = "wordbank";
+    wb.innerHTML = sec.wordbank.map(w=>`<span class="wb-word">${w}</span>`).join("");
+    block.appendChild(wb);
+  }
+
+  if(sec.type==="vocab"){
+    sec.items.forEach((it,i)=>{
+      const q = document.createElement("div");
+      q.className = "q";
+      if(it.answers){
+        q.innerHTML = `<div class="q-text"><span class="q-num">${(sec.start||1)+i}.</span>${it.q}
+          &nbsp; ${it.answers.map(a=>`<input type="text" class="micro-blank" data-answer="${a}" style="width:${Math.max(90,a.length*13)}px;" placeholder="填入單字">`).join(" ")}</div>
+          <div class="answer-reveal">正解：${it.answers.join(", ")}</div>`;
+        q.querySelectorAll(".micro-blank").forEach(inp=>inp.addEventListener("input", ()=>checkMultiBlank(q)));
+      } else {
+        q.innerHTML = `<div class="q-text"><span class="q-num">${(sec.start||1)+i}.</span>${it.q}
+          &nbsp; <input type="text" class="blank" data-answer="${it.answer}" placeholder="填入單字">
+          <span class="feedback"></span></div>
+          <div class="answer-reveal">正解：${it.answer}</div>`;
+        const input = q.querySelector("input");
+        input.addEventListener("input", ()=>checkBlank(input));
+      }
+      block.appendChild(q);
+    });
+  }
+
+  else if(sec.type==="mc"){
+    sec.items.forEach((it,i)=>{
+      const q = document.createElement("div");
+      q.className = "q";
+      const optsHtml = it.options.map((op,oi)=>`
+        <div class="opt" data-idx="${oi}" data-correct="${oi===it.correct}">
+          <span class="tag">(${String.fromCharCode(65+oi)})</span><span>${op}</span>
+        </div>`).join("");
+      q.innerHTML = `<div class="q-text"><span class="q-num">${(sec.start||1)+i}.</span>${it.q||""}</div>
+        ${it.image ? `<img src="${it.image}" alt="題目附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">`:""}
+        <div class="opts">${optsHtml}</div>`;
+      q.querySelectorAll(".opt").forEach(optEl=>{
+        if(optEl.dataset.correct==="true") optEl.classList.add("is-correct");
+        optEl.addEventListener("click", ()=>selectOption(q, optEl));
+      });
+      block.appendChild(q);
+    });
+  }
+
+  else if(sec.type==="guided" || sec.type==="translation"){
+    sec.items.forEach((it,i)=>{
+      const q = document.createElement("div");
+      q.className = "q";
+      const prompt = sec.type==="guided" ? `${it.prompt} <em style="color:var(--ink-soft);font-style:normal;">${it.hint}</em>` : it.zh;
+      q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${prompt}</div>
+        ${it.image ? `<img src="${it.image}" alt="題目附圖" style="width:100%;max-width:240px;display:block;border-radius:8px;margin:4px 0 8px;border:1px solid var(--paper-line);">`:""}
+        <input type="text" class="line-answer" placeholder="請輸入英文句子">
+        <div class="check-row"><button class="mini-btn secondary reveal-btn" style="display:none;">對答案</button></div>
+        <div class="answer-reveal">正解：${it.answer}</div>`;
+      q.querySelector(".reveal-btn").addEventListener("click", (e)=>{
+        q.querySelector(".answer-reveal").classList.add("show");
+      });
+      block.appendChild(q);
+    });
+  }
+
+  else if(sec.type==="guided-multi"){
+    sec.items.forEach((it,i)=>{
+      const q = document.createElement("div");
+      q.className = "q";
+      const linesHtml = it.lines.map(line=>{
+        const parts = line.split(/\{\{(.*?)\}\}/g);
+        return parts.map((part,pi)=> pi%2===1
+          ? `<input type="text" class="micro-blank" data-answer="${part}" style="width:${Math.max(60,part.length*13)}px;">`
+          : part
+        ).join("");
+      }).join("<br>");
+      q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.zh ? it.zh+"<br>" : ""}${linesHtml}</div>
+        <div class="answer-reveal">正解：${it.lines.map(l=>l.replace(/\{\{(.*?)\}\}/g,"$1")).join("　")}</div>`;
+      q.querySelectorAll(".micro-blank").forEach(inp=>{
+        inp.addEventListener("input", ()=>checkMultiBlank(q));
+      });
+      block.appendChild(q);
+    });
+  }
+
+  else if(sec.type==="cloze"){
+    const passageDiv = document.createElement("div");
+    passageDiv.className = "passage";
+    passageDiv.textContent = sec.passage;
+    block.appendChild(passageDiv);
+    sec.items.forEach((it,i)=>{
+      const q = document.createElement("div");
+      q.className = "q";
+      const optsHtml = it.options.map((op,oi)=>`
+        <div class="opt" data-idx="${oi}" data-correct="${oi===it.correct}">
+          <span class="tag">(${String.fromCharCode(65+oi)})</span><span>${op}</span>
+        </div>`).join("");
+      q.innerHTML = `<div class="q-text"><span class="q-num">${(sec.start||1)+i}.</span></div><div class="opts">${optsHtml}</div>`;
+      q.querySelectorAll(".opt").forEach(optEl=>{
+        if(optEl.dataset.correct==="true") optEl.classList.add("is-correct");
+        optEl.addEventListener("click", ()=>selectOption(q, optEl));
+      });
+      block.appendChild(q);
+    });
+  }
+
+  else if(sec.type==="reading"){
+    sec.passages.forEach(p=>{
+      const passageDiv = document.createElement("div");
+      passageDiv.className = "passage";
+      passageDiv.innerHTML = `${p.label ? `<span class="passage-label">${p.label}</span>`:""}${p.text}${p.image ? `<img src="${p.image}" alt="附圖" style="width:100%;max-width:520px;display:block;margin:10px auto 0;border-radius:8px;border:1px solid var(--paper-line);">`:""}${p.table ? renderTable(p.table) : ""}`;
+      block.appendChild(passageDiv);
+      p.items.forEach((it,i)=>{
+        const q = document.createElement("div");
+        q.className = "q";
+        const optsHtml = it.options.map((op,oi)=>`
+          <div class="opt" data-idx="${oi}" data-correct="${oi===it.correct}">
+            <span class="tag">(${String.fromCharCode(65+oi)})</span><span>${op}</span>
+          </div>`).join("");
+        q.innerHTML = `<div class="q-text"><span class="q-num">${(p.start||1)+i}.</span>${it.q}</div>
+          ${it.image ? `<img src="${it.image}" alt="題目附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">`:""}
+          <div class="opts">${optsHtml}</div>`;
+        q.querySelectorAll(".opt").forEach(optEl=>{
+          if(optEl.dataset.correct==="true") optEl.classList.add("is-correct");
+          optEl.addEventListener("click", ()=>selectOption(q, optEl));
+        });
+        block.appendChild(q);
+      });
+    });
+  }
+
+  return block;
+}
+
+function selectOption(qEl, optEl){
+  if(currentMode!=="quiz") return;
+  if(qEl.dataset.answered==="true") return;
+  qEl.dataset.answered = "true";
+  qEl.querySelectorAll(".opt").forEach(o=>o.classList.add("disabled"));
+  optEl.classList.add("selected");
+  const correctOpt = qEl.querySelector('.opt[data-correct="true"]');
+  qEl.dataset.studentAnswer = optEl.textContent.trim();
+  qEl.dataset.correctAnswer = correctOpt ? correctOpt.textContent.trim() : "";
+  qEl.dataset.isCorrect = (optEl.dataset.correct==="true") ? "true" : "false";
+  updateScore();
+}
+
+function checkBlank(input){
+  const val = input.value.trim().toLowerCase();
+  const ans = input.dataset.answer.trim().toLowerCase();
+  const qEl = input.closest(".q");
+  if(val.length===0){ if(qEl) delete qEl.dataset.studentAnswer; updateScore(); return; }
+  if(qEl){
+    qEl.dataset.studentAnswer = input.value.trim();
+    qEl.dataset.correctAnswer = input.dataset.answer;
+    qEl.dataset.isCorrect = (val===ans) ? "true" : "false";
+  }
+  updateScore();
+}
+
+function checkMultiBlank(qEl){
+  const inputs = Array.from(qEl.querySelectorAll(".micro-blank"));
+  const anyEmpty = inputs.some(inp=>inp.value.trim().length===0);
+  if(anyEmpty){ delete qEl.dataset.studentAnswer; updateScore(); return; }
+  const allCorrect = inputs.every(inp=> inp.dataset.answer.split("/").some(a=>a.trim().toLowerCase() === inp.value.trim().toLowerCase()));
+  qEl.dataset.studentAnswer = inputs.map(inp=>inp.value.trim()).join(" / ");
+  qEl.dataset.correctAnswer = inputs.map(inp=>inp.dataset.answer).join(" / ");
+  qEl.dataset.isCorrect = allCorrect ? "true" : "false";
+  updateScore();
+}
+
+function updateScore(){
+  let total = 0, answered = 0, correct = 0;
+  contentEl.querySelectorAll(".q").forEach(q=>{
+    const gradable = q.querySelector(".opts") || q.querySelector("input.blank") || q.querySelector("input.micro-blank");
+    if(!gradable) return;
+    total++;
+    if(q.dataset.studentAnswer !== undefined){
+      answered++;
+      if(q.dataset.isCorrect === "true") correct++;
+    }
+  });
+  if(window.examAnswersRevealed){
+    scoreText.textContent = `${correct} / ${total}`;
+  } else {
+    scoreText.textContent = `已作答 ${answered} / ${total} 題`;
+  }
+}
+window.updateScore = updateScore;
+
+document.getElementById("resetBtn").addEventListener("click", render);
+document.getElementById("quizModeBtn").addEventListener("click", ()=>{
+  currentMode = "quiz";
+  document.getElementById("quizModeBtn").classList.add("active");
+  document.getElementById("printModeBtn").classList.remove("active");
+  render();
+});
+document.getElementById("printModeBtn").addEventListener("click", ()=>{
+  if(document.getElementById("printModeBtn").disabled) return;
+  currentMode = "print";
+  document.getElementById("printModeBtn").classList.add("active");
+  document.getElementById("quizModeBtn").classList.remove("active");
+  render();
+});
+
+window.unlockPrintMode = function(){
+  document.getElementById("printModeBtn").disabled = false;
+};
+
+render();
+</script>
+<script src="../sync.js"></script>
+</body>
+</html>
