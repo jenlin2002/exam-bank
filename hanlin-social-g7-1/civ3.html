@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>段考題庫｜公民第3回 - 第1~2章總複習（A卷）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@500;700&family=Noto+Sans+TC:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#faf6ec;
+    --paper-line:#e3dcc8;
+    --ink:#26332b;
+    --ink-soft:#5b6b5f;
+    --chalk-green:#2f4538;
+    --chalk-green-2:#3d5a48;
+    --pen-red:#b8433a;
+    --pen-red-soft:#f4dedb;
+    --ok-green:#3f7d52;
+    --ok-green-soft:#dfeee1;
+    --gold:#b5842a;
+    --radius:10px;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:"Noto Sans TC",sans-serif;
+    line-height:1.7;
+  }
+  header.hero{
+    background:var(--chalk-green);
+    color:#eef2ea;
+    padding:28px 20px 40px;
+    position:relative;
+  }
+  header.hero::after{
+    content:"";
+    position:absolute;
+    left:0; right:0; bottom:-1px;
+    height:14px;
+    background:repeating-linear-gradient(90deg,var(--paper) 0 18px, transparent 18px 20px);
+  }
+  .hero-inner{max-width:880px;margin:0 auto;}
+  .breadcrumb a{color:#cfe0d1;text-decoration:none;font-size:14px;}
+  .breadcrumb a:hover{text-decoration:underline;}
+  h1{
+    font-family:"Noto Serif TC",serif;
+    font-weight:700;
+    font-size:clamp(24px,4vw,34px);
+    margin:10px 0 6px;
+  }
+  .subtitle{color:#cfe0d1;font-size:15px;margin:0;}
+  main{max-width:880px;margin:0 auto;padding:28px 20px 80px;}
+
+  .controls{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:22px;
+  }
+  .mode-toggle{display:flex;border:2px solid var(--chalk-green);border-radius:999px;overflow:hidden;}
+  .mode-toggle button{
+    background:transparent;border:none;padding:8px 16px;font-size:14px;font-weight:700;
+    color:var(--chalk-green);cursor:pointer;font-family:"Noto Sans TC",sans-serif;
+  }
+  .mode-toggle button.active{background:var(--gold);color:#fff;}
+  .mode-toggle button:disabled{opacity:.4;cursor:not-allowed;}
+
+  .score-bar{
+    display:none;
+    align-items:center;
+    justify-content:space-between;
+    background:#fff;
+    border:1px solid var(--paper-line);
+    border-left:5px solid var(--gold);
+    border-radius:var(--radius);
+    padding:12px 18px;
+    margin-bottom:22px;
+    font-size:14px;
+  }
+  .score-bar.show{display:flex;}
+  .score-bar strong{font-size:18px;color:var(--gold);}
+  .score-bar button{
+    background:none;border:1px solid var(--ink-soft);color:var(--ink-soft);
+    border-radius:6px;padding:6px 12px;font-size:13px;cursor:pointer;
+  }
+
+  section.block{
+    background:#fff;
+    border:1px solid var(--paper-line);
+    border-radius:var(--radius);
+    padding:22px 22px 26px;
+    margin-bottom:20px;
+  }
+  .block h2{
+    font-family:"Noto Serif TC",serif;
+    font-size:19px;
+    margin:0 0 4px;
+    color:var(--chalk-green);
+  }
+  .block .meta{color:var(--ink-soft);font-size:13px;margin:0 0 16px;}
+
+  .q{margin-bottom:18px;padding-bottom:16px;border-bottom:1px dashed var(--paper-line);}
+  .q:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0;}
+  .q-text{font-size:15.5px;margin-bottom:8px;white-space:pre-line;}
+  .q-num{color:var(--gold);font-weight:700;margin-right:4px;}
+
+  .opts{display:grid;gap:8px;}
+  .opt{
+    display:flex;gap:8px;align-items:flex-start;
+    border:1.5px solid var(--paper-line);
+    border-radius:8px;
+    padding:9px 12px;
+    cursor:pointer;
+    font-size:14.5px;
+    background:#fffdf8;
+  }
+  .opt:hover{border-color:var(--chalk-green-2);}
+  .opt.selected{border-color:var(--chalk-green-2);background:#eef3ea;}
+  .opt.correct{border-color:var(--ok-green);background:var(--ok-green-soft);}
+  .opt.wrong{border-color:var(--pen-red);background:var(--pen-red-soft);}
+  .opt .tag{font-weight:700;color:var(--ink-soft);}
+  .opt.correct .tag{color:var(--ok-green);}
+  .opt.wrong .tag{color:var(--pen-red);}
+  .opt.disabled{cursor:default;}
+
+  .passage{
+    background:#f5f2e8;border-radius:8px;padding:14px 16px;margin-bottom:14px;
+    font-size:14.5px;white-space:pre-line;
+  }
+  .passage-label{font-weight:700;color:var(--chalk-green);margin-bottom:4px;display:block;}
+
+  .footer-link{
+    display:block;text-align:center;margin-top:30px;color:var(--chalk-green);
+    text-decoration:none;font-weight:700;font-size:14px;
+  }
+  .footer-link:hover{text-decoration:underline;}
+
+  @media print{
+    header.hero, .controls, .score-bar, .mini-btn, .footer-link{display:none !important;}
+    body{background:#fff;}
+    section.block{border:none;box-shadow:none;padding:8px 0;margin-bottom:14px;}
+    .opt.correct{background:none;border:none;font-weight:700;}
+    .opt.correct::after{content:" ← 正解";color:var(--pen-red);}
+    .opt{border:none;padding:2px 0;}
+    main{max-width:100%;padding:0 24px;}
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="breadcrumb"><a href="https://jenlin2002.github.io/">🏠 回總目錄</a> ／ <a href="../hanlin-social-g7-1.html" style="color:#cfe0d1;">段考題庫</a></div>
+    <h1>公民・第3回</h1>
+    <p class="subtitle">第1~2章 總複習｜翰林版七年級社會（一）Ａ卷</p>
+  </div>
+</header>
+
+<main>
+  <div class="controls">
+    <div class="mode-toggle">
+      <button id="quizModeBtn" class="active">✏️ 測驗模式</button>
+      <button id="printModeBtn" disabled title="完成測驗並送出成績後才能查看">🖨️ 完整題目與解答（送出成績後解鎖）</button>
+    </div>
+  </div>
+
+  <div class="score-bar" id="scoreBar">
+    <div>目前得分：<strong id="scoreText">0 / 0</strong>（僅計算選擇題）</div>
+    <button id="resetBtn">重新作答</button>
+  </div>
+
+  <div id="content"></div>
+
+  <a class="footer-link" href="../hanlin-social-g7-1.html">← 回段考題庫總覽</a>
+</main>
+
+<script>
+
+window.EXAM_META = { version: "A卷", examLabel: "公民第3回" };
+const DATA = {
+  sections: [
+    {
+      type:"mc",
+      title:"一、單題",
+      meta:"60%，每題3分",
+      items:[
+        {q:"馬修說他的國籍是透過歸化取得，所以不可能是經由下列哪一項方式取得？",options:["婚姻","收養","血統","投資移民"],correct:2},
+        {q:"民國110年12月18日，我國舉行全國性的公民投票，具有投票權的公民可在指定的投票所投下神聖一票。這是現代公民行使下列哪一項權利？",options:["自由權","參政權","平等權","生存權"],correct:1},
+        {q:"圖(一)是公民老師的簡報部分內容，由圖中內容判斷，老師想探討下列哪一議題？\n＊生命和自由\n＊不受奴役和酷刑\n＊意見和信仰自由\n＊獲得工作和教育",options:["家庭問題","學校教育","人權議題","公民德性"],correct:2},
+        {q:"小希看到洗衣機的廣告臺詞：「真是體貼老婆的好幫手！」這則廣告無形中傳遞何種觀念？",options:["公民基本德性","捍衛社會正義","種族自我優越","性別刻板印象"],correct:3},
+        {q:"新聞報導：「位於歐洲的匈牙利通過強制收容街友的法律，要求街友必須入住到政府設置的收容所，若是街友拒絕前往收容所，將會面臨驅趕、沒收私人物品，甚至坐牢等處罰。」上述立法強制收容街友引發眾人激辯，此屬於哪一議題？",options:["人權與人性尊嚴","隱私與科技發展","道德與民主法治","性別偏見與歧視"],correct:0},
+        {q:"圖(二)是光良說明參政權的例子，根據內容判斷，文中提到下列哪一項權利？\n「2024年的總統大選，法務部呼籲選民要依法投票。」",options:["自由權","公民投票權","罷免權","選舉權"],correct:3},
+        {q:"圖(三)是小美遇到鄰居老王的對話內容，老王的舉動讓小美心裡覺得很不舒服。老王這樣的舉動屬於下列何種行為？\n「你的胸部很大喔！能不能借我摸一下？」",options:["性別歧視","性騷擾","性別偏見","性侵害"],correct:1},
+        {q:"臺北101為了響應《世界人權宣言》75週年，與國家人權委員會合作，在世界人權日12月10日進行點燈活動。大樓外牆將呈現「人生而自由平等」等字樣，以表達對人權的重視。發表公布《世界人權宣言》為下列何者？",options:["美國","聯合國","英國","歐洲聯盟"],correct:1},
+        {q:"又又的課後學習單如圖(四)所示，根據圖中內容判斷，此學習單的主題應與何者最相關？\n「身體紅綠燈：『身體界線』是指我自己可以決定身體哪些地方可以被觸碰，哪些地方不可以。（請用紅筆畫出你不希望被觸摸的身體部位）【正面】【背面】」",options:["性別平等教育","義務教育","民主法治教育","環境教育"],correct:0},
+        {q:"公民課老師講解某概念的特性如圖(五)所示，根據圖中資料判斷，此概念應是下列何者？\n＊具有中華民國國籍\n＊受法律保障\n＊能夠行使參政權",options:["廣義公民","國民","狹義公民","人民"],correct:2},
+        {q:"公視曾製播「我們與惡的距離」，劇中描述一個幫隨機殺人犯辯護的法扶律師，他認為：「就算真正該死的人吧，他也跟我們一樣有人權。」以下有關殺人犯的相關敘述，何項正確？",options:["殺人犯是罪該萬死，無權爭取公平審判","殺人犯也有人權，人權是普世且平等的","殺人犯因罪刑重大而失去享有人性尊嚴","殺人犯是不受《憲法》基本權利的保障"],correct:1},
+        {q:"縣政府規畫在某村興建大型焚化爐，引起村民的反彈，村長召開村民大會，使出席的村民能夠表達自己對焚化爐在本村興建的意見。這些出席的村民行為表現出現代公民應具備的哪一項德性？",options:["參與公共事務","遵守法律規範","理性思考批判","和平尊重包容"],correct:0},
+        {q:"圖(六)是某地區的廁所標示，女廁中女子以高跟鞋和裙裝形象出現；男廁中男子以菸斗和褲裝形象出現。這圖片被公民老師拿來當教材，因為圖像中隱含哪一種性別意涵？",options:["性別刻板印象","性別偏見","生理性別","性別歧視"],correct:0},
+        {q:"文如是我國國民，她與美國人結婚後在美國生下一個兒子約翰，下列對於約翰國籍的說法何者正確？",options:["約翰不具有美國國籍","約翰不具我國國籍","約翰具有美國與我國國籍","約翰具有我國國籍，但不具美國國籍"],correct:2},
+        {q:"陳老師看新聞時，發現國際特赦組織關注的議題非常廣泛又有深度，如圖(七)，由圖中內容判斷，下列何項敘述屬於該組織重視的核心價值？\n＊COVID-19疫情＆Human rights\n＊氣候變遷＆Human rights\n＊科技＆Human rights\n＊難民、尋求庇護者和移民\n＊性與生殖權利\n＊酷刑及不人道待遇",options:["人權與人性尊嚴","個人與家庭生活","權利與全球關聯","公民與公民德性"],correct:0},
+        {q:"圖(八)是某老師在臉書的心情留言，若該老師想尋求權利救濟途徑以教育學生，下列哪一項法律最能提供協助？\n「我在國中任職體育老師，昨天有位男同學歸還器材時，他的手臂在我胸前碰了一下，我以為他是不小心的，但下課後聽到他跟其他同學炫耀說碰到老師的胸部……。」",options:["《性騷擾防治法》","《性別平等工作法》","《性別平等教育法》","《少年事件處理法》"],correct:2},
+        {q:"圖(九)是一則有關安樂死的報導，文中被遮蔽處指的應該是下列哪一概念？\n「安樂死：生存權與＿＿的兩難抉擇。自有法律以來，殺人罪就一直存在於法律條文中，但這邊的『人』究竟包不包括自己，這是一直被討論的。在法律上，自殺多被認為是兩種基本權的衝突。」",options:["人性尊嚴","自我發展","性別平等","公共參與"],correct:0},
+        {q:"根據表(一)公民應具備的基本德性跟內容之配對判斷，下列哪一選項最為正確？\n選項　公民德性　　　內容\n甲　理性思考批判　對於媒體擁有辨別不實訊息的能力\n乙　遵守法律規範　民眾依法組成黑道幫派，幫助弱勢\n丙　參與公共事務　高學歷的菁英分子優先具有執政權\n丁　和平尊重包容　政府舉辦公聽會，限制民眾發言權",options:["甲","乙","丙","丁"],correct:0},
+        {q:"防疫記者會上有記者提問，一位小男孩不敢戴粉紅色的口罩去學校。針對此項提問，隔天出席記者會的官員們一併戴上粉紅色口罩，並說明男生也是可以戴粉紅色的口罩。上述旨在凸顯下列哪一概念？",options:["粉紅色已經成為當下最流行色系","男生不戴粉紅色是生理性別限制","官員的作法在打破性別刻板印象","用顏色區分性別屬於性騷擾行為"],correct:2},
+        {q:"王老師擔任學校性別平等教育委員會的委員之一，下列哪一情形，會由王老師協助調查？",options:["教師遭到學生性騷擾","幼童遭到公車司機性騷擾","雇主遭到員工性騷擾","教師遭到校長性騷擾"],correct:0}
+      ]
+    },
+    {
+      type:"reading",
+      title:"二、題組",
+      meta:"12%，每題3分",
+      passages:[
+        {
+          label:"(一)",
+          text:"外國媒體報導臺灣交通情況混亂，特別是「行人路權」未受到應有的尊重。澳洲、加拿大、日本、美國等多個國家針對臺灣交通情況，發出旅遊警示和僑民安全指南，提醒行人應注意綠燈過馬路時，必須留意來往車輛，並批評臺灣駕駛行為魯莽。\n為洗刷行人地獄的負面形象，行車未禮讓行人罰款新制上路，藉此改善行人被迫禮讓行車的狀況。立法院也通過《公路法》修正案，確保公路設計、施工、維護和交通工程均以保障行人安全為首要原則。",
+          items:[
+            {q:"根據引文判斷，我國公民哪一基本德性有待加強？",options:["參與公共事務","遵守法律規範","理性思考批判","捍衛公平正義"],correct:1},
+            {q:"上文中政府的作法是希望達到哪一目的？",options:["協助民眾學習辨別訊息能力","促成公民擴大參與公共事務","尊重每個人的價值與獨特性","以法律約束侵犯人權的行為"],correct:3}
+          ]
+        },
+        {
+          label:"(二)",
+          text:"初入職場的甜甜跟同事抱怨：「主管會搭我的肩膀，眼睛緊盯著我的胸部，有時還會刻意的碰觸我，然後說要不要和我去約會啊，我該怎麼辦才好呢？」",
+          items:[
+            {q:"根據甜甜的描述，她應該是遇到何種事情？",options:["性侵害","性別歧視","職場性騷擾","性別刻板印象"],correct:2},
+            {q:"甜甜可依何法來向公司提起申訴？",options:["《民法》","《性別平等工作法》","《憲法》","《性別平等教育法》"],correct:1}
+          ]
+        }
+      ]
+    },
+    {
+      type:"mc",
+      title:"三、進階思考題",
+      meta:"28%，每題4分",
+      items:[
+        {q:"2024年1月13日是我國總統、副總統選舉，依《總統副總統選舉罷免法》規定，下列敘述何者正確？",options:["選民滿18歲就可參與總統、副總統的投票","選民投票選總統、副總統為行使公民投票權","只要是中華民國的國民就可以參與選舉投票","選舉和罷免總統、副總統都屬於參政權範圍"],correct:3},
+        {q:"報載：某小學女童填寫「校園生活問卷」時提到，曾遭男同學說黃色笑話戲弄，學校啟動調查，女童事後遭同儕言語霸凌，引發雙方家長互告。上文中學校應依據下列何法展開調查？",options:["《民法》","《性別平等教育法》","《性騷擾防治法》","《性別平等工作法》"],correct:1},
+        {q:"圖(十)是《世界人權宣言》第一條的敘述，由內容判斷，下列何項敘述完全正確？\n「世界人權宣言第一條：人人生而自由，在尊嚴和權利上一律平等。他們賦有理性和良心，並應以兄弟關係的精神相對待。」",options:["顯示國民與公民間的主要差異","強調人權與人性尊嚴的重要性","富裕國家人民才享有人性尊嚴","人權需要透過後天爭取才擁有"],correct:1},
+        {q:"圖(十一)為大東閱讀報紙所刊登的文章，根據內容判斷，下列哪一種權利的行使可以適度改善這一種現象？\n「某學者評論英國制度時，寫道：『人民相信自己擁有自由，這真是個假象。只有在投票選舉國會議員時，他們才是自由的，一旦選舉過後，人民就變成奴隸而一文不值。』」",options:["罷免權","選舉權","自由權","公民投票權"],correct:0},
+        {q:"身為現代公民，具備民主社會所需的基本德性是重要的課題，下列哪位同學的理解有誤？",options:["在在：參與公共事務不僅是權利，也是責任","花花：最有權勢的人應分享資源給最弱勢的成員","強強：若雙方立場、看法不同，應相互尊重與協調","讓讓：遵守法律是義務，違法應受到法律制裁"],correct:1},
+        {q:"表(二)為光華上臺報告「公民投票權與選舉權」所繪製的表格，根據內容判斷，有哪些正確？\n　　　　　　公民投票權　選舉權\n甲、國籍　　中華民國　　中華民國\n乙、年齡資格　20歲　　　20歲\n丙、法律規定　《憲法》　《憲法》\n丁、人民權利　參政權　　參政權",options:["甲乙","乙丙","甲丁","丙丁"],correct:2},
+        {q:"「就業弱勢圓夢計畫」招募100位圓夢志工，由志工們協助負擔家計的婦女、中高齡者、身心障礙者、原住民族、生活扶助戶、新住民等經濟弱勢者，提供他們較多的社會資源和保障機會。上述志工的作法，最符合現代公民應具備的哪一項德性？",options:["和平尊重包容","遵守法律規範","理性思考批判","捍衛公平正義"],correct:3}
+      ]
+    }
+
+  ]
+};
+
+let currentMode = "quiz"; // quiz | print
+
+const contentEl = document.getElementById("content");
+const scoreBar = document.getElementById("scoreBar");
+const scoreText = document.getElementById("scoreText");
+
+function render(){
+  window.examAnswersRevealed = false;
+  contentEl.innerHTML = "";
+  DATA.sections.forEach((sec, si)=> contentEl.appendChild(renderSection(sec, si)));
+  if(currentMode==="quiz"){
+    scoreBar.classList.add("show");
+    updateScore();
+  } else {
+    scoreBar.classList.remove("show");
+    contentEl.querySelectorAll(".opt").forEach(o=>o.classList.add("disabled"));
+    contentEl.querySelectorAll(".opt.is-correct").forEach(o=>o.classList.add("correct"));
+  }
+}
+
+function renderSection(sec, si){
+  const block = document.createElement("section");
+  block.className = "block";
+  block.innerHTML = `<h2>${sec.title}</h2><p class="meta">${sec.meta}</p>`;
+
+  if(sec.type==="mc"){
+    sec.items.forEach((it,i)=>{
+      const q = document.createElement("div");
+      q.className = "q";
+      const optsHtml = it.options.map((op,oi)=>`
+        <div class="opt" data-idx="${oi}" data-correct="${oi===it.correct}">
+          <span class="tag">(${String.fromCharCode(65+oi)})</span><span>${op}</span>
+        </div>`).join("");
+      const imgHtml = it.image ? `<img src="${it.image}" alt="題目附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">` : "";
+      const img2Html = it.image2 ? `<img src="${it.image2}" alt="題目附圖2" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">` : "";
+      q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q}</div>
+        ${imgHtml}${img2Html}
+        <div class="opts">${optsHtml}</div>`;
+      q.querySelectorAll(".opt").forEach(optEl=>{
+        if(optEl.dataset.correct==="true") optEl.classList.add("is-correct");
+        optEl.addEventListener("click", ()=>selectOption(q, optEl));
+      });
+      block.appendChild(q);
+    });
+  }
+
+  else if(sec.type==="reading"){
+    sec.passages.forEach(p=>{
+      const passageDiv = document.createElement("div");
+      passageDiv.className = "passage";
+      passageDiv.innerHTML = `${p.label ? `<span class="passage-label">${p.label}</span>`:""}${p.text}${p.image ? `<img src="${p.image}" alt="題組附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-top:10px;border:1px solid var(--paper-line);">`:""}`;
+      block.appendChild(passageDiv);
+      p.items.forEach((it,i)=>{
+        const q = document.createElement("div");
+        q.className = "q";
+        const optsHtml = it.options.map((op,oi)=>`
+          <div class="opt" data-idx="${oi}" data-correct="${oi===it.correct}">
+            <span class="tag">(${String.fromCharCode(65+oi)})</span><span>${op}</span>
+          </div>`).join("");
+        q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q}</div>
+          ${it.image ? `<img src="${it.image}" alt="題目附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">`:""}
+          <div class="opts">${optsHtml}</div>`;
+        q.querySelectorAll(".opt").forEach(optEl=>{
+          if(optEl.dataset.correct==="true") optEl.classList.add("is-correct");
+          optEl.addEventListener("click", ()=>selectOption(q, optEl));
+        });
+        block.appendChild(q);
+      });
+    });
+  }
+
+  return block;
+}
+
+function selectOption(qEl, optEl){
+  if(currentMode!=="quiz") return;
+  if(qEl.dataset.answered==="true") return;
+  qEl.dataset.answered = "true";
+  qEl.querySelectorAll(".opt").forEach(o=>o.classList.add("disabled"));
+  optEl.classList.add("selected");
+  const correctOpt = qEl.querySelector('.opt[data-correct="true"]');
+  qEl.dataset.studentAnswer = optEl.textContent.trim();
+  qEl.dataset.correctAnswer = correctOpt ? correctOpt.textContent.trim() : "";
+  qEl.dataset.isCorrect = (optEl.dataset.correct==="true") ? "true" : "false";
+  updateScore();
+}
+
+function updateScore(){
+  let total = 0, answered = 0, correct = 0;
+  contentEl.querySelectorAll(".q").forEach(q=>{
+    const gradable = q.querySelector(".opts");
+    if(!gradable) return;
+    total++;
+    if(q.dataset.studentAnswer !== undefined){
+      answered++;
+      if(q.dataset.isCorrect === "true") correct++;
+    }
+  });
+  if(window.examAnswersRevealed){
+    scoreText.textContent = `${correct} / ${total}`;
+  } else {
+    scoreText.textContent = `已作答 ${answered} / ${total} 題`;
+  }
+}
+window.updateScore = updateScore;
+
+document.getElementById("resetBtn").addEventListener("click", render);
+document.getElementById("quizModeBtn").addEventListener("click", ()=>{
+  currentMode = "quiz";
+  document.getElementById("quizModeBtn").classList.add("active");
+  document.getElementById("printModeBtn").classList.remove("active");
+  render();
+});
+document.getElementById("printModeBtn").addEventListener("click", ()=>{
+  if(document.getElementById("printModeBtn").disabled) return;
+  currentMode = "print";
+  document.getElementById("printModeBtn").classList.add("active");
+  document.getElementById("quizModeBtn").classList.remove("active");
+  render();
+});
+
+window.unlockPrintMode = function(){
+  document.getElementById("printModeBtn").disabled = false;
+};
+
+render();
+</script>
+<script src="../sync.js"></script>
+</body>
+</html>
