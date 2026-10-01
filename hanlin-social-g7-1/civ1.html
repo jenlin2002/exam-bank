@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>段考題庫｜公民第1回 - 第1章 公民與公民德性（A卷）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@500;700&family=Noto+Sans+TC:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#faf6ec;
+    --paper-line:#e3dcc8;
+    --ink:#26332b;
+    --ink-soft:#5b6b5f;
+    --chalk-green:#2f4538;
+    --chalk-green-2:#3d5a48;
+    --pen-red:#b8433a;
+    --pen-red-soft:#f4dedb;
+    --ok-green:#3f7d52;
+    --ok-green-soft:#dfeee1;
+    --gold:#b5842a;
+    --radius:10px;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:"Noto Sans TC",sans-serif;
+    line-height:1.7;
+  }
+  header.hero{
+    background:var(--chalk-green);
+    color:#eef2ea;
+    padding:28px 20px 40px;
+    position:relative;
+  }
+  header.hero::after{
+    content:"";
+    position:absolute;
+    left:0; right:0; bottom:-1px;
+    height:14px;
+    background:repeating-linear-gradient(90deg,var(--paper) 0 18px, transparent 18px 20px);
+  }
+  .hero-inner{max-width:880px;margin:0 auto;}
+  .breadcrumb a{color:#cfe0d1;text-decoration:none;font-size:14px;}
+  .breadcrumb a:hover{text-decoration:underline;}
+  h1{
+    font-family:"Noto Serif TC",serif;
+    font-weight:700;
+    font-size:clamp(24px,4vw,34px);
+    margin:10px 0 6px;
+  }
+  .subtitle{color:#cfe0d1;font-size:15px;margin:0;}
+  main{max-width:880px;margin:0 auto;padding:28px 20px 80px;}
+
+  .controls{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:22px;
+  }
+  .mode-toggle{display:flex;border:2px solid var(--chalk-green);border-radius:999px;overflow:hidden;}
+  .mode-toggle button{
+    background:transparent;border:none;padding:8px 16px;font-size:14px;font-weight:700;
+    color:var(--chalk-green);cursor:pointer;font-family:"Noto Sans TC",sans-serif;
+  }
+  .mode-toggle button.active{background:var(--gold);color:#fff;}
+  .mode-toggle button:disabled{opacity:.4;cursor:not-allowed;}
+
+  .score-bar{
+    display:none;
+    align-items:center;
+    justify-content:space-between;
+    background:#fff;
+    border:1px solid var(--paper-line);
+    border-left:5px solid var(--gold);
+    border-radius:var(--radius);
+    padding:12px 18px;
+    margin-bottom:22px;
+    font-size:14px;
+  }
+  .score-bar.show{display:flex;}
+  .score-bar strong{font-size:18px;color:var(--gold);}
+  .score-bar button{
+    background:none;border:1px solid var(--ink-soft);color:var(--ink-soft);
+    border-radius:6px;padding:6px 12px;font-size:13px;cursor:pointer;
+  }
+
+  section.block{
+    background:#fff;
+    border:1px solid var(--paper-line);
+    border-radius:var(--radius);
+    padding:22px 22px 26px;
+    margin-bottom:20px;
+  }
+  .block h2{
+    font-family:"Noto Serif TC",serif;
+    font-size:19px;
+    margin:0 0 4px;
+    color:var(--chalk-green);
+  }
+  .block .meta{color:var(--ink-soft);font-size:13px;margin:0 0 16px;}
+
+  .q{margin-bottom:18px;padding-bottom:16px;border-bottom:1px dashed var(--paper-line);}
+  .q:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0;}
+  .q-text{font-size:15.5px;margin-bottom:8px;white-space:pre-line;}
+  .q-num{color:var(--gold);font-weight:700;margin-right:4px;}
+
+  .opts{display:grid;gap:8px;}
+  .opt{
+    display:flex;gap:8px;align-items:flex-start;
+    border:1.5px solid var(--paper-line);
+    border-radius:8px;
+    padding:9px 12px;
+    cursor:pointer;
+    font-size:14.5px;
+    background:#fffdf8;
+  }
+  .opt:hover{border-color:var(--chalk-green-2);}
+  .opt.selected{border-color:var(--chalk-green-2);background:#eef3ea;}
+  .opt.correct{border-color:var(--ok-green);background:var(--ok-green-soft);}
+  .opt.wrong{border-color:var(--pen-red);background:var(--pen-red-soft);}
+  .opt .tag{font-weight:700;color:var(--ink-soft);}
+  .opt.correct .tag{color:var(--ok-green);}
+  .opt.wrong .tag{color:var(--pen-red);}
+  .opt.disabled{cursor:default;}
+
+  .passage{
+    background:#f5f2e8;border-radius:8px;padding:14px 16px;margin-bottom:14px;
+    font-size:14.5px;white-space:pre-line;
+  }
+  .passage-label{font-weight:700;color:var(--chalk-green);margin-bottom:4px;display:block;}
+
+  .footer-link{
+    display:block;text-align:center;margin-top:30px;color:var(--chalk-green);
+    text-decoration:none;font-weight:700;font-size:14px;
+  }
+  .footer-link:hover{text-decoration:underline;}
+
+  @media print{
+    header.hero, .controls, .score-bar, .mini-btn, .footer-link{display:none !important;}
+    body{background:#fff;}
+    section.block{border:none;box-shadow:none;padding:8px 0;margin-bottom:14px;}
+    .opt.correct{background:none;border:none;font-weight:700;}
+    .opt.correct::after{content:" ← 正解";color:var(--pen-red);}
+    .opt{border:none;padding:2px 0;}
+    main{max-width:100%;padding:0 24px;}
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="breadcrumb"><a href="https://jenlin2002.github.io/">🏠 回總目錄</a> ／ <a href="../hanlin-social-g7-1.html" style="color:#cfe0d1;">段考題庫</a></div>
+    <h1>公民・第1回</h1>
+    <p class="subtitle">第1章 公民與公民德性｜翰林版七年級社會（一）Ａ卷</p>
+  </div>
+</header>
+
+<main>
+  <div class="controls">
+    <div class="mode-toggle">
+      <button id="quizModeBtn" class="active">✏️ 測驗模式</button>
+      <button id="printModeBtn" disabled title="完成測驗並送出成績後才能查看">🖨️ 完整題目與解答（送出成績後解鎖）</button>
+    </div>
+  </div>
+
+  <div class="score-bar" id="scoreBar">
+    <div>目前得分：<strong id="scoreText">0 / 0</strong>（僅計算選擇題）</div>
+    <button id="resetBtn">重新作答</button>
+  </div>
+
+  <div id="content"></div>
+
+  <a class="footer-link" href="../hanlin-social-g7-1.html">← 回段考題庫總覽</a>
+</main>
+
+<script>
+
+window.EXAM_META = { version: "A卷", examLabel: "公民第1回" };
+const DATA = {
+  sections: [
+    {
+      type:"mc",
+      title:"一、單題",
+      meta:"60%，每題3分",
+      items:[
+        {q:"根據《中華民國憲法》的規定，只要是中華民國國民都擁有中華民國的哪一要件？",options:["國籍","主權","政權","健保"],correct:0},
+        {q:"圖(一)是老師寫在黑板上的題目：「公民與國民最大的差別在於何種權利的行使？」下列哪一位同學的答案正確？",options:["大光：自由權","惠玉：參政權","光天：隱私權","梅玉：平等權"],correct:1},
+        {q:"素玲具有中華民國國籍，但她的小孩是她留學美國時在美國出生，因此擁有美國籍。素玲的小孩是以哪一種方式取得美國國籍？",options:["血統規則","出生地規則","歸化取得","屬人原則"],correct:1},
+        {q:"身為國中生必須了解我們都是未來公民，必須具備現代公民的基本德性，並且了解民主應該建立在下列何者之上？",options:["勝利","自由","法治","宗教"],correct:2},
+        {q:"上公民課時，老師介紹某一個名詞時提到：「□□是依法達到法定年齡，能夠行使參政權的國民。」上述□□是指下列何者？",options:["居民","平民","人民","公民"],correct:3},
+        {q:"在韓國出生的朴柱亨，小時候被義大利籍的卡薩諾夫婦收養，改名為文森佐．卡薩諾，不只取得義大利國籍，並完成高等教育成為一名律師。文森佐取得義大利國籍的途徑為何？",options:["血統規則","出生地規則","歸化取得","屬地原則"],correct:2},
+        {q:"右表為明光上課介紹我國公民參政權資格的規定，根據內容判斷，ㄅㄆㄇ的年齡大小排列，依序為下列何者？\n例子　　　　　法定年齡\n選出臺南市長　ㄅ\n罷免立委　　　ㄆ\n參與公民投票　ㄇ",options:["ㄅ＝ㄆ＞ㄇ","ㄅ＞ㄆ＞ㄇ","ㄅ＞ㄆ＝ㄇ","ㄅ＝ㄆ＝ㄇ"],correct:0},
+        {q:"社會的進步需要大家共同參與，「參與公共事務」是現代公民應具備的基本德性之一，下列何人的行為符合上述內容？",options:["冠廷遵守交通規則","詩涵辨別真假訊息","怡君參與社區服務","志豪捐發票助弱勢"],correct:2},
+        {q:"小襺和小善是青梅竹馬，對政治很感興趣，當他們年滿18歲時，曾相約一起返鄉投票，以行使參政權。依我國法律規定，他們當年行使的應是何項權利？",options:["選舉總統","公民投票權","選舉立法委員","罷免桃園市議員"],correct:1},
+        {q:"身為現代公民，應積極參與公共事務，此一基本公民德性具有下列哪一特性？",options:["是權利，不是義務","是權利，也是責任","是義務，也是責任","不是權利，是義務"],correct:1},
+        {q:"取得國籍途徑的屬人原則，是指一個人出生後，只要父母一方為本國人，子女就獲得父母一方或兩方的國籍，上述擁有國籍的國民是以下列何者為認定標準？",options:["血統","情感","膚色","出生地"],correct:0},
+        {q:"在民主國家中公民是享有法律身分的國民，一方面享有《憲法》賦予的＿甲＿，另一方面也必須遵守國家制定的＿乙＿，甲、乙依序為下列何者？",options:["權利、法律規範","義務、法律規範","權利、宗教信仰","義務、宗教信仰"],correct:0},
+        {q:"2021年雅雯第一次參與投票，她領到的選票如圖(二)。根據圖中內容判斷，雅雯參與的投票應為下列何者？\n「同意／不同意　17　您是否同意核四啟封商轉發電？」",options:["陳情","選舉","罷免","公民投票"],correct:3},
+        {q:"公民有廣義與狹義兩種意涵，下列何者具有「狹義公民」的身分？",options:["具有中華民國國籍","領取中華民國身分證","在中華民國領土內出生","能行使總統大選投票權"],correct:3},
+        {q:"圖(三)為老師測驗學生有關公民投票的題目，根據內容判斷，甲、乙依序應填入下列何者？\n「依據　甲　規定：『中華民國國民年滿　乙　歲者，有公民投票權。』」",options:["《中華民國憲法》、20","《中華民國憲法》、18","《公民投票法》、20","《公民投票法》、18"],correct:3},
+        {q:"藝人瑞莎因婚姻而留在臺灣發展，期間放棄烏克蘭國籍，耗費多年才取得中華民國身分證。瑞莎是以哪一種方式取得中華民國國籍？",options:["血統規則","出生地規則","屬地原則","歸化取得"],correct:3},
+        {q:"原住民族在臺灣是少數族群，如果採用多數決，則會成為政治權力的弱勢，因此《憲法》中有原住民族立委保障名額的設計。上述規定是在落實現代公民哪一項基本德性的保障？",options:["捍衛公平正義","和平尊重包容","理性思考批判","遵守法律規範"],correct:0},
+        {q:"大同對忠華說：「今年1月我剛好符合參與我國總統選舉的最低投票年齡。」根據上述判斷，大同今年最可能是幾歲？",options:["18歲","19歲","20歲","21歲"],correct:2},
+        {q:"某立法委員遭到不滿其政策的團體連署要求去職，經選舉區的選民投票，但投票結果未達到使他去職的門檻。選民投票決定該立法委員是否去職的權利是屬於下列哪一種權利？",options:["選舉權","罷免權","自由權","公民投票權"],correct:1},
+        {q:"下列是四位網友在網路聊天室聊天的內容，僅根據他們的敘述判斷，何者在聊天當時最可能具有中華民國國籍？",options:["小萍：我的出生地是美國，不過現在在臺灣工作","小瑋：上週我生日，父親正好當選屏東縣縣議員","小君：我的父母都是日本人，但我在花蓮縣出生","小文：等了五年，我下週將前往內政部申請歸化"],correct:1}
+      ]
+    },
+    {
+      type:"reading",
+      title:"二、題組",
+      meta:"12%，每題3分",
+      passages:[
+        {
+          label:"(一)",
+          text:"從2022年爆發且持續僵持的俄烏戰爭，到2026年初美、以、伊三方在波斯灣的軍事對峙與空襲，種種跡象顯示全球的衝突已經變得更加複雜且多元化，對全球的環境和生命造成極大的損害。面對這樣不穩定的世界局勢，聯合國的非政府組織以及世界公民總會等團體在11月16日的「國際寬容日」舉辦了一場線上論壇，主題是「用愛、寬容和良心捍衛自由與人權」，邀請各行各業不同年齡層的談論者分享他們對「國際寬容日」的期望和建議，呼籲社會和國家以寬容的精神尊重自由和人權。",
+          items:[
+            {q:"根據「國際寬容日」線上論壇的主題判斷，身為社會的一分子，我們應該提升何種公民基本德性，才有助於減少紛爭與衝突？",options:["理性思考批判","和平尊重包容","遵守法律規範","參與公共事務"],correct:1},
+            {q:"七年級的欣瑜，平時熱衷關注政治時事，她主動參加這場線上論壇，此行為應與下列哪個公民基本德性最相關？",options:["和平尊重包容","參與公共事務","理性思考批判","捍衛公平正義"],correct:1}
+          ]
+        },
+        {
+          label:"(二)",
+          text:"2024年1月13日，我國舉行第16任總統副總統選舉時，小夫20歲、胖虎23歲、靜香30歲、大雄40歲，他們皆到投票所投下神聖的一票。由於選民非常關注此次選舉，因此締造當天7成的高投票率。",
+          items:[
+            {q:"選民投票是行使哪一項權利？",options:["選舉權","罷免權","平等權","公民投票權"],correct:0},
+            {q:"上文中畫線處，主要表現出這四個人屬於何種身分？",options:["廣義公民","狹義公民","人民","國民"],correct:1}
+          ]
+        }
+      ]
+    },
+    {
+      type:"mc",
+      title:"三、進階思考題",
+      meta:"28%，每題4分",
+      items:[
+        {q:"彭蒙惠是「空中英語教室」的創辦人，在臺灣致力英語教育超過70年，對於提升國人的英語能力和國際視野做出了顯著貢獻。2023年，經過內政部許可，正式歸化取得中華民國國籍。彭蒙惠取得國籍的方式，與下列何人相同？",options:["出生在美國的書豪","父母為臺灣人的恩琪","原日本籍玲奈嫁給臺灣人","來臺灣工作的英國籍漢克"],correct:2},
+        {q:"依據我國相關法規的規定，圖(四)中有哪幾位具有公民投票權？\n(甲)17歲李明志　(乙)19歲吳天水　(丙)18歲王遠哲　(丁)21歲張子恆",options:["(甲)(乙)(丙)","(甲)(丙)(丁)","(乙)(丙)(丁)","(甲)(乙)(丁)"],correct:2},
+        {q:"圖(五)為大天與玉如在網站上看到的招募訊息，二人立刻報名。根據內容判斷，他們參加該活動的行為可表現出現代公民具備的哪一項基本德性？\n「海客任務──國聖埔海灘淨灘行動招募志工\n〈主辦單位〉：臺灣環境資訊協會\n〈行動目的〉：清除海岸邊廢棄物，還沙灘美麗的面貌」",options:["參與公共事務","遵守法律規範","理性思考批判","捍衛公平正義"],correct:0},
+        {q:"家貞常在家庭群組中表達自己對於時政的看法，舅舅雖然和家貞的立場、看法不同，但仍然尊重家貞表達意見的自由。上述表現出的公民基本德性與下列哪一選項相同？",options:["積極參與社區事務的討論","班會上人人皆能發表意見","喝酒不開車，開車不喝酒","規畫身心障礙專用停車位"],correct:1},
+        {q:"圖(六)為承恩的日記內容，有關公民基本德性的敘述，下列何者正確？\n「9月13日　星期一\n今天上學時，我們被校門口的警察攔下：『騎機車跟搭乘機車的人都要戴安全帽！』媽媽因此被開了罰單。\n警察為什麼不去捉壞人呢？只管這些小事，搞得媽媽生氣，我也跟著遭殃。」",options:["承恩抱怨警察開立罰單，符合理性思考批判","警察應理性溝通，給違規的民眾多一點包容","日記內容反映出部分民眾未遵守法律的規範","警察針對交通違規者開罰單，捍衛公平正義"],correct:2},
+        {q:"2024年1月我國舉行總統大選，各政黨推出候選人參與選舉，在電視、網路等傳播媒體有許多假訊息充斥，公民對於這些假訊息必須具備下列哪一項基本德性，才能避免盲目附會他人的論點？",options:["參與公共事務","遵守法律規範","理性思考批判","和平尊重包容"],correct:2},
+        {q:"圖(七)為老師上課介紹公民權利的行使所列出的項目，根據內容判斷，哪一項權利行使的法定年齡與其他不同？\n「公民權利的行使：甲、罷免權　乙、選舉權　丙、公民投票權」",options:["甲","乙","丙","皆不同"],correct:2}
+      ]
+    }
+
+  ]
+};
+
+let currentMode = "quiz"; // quiz | print
+
+const contentEl = document.getElementById("content");
+const scoreBar = document.getElementById("scoreBar");
+const scoreText = document.getElementById("scoreText");
+
+function render(){
+  window.examAnswersRevealed = false;
+  contentEl.innerHTML = "";
+  DATA.sections.forEach((sec, si)=> contentEl.appendChild(renderSection(sec, si)));
+  if(currentMode==="quiz"){
+    scoreBar.classList.add("show");
+    updateScore();
+  } else {
+    scoreBar.classList.remove("show");
+    contentEl.querySelectorAll(".opt").forEach(o=>o.classList.add("disabled"));
+    contentEl.querySelectorAll(".opt.is-correct").forEach(o=>o.classList.add("correct"));
+  }
+}
+
+function renderSection(sec, si){
+  const block = document.createElement("section");
+  block.className = "block";
+  block.innerHTML = `<h2>${sec.title}</h2><p class="meta">${sec.meta}</p>`;
+
+  if(sec.type==="mc"){
+    sec.items.forEach((it,i)=>{
+      const q = document.createElement("div");
+      q.className = "q";
+      const optsHtml = it.options.map((op,oi)=>`
+        <div class="opt" data-idx="${oi}" data-correct="${oi===it.correct}">
+          <span class="tag">(${String.fromCharCode(65+oi)})</span><span>${op}</span>
+        </div>`).join("");
+      const imgHtml = it.image ? `<img src="${it.image}" alt="題目附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">` : "";
+      const img2Html = it.image2 ? `<img src="${it.image2}" alt="題目附圖2" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">` : "";
+      q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q}</div>
+        ${imgHtml}${img2Html}
+        <div class="opts">${optsHtml}</div>`;
+      q.querySelectorAll(".opt").forEach(optEl=>{
+        if(optEl.dataset.correct==="true") optEl.classList.add("is-correct");
+        optEl.addEventListener("click", ()=>selectOption(q, optEl));
+      });
+      block.appendChild(q);
+    });
+  }
+
+  else if(sec.type==="reading"){
+    sec.passages.forEach(p=>{
+      const passageDiv = document.createElement("div");
+      passageDiv.className = "passage";
+      passageDiv.innerHTML = `${p.label ? `<span class="passage-label">${p.label}</span>`:""}${p.text}${p.image ? `<img src="${p.image}" alt="題組附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-top:10px;border:1px solid var(--paper-line);">`:""}`;
+      block.appendChild(passageDiv);
+      p.items.forEach((it,i)=>{
+        const q = document.createElement("div");
+        q.className = "q";
+        const optsHtml = it.options.map((op,oi)=>`
+          <div class="opt" data-idx="${oi}" data-correct="${oi===it.correct}">
+            <span class="tag">(${String.fromCharCode(65+oi)})</span><span>${op}</span>
+          </div>`).join("");
+        q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q}</div>
+          ${it.image ? `<img src="${it.image}" alt="題目附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">`:""}
+          <div class="opts">${optsHtml}</div>`;
+        q.querySelectorAll(".opt").forEach(optEl=>{
+          if(optEl.dataset.correct==="true") optEl.classList.add("is-correct");
+          optEl.addEventListener("click", ()=>selectOption(q, optEl));
+        });
+        block.appendChild(q);
+      });
+    });
+  }
+
+  return block;
+}
+
+function selectOption(qEl, optEl){
+  if(currentMode!=="quiz") return;
+  if(qEl.dataset.answered==="true") return;
+  qEl.dataset.answered = "true";
+  qEl.querySelectorAll(".opt").forEach(o=>o.classList.add("disabled"));
+  optEl.classList.add("selected");
+  const correctOpt = qEl.querySelector('.opt[data-correct="true"]');
+  qEl.dataset.studentAnswer = optEl.textContent.trim();
+  qEl.dataset.correctAnswer = correctOpt ? correctOpt.textContent.trim() : "";
+  qEl.dataset.isCorrect = (optEl.dataset.correct==="true") ? "true" : "false";
+  updateScore();
+}
+
+function updateScore(){
+  let total = 0, answered = 0, correct = 0;
+  contentEl.querySelectorAll(".q").forEach(q=>{
+    const gradable = q.querySelector(".opts");
+    if(!gradable) return;
+    total++;
+    if(q.dataset.studentAnswer !== undefined){
+      answered++;
+      if(q.dataset.isCorrect === "true") correct++;
+    }
+  });
+  if(window.examAnswersRevealed){
+    scoreText.textContent = `${correct} / ${total}`;
+  } else {
+    scoreText.textContent = `已作答 ${answered} / ${total} 題`;
+  }
+}
+window.updateScore = updateScore;
+
+document.getElementById("resetBtn").addEventListener("click", render);
+document.getElementById("quizModeBtn").addEventListener("click", ()=>{
+  currentMode = "quiz";
+  document.getElementById("quizModeBtn").classList.add("active");
+  document.getElementById("printModeBtn").classList.remove("active");
+  render();
+});
+document.getElementById("printModeBtn").addEventListener("click", ()=>{
+  if(document.getElementById("printModeBtn").disabled) return;
+  currentMode = "print";
+  document.getElementById("printModeBtn").classList.add("active");
+  document.getElementById("quizModeBtn").classList.remove("active");
+  render();
+});
+
+window.unlockPrintMode = function(){
+  document.getElementById("printModeBtn").disabled = false;
+};
+
+render();
+</script>
+<script src="../sync.js"></script>
+</body>
+</html>
