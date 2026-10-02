@@ -1,0 +1,46 @@
+META = dict(n=2, h1="第2回・1-2 多項式的加減", subtitle="1-2 多項式的加減", lesson="1-2", title="多項式的加減")
+IMG = "images/test2/"
+SECTIONS = [
+  dict(type="mc", title="一、選擇題", meta="【A部分 學力基礎題】每題3分，共30分", items=[
+    dict(q=r"下列哪些是多項式？<br>(甲) $5x-3+4x^2$　(乙) $7x^2+|x-3|$　(丙) $\dfrac{5}{x}+3$　(丁) $\dfrac{x}{5}+4$",
+         options=["(甲)(乙)","(甲)(丁)","(甲)(乙)(丙)","(甲)(丙)(丁)"], correct=1),
+    dict(q=r"若多項式 $A$、$B$ 均為 $x$ 的二次多項式，則 $A+B$ 的次數<u>不可能</u>為幾次？", options=["零次","一次","二次","三次"], correct=3),
+    dict(q=r"計算 $(x^2-x-1)-[2x^2-x+4+(2x^2-1)]$ 之值為何？", options=[r"$-3x^2+4$", r"$-3x^2-4$", r"$3x^2+4$", r"$3x^2-4$"], correct=1),
+    dict(q=r"已知一長方形的長、寬分別為 $3x^2-x+7$、$5x^2-3x-4$，則此長方形的周長為何？", options=[r"$16x^2-8x+6$", r"$16x^2-4x-6$", r"$16x^2+4x-6$", r"$8x^2-4x+3$"], correct=0),
+    dict(q=r"$5x^3-2x^2+4x-3$ 與 $3x^2-6x+2$ 的和加上下列哪一個式子後會等於 0？", options=[r"$-x^2+4x-2$", r"$5x^3+x^2-2x-1$", r"$5x^3+x^2-2x+1$", r"$-5x^3-x^2+2x+1$"], correct=3),
+    dict(q=r"在 $x$ 的多項式 $ax^2-x-a$ 與 $-3x^2+2ax+5$ 的和中，若常數項為 $b$，$x^2$ 項係數為 $-1$，則 $a-b$ 之值為何？", options=["2","1","$-1$","$-2$"], correct=2),
+    dict(q=r"已知 $a$、$b$、$c$ 皆為整數，且滿足 $|a-1|+2|b+1|+3|c|=1$，則 $ax^3+bx^2+cx+d$ 為 $x$ 的幾次多項式？", options=["必為三次多項式","必為二次多項式","為三次或二次多項式","為三次或一次多項式"], correct=2),
+    dict(q=r"甲、乙、丙三人計算 $(3x^2+8x+2)-(ax^2+bx+c)$ 得到的答案分別為 $6x^2+10x-1$、$6x-1$、$-6x^2+10x+5$。若甲只答對 $x^2$ 項，乙只答對 $x$ 項，丙只答對常數項，則下列選項何者正確？",
+         options=["$a=c$","$a+b=1$","$b+c=1$","$a+b+c=4$"], correct=0),
+    dict(pre="※請閱讀下列敘述後，回答 9.～10. 題\n老師想了解學生對多項式運算的學習狀況，抽選幾位同學上臺答題，如下圖所示。（黑板：兩多項式 A 和 B，其中 A＝x²－5x＋9，A＋B＝3x²＋4，求多項式 B＝？）",
+         preImage=IMG+"q9_board.png",
+         q="老師請<u>小花</u>先答題，若<u>小花</u>回答正確，則<u>小花</u>的答案為何？", options=[r"$2x^2-5x+5$", r"$2x^2+5x-5$", r"$2x^2-5x-5$", r"$2x^2+5x+5$"], correct=1),
+    dict(q=r"老師進一步請<u>阿福</u>計算 $2A-B$，但<u>阿福</u>卻誤算成 $2A+B$，除此之外沒有其他錯誤。請問<u>阿福</u>誤算的答案與 $2A-B$ 的正確答案相差多少？", options=[r"$8x-5$", r"$x^2-3x+5$", r"$4x^2-3x+2$", r"$4x^2+10x-10$"], correct=3),
+  ]),
+  dict(type="fill", title="二、非選擇題－填充", meta="每格4分，共20分", items=[
+    dict(q=r"計算 $(5x^2+2)+(3x^2-4x)-(2x^2-4x+1)=$", answers=["6x^2+1"], show=r"$6x^2+1$"),
+    dict(q=r"若 $ax^3+2x^2-x^3+ax^2-3x+4$ 為 $x$ 的二次多項式，則合併同類項後，$x^2$ 項的係數為", answers=["3"], show="3"),
+    dict(q=r"在右圖的多項式直式減法中，$\square$、$\triangle$、$\bigcirc$ 所代表的數之和為", image=IMG+"f3.png", answers=["1"], show="1"),
+    dict(q=r"如右圖，用面積分別為 $x^2$、$x$、1 平方單位的紙片數張拼成一個長方形，則此長方形的面積為多少平方單位？", image=IMG+"f4.png", answers=["2x^2+7x+6"], show=r"$2x^2+7x+6$ 平方單位"),
+    dict(q=r"已知多項式 $x^2-4x+7$ 減去多項式 $A$ 的差為 $-4x^2+3x-2$，則多項式 $A$ 為", answers=["5x^2-7x+9"], show=r"$5x^2-7x+9$"),
+  ]),
+  dict(type="calc", title="三、非選擇題－計算", meta="每題10分，共30分（過程寫在計算紙上，每小題填最後答案）", items=[
+    dict(q=r"<u>大成</u>解一個多項式運算的數學題，誤將「多項式 $C-$ 多項式 $D$」看成「多項式 $C+$ 多項式 $D$」，結果求得答案為 $5x^2-3x-7$，此外沒有其他計算錯誤。若多項式 $D$ 為 $2x^2+x-1$，請回答下列問題：",
+         parts=[dict(p=r"多項式 $C$ 為何？", answers=["3x^2-4x-6"], show=r"$3x^2-4x-6$"),
+                dict(p=r"「多項式 $C-$ 多項式 $D$」的正確答案為何？", answers=["x^2-5x-5"], show=r"$x^2-5x-5$")]),
+    dict(q=r"如右圖，四邊形 $ABCD$ 是一個長方形，$P$、$O$ 兩點分別在 $\overline{BC}$、$\overline{CD}$ 上。請根據圖中標示的長度回答下列問題：", image=IMG+"c2.png",
+         parts=[dict(p=r"請以 $x$ 的多項式表示 $\triangle APO$ 的面積。（6分）", answers=["20+5.5x","5.5x+20","(20+5.5x)","(5.5x+20)","20+11x/2","11x/2+20"], show=r"$(20+5.5x)$ 平方單位"),
+                dict(p=r"當 $x=2$ 時，求 $\triangle APO$ 的面積。（4分）", answers=["31"], show="31 平方單位")]),
+    dict(q=r"已知 $A=(a+3)x^3+(b+2)x^2+(a-b-7)x+5$ 為 $x$ 的一次多項式，請回答下列問題：",
+         parts=[dict(p=r"$a$、$b$ 之值各為何？（6分）", answers=["a=-3,b=-2","b=-2,a=-3"], show=r"$a=-3$，$b=-2$", hint="例：a=1,b=2"),
+                dict(p=r"多項式 $A$ 為何？（4分）", answers=["-8x+5","5-8x"], show=r"$-8x+5$")]),
+  ]),
+  dict(type="fill", title="非選擇題－填充", meta="【B部分 學力精熟題】每格4分，共20分", items=[
+    dict(q=r"若右圖的多邊形周長為 $6x+24$，且 $P$、$Q$、$R$ 分別表示其中三個邊長的長度，則 $P+Q+R=$", image=IMG+"b1.png", answers=["35"], show="35"),
+    dict(q=r"已知多項式 $A=2x^2+x-5$，多項式 $B=x^2-4x+3$，若 $\dfrac{1}{3}A-\dfrac{1}{2}B$ 計算的結果為 $ax^2+bx+c$，則 $a-b-c=$", answers=["1"], show="1"),
+    dict(q=r"若 $\dfrac{3}{4}x^{a+2b}$ 和 $5x^{b-c}$ 均為 $x$ 的一次多項式，則 $a+b+c=$", answers=["0"], show="0"),
+    dict(q=r"如右圖，$P$、$Q$ 是 $\overline{AB}$ 上的兩個點，若 $\overline{AP}=4x$，$\overline{PQ}=6x$，$\overline{QB}=2x$，分別以 $\overline{AB}$、$\overline{AP}$、$\overline{PQ}$、$\overline{QB}$ 為直徑畫四個半圓，則塗色部分的周長為多少？（圓周率 3.14…，以 $\pi$ 表示）", image=IMG+"b4.png",
+         answers=["12xπ","12πx","12xpi","12pix"], show=r"$12x\pi$", hint="π 可輸入 π 或 pi"),
+    dict(q=r"已知多項式 $A$ 為 $(a-3)x^2+(b+5)x-12$，多項式 $B$ 為 $(b+3)x^2+(7-a)x+6$，其中 $a$、$b$ 為兩數。若 $A$ 與 $B$ 皆為一次多項式，則多項式 $A+$ 多項式 $B=$", answers=["6x-6"], show=r"$6x-6$"),
+  ]),
+]

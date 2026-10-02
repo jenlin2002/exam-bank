@@ -186,6 +186,9 @@
   .parts li{margin-bottom:4px;}
   input.math-blank{width:200px;}
   .fill-hint{font-size:12.5px;color:var(--ink-soft);margin-left:4px;}
+  .calc-stem{margin:18px 0 8px;}
+  .calc-stem:first-of-type{margin-top:0;}
+  .q.calc-part{margin-left:1.4em;}
 </style>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
@@ -380,32 +383,73 @@ const DATA = {
   {
     "type": "calc",
     "title": "三、非選擇題－計算",
-    "meta": "每題10分，共30分（送出成績後顯示參考答案）",
+    "meta": "每題10分，共30分（過程寫在計算紙上，每小題填最後答案）",
     "items": [
       {
         "q": "<u>大成</u>解一個多項式運算的數學題，誤將「多項式 $C-$ 多項式 $D$」看成「多項式 $C+$ 多項式 $D$」，結果求得答案為 $5x^2-3x-7$，此外沒有其他計算錯誤。若多項式 $D$ 為 $2x^2+x-1$，請回答下列問題：",
         "parts": [
-          "多項式 $C$ 為何？",
-          "「多項式 $C-$ 多項式 $D$」的正確答案為何？"
-        ],
-        "answer": "(1) $3x^2-4x-6$　(2) $x^2-5x-5$"
+          {
+            "p": "多項式 $C$ 為何？",
+            "answers": [
+              "3x^2-4x-6"
+            ],
+            "show": "$3x^2-4x-6$"
+          },
+          {
+            "p": "「多項式 $C-$ 多項式 $D$」的正確答案為何？",
+            "answers": [
+              "x^2-5x-5"
+            ],
+            "show": "$x^2-5x-5$"
+          }
+        ]
       },
       {
         "q": "如右圖，四邊形 $ABCD$ 是一個長方形，$P$、$O$ 兩點分別在 $\\overline{BC}$、$\\overline{CD}$ 上。請根據圖中標示的長度回答下列問題：",
         "image": "images/test2/c2.png",
         "parts": [
-          "請以 $x$ 的多項式表示 $\\triangle APO$ 的面積。（6分）",
-          "當 $x=2$ 時，求 $\\triangle APO$ 的面積。（4分）"
-        ],
-        "answer": "(1) $(20+5.5x)$ 平方單位　(2) 31 平方單位"
+          {
+            "p": "請以 $x$ 的多項式表示 $\\triangle APO$ 的面積。（6分）",
+            "answers": [
+              "20+5.5x",
+              "5.5x+20",
+              "(20+5.5x)",
+              "(5.5x+20)",
+              "20+11x/2",
+              "11x/2+20"
+            ],
+            "show": "$(20+5.5x)$ 平方單位"
+          },
+          {
+            "p": "當 $x=2$ 時，求 $\\triangle APO$ 的面積。（4分）",
+            "answers": [
+              "31"
+            ],
+            "show": "31 平方單位"
+          }
+        ]
       },
       {
         "q": "已知 $A=(a+3)x^3+(b+2)x^2+(a-b-7)x+5$ 為 $x$ 的一次多項式，請回答下列問題：",
         "parts": [
-          "$a$、$b$ 之值各為何？（6分）",
-          "多項式 $A$ 為何？（4分）"
-        ],
-        "answer": "(1) $a=-3$，$b=-2$　(2) $-8x+5$"
+          {
+            "p": "$a$、$b$ 之值各為何？（6分）",
+            "answers": [
+              "a=-3,b=-2",
+              "b=-2,a=-3"
+            ],
+            "show": "$a=-3$，$b=-2$",
+            "hint": "例：a=1,b=2"
+          },
+          {
+            "p": "多項式 $A$ 為何？（4分）",
+            "answers": [
+              "-8x+5",
+              "5-8x"
+            ],
+            "show": "$-8x+5$"
+          }
+        ]
       }
     ]
   },
@@ -621,7 +665,7 @@ function renderSection(sec, si){
     sec.items.forEach((it,i)=>{
       const q = document.createElement("div");
       q.className = "q";
-      q.innerHTML = `<div class="q-text"><span class="q-num">${(sec.start||1)+i}.</span>${it.q}</div>
+      q.innerHTML = `<div class="q-text"><span class="q-num">${it.num || ((sec.start||1)+i)+"."}</span>${it.q}</div>
         ${it.image ? `<img src="${it.image}" alt="題目附圖" style="width:100%;max-width:260px;display:block;border-radius:8px;margin:4px 0 10px;border:1px solid var(--paper-line);background:#fff;">`:""}
         <div><input type="text" class="blank math-blank" placeholder="填入答案" autocomplete="off"><span class="feedback"></span>${it.hint ? `<span class="fill-hint">（${it.hint}）</span>` : ""}</div>
         <div class="answer-reveal">正解：${it.show}</div>`;
@@ -633,14 +677,24 @@ function renderSection(sec, si){
   }
 
   else if(sec.type==="calc"){
+    // 題幹＋附圖，每個小題各自一格最後答案（自動批改）；過程寫在紙上
     sec.items.forEach((it,i)=>{
-      const q = document.createElement("div");
-      q.className = "q";
-      q.innerHTML = `<div class="q-text"><span class="q-num">${(sec.start||1)+i}.</span>${it.q}</div>
-        ${it.image ? `<img src="${it.image}" alt="題目附圖" style="width:100%;max-width:260px;display:block;border-radius:8px;margin:4px 0 10px;border:1px solid var(--paper-line);background:#fff;">`:""}
-        <ol class="parts" type="1">${it.parts.map(p=>`<li>${p}</li>`).join("")}</ol>
-        <div class="answer-reveal">參考答案：${it.answer}</div>`;
-      block.appendChild(q);
+      const stem = document.createElement("div");
+      stem.className = "calc-stem";
+      stem.innerHTML = `<div class="q-text"><span class="q-num">${(sec.start||1)+i}.</span>${it.q}</div>
+        ${it.image ? `<img src="${it.image}" alt="題目附圖" style="width:100%;max-width:260px;display:block;border-radius:8px;margin:4px 0 10px;border:1px solid var(--paper-line);background:#fff;">`:""}`;
+      block.appendChild(stem);
+      it.parts.forEach((pt,pi)=>{
+        const q = document.createElement("div");
+        q.className = "q calc-part";
+        q.innerHTML = `<div class="q-text"><span class="q-num">${pt.label || "("+(pi+1)+")"}</span>${pt.p}</div>
+          <div><input type="text" class="blank math-blank" placeholder="填入最後答案" autocomplete="off"><span class="feedback"></span>${pt.hint ? `<span class="fill-hint">（${pt.hint}）</span>` : ""}</div>
+          <div class="answer-reveal">正解：${pt.show}</div>`;
+        const input = q.querySelector("input");
+        input.dataset.answer = pt.answers[0];
+        input.addEventListener("input", ()=>checkMath(input, pt.answers));
+        block.appendChild(q);
+      });
     });
   }
 
@@ -711,10 +765,21 @@ function checkMultiBlank(qEl){
 
 function normMath(s){
   return s.toLowerCase()
-    .replace(/[＋]/g,"+").replace(/[－−–—]/g,"-").replace(/[×＊]/g,"*").replace(/[／÷]/g,"/")
+    .replace(/[＋]/g,"+").replace(/[，、；;]/g,",").replace(/[（]/g,"(").replace(/[）]/g,")").replace(/[＝]/g,"=").replace(/[：]/g,":").replace(/[＜]/g,"<").replace(/[＞]/g,">").replace(/[－−–—]/g,"-").replace(/[×＊]/g,"*").replace(/[／÷]/g,"/")
     .replace(/²/g,"2").replace(/³/g,"3").replace(/\^/g,"").replace(/π/g,"pi")
-    .replace(/平方公分|平方公尺|平方單位|公分|公尺|單位/g,"")
-    .replace(/[\s　]+/g,"").replace(/[。．.]+$/,"");
+    .replace(/根號|sqrt/g,"√").replace(/\+-|\+\/-/g,"±").replace(/或|or|and|和/g,",")
+    .replace(/[\s　]+/g,"")
+    .replace(/平方公分|平方公尺|平方公寸|平方單位|公分|公尺|公寸|單位|元|個|人|%|％|\(重根\)|重根/g,"")
+    .replace(/√\((\w+)\)/g,"√$1").replace(/[。．.]+$/,"");
+}
+// 「或」「,」分隔的多個答案不計順序；座標 (a,b) 等括號包住的整串保留順序
+function canonMath(s){
+  let t = normMath(s).replace(/\*/g,"");
+  // 因式分解：係數＋括號因式的乘積，因式順序不同也算對
+  const m = t.match(/^(-?\d*)((?:\([^()]+\)\d?)+)$/);
+  if(m) t = m[1] + m[2].match(/\([^()]+\)\d?/g).sort().join("");
+  if(!t.includes(",") || /^\(.*\)$/.test(t)) return t;
+  return t.split(",").filter(Boolean).sort().join(",");
 }
 function checkMath(input, answers){
   const qEl = input.closest(".q");
@@ -722,7 +787,7 @@ function checkMath(input, answers){
   if(!val){ delete qEl.dataset.studentAnswer; updateScore(); return; }
   qEl.dataset.studentAnswer = val;
   qEl.dataset.correctAnswer = answers[0];
-  qEl.dataset.isCorrect = answers.some(a=>normMath(a)===normMath(val)) ? "true" : "false";
+  qEl.dataset.isCorrect = answers.some(a=>canonMath(a)===canonMath(val)) ? "true" : "false";
   updateScore();
 }
 

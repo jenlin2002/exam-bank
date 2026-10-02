@@ -39,6 +39,22 @@
    - 腳本裡寫死了路徑：`E:\GitHub\exam-bank`、公司電腦的 OneDrive 路徑。在家裡電腦使用前要先改成家裡的路徑。
    - 改錯字的流程：修改 `data*/tNN.py` → `python gen_pages.py`。
 
+### 2026-10-02（公司電腦）
+- 翰林二上**數學** A 卷第 1～2 回樣本：`hanlin-math-g8-1.html`、`hanlin-math-g8-1/test1~2.html`、`math.html`。**首頁 `index.html` 的數學入口尚未開放**，要等老師確認版面。
+- 數學版面：
+  - 用 KaTeX（cdnjs）排版，算式寫成 `$...$`。
+  - 選擇題可以加 `pre`（共用題組文字）。
+  - 填充題（`fill`）：自動批改，會把空格、`^`、²、全形符號、π/pi、單位統一後再比對，`answers` 可以列多種寫法。
+  - 計算題（`calc`）：每個小題一格最後答案、自動批改，過程寫在紙上（老師選 A 方案，不在網頁上打計算過程）。
+  - 試算表上的版別標成「數學A卷」。
+- 產生方式：`tools/hanlin-g8-1-build/` 裡的 `mathdata/tNN.py` → `python gen_math.py`；附圖用 `crop_math.py` 裁切。
+- 下午：數學 **A 卷第 1～15 回全部完成**，首頁 `index.html` 的「數學」入口已開放。
+  - 每回的附圖裁切座標寫在 `mathdata/tNN.py` 的 `CROPS`，`crop_math.py` 會依此裁切（A／B／C 卷通用）。
+  - 自動批改另外支援：根號（√/sqrt/根號）、±（+-）、「或」分隔的多解（不計順序）、因式分解的因式順序、全形符號、% 與單位。
+  - 15 頁都驗證過：每題的官方答案都判為正確、KaTeX 沒有錯誤、圖片都有載入。
+  - 待辦：數學 B、C 卷（原始檔在 `PDF-RAW-DATA/MATH/hanlin/hanlin-g8-1/`，資料放 `mathdataB/`、`mathdataC/`）。
+- 社會七上（翰林）是在家裡電腦做的，做到地理第 5 回 A 卷。截至 10/02 上午**尚未 Push 到 GitHub**。
+
 ### 待辦／注意
 - 以上變更要在 GitHub Desktop 裡 Commit + Push，換電腦後先 Pull。
 - 尚未製作：翰林二上數學網頁（原始檔已放進 `PDF-RAW-DATA/MATH/hanlin/hanlin-g8-1/`）。另外康軒數學 K 卷只在 OneDrive 裡，沒有放進專案。
