@@ -1,0 +1,859 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>段考題庫｜第6回 - 2-2 根式的運算</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@500;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#faf6ec;
+    --paper-line:#e3dcc8;
+    --ink:#26332b;
+    --ink-soft:#5b6b5f;
+    --chalk-green:#2f4538;
+    --chalk-green-2:#3d5a48;
+    --pen-red:#b8433a;
+    --pen-red-soft:#f4dedb;
+    --ok-green:#3f7d52;
+    --ok-green-soft:#dfeee1;
+    --gold:#b5842a;
+    --radius:10px;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:"Noto Sans TC",sans-serif;
+    line-height:1.7;
+  }
+  header.hero{
+    background:var(--chalk-green);
+    color:#eef2ea;
+    padding:28px 20px 40px;
+    position:relative;
+  }
+  header.hero::after{
+    content:"";
+    position:absolute;
+    left:0; right:0; bottom:-1px;
+    height:14px;
+    background:repeating-linear-gradient(90deg,var(--paper) 0 18px, transparent 18px 20px);
+  }
+  .hero-inner{max-width:880px;margin:0 auto;}
+  .breadcrumb a{color:#cfe0d1;text-decoration:none;font-size:14px;}
+  .breadcrumb a:hover{text-decoration:underline;}
+  h1{
+    font-family:"Noto Serif TC",serif;
+    font-weight:700;
+    font-size:clamp(24px,4vw,34px);
+    margin:10px 0 6px;
+  }
+  .subtitle{color:#cfe0d1;font-size:15px;margin:0;}
+  main{max-width:880px;margin:0 auto;padding:28px 20px 80px;}
+
+  .controls{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:22px;
+  }
+  .mode-toggle{display:flex;border:2px solid var(--chalk-green);border-radius:999px;overflow:hidden;}
+  .mode-toggle button{
+    background:transparent;border:none;padding:8px 16px;font-size:14px;font-weight:700;
+    color:var(--chalk-green);cursor:pointer;font-family:"Noto Sans TC",sans-serif;
+  }
+  .mode-toggle button.active{background:var(--gold);color:#fff;}
+  .mode-toggle button:disabled{opacity:.4;cursor:not-allowed;}
+
+  .score-bar{
+    display:none;
+    align-items:center;
+    justify-content:space-between;
+    background:#fff;
+    border:1px solid var(--paper-line);
+    border-left:5px solid var(--gold);
+    border-radius:var(--radius);
+    padding:12px 18px;
+    margin-bottom:22px;
+    font-size:14px;
+  }
+  .score-bar.show{display:flex;}
+  .score-bar strong{font-size:18px;color:var(--gold);}
+  .score-bar button{
+    background:none;border:1px solid var(--ink-soft);color:var(--ink-soft);
+    border-radius:6px;padding:6px 12px;font-size:13px;cursor:pointer;
+  }
+
+  section.block{
+    background:#fff;
+    border:1px solid var(--paper-line);
+    border-radius:var(--radius);
+    padding:22px 22px 26px;
+    margin-bottom:20px;
+  }
+  .block h2{
+    font-family:"Noto Serif TC",serif;
+    font-size:19px;
+    margin:0 0 4px;
+    color:var(--chalk-green);
+  }
+  .block .meta{color:var(--ink-soft);font-size:13px;margin:0 0 16px;}
+  .block audio{width:100%;margin-bottom:16px;}
+
+  .q{margin-bottom:18px;padding-bottom:16px;border-bottom:1px dashed var(--paper-line);}
+  .q:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0;}
+  .q-text{font-size:15.5px;margin-bottom:8px;}
+  .q-num{color:var(--gold);font-weight:700;margin-right:4px;}
+
+  .opts{display:grid;gap:8px;}
+  .wordbank{display:flex;flex-wrap:wrap;gap:8px;background:#f5f2e8;border:1px solid var(--paper-line);
+    border-radius:8px;padding:12px 14px;margin-bottom:16px;}
+  .wb-word{font-family:"Noto Sans TC",sans-serif;font-size:14px;font-weight:700;color:var(--chalk-green);
+    background:#fff;border:1px solid var(--paper-line);border-radius:6px;padding:4px 12px;}
+  .opt{
+    display:flex;gap:8px;align-items:flex-start;
+    border:1.5px solid var(--paper-line);
+    border-radius:8px;
+    padding:9px 12px;
+    cursor:pointer;
+    font-size:14.5px;
+    background:#fffdf8;
+  }
+  .opt:hover{border-color:var(--chalk-green-2);}
+  .opt.selected{border-color:var(--chalk-green-2);background:#eef3ea;}
+  .opt.correct{border-color:var(--ok-green);background:var(--ok-green-soft);}
+  .opt.wrong{border-color:var(--pen-red);background:var(--pen-red-soft);}
+  .opt .tag{font-weight:700;color:var(--ink-soft);}
+  .opt.correct .tag{color:var(--ok-green);}
+  .opt.wrong .tag{color:var(--pen-red);}
+  .opt.disabled{cursor:default;}
+
+  input.blank, input.line-answer{
+    font-family:"Noto Sans TC",sans-serif;
+    border:none;border-bottom:2px solid var(--chalk-green-2);
+    background:transparent;font-size:15px;padding:2px 4px;
+    width:150px;
+  }
+  input.line-answer{width:100%;margin-top:4px;}
+  .check-row{display:flex;gap:8px;margin-top:6px;flex-wrap:wrap;align-items:center;}
+  .mini-btn{
+    background:var(--chalk-green);color:#fff;border:none;border-radius:6px;
+    padding:6px 14px;font-size:13px;cursor:pointer;font-family:"Noto Sans TC",sans-serif;
+  }
+  .mini-btn.secondary{background:transparent;color:var(--chalk-green);border:1.5px solid var(--chalk-green);}
+  .feedback{font-size:13.5px;font-weight:700;}
+  .feedback.ok{color:var(--ok-green);}
+  .feedback.no{color:var(--pen-red);}
+  .answer-reveal{
+    display:none;margin-top:6px;font-size:14px;color:var(--chalk-green-2);
+    background:#eef3ea;border-radius:6px;padding:8px 12px;
+  }
+  .answer-reveal.show{display:block;}
+
+  .passage{
+    background:#f5f2e8;border-radius:8px;padding:14px 16px;margin-bottom:14px;
+    font-size:14.5px;white-space:pre-line;
+  }
+  .passage-label{font-weight:700;color:var(--chalk-green);margin-bottom:4px;display:block;}
+  .data-table{width:100%;border-collapse:collapse;margin-top:10px;font-size:13.5px;background:#fff;}
+  .data-table th, .data-table td{border:1px solid var(--paper-line);padding:6px 8px;text-align:center;}
+  .data-table th{background:#eef3ea;color:var(--chalk-green);}
+
+  .footer-link{
+    display:block;text-align:center;margin-top:30px;color:var(--chalk-green);
+    text-decoration:none;font-weight:700;font-size:14px;
+  }
+  .footer-link:hover{text-decoration:underline;}
+
+  @media print{
+    header.hero, .controls, .score-bar, .check-row, .mini-btn, .footer-link{display:none !important;}
+    body{background:#fff;}
+    section.block{border:none;box-shadow:none;padding:8px 0;margin-bottom:14px;}
+    .opt.correct{background:none;border:none;font-weight:700;}
+    .opt.correct::after{content:" ← 正解";color:var(--pen-red);}
+    .opt{border:none;padding:2px 0;}
+    .answer-reveal{display:block !important;background:none;padding:2px 0;}
+    main{max-width:100%;padding:0 24px;}
+  }
+  .katex{font-size:1.05em;}
+  .q-text .katex-display{margin:6px 0;}
+  .parts{margin:6px 0 4px 1.4em;padding:0;}
+  .parts li{margin-bottom:4px;}
+  input.math-blank{width:200px;}
+  .fill-hint{font-size:12.5px;color:var(--ink-soft);margin-left:4px;}
+  .calc-stem{margin:18px 0 8px;}
+  .calc-stem:first-of-type{margin-top:0;}
+  .q.calc-part{margin-left:1.4em;}
+</style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+</head>
+<body>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="breadcrumb"><a href="https://jenlin2002.github.io/">🏠 回總目錄</a> ／ <a href="../hanlin-math-g8-1.html" style="color:#cfe0d1;">段考題庫</a></div>
+    <h1>第6回・2-2 根式的運算</h1>
+    <p class="subtitle">2-2 根式的運算｜翰林版八年級數學（三）Ａ卷</p>
+  </div>
+</header>
+
+<main>
+  <div class="controls">
+    <div class="mode-toggle">
+      <button id="quizModeBtn" class="active">✏️ 測驗模式</button>
+      <button id="printModeBtn" disabled title="完成測驗並送出成績後才能查看">🖨️ 完整題目與解答（送出成績後解鎖）</button>
+    </div>
+  </div>
+
+  <div class="score-bar" id="scoreBar">
+    <div>目前得分：<strong id="scoreText">0 / 0</strong>（僅計算選擇題與填充題）</div>
+    <button id="resetBtn">重新作答</button>
+  </div>
+
+  <div id="content"></div>
+
+  <a class="footer-link" href="../hanlin-math-g8-1.html">← 回段考題庫總覽</a>
+</main>
+
+<script>
+
+window.EXAM_META = { version: "數學A卷", examLabel: "第6回" };
+const DATA = {
+  sections: [
+  {
+    "type": "mc",
+    "title": "一、選擇題",
+    "meta": "【A部分 學力基礎題】每題3分，共30分",
+    "items": [
+      {
+        "q": "下列根式的運算，正確的有哪些？<br>(甲) $\\sqrt{2}+\\sqrt{10}=\\sqrt{12}$　(乙) $\\sqrt{13}-\\sqrt{8}=\\sqrt{5}$<br>(丙) $\\sqrt{3}\\times\\sqrt{5}=\\sqrt{15}$　(丁) $\\sqrt{14}\\div\\sqrt{2}=\\sqrt{7}$",
+        "options": [
+          "(甲)(乙)",
+          "(甲)(丙)",
+          "(乙)(丁)",
+          "(丙)(丁)"
+        ],
+        "correct": 3
+      },
+      {
+        "q": "下列哪一個算式的值最大？",
+        "options": [
+          "$\\sqrt{\\dfrac{5}{3}}\\div\\sqrt{\\dfrac{25}{3}}\\times\\sqrt{\\dfrac{5}{2}}\\div\\sqrt{\\dfrac{9}{4}}$",
+          "$\\sqrt{24}\\div\\sqrt{8}\\times\\sqrt{3}$",
+          "$\\sqrt{(-4)^2}$",
+          "$\\sqrt{13^2-12^2}$"
+        ],
+        "correct": 3
+      },
+      {
+        "q": "解方程式 $(\\sqrt{5}+1)x=4$，得 $x=$？",
+        "options": [
+          "1",
+          "2",
+          "$\\sqrt{5}-1$",
+          "$\\dfrac{2}{3}(\\sqrt{5}+1)$"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "比較 $\\sqrt{2}+\\sqrt{3}$ 與 $\\sqrt{5}$ 的大小關係，何者較大？",
+        "options": [
+          "$\\sqrt{2}+\\sqrt{3}$",
+          "$\\sqrt{5}$",
+          "一樣大",
+          "無法比較"
+        ],
+        "correct": 0
+      },
+      {
+        "q": "若 $\\sqrt{18}+\\sqrt{98}-\\sqrt{72}=\\sqrt{a}$，則 $a$ 之值為何？",
+        "options": [
+          "16",
+          "32",
+          "48",
+          "64"
+        ],
+        "correct": 1
+      },
+      {
+        "q": "計算 $(1+\\sqrt{3}-\\sqrt{5})(1-\\sqrt{3}+\\sqrt{5})$ 之值為何？",
+        "options": [
+          "$5-2\\sqrt{3}$",
+          "$7-4\\sqrt{15}$",
+          "$-7+2\\sqrt{15}$",
+          "$-10+3\\sqrt{5}$"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "$-\\sqrt{12}$ 與下列何者<u>不是</u>同類方根？",
+        "options": [
+          "$\\sqrt{75}$",
+          "$\\sqrt{27}$",
+          "$-\\sqrt{24}$",
+          "$-\\sqrt{48}$"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "計算 $\\dfrac{9\\sqrt{3}+7\\sqrt{12}-5\\sqrt{48}}{(\\sqrt{5}+\\sqrt{2})(\\sqrt{2}-\\sqrt{5})}$ 之值為何？",
+        "options": [
+          "$\\sqrt{3}$",
+          "$-\\sqrt{3}$",
+          "3",
+          "$-3$"
+        ],
+        "correct": 1
+      },
+      {
+        "pre": "※請閱讀下列敘述後，回答 9.～10. 題\n右圖是小強用電腦軟體設計的正方形與長方形圖案，已知兩個圖案的面積均為 45 平方單位。",
+        "preImage": "images/test6/q9_shapes.png",
+        "q": "請問正方形的邊長為何？",
+        "options": [
+          "$3\\sqrt{3}$",
+          "$3\\sqrt{5}$",
+          "$5\\sqrt{3}$",
+          "$5\\sqrt{5}$"
+        ],
+        "correct": 1
+      },
+      {
+        "q": "若長方形的長為 $5\\sqrt{3}$，則長方形的寬為何？",
+        "options": [
+          "$3\\sqrt{3}$",
+          "$3\\sqrt{5}$",
+          "$5\\sqrt{3}$",
+          "$5\\sqrt{5}$"
+        ],
+        "correct": 0
+      }
+    ]
+  },
+  {
+    "type": "fill",
+    "title": "二、非選擇題－填充",
+    "meta": "每格4分，共20分",
+    "items": [
+      {
+        "q": "若 $\\sqrt{5}+\\sqrt{5}+\\sqrt{5}=\\sqrt{m}$，$\\sqrt{5}\\times\\sqrt{5}\\times\\sqrt{5}=\\sqrt{n}$，則 $m+n=$",
+        "answers": [
+          "170"
+        ],
+        "show": "170"
+      },
+      {
+        "q": "計算 $(\\sqrt{7}+\\sqrt{8})^{2025}\\times(\\sqrt{8}-\\sqrt{7})^{2025}=$",
+        "answers": [
+          "1"
+        ],
+        "show": "1"
+      },
+      {
+        "q": "利用平方差公式計算 $\\sqrt{43^2-18^2-25^2}=$",
+        "answers": [
+          "30"
+        ],
+        "show": "30"
+      },
+      {
+        "q": "介於 $\\dfrac{1}{2+\\sqrt{3}}$ 與 $\\dfrac{3}{2\\sqrt{7}-5}$ 之間的整數共有幾個？",
+        "answers": [
+          "10"
+        ],
+        "show": "10 個"
+      },
+      {
+        "q": "已知 $\\sqrt{37}\\approx6.08$，$\\sqrt{370}\\approx19.24$，利用根式的運算規則計算 $\\sqrt{0.037}\\approx$",
+        "answers": [
+          "0.1924"
+        ],
+        "show": "0.1924"
+      }
+    ]
+  },
+  {
+    "type": "calc",
+    "title": "三、非選擇題－計算",
+    "meta": "每題10分，共30分（過程寫在計算紙上，每小題填最後答案）",
+    "items": [
+      {
+        "q": "團康搶旗遊戲，三位參加者分別從三個不同的點同時出發，經不同路徑到達 $A$ 點，如右上圖，<u>小歐</u>、<u>熙熙</u>、<u>阿迪</u>三人依次分別走 $O\\to B\\to A$、$P\\to C\\to A$、$E\\to D\\to A$ 路徑到達 $A$ 點，其中 $\\overline{AB}=\\sqrt{7}$，$\\overline{AC}=\\sqrt{5}$，$\\overline{AD}=\\sqrt{3}$，$\\overline{OB}=\\sqrt{13}$，$\\overline{PC}=\\sqrt{15}$，$\\overline{ED}=\\sqrt{17}$，請回答下列問題：（註：「→」表示直線前進）",
+        "image": "images/test6/c1.png",
+        "parts": [
+          {
+            "label": "(1)",
+            "p": "<u>小歐</u>所走的路徑長為多少？",
+            "answers": [
+              "√13+√7",
+              "√7+√13"
+            ],
+            "show": "$\\sqrt{13}+\\sqrt{7}$",
+            "hint": "根號可打 √ 或 sqrt，例：sqrt13+sqrt7"
+          },
+          {
+            "label": "　",
+            "p": "<u>熙熙</u>所走的路徑長為多少？",
+            "answers": [
+              "√15+√5",
+              "√5+√15"
+            ],
+            "show": "$\\sqrt{15}+\\sqrt{5}$"
+          },
+          {
+            "label": "　",
+            "p": "<u>阿迪</u>所走的路徑長為多少？（(1) 共 3分）",
+            "answers": [
+              "√17+√3",
+              "√3+√17"
+            ],
+            "show": "$\\sqrt{17}+\\sqrt{3}$"
+          },
+          {
+            "label": "(2)",
+            "p": "如果三人的速率相同，則誰先到達 $A$ 點？（7分）",
+            "answers": [
+              "阿迪"
+            ],
+            "show": "阿迪"
+          }
+        ]
+      },
+      {
+        "q": "計算下列各式，並將結果化為最簡根式：",
+        "parts": [
+          {
+            "p": "$\\dfrac{1}{\\sqrt{2}+1}=$？（4分）",
+            "answers": [
+              "√2-1",
+              "-1+√2"
+            ],
+            "show": "$\\sqrt{2}-1$",
+            "hint": "根號可打 √ 或 sqrt，例：sqrt2-1"
+          },
+          {
+            "p": "$\\dfrac{1}{\\sqrt{2}+1}+\\dfrac{1}{\\sqrt{3}+\\sqrt{2}}+\\dfrac{1}{\\sqrt{4}+\\sqrt{3}}+\\cdots+\\dfrac{1}{\\sqrt{49}+\\sqrt{48}}=$？（6分）",
+            "answers": [
+              "6"
+            ],
+            "show": "6"
+          }
+        ]
+      },
+      {
+        "q": "已知 $a$、$b$ 皆為正整數，且 $a$、$b$ 均不超過 100，若 $\\sqrt{48\\times a}$ 與 $\\sqrt{\\dfrac{72}{b}}$ 的值也都是正整數，請回答下列問題：",
+        "parts": [
+          {
+            "p": "求 $a$、$b$ 的最大值。（6分）",
+            "answers": [
+              "75,72",
+              "a=75,b=72"
+            ],
+            "show": "$a$ 的最大值 75，$b$ 的最大值 72",
+            "hint": "依序填 a,b，例：1,2"
+          },
+          {
+            "p": "承 (1)，此時 $\\sqrt{48\\times a}$、$\\sqrt{\\dfrac{72}{b}}$ 的值分別為何？（4分）",
+            "answers": [
+              "60,1"
+            ],
+            "show": "$\\sqrt{48\\times a}=60$，$\\sqrt{\\dfrac{72}{b}}=1$",
+            "hint": "依序填兩個值，例：1,2"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "type": "fill",
+    "title": "非選擇題－填充",
+    "meta": "【B部分 學力精熟題】每格4分，共20分",
+    "items": [
+      {
+        "num": "1.(1)",
+        "q": "計算並化為最簡根式：$\\dfrac{2\\sqrt{3}-1}{2-\\sqrt{3}}-\\dfrac{2\\sqrt{3}+1}{2+\\sqrt{3}}-\\left(\\dfrac{4}{\\sqrt{6}+\\sqrt{2}}\\right)^2=$",
+        "answers": [
+          "4√3"
+        ],
+        "show": "$4\\sqrt{3}$",
+        "hint": "根號可打 √ 或 sqrt"
+      },
+      {
+        "num": "1.(2)",
+        "q": "計算並化為最簡根式：$\\dfrac{3+\\sqrt{6}}{5\\sqrt{3}-\\sqrt{32}+\\sqrt{50}-2\\sqrt{12}}=$",
+        "answers": [
+          "√3"
+        ],
+        "show": "$\\sqrt{3}$"
+      },
+      {
+        "num": "2.",
+        "q": "若 $\\sqrt{13}$ 的小數部分為 $a$，$\\dfrac{1}{a}$ 的小數部分為 $b$，則 $b=$",
+        "answers": [
+          "(√13-1)/4",
+          "(-1+√13)/4"
+        ],
+        "show": "$\\dfrac{\\sqrt{13}-1}{4}$",
+        "hint": "寫成 (sqrt13-1)/4"
+      },
+      {
+        "num": "3.",
+        "q": "若 $x=2\\sqrt{5}-\\sqrt{3}$，$y=2\\sqrt{5}+\\sqrt{3}$，則 $\\dfrac{y}{x}+\\dfrac{x}{y}=$",
+        "answers": [
+          "46/17"
+        ],
+        "show": "$\\dfrac{46}{17}$",
+        "hint": "分數寫成 46/17"
+      },
+      {
+        "num": "4.",
+        "q": "計算 $\\sqrt{359\\dfrac{1}{361}}=$",
+        "answers": [
+          "360/19",
+          "18 18/19"
+        ],
+        "show": "$\\dfrac{360}{19}$",
+        "hint": "分數寫成 360/19"
+      }
+    ]
+  }
+]
+};
+
+let currentMode = "quiz"; // quiz | print
+
+const contentEl = document.getElementById("content");
+const scoreBar = document.getElementById("scoreBar");
+const scoreText = document.getElementById("scoreText");
+
+function render(){
+  window.examAnswersRevealed = false;
+  contentEl.innerHTML = "";
+  DATA.sections.forEach((sec, si)=> contentEl.appendChild(renderSection(sec, si)));
+  if(currentMode==="quiz"){
+    scoreBar.classList.add("show");
+    updateScore();
+  } else {
+    scoreBar.classList.remove("show");
+    contentEl.querySelectorAll(".answer-reveal").forEach(e=>e.classList.add("show"));
+    contentEl.querySelectorAll(".opt").forEach(o=>o.classList.add("disabled"));
+    contentEl.querySelectorAll(".opt.is-correct").forEach(o=>o.classList.add("correct"));
+  }
+  if(window.renderMathInElement){
+    renderMathInElement(contentEl, {delimiters:[{left:"$", right:"$", display:false}], throwOnError:false});
+  }
+}
+
+function renderTable(t){
+  if(!t) return "";
+  const headHtml = `<tr>${t.head.map(h=>`<th>${h}</th>`).join("")}</tr>`;
+  const rowsHtml = t.rows.map(r=>`<tr>${r.map((c,ci)=>ci===0?`<th>${c}</th>`:`<td>${c}</td>`).join("")}</tr>`).join("");
+  return `${t.title ? `<div style="font-weight:700;text-align:center;color:var(--chalk-green);margin-bottom:6px;">${t.title}</div>`:""}
+    <table class="data-table"><thead>${headHtml}</thead><tbody>${rowsHtml}</tbody></table>
+    ${t.note ? `<div style="margin-top:8px;color:var(--ink-soft);font-size:13px;">${t.note}</div>` : ""}`;
+}
+
+function renderSection(sec, si){
+  const block = document.createElement("section");
+  block.className = "block";
+  block.innerHTML = `<h2>${sec.title}</h2><p class="meta">${sec.meta}</p>`;
+
+  if(sec.audio){
+    const audioEl = document.createElement("audio");
+    audioEl.controls = true;
+    audioEl.src = sec.audio;
+    block.appendChild(audioEl);
+  }
+
+  if(sec.image){
+    const im = document.createElement("img");
+    im.src = sec.image; im.alt = "題目附圖";
+    im.style.cssText = "width:100%;max-width:560px;display:block;margin:0 auto 16px;border-radius:8px;border:1px solid var(--paper-line);";
+    block.appendChild(im);
+  }
+
+  if(sec.wordbank){
+    const wb = document.createElement("div");
+    wb.className = "wordbank";
+    wb.innerHTML = sec.wordbank.map(w=>`<span class="wb-word">${w}</span>`).join("");
+    block.appendChild(wb);
+  }
+
+  if(sec.type==="vocab"){
+    sec.items.forEach((it,i)=>{
+      const q = document.createElement("div");
+      q.className = "q";
+      if(it.answers){
+        q.innerHTML = `<div class="q-text"><span class="q-num">${(sec.start||1)+i}.</span>${it.q}
+          &nbsp; ${it.answers.map(a=>`<input type="text" class="micro-blank" data-answer="${a}" style="width:${Math.max(90,a.length*13)}px;" placeholder="填入單字">`).join(" ")}</div>
+          <div class="answer-reveal">正解：${it.answers.join(", ")}</div>`;
+        q.querySelectorAll(".micro-blank").forEach(inp=>inp.addEventListener("input", ()=>checkMultiBlank(q)));
+      } else {
+        q.innerHTML = `<div class="q-text"><span class="q-num">${(sec.start||1)+i}.</span>${it.q}
+          &nbsp; <input type="text" class="blank" data-answer="${it.answer}" placeholder="填入單字">
+          <span class="feedback"></span></div>
+          <div class="answer-reveal">正解：${it.answer}</div>`;
+        const input = q.querySelector("input");
+        input.addEventListener("input", ()=>checkBlank(input));
+      }
+      block.appendChild(q);
+    });
+  }
+
+  else if(sec.type==="mc"){
+    sec.items.forEach((it,i)=>{
+      const q = document.createElement("div");
+      q.className = "q";
+      const optsHtml = it.options.map((op,oi)=>`
+        <div class="opt" data-idx="${oi}" data-correct="${oi===it.correct}">
+          <span class="tag">(${String.fromCharCode(65+oi)})</span><span>${op}</span>
+        </div>`).join("");
+      q.innerHTML = `${it.pre ? `<div class="passage">${it.pre}${it.preImage ? `<img src="${it.preImage}" alt="附圖" style="width:100%;max-width:420px;display:block;margin:10px auto 0;border-radius:8px;border:1px solid var(--paper-line);background:#fff;">` : ""}</div>` : ""}<div class="q-text"><span class="q-num">${(sec.start||1)+i}.</span>${it.q||""}</div>
+        ${it.image ? `<img src="${it.image}" alt="題目附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">`:""}
+        <div class="opts">${optsHtml}</div>`;
+      q.querySelectorAll(".opt").forEach(optEl=>{
+        if(optEl.dataset.correct==="true") optEl.classList.add("is-correct");
+        optEl.addEventListener("click", ()=>selectOption(q, optEl));
+      });
+      block.appendChild(q);
+    });
+  }
+
+  else if(sec.type==="guided" || sec.type==="translation"){
+    sec.items.forEach((it,i)=>{
+      const q = document.createElement("div");
+      q.className = "q";
+      const prompt = sec.type==="guided" ? `${it.prompt} <em style="color:var(--ink-soft);font-style:normal;">${it.hint}</em>` : it.zh;
+      q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${prompt}</div>
+        ${it.image ? `<img src="${it.image}" alt="題目附圖" style="width:100%;max-width:240px;display:block;border-radius:8px;margin:4px 0 8px;border:1px solid var(--paper-line);">`:""}
+        <input type="text" class="line-answer" placeholder="請輸入英文句子">
+        <div class="check-row"><button class="mini-btn secondary reveal-btn" style="display:none;">對答案</button></div>
+        <div class="answer-reveal">正解：${it.answer}</div>`;
+      q.querySelector(".reveal-btn").addEventListener("click", (e)=>{
+        q.querySelector(".answer-reveal").classList.add("show");
+      });
+      block.appendChild(q);
+    });
+  }
+
+  else if(sec.type==="guided-multi"){
+    sec.items.forEach((it,i)=>{
+      const q = document.createElement("div");
+      q.className = "q";
+      const linesHtml = it.lines.map(line=>{
+        const parts = line.split(/\{\{(.*?)\}\}/g);
+        return parts.map((part,pi)=> pi%2===1
+          ? `<input type="text" class="micro-blank" data-answer="${part}" style="width:${Math.max(60,part.length*13)}px;">`
+          : part
+        ).join("");
+      }).join("<br>");
+      q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.zh ? it.zh+"<br>" : ""}${linesHtml}</div>
+        <div class="answer-reveal">正解：${it.lines.map(l=>l.replace(/\{\{(.*?)\}\}/g,"$1")).join("　")}</div>`;
+      q.querySelectorAll(".micro-blank").forEach(inp=>{
+        inp.addEventListener("input", ()=>checkMultiBlank(q));
+      });
+      block.appendChild(q);
+    });
+  }
+
+  else if(sec.type==="cloze"){
+    const passageDiv = document.createElement("div");
+    passageDiv.className = "passage";
+    passageDiv.textContent = sec.passage;
+    block.appendChild(passageDiv);
+    sec.items.forEach((it,i)=>{
+      const q = document.createElement("div");
+      q.className = "q";
+      const optsHtml = it.options.map((op,oi)=>`
+        <div class="opt" data-idx="${oi}" data-correct="${oi===it.correct}">
+          <span class="tag">(${String.fromCharCode(65+oi)})</span><span>${op}</span>
+        </div>`).join("");
+      q.innerHTML = `<div class="q-text"><span class="q-num">${(sec.start||1)+i}.</span></div><div class="opts">${optsHtml}</div>`;
+      q.querySelectorAll(".opt").forEach(optEl=>{
+        if(optEl.dataset.correct==="true") optEl.classList.add("is-correct");
+        optEl.addEventListener("click", ()=>selectOption(q, optEl));
+      });
+      block.appendChild(q);
+    });
+  }
+
+  else if(sec.type==="fill"){
+    sec.items.forEach((it,i)=>{
+      const q = document.createElement("div");
+      q.className = "q";
+      q.innerHTML = `<div class="q-text"><span class="q-num">${it.num || ((sec.start||1)+i)+"."}</span>${it.q}</div>
+        ${it.image ? `<img src="${it.image}" alt="題目附圖" style="width:100%;max-width:260px;display:block;border-radius:8px;margin:4px 0 10px;border:1px solid var(--paper-line);background:#fff;">`:""}
+        <div><input type="text" class="blank math-blank" placeholder="填入答案" autocomplete="off"><span class="feedback"></span>${it.hint ? `<span class="fill-hint">（${it.hint}）</span>` : ""}</div>
+        <div class="answer-reveal">正解：${it.show}</div>`;
+      const input = q.querySelector("input");
+      input.dataset.answer = it.answers[0];
+      input.addEventListener("input", ()=>checkMath(input, it.answers));
+      block.appendChild(q);
+    });
+  }
+
+  else if(sec.type==="calc"){
+    // 題幹＋附圖，每個小題各自一格最後答案（自動批改）；過程寫在紙上
+    sec.items.forEach((it,i)=>{
+      const stem = document.createElement("div");
+      stem.className = "calc-stem";
+      stem.innerHTML = `<div class="q-text"><span class="q-num">${(sec.start||1)+i}.</span>${it.q}</div>
+        ${it.image ? `<img src="${it.image}" alt="題目附圖" style="width:100%;max-width:260px;display:block;border-radius:8px;margin:4px 0 10px;border:1px solid var(--paper-line);background:#fff;">`:""}`;
+      block.appendChild(stem);
+      it.parts.forEach((pt,pi)=>{
+        const q = document.createElement("div");
+        q.className = "q calc-part";
+        q.innerHTML = `<div class="q-text"><span class="q-num">${pt.label || "("+(pi+1)+")"}</span>${pt.p}</div>
+          <div><input type="text" class="blank math-blank" placeholder="填入最後答案" autocomplete="off"><span class="feedback"></span>${pt.hint ? `<span class="fill-hint">（${pt.hint}）</span>` : ""}</div>
+          <div class="answer-reveal">正解：${pt.show}</div>`;
+        const input = q.querySelector("input");
+        input.dataset.answer = pt.answers[0];
+        input.addEventListener("input", ()=>checkMath(input, pt.answers));
+        block.appendChild(q);
+      });
+    });
+  }
+
+  else if(sec.type==="reading"){
+    sec.passages.forEach(p=>{
+      const passageDiv = document.createElement("div");
+      passageDiv.className = "passage";
+      passageDiv.innerHTML = `${p.label ? `<span class="passage-label">${p.label}</span>`:""}${p.text}${p.image ? `<img src="${p.image}" alt="附圖" style="width:100%;max-width:520px;display:block;margin:10px auto 0;border-radius:8px;border:1px solid var(--paper-line);">`:""}${p.table ? renderTable(p.table) : ""}`;
+      block.appendChild(passageDiv);
+      p.items.forEach((it,i)=>{
+        const q = document.createElement("div");
+        q.className = "q";
+        const optsHtml = it.options.map((op,oi)=>`
+          <div class="opt" data-idx="${oi}" data-correct="${oi===it.correct}">
+            <span class="tag">(${String.fromCharCode(65+oi)})</span><span>${op}</span>
+          </div>`).join("");
+        q.innerHTML = `<div class="q-text"><span class="q-num">${(p.start||1)+i}.</span>${it.q}</div>
+          ${it.image ? `<img src="${it.image}" alt="題目附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">`:""}
+          <div class="opts">${optsHtml}</div>`;
+        q.querySelectorAll(".opt").forEach(optEl=>{
+          if(optEl.dataset.correct==="true") optEl.classList.add("is-correct");
+          optEl.addEventListener("click", ()=>selectOption(q, optEl));
+        });
+        block.appendChild(q);
+      });
+    });
+  }
+
+  return block;
+}
+
+function selectOption(qEl, optEl){
+  if(currentMode!=="quiz") return;
+  if(qEl.dataset.answered==="true") return;
+  qEl.dataset.answered = "true";
+  qEl.querySelectorAll(".opt").forEach(o=>o.classList.add("disabled"));
+  optEl.classList.add("selected");
+  const correctOpt = qEl.querySelector('.opt[data-correct="true"]');
+  qEl.dataset.studentAnswer = optEl.textContent.trim();
+  qEl.dataset.correctAnswer = correctOpt ? correctOpt.textContent.trim() : "";
+  qEl.dataset.isCorrect = (optEl.dataset.correct==="true") ? "true" : "false";
+  updateScore();
+}
+
+function checkBlank(input){
+  const val = input.value.trim().toLowerCase();
+  const ans = input.dataset.answer.trim().toLowerCase();
+  const qEl = input.closest(".q");
+  if(val.length===0){ if(qEl) delete qEl.dataset.studentAnswer; updateScore(); return; }
+  if(qEl){
+    qEl.dataset.studentAnswer = input.value.trim();
+    qEl.dataset.correctAnswer = input.dataset.answer;
+    qEl.dataset.isCorrect = (val===ans) ? "true" : "false";
+  }
+  updateScore();
+}
+
+function checkMultiBlank(qEl){
+  const inputs = Array.from(qEl.querySelectorAll(".micro-blank"));
+  const anyEmpty = inputs.some(inp=>inp.value.trim().length===0);
+  if(anyEmpty){ delete qEl.dataset.studentAnswer; updateScore(); return; }
+  const allCorrect = inputs.every(inp=> inp.dataset.answer.split("/").some(a=>a.trim().toLowerCase() === inp.value.trim().toLowerCase()));
+  qEl.dataset.studentAnswer = inputs.map(inp=>inp.value.trim()).join(" / ");
+  qEl.dataset.correctAnswer = inputs.map(inp=>inp.dataset.answer).join(" / ");
+  qEl.dataset.isCorrect = allCorrect ? "true" : "false";
+  updateScore();
+}
+
+function normMath(s){
+  return s.toLowerCase()
+    .replace(/(\d)\s*x\s*(?=\d)/g,"$1*")
+    .replace(/[＋]/g,"+").replace(/[，、；;]/g,",").replace(/[（]/g,"(").replace(/[）]/g,")").replace(/[＝]/g,"=").replace(/[：]/g,":").replace(/[＜]/g,"<").replace(/[＞]/g,">").replace(/[－−–—]/g,"-").replace(/[×＊]/g,"*").replace(/[／÷]/g,"/")
+    .replace(/[⁰¹²³⁴⁵⁶⁷⁸⁹]/g, c=>"⁰¹²³⁴⁵⁶⁷⁸⁹".indexOf(c)).replace(/\^/g,"").replace(/π/g,"pi")
+    .replace(/根號|sqrt/g,"√").replace(/\+-|\+\/-/g,"±").replace(/或|or|and|和/g,",")
+    .replace(/[\s　]+/g,"")
+    .replace(/平方公分|平方公尺|平方公寸|平方單位|公分|公尺|公寸|單位|毫升|公克|公斤|公里|元|個|人|題|秒|次|片|班|瓶蓋|顆|杯|圈|歲|位|天|%|％|°c|度|\(重根\)|重根/g,"")
+    .replace(/√\((\w+)\)/g,"√$1").replace(/[。．.]+$/,"");
+}
+// 「或」「,」分隔的多個答案不計順序；座標 (a,b) 等括號包住的整串保留順序
+function canonMath(s){
+  let t = normMath(s).replace(/\*/g,"");
+  // 因式分解：係數＋括號因式的乘積，因式順序不同也算對
+  const m = t.match(/^(-?\d*)((?:\([^()]+\)\d?)+)$/);
+  if(m) t = m[1] + m[2].match(/\([^()]+\)\d?/g).sort().join("");
+  if(!t.includes(",") || /^\(.*\)$/.test(t)) return t;
+  return t.split(",").filter(Boolean).sort().join(",");
+}
+function checkMath(input, answers){
+  const qEl = input.closest(".q");
+  const val = input.value.trim();
+  if(!val){ delete qEl.dataset.studentAnswer; updateScore(); return; }
+  qEl.dataset.studentAnswer = val;
+  qEl.dataset.correctAnswer = answers[0];
+  qEl.dataset.isCorrect = answers.some(a=>canonMath(a)===canonMath(val)) ? "true" : "false";
+  updateScore();
+}
+
+function updateScore(){
+  let total = 0, answered = 0, correct = 0;
+  contentEl.querySelectorAll(".q").forEach(q=>{
+    const gradable = q.querySelector(".opts") || q.querySelector("input.blank") || q.querySelector("input.micro-blank");
+    if(!gradable) return;
+    total++;
+    if(q.dataset.studentAnswer !== undefined){
+      answered++;
+      if(q.dataset.isCorrect === "true") correct++;
+    }
+  });
+  if(window.examAnswersRevealed){
+    scoreText.textContent = `${correct} / ${total}`;
+  } else {
+    scoreText.textContent = `已作答 ${answered} / ${total} 題`;
+  }
+}
+window.updateScore = updateScore;
+
+document.getElementById("resetBtn").addEventListener("click", render);
+document.getElementById("quizModeBtn").addEventListener("click", ()=>{
+  currentMode = "quiz";
+  document.getElementById("quizModeBtn").classList.add("active");
+  document.getElementById("printModeBtn").classList.remove("active");
+  render();
+});
+document.getElementById("printModeBtn").addEventListener("click", ()=>{
+  if(document.getElementById("printModeBtn").disabled) return;
+  currentMode = "print";
+  document.getElementById("printModeBtn").classList.add("active");
+  document.getElementById("quizModeBtn").classList.remove("active");
+  render();
+});
+
+window.unlockPrintMode = function(){
+  document.getElementById("printModeBtn").disabled = false;
+};
+
+render();
+</script>
+<script src="../sync.js"></script>
+</body>
+</html>

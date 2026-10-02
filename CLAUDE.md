@@ -39,6 +39,32 @@
    - 腳本裡寫死了路徑：`E:\GitHub\exam-bank`、公司電腦的 OneDrive 路徑。在家裡電腦使用前要先改成家裡的路徑。
    - 改錯字的流程：修改 `data*/tNN.py` → `python gen_pages.py`。
 
+### 2026-10-02（公司電腦）
+- 翰林二上**數學** A 卷第 1～2 回樣本：`hanlin-math-g8-1.html`、`hanlin-math-g8-1/test1~2.html`、`math.html`。**首頁 `index.html` 的數學入口尚未開放**，要等老師確認版面。
+- 數學版面：
+  - 用 KaTeX（cdnjs）排版，算式寫成 `$...$`。
+  - 選擇題可以加 `pre`（共用題組文字）。
+  - 填充題（`fill`）：自動批改，會把空格、`^`、²、全形符號、π/pi、單位統一後再比對，`answers` 可以列多種寫法。
+  - 計算題（`calc`）：每個小題一格最後答案、自動批改，過程寫在紙上（老師選 A 方案，不在網頁上打計算過程）。
+  - 試算表上的版別標成「數學A卷」。
+- 產生方式：`tools/hanlin-g8-1-build/` 裡的 `mathdata/tNN.py` → `python gen_math.py`；附圖用 `crop_math.py` 裁切。
+- 下午：數學 **A 卷第 1～15 回全部完成**，首頁 `index.html` 的「數學」入口已開放。
+  - 每回的附圖裁切座標寫在 `mathdata/tNN.py` 的 `CROPS`，`crop_math.py` 會依此裁切（A／B／C 卷通用）。
+  - 自動批改另外支援：根號（√/sqrt/根號）、±（+-）、「或」分隔的多解（不計順序）、因式分解的因式順序、全形符號、% 與單位。
+  - 15 頁都驗證過：每題的官方答案都判為正確、KaTeX 沒有錯誤、圖片都有載入。
+  - 待辦：數學 B、C 卷（原始檔在 `PDF-RAW-DATA/MATH/hanlin/hanlin-g8-1/`，資料放 `mathdataB/`、`mathdataC/`）。
+- 晚上：**翰林二上社會 A 卷完成**（地理、歷史、公民各 9 回，共 27 回）。
+  - 頁面：`hanlin-social-g8-1.html` 和 `hanlin-social-g8-1/{geo,hist,civ}1~9.html`。`social.html` 的「國中二上・翰林」已開放。
+  - 版型沿用家裡做的翰林七上社會（`hanlin-social-g7-1/geo1.html`）。每回的題型是：單題 20 題、題組 4 題、進階思考題 7 題。
+  - 產生方式：`tools/hanlin-g8-1-build/socdata/*.py` → `python gen_soc.py`（會一併裁切附圖；原始 PDF 路徑寫死為公司電腦的 OneDrive）。B、C 卷的資料放 `socdataB/`、`socdataC/`。
+  - 27 頁都驗證過：答案標記數＝題數，圖片都有載入，可以正常送出。
+  - 待辦：社會 B、C 卷；數學 B、C 卷。
+- **翰林一上數學 A 卷完成**（第 1～14 回）：`hanlin-math-g7-1.html`、`hanlin-math-g7-1/test1~14.html`，`math.html` 的「國中一上・翰林」已開放。
+  - 產生方式：`math7data/tNN.py` → `python crop_math.py --g7`、`python gen_math.py --g7`（不加 `--g7` 就是產生二上）。原始 PDF 讀自 OneDrive 的 `115上國中1年級校卷\115上翰林1上校卷\115上翰林數學1上校卷`。
+  - 自動批改另外支援：上標數字（²、⁵）、× 打成 x、常見單位（毫升、公克、題、秒、°C 等）。
+  - 14 頁都驗證過：官方答案都判為正確、KaTeX 沒有錯誤、圖片都有載入。
+- 社會七上（翰林）是在家裡電腦做的，做到地理第 5 回 A 卷。截至 10/02 上午**尚未 Push 到 GitHub**。
+
 ### 待辦／注意
 - 以上變更要在 GitHub Desktop 裡 Commit + Push，換電腦後先 Pull。
 - 尚未製作：翰林二上數學網頁（原始檔已放進 `PDF-RAW-DATA/MATH/hanlin/hanlin-g8-1/`）。另外康軒數學 K 卷只在 OneDrive 裡，沒有放進專案。

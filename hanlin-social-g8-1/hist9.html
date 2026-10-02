@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>段考題庫｜歷史第9回 - 複習</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@500;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#faf6ec;
+    --paper-line:#e3dcc8;
+    --ink:#26332b;
+    --ink-soft:#5b6b5f;
+    --chalk-green:#2f4538;
+    --chalk-green-2:#3d5a48;
+    --pen-red:#b8433a;
+    --pen-red-soft:#f4dedb;
+    --ok-green:#3f7d52;
+    --ok-green-soft:#dfeee1;
+    --gold:#b5842a;
+    --radius:10px;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:"Noto Sans TC",sans-serif;
+    line-height:1.7;
+  }
+  header.hero{
+    background:var(--chalk-green);
+    color:#eef2ea;
+    padding:28px 20px 40px;
+    position:relative;
+  }
+  header.hero::after{
+    content:"";
+    position:absolute;
+    left:0; right:0; bottom:-1px;
+    height:14px;
+    background:repeating-linear-gradient(90deg,var(--paper) 0 18px, transparent 18px 20px);
+  }
+  .hero-inner{max-width:880px;margin:0 auto;}
+  .breadcrumb a{color:#cfe0d1;text-decoration:none;font-size:14px;}
+  .breadcrumb a:hover{text-decoration:underline;}
+  h1{
+    font-family:"Noto Serif TC",serif;
+    font-weight:700;
+    font-size:clamp(24px,4vw,34px);
+    margin:10px 0 6px;
+  }
+  .subtitle{color:#cfe0d1;font-size:15px;margin:0;}
+  main{max-width:880px;margin:0 auto;padding:28px 20px 80px;}
+
+  .controls{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:22px;
+  }
+  .mode-toggle{display:flex;border:2px solid var(--chalk-green);border-radius:999px;overflow:hidden;}
+  .mode-toggle button{
+    background:transparent;border:none;padding:8px 16px;font-size:14px;font-weight:700;
+    color:var(--chalk-green);cursor:pointer;font-family:"Noto Sans TC",sans-serif;
+  }
+  .mode-toggle button.active{background:var(--gold);color:#fff;}
+  .mode-toggle button:disabled{opacity:.4;cursor:not-allowed;}
+
+  .score-bar{
+    display:none;
+    align-items:center;
+    justify-content:space-between;
+    background:#fff;
+    border:1px solid var(--paper-line);
+    border-left:5px solid var(--gold);
+    border-radius:var(--radius);
+    padding:12px 18px;
+    margin-bottom:22px;
+    font-size:14px;
+  }
+  .score-bar.show{display:flex;}
+  .score-bar strong{font-size:18px;color:var(--gold);}
+  .score-bar button{
+    background:none;border:1px solid var(--ink-soft);color:var(--ink-soft);
+    border-radius:6px;padding:6px 12px;font-size:13px;cursor:pointer;
+  }
+
+  section.block{
+    background:#fff;
+    border:1px solid var(--paper-line);
+    border-radius:var(--radius);
+    padding:22px 22px 26px;
+    margin-bottom:20px;
+  }
+  .block h2{
+    font-family:"Noto Serif TC",serif;
+    font-size:19px;
+    margin:0 0 4px;
+    color:var(--chalk-green);
+  }
+  .block .meta{color:var(--ink-soft);font-size:13px;margin:0 0 16px;}
+
+  .q{margin-bottom:18px;padding-bottom:16px;border-bottom:1px dashed var(--paper-line);}
+  .q:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0;}
+  .q-text{font-size:15.5px;margin-bottom:8px;}
+  .q-num{color:var(--gold);font-weight:700;margin-right:4px;}
+
+  .opts{display:grid;gap:8px;}
+  .opt{
+    display:flex;gap:8px;align-items:flex-start;
+    border:1.5px solid var(--paper-line);
+    border-radius:8px;
+    padding:9px 12px;
+    cursor:pointer;
+    font-size:14.5px;
+    background:#fffdf8;
+  }
+  .opt:hover{border-color:var(--chalk-green-2);}
+  .opt.selected{border-color:var(--chalk-green-2);background:#eef3ea;}
+  .opt.correct{border-color:var(--ok-green);background:var(--ok-green-soft);}
+  .opt.wrong{border-color:var(--pen-red);background:var(--pen-red-soft);}
+  .opt .tag{font-weight:700;color:var(--ink-soft);}
+  .opt.correct .tag{color:var(--ok-green);}
+  .opt.wrong .tag{color:var(--pen-red);}
+  .opt.disabled{cursor:default;}
+
+  .passage{
+    background:#f5f2e8;border-radius:8px;padding:14px 16px;margin-bottom:14px;
+    font-size:14.5px;white-space:pre-line;
+  }
+  .passage-label{font-weight:700;color:var(--chalk-green);margin-bottom:4px;display:block;}
+
+  .footer-link{
+    display:block;text-align:center;margin-top:30px;color:var(--chalk-green);
+    text-decoration:none;font-weight:700;font-size:14px;
+  }
+  .footer-link:hover{text-decoration:underline;}
+
+  @media print{
+    header.hero, .controls, .score-bar, .mini-btn, .footer-link{display:none !important;}
+    body{background:#fff;}
+    section.block{border:none;box-shadow:none;padding:8px 0;margin-bottom:14px;}
+    .opt.correct{background:none;border:none;font-weight:700;}
+    .opt.correct::after{content:" ← 正解";color:var(--pen-red);}
+    .opt{border:none;padding:2px 0;}
+    main{max-width:100%;padding:0 24px;}
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="breadcrumb"><a href="https://jenlin2002.github.io/">🏠 回總目錄</a> ／ <a href="../hanlin-social-g8-1.html" style="color:#cfe0d1;">段考題庫</a></div>
+    <h1>歷史・第9回</h1>
+    <p class="subtitle">第三篇第5～6章 複習｜翰林版八年級社會（三）Ａ卷</p>
+  </div>
+</header>
+
+<main>
+  <div class="controls">
+    <div class="mode-toggle">
+      <button id="quizModeBtn" class="active">✏️ 測驗模式</button>
+      <button id="printModeBtn" disabled title="完成測驗並送出成績後才能查看">🖨️ 完整題目與解答（送出成績後解鎖）</button>
+    </div>
+  </div>
+
+  <div class="score-bar" id="scoreBar">
+    <div>目前得分：<strong id="scoreText">0 / 0</strong>（僅計算選擇題）</div>
+    <button id="resetBtn">重新作答</button>
+  </div>
+
+  <div id="content"></div>
+
+  <a class="footer-link" href="../hanlin-social-g8-1.html">← 回段考題庫總覽</a>
+</main>
+
+<script>
+
+window.EXAM_META = { version: "A卷", examLabel: "歷史第9回" };
+const DATA = {
+  sections: [
+  {
+    "type": "mc",
+    "title": "一、單題",
+    "meta": "60%，每題3分",
+    "items": [
+      {
+        "q": "故宮博物院院長南下高雄演講，暢談臺灣史近代轉型，他認為日治時期的臺灣是複製明治維新經驗，奠定臺灣現代化的基礎。日本推動明治維新時，清廷正推動下列哪一項改革運動？",
+        "options": [
+          "自強運動",
+          "戊戌變法",
+          "庚子後新政",
+          "立憲運動"
+        ],
+        "correct": 0
+      },
+      {
+        "q": "科舉制度由士人報名參加考試，考取者得任官職，使平民入仕機會增加，提升了社會階層的流動性。此制度始於隋唐，一直沿用到清末的哪一次改革廢除？",
+        "options": [
+          "自強運動",
+          "戊戌變法",
+          "庚子後新政",
+          "立憲運動"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "圖(一)中的清末官員最可能是下列何人？",
+        "image": "images/hist9/q3.png",
+        "options": [
+          "林則徐",
+          "曾國藩",
+          "李鴻章",
+          "奕訢"
+        ],
+        "correct": 0
+      },
+      {
+        "q": "19 世紀西方帝國主義興起，列強要求對東方國家開放貿易，某國對中國的貿易船在太平洋需要中繼站，因此由海軍培里率艦抵達江戶灣，要求日本結束鎖國並開港通商。上述的某國應為何國？",
+        "options": [
+          "英國",
+          "荷蘭",
+          "法國",
+          "美國"
+        ],
+        "correct": 3
+      },
+      {
+        "q": "圖(二)是一本遊記的內容。其中哪一段敘述<u>不符合</u>當時的社會風貌？",
+        "image": "images/hist9/q5.png",
+        "options": [
+          "(甲)",
+          "(乙)",
+          "(丙)",
+          "(丁)"
+        ],
+        "correct": 3
+      },
+      {
+        "q": "電視劇《林則徐》根據林則徐從查禁鴉片、中英戰爭到被誣陷罷官的史實，用戲劇手法塑造出民族英雄形象。劇組欲實地拍攝查禁鴉片的場景，必須前往圖(三)中的何地？",
+        "image": "images/hist9/q6.png",
+        "options": [
+          "甲",
+          "乙",
+          "丙",
+          "丁"
+        ],
+        "correct": 3
+      },
+      {
+        "q": "圖(四)中的「甲」與其他事件有密切關聯，「甲」最可能是下列何者？",
+        "image": "images/hist9/q7.png",
+        "options": [
+          "鴉片戰爭",
+          "英法聯軍",
+          "日俄戰爭",
+          "八國聯軍"
+        ],
+        "correct": 3
+      },
+      {
+        "q": "上海為目前中國最繁榮的經濟中心，也是世界最大的貿易口岸城市之一。上海從封閉到能成為對外通商口岸，是始於清帝國哪一對外條約？",
+        "options": [
+          "《南京條約》",
+          "《天津條約》",
+          "《馬關條約》",
+          "《辛丑和約》"
+        ],
+        "correct": 0
+      },
+      {
+        "q": "爸爸翻出一張舊郵票如圖(五)，並說：「這是臺灣郵政總局早年發行的輪船招商局成立紀念郵票。招商局的成立於自強運動期間，顯示滿清政府已漸注意民生經濟議題。」下列何者<u>不是</u>自強運動的重要成就？",
+        "image": "images/hist9/q9.png",
+        "options": [
+          "鋪設鐵路",
+          "製造西式武器",
+          "成立責任內閣",
+          "培養洋務人才"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "1894 年發生甲午戰爭，中國戰敗，割地賠款影響近代歷史的發展甚鉅。上述戰爭失敗，中國割讓圖(六)中的何地？",
+        "image": "images/hist9/q10.png",
+        "options": [
+          "甲",
+          "乙",
+          "丙",
+          "丁"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "澎湖縣湖西鄉的天軍殿歷史悠久，並擁有清末民初政治家梁啟超的題字楹聯，該楹聯曾因受潮溼及蟲柱而進行修復，如今重新亮相。上述提及的政治家曾推動下列哪一改革運動？",
+        "options": [
+          "自強運動",
+          "戊戌變法",
+          "庚子後新政",
+          "立憲運動"
+        ],
+        "correct": 1
+      },
+      {
+        "q": "德國有多間博物館開展「追蹤義和團文物」計畫，試圖從中找到 1900 年後從中國掠奪而來的館藏品，而中國學者認為此類中國文物應返還。上述中國文物的喪失與下列哪一場戰爭有關？",
+        "options": [
+          "英法聯軍",
+          "甲午戰爭",
+          "八國聯軍",
+          "日俄戰爭"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "成千上萬的沖繩縣民大規模集會，抗議美軍基地人員殺害當地女子，要求駐沖繩的美軍撤離當地，並向美國政府發出「反對基地」的呼聲，以保衛沖繩人民。原名「琉球」的沖繩，本是中國藩屬，但於清末被下列何國併吞？",
+        "options": [
+          "法國",
+          "英國",
+          "俄國",
+          "日本"
+        ],
+        "correct": 3
+      },
+      {
+        "q": "美國傳教士在上海創辦的刊物，內容刊載世界各國的地理、歷史訊息及時事要聞，是當時知識分子了解西方的重要刊物。上述報刊最可能為下列何者？",
+        "options": [
+          "《臺灣民報》",
+          "《自由中國》",
+          "《幾何原本》",
+          "《萬國公報》"
+        ],
+        "correct": 3
+      },
+      {
+        "q": "19 世紀末，某國爆發內亂，朝廷無力平亂，只得向宗主國清帝國求助，此時其鄰國日本也藉機出兵，中日因而爆發戰事。上述戰事的導火線是在圖(七)中何處？",
+        "image": "images/hist9/q15.png",
+        "options": [
+          "甲",
+          "乙",
+          "丙",
+          "丁"
+        ],
+        "correct": 0
+      },
+      {
+        "q": "清末民初，通商口岸是引進西方文明的主要窗口，如電燈、電話、電報、汽車等，甚至喝咖啡、逛百貨公司等休閒活動也逐漸出現在中國社會中。這些西方新事物最早可能出現在今圖(八)中的哪一個城市？",
+        "image": "images/hist9/q16.png",
+        "options": [
+          "甲",
+          "乙",
+          "丙",
+          "丁"
+        ],
+        "correct": 3
+      },
+      {
+        "q": "美國學者費正清主張：「中國社會處於一個長期停滯的狀態，缺乏突破傳統的動力。直到 19 世紀中期遭遇西方衝擊之後，才朝近代社會演變。」費正清所說的劇變是指下列何場戰爭？",
+        "options": [
+          "鴉片戰爭",
+          "英法聯軍",
+          "甲午戰爭",
+          "八國聯軍"
+        ],
+        "correct": 0
+      },
+      {
+        "q": "圖(九)是歷史老師上課時，在黑板列舉的重點，由內容判斷老師上課的主題與下列何者有關？",
+        "image": "images/hist9/q18.png",
+        "options": [
+          "婦女地位的提升",
+          "傳統教育的興盛",
+          "科舉制度的廢除",
+          "家族制度的興起"
+        ],
+        "correct": 0
+      },
+      {
+        "q": "1868 年日本的明治天皇因應時局，開始進行現代化改革，其改革層面包括以下哪一項？",
+        "options": [
+          "以全面唐化為方向",
+          "改行君主立憲制度",
+          "禁止日人到海外貿易",
+          "設立總理各國事務衙門"
+        ],
+        "correct": 1
+      },
+      {
+        "q": "圖(十)是晚清學者評論清帝國與列強簽訂某一條約的部分內容。圖中描述的是哪一場戰爭後的情況？",
+        "image": "images/hist9/q20.png",
+        "options": [
+          "八國聯軍",
+          "英法聯軍",
+          "甲午戰爭",
+          "鴉片戰爭"
+        ],
+        "correct": 3
+      }
+    ]
+  },
+  {
+    "type": "reading",
+    "title": "二、題組",
+    "meta": "12%，每題3分",
+    "passages": [
+      {
+        "label": "",
+        "text": "晚清時期，歐美列強發動戰爭突破清帝國的貿易限制，迫使清廷結束閉關自守，開放通商口岸。圖(十一)分別為晚清末年不同時期，中國開放的通商口岸示意圖。",
+        "image": "images/hist9/g1.png",
+        "items": [
+          {
+            "q": "甲圖中的通商口岸指的是何地？",
+            "options": [
+              "上海",
+              "泉州",
+              "廈門",
+              "廣州"
+            ],
+            "correct": 3
+          },
+          {
+            "q": "由甲圖演變至乙圖的關鍵史事是下列何者？",
+            "options": [
+              "鴉片戰爭",
+              "英法聯軍",
+              "清法戰爭",
+              "甲午戰爭"
+            ],
+            "correct": 0
+          },
+          {
+            "q": "由乙圖演變至丙圖的關鍵史事是下列何者？",
+            "options": [
+              "鴉片戰爭",
+              "英法聯軍",
+              "清法戰爭",
+              "甲午戰爭"
+            ],
+            "correct": 1
+          },
+          {
+            "q": "由丙圖的通商口岸判斷，對中國有下列哪一影響？",
+            "options": [
+              "洋人開始進入中國",
+              "中國喪失許多主權",
+              "列強勢力深入內地",
+              "中國國防要地盡失"
+            ],
+            "correct": 2
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "type": "mc",
+    "title": "三、進階思考題",
+    "meta": "28%，每題4分",
+    "items": [
+      {
+        "q": "有一位學者提及：「清嘉慶、道光年間，江浙地區出產要販售給西方國家的生絲不從上海出口，而要搬運到路程有十倍之遙的廣州，光是運費及利息就使成本約增加了 35% 至 40%。」上述情況的出現與下列何者密切相關？",
+        "options": [
+          "朝廷規定於廣州一口通商，外商只能在廣州貿易",
+          "廣州位於中國海岸線的中點，和外國交易最便利",
+          "上海為列強租界，禁止中國貨物由此運送出口",
+          "上海遭受八國聯軍侵擾，僅能由廣州海運出口"
+        ],
+        "correct": 0
+      },
+      {
+        "q": "英國商人保羅在鴉片戰爭結束後，來到中國做生意，當時他在中國所享的特權<u>不包括</u>下列何者？",
+        "options": [
+          "可以到沿海的五個港口做生意",
+          "他可以在通商口岸處設置工廠",
+          "他的貨物入海關所課的稅減少",
+          "若有法律糾紛可直接找自己國家的領事"
+        ],
+        "correct": 1
+      },
+      {
+        "q": "圖(十二)呈現清中葉以後，朝廷允許外國傳教士在華活動範圍逐漸改變的情形。造成此轉變的原因，最可能是下列何者？",
+        "image": "images/hist9/a3.png",
+        "options": [
+          "清代對外條約的簽訂",
+          "清末改革運動的影響",
+          "日本對清帝國發動侵略",
+          "中國經濟重心由沿海轉向內地"
+        ],
+        "correct": 0
+      },
+      {
+        "q": "中國某地區提出因為聖誕節是八國聯軍為慶祝入侵北京、火燒圓明園才出現的節日，而禁止聖誕節一系列活動。但八國聯軍始於 1900 年，而火燒圓明園的英法聯軍在 1860 年 10 月 25 日就撤離北京，被網友嘲諷中國近代史沒學好。有關上文提到兩場戰爭的敘述，下列何者正確？",
+        "options": [
+          "戰後均割讓領土",
+          "均發生於光緒年間",
+          "戰後都興起改革運動",
+          "戰爭發生的原因均與仇外事件有關"
+        ],
+        "correct": 3
+      },
+      {
+        "q": "歷史課後，老師要求同學查閱有關「自強運動」的資料，下列哪一位同學的資料內容最正確？",
+        "options": [
+          "以制度面為重心。",
+          "對開創中國近代化具有貢獻。",
+          "在英法聯軍證明其失敗。",
+          "受鴉片戰爭的刺激而興起。"
+        ],
+        "correct": 1
+      },
+      {
+        "q": "宜花在複習中國歷史時，整理了清末改革運動中的政策，下列只有哪一項正確？",
+        "options": [
+          "自強運動：成立京師大學堂",
+          "戊戌變法：興建鐵路",
+          "立憲運動：廢除科舉制度",
+          "自強運動：派留學生赴美留學"
+        ],
+        "correct": 3
+      },
+      {
+        "q": "「自來水管在租界內埋設，沿街每十數步設置四尺高的吸水鐵桶，鐵桶下面與水管連接，使用時將鐵桶上的機關轉開，水就會激射而下。法國租界的管理處設在萬安里，英國租界的管理處設在儲水的水塔旁。」上述最可能是描寫下列何者的情形？",
+        "options": [
+          "18 世紀初的北京",
+          "18 世紀末的廣州",
+          "19 世紀初的廈門",
+          "19 世紀末的上海"
+        ],
+        "correct": 3
+      }
+    ]
+  }
+]
+};
+
+let currentMode = "quiz"; // quiz | print
+
+const contentEl = document.getElementById("content");
+const scoreBar = document.getElementById("scoreBar");
+const scoreText = document.getElementById("scoreText");
+
+function render(){
+  window.examAnswersRevealed = false;
+  contentEl.innerHTML = "";
+  DATA.sections.forEach((sec, si)=> contentEl.appendChild(renderSection(sec, si)));
+  if(currentMode==="quiz"){
+    scoreBar.classList.add("show");
+    updateScore();
+  } else {
+    scoreBar.classList.remove("show");
+    contentEl.querySelectorAll(".opt").forEach(o=>o.classList.add("disabled"));
+    contentEl.querySelectorAll(".opt.is-correct").forEach(o=>o.classList.add("correct"));
+  }
+}
+
+function renderSection(sec, si){
+  const block = document.createElement("section");
+  block.className = "block";
+  block.innerHTML = `<h2>${sec.title}</h2><p class="meta">${sec.meta}</p>`;
+
+  if(sec.type==="mc"){
+    sec.items.forEach((it,i)=>{
+      const q = document.createElement("div");
+      q.className = "q";
+      const optsHtml = it.options.map((op,oi)=>`
+        <div class="opt" data-idx="${oi}" data-correct="${oi===it.correct}">
+          <span class="tag">(${String.fromCharCode(65+oi)})</span><span>${op}</span>
+        </div>`).join("");
+      const imgHtml = it.image ? `<img src="${it.image}" alt="題目附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">` : "";
+      const img2Html = it.image2 ? `<img src="${it.image2}" alt="題目附圖2" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">` : "";
+      q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q}</div>
+        ${imgHtml}${img2Html}
+        <div class="opts">${optsHtml}</div>`;
+      q.querySelectorAll(".opt").forEach(optEl=>{
+        if(optEl.dataset.correct==="true") optEl.classList.add("is-correct");
+        optEl.addEventListener("click", ()=>selectOption(q, optEl));
+      });
+      block.appendChild(q);
+    });
+  }
+
+  else if(sec.type==="reading"){
+    sec.passages.forEach(p=>{
+      const passageDiv = document.createElement("div");
+      passageDiv.className = "passage";
+      passageDiv.innerHTML = `${p.label ? `<span class="passage-label">${p.label}</span>`:""}${p.text}${p.image ? `<img src="${p.image}" alt="題組附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-top:10px;border:1px solid var(--paper-line);">`:""}`;
+      block.appendChild(passageDiv);
+      p.items.forEach((it,i)=>{
+        const q = document.createElement("div");
+        q.className = "q";
+        const optsHtml = it.options.map((op,oi)=>`
+          <div class="opt" data-idx="${oi}" data-correct="${oi===it.correct}">
+            <span class="tag">(${String.fromCharCode(65+oi)})</span><span>${op}</span>
+          </div>`).join("");
+        q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q}</div>
+          ${it.image ? `<img src="${it.image}" alt="題目附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">`:""}
+          <div class="opts">${optsHtml}</div>`;
+        q.querySelectorAll(".opt").forEach(optEl=>{
+          if(optEl.dataset.correct==="true") optEl.classList.add("is-correct");
+          optEl.addEventListener("click", ()=>selectOption(q, optEl));
+        });
+        block.appendChild(q);
+      });
+    });
+  }
+
+  return block;
+}
+
+function selectOption(qEl, optEl){
+  if(currentMode!=="quiz") return;
+  if(qEl.dataset.answered==="true") return;
+  qEl.dataset.answered = "true";
+  qEl.querySelectorAll(".opt").forEach(o=>o.classList.add("disabled"));
+  optEl.classList.add("selected");
+  const correctOpt = qEl.querySelector('.opt[data-correct="true"]');
+  qEl.dataset.studentAnswer = optEl.textContent.trim();
+  qEl.dataset.correctAnswer = correctOpt ? correctOpt.textContent.trim() : "";
+  qEl.dataset.isCorrect = (optEl.dataset.correct==="true") ? "true" : "false";
+  updateScore();
+}
+
+function updateScore(){
+  let total = 0, answered = 0, correct = 0;
+  contentEl.querySelectorAll(".q").forEach(q=>{
+    const gradable = q.querySelector(".opts");
+    if(!gradable) return;
+    total++;
+    if(q.dataset.studentAnswer !== undefined){
+      answered++;
+      if(q.dataset.isCorrect === "true") correct++;
+    }
+  });
+  if(window.examAnswersRevealed){
+    scoreText.textContent = `${correct} / ${total}`;
+  } else {
+    scoreText.textContent = `已作答 ${answered} / ${total} 題`;
+  }
+}
+window.updateScore = updateScore;
+
+document.getElementById("resetBtn").addEventListener("click", render);
+document.getElementById("quizModeBtn").addEventListener("click", ()=>{
+  currentMode = "quiz";
+  document.getElementById("quizModeBtn").classList.add("active");
+  document.getElementById("printModeBtn").classList.remove("active");
+  render();
+});
+document.getElementById("printModeBtn").addEventListener("click", ()=>{
+  if(document.getElementById("printModeBtn").disabled) return;
+  currentMode = "print";
+  document.getElementById("printModeBtn").classList.add("active");
+  document.getElementById("quizModeBtn").classList.remove("active");
+  render();
+});
+
+window.unlockPrintMode = function(){
+  document.getElementById("printModeBtn").disabled = false;
+};
+
+render();
+</script>
+<script src="../sync.js"></script>
+</body>
+</html>

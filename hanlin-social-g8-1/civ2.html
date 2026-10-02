@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>段考題庫｜公民第2回 - 憲法與權利保障</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@500;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#faf6ec;
+    --paper-line:#e3dcc8;
+    --ink:#26332b;
+    --ink-soft:#5b6b5f;
+    --chalk-green:#2f4538;
+    --chalk-green-2:#3d5a48;
+    --pen-red:#b8433a;
+    --pen-red-soft:#f4dedb;
+    --ok-green:#3f7d52;
+    --ok-green-soft:#dfeee1;
+    --gold:#b5842a;
+    --radius:10px;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:"Noto Sans TC",sans-serif;
+    line-height:1.7;
+  }
+  header.hero{
+    background:var(--chalk-green);
+    color:#eef2ea;
+    padding:28px 20px 40px;
+    position:relative;
+  }
+  header.hero::after{
+    content:"";
+    position:absolute;
+    left:0; right:0; bottom:-1px;
+    height:14px;
+    background:repeating-linear-gradient(90deg,var(--paper) 0 18px, transparent 18px 20px);
+  }
+  .hero-inner{max-width:880px;margin:0 auto;}
+  .breadcrumb a{color:#cfe0d1;text-decoration:none;font-size:14px;}
+  .breadcrumb a:hover{text-decoration:underline;}
+  h1{
+    font-family:"Noto Serif TC",serif;
+    font-weight:700;
+    font-size:clamp(24px,4vw,34px);
+    margin:10px 0 6px;
+  }
+  .subtitle{color:#cfe0d1;font-size:15px;margin:0;}
+  main{max-width:880px;margin:0 auto;padding:28px 20px 80px;}
+
+  .controls{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:22px;
+  }
+  .mode-toggle{display:flex;border:2px solid var(--chalk-green);border-radius:999px;overflow:hidden;}
+  .mode-toggle button{
+    background:transparent;border:none;padding:8px 16px;font-size:14px;font-weight:700;
+    color:var(--chalk-green);cursor:pointer;font-family:"Noto Sans TC",sans-serif;
+  }
+  .mode-toggle button.active{background:var(--gold);color:#fff;}
+  .mode-toggle button:disabled{opacity:.4;cursor:not-allowed;}
+
+  .score-bar{
+    display:none;
+    align-items:center;
+    justify-content:space-between;
+    background:#fff;
+    border:1px solid var(--paper-line);
+    border-left:5px solid var(--gold);
+    border-radius:var(--radius);
+    padding:12px 18px;
+    margin-bottom:22px;
+    font-size:14px;
+  }
+  .score-bar.show{display:flex;}
+  .score-bar strong{font-size:18px;color:var(--gold);}
+  .score-bar button{
+    background:none;border:1px solid var(--ink-soft);color:var(--ink-soft);
+    border-radius:6px;padding:6px 12px;font-size:13px;cursor:pointer;
+  }
+
+  section.block{
+    background:#fff;
+    border:1px solid var(--paper-line);
+    border-radius:var(--radius);
+    padding:22px 22px 26px;
+    margin-bottom:20px;
+  }
+  .block h2{
+    font-family:"Noto Serif TC",serif;
+    font-size:19px;
+    margin:0 0 4px;
+    color:var(--chalk-green);
+  }
+  .block .meta{color:var(--ink-soft);font-size:13px;margin:0 0 16px;}
+
+  .q{margin-bottom:18px;padding-bottom:16px;border-bottom:1px dashed var(--paper-line);}
+  .q:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0;}
+  .q-text{font-size:15.5px;margin-bottom:8px;}
+  .q-num{color:var(--gold);font-weight:700;margin-right:4px;}
+
+  .opts{display:grid;gap:8px;}
+  .opt{
+    display:flex;gap:8px;align-items:flex-start;
+    border:1.5px solid var(--paper-line);
+    border-radius:8px;
+    padding:9px 12px;
+    cursor:pointer;
+    font-size:14.5px;
+    background:#fffdf8;
+  }
+  .opt:hover{border-color:var(--chalk-green-2);}
+  .opt.selected{border-color:var(--chalk-green-2);background:#eef3ea;}
+  .opt.correct{border-color:var(--ok-green);background:var(--ok-green-soft);}
+  .opt.wrong{border-color:var(--pen-red);background:var(--pen-red-soft);}
+  .opt .tag{font-weight:700;color:var(--ink-soft);}
+  .opt.correct .tag{color:var(--ok-green);}
+  .opt.wrong .tag{color:var(--pen-red);}
+  .opt.disabled{cursor:default;}
+
+  .passage{
+    background:#f5f2e8;border-radius:8px;padding:14px 16px;margin-bottom:14px;
+    font-size:14.5px;white-space:pre-line;
+  }
+  .passage-label{font-weight:700;color:var(--chalk-green);margin-bottom:4px;display:block;}
+
+  .footer-link{
+    display:block;text-align:center;margin-top:30px;color:var(--chalk-green);
+    text-decoration:none;font-weight:700;font-size:14px;
+  }
+  .footer-link:hover{text-decoration:underline;}
+
+  @media print{
+    header.hero, .controls, .score-bar, .mini-btn, .footer-link{display:none !important;}
+    body{background:#fff;}
+    section.block{border:none;box-shadow:none;padding:8px 0;margin-bottom:14px;}
+    .opt.correct{background:none;border:none;font-weight:700;}
+    .opt.correct::after{content:" ← 正解";color:var(--pen-red);}
+    .opt{border:none;padding:2px 0;}
+    main{max-width:100%;padding:0 24px;}
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="breadcrumb"><a href="https://jenlin2002.github.io/">🏠 回總目錄</a> ／ <a href="../hanlin-social-g8-1.html" style="color:#cfe0d1;">段考題庫</a></div>
+    <h1>公民・第2回</h1>
+    <p class="subtitle">第四篇第2章 憲法與權利保障｜翰林版八年級社會（三）Ａ卷</p>
+  </div>
+</header>
+
+<main>
+  <div class="controls">
+    <div class="mode-toggle">
+      <button id="quizModeBtn" class="active">✏️ 測驗模式</button>
+      <button id="printModeBtn" disabled title="完成測驗並送出成績後才能查看">🖨️ 完整題目與解答（送出成績後解鎖）</button>
+    </div>
+  </div>
+
+  <div class="score-bar" id="scoreBar">
+    <div>目前得分：<strong id="scoreText">0 / 0</strong>（僅計算選擇題）</div>
+    <button id="resetBtn">重新作答</button>
+  </div>
+
+  <div id="content"></div>
+
+  <a class="footer-link" href="../hanlin-social-g8-1.html">← 回段考題庫總覽</a>
+</main>
+
+<script>
+
+window.EXAM_META = { version: "A卷", examLabel: "公民第2回" };
+const DATA = {
+  sections: [
+  {
+    "type": "mc",
+    "title": "一、單題",
+    "meta": "60%，每題3分",
+    "items": [
+      {
+        "q": "我國立法委員選舉時，透過立委的保障席次，以落實對特定族群（如原住民、離島、婦女）的權利保障。此制度的設計，主要是為了落實哪一種人民的基本權利？",
+        "options": [
+          "自由權",
+          "隱私權",
+          "平等權",
+          "受益權"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "「政府為改善國內的空氣汙染問題，針對民眾添購電動輔助自行車及電動自行車等低汙染車輛給予補助，以鼓勵民眾汰換容易造成汙染的二行程車輛。」由上文可知，政府此舉有助於落實下列何種基本權利的保障？",
+        "options": [
+          "隱私權",
+          "環境權",
+          "平等權",
+          "多元文化權"
+        ],
+        "correct": 1
+      },
+      {
+        "q": "依據《空氣汙染防制法》規定，政府訂定《汽車停車怠速管理辦法》，停車未熄火怠速超過 3 分鐘，經稽查人員規勸不聽，將予以開罰。有關上述「辦法」的相關敘述，下列何者正確？",
+        "options": [
+          "須由總統公布",
+          "由立法院制定",
+          "是由行政機關發布的命令",
+          "與《空氣汙染防制法》相同位階"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "在民主法治國家，人民有主動提出立法原則或制定政策的權利，這是因為哪一種權利受到《憲法》保障？",
+        "options": [
+          "訴願",
+          "訴訟",
+          "創制",
+          "複決"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "圖(一)是我國法律制定的程序圖，下列哪一項法律的制定符合圖中的流程？",
+        "image": "images/civ2/q5.png",
+        "options": [
+          "《中華民國憲法》",
+          "《優惠電價收費辦法》",
+          "《少年矯正學校設置及教育實施通則》",
+          "《公務人員升官等考試法施行細則》"
+        ],
+        "correct": 0
+      },
+      {
+        "q": "根據圖(二)內容判斷，這是顯示《憲法》的哪些特性？",
+        "image": "images/civ2/q6.png",
+        "options": [
+          "最高性、固定性",
+          "固定性、差異性",
+          "普遍性、原則性",
+          "原則性、最高性"
+        ],
+        "correct": 3
+      },
+      {
+        "q": "根據圖(三)判斷，這是何種自由權的展現？",
+        "image": "images/civ2/q7.png",
+        "options": [
+          "祕密通訊自由",
+          "居住及遷徙自由",
+          "信仰宗教自由",
+          "集會及結社自由"
+        ],
+        "correct": 1
+      },
+      {
+        "q": "下列針對法律層次中「命令」的說明，何者的敘述<u>錯誤</u>？",
+        "options": [
+          "基於法律授權而制定",
+          "用來補充法律的不足",
+          "細則、通則、規則皆屬之",
+          "由行政機關負責訂定及修正"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "過去臺灣在動員戡亂時期，會限制某些政治異議分子回國的自由。但是大法官解釋認為，臺灣人民只要在臺灣設有住所也有戶籍，就不可限制這些人回臺灣。上述內容是《憲法》保障人民的何項基本權利？",
+        "options": [
+          "信仰宗教自由",
+          "表現自由",
+          "居住及遷徙自由",
+          "集會及結社自由"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "下列何者屬於法律保障人民應享有的生活利益，亦即「權利」？",
+        "image": "images/civ2/q10.png",
+        "options": [
+          "不買票硬要搭車",
+          "搶劫後拿去買房地產",
+          "合法集會遊行抗議",
+          "持槍攻擊他人"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "立法院通過《政府採購法》來規範政府採購事宜，以防弊端，但是因為無法鉅細靡遺地加以規定，於是授權給下列何者來發布《政府採購法施行細則》？",
+        "options": [
+          "地方議會",
+          "行政機關",
+          "司法機關",
+          "勞工團體"
+        ],
+        "correct": 1
+      },
+      {
+        "q": "根據下列內容判斷，文中的甲應該是指哪一中央政府機關？",
+        "image": "images/civ2/q12.png",
+        "options": [
+          "行政院",
+          "立法院",
+          "監察院",
+          "司法院"
+        ],
+        "correct": 1
+      },
+      {
+        "q": "「狹義的法律」定名有好幾種，下列何者<u>不屬於</u>此？",
+        "options": [
+          "《刑法》",
+          "《道路交通管理處罰條例》",
+          "《少年矯正學校設置及教育實施通則》",
+          "《新北市城鄉發展基金收支保管及運用辦法》"
+        ],
+        "correct": 3
+      },
+      {
+        "q": "《憲法》的內容比較簡潔扼要，不會列出詳細規定與實施方法，而是藉由命令或法律來做具體的規範，這是《憲法》哪一種特性的描述？",
+        "options": [
+          "固定性",
+          "最高性",
+          "原則性",
+          "普遍性"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "公民老師在上課時使用了如圖(四)的海報，根據圖中的說明，老師應該正在講解《憲法》的何項特性？",
+        "image": "images/civ2/q15.png",
+        "options": [
+          "原則性",
+          "最高性",
+          "固定性",
+          "差異性"
+        ],
+        "correct": 1
+      },
+      {
+        "q": "受益權為人民有積極要求國家有所作為，而享受特定利益的權利，這些權利在我國《憲法》中明文規定國家需加以保障，其中<u>不包括</u>以下哪一權利？",
+        "options": [
+          "生存權",
+          "複決權",
+          "請願權",
+          "財產權"
+        ],
+        "correct": 1
+      },
+      {
+        "q": "《憲法》涵蓋許多重要事項，哪一項<u>不包含</u>在內？",
+        "options": [
+          "保障人權的權利",
+          "羅列國家基本政策",
+          "規畫政府的組織",
+          "規畫未來教育制度"
+        ],
+        "correct": 3
+      },
+      {
+        "q": "香湘考取公職人員，目前擔任總統府的公職人員。香湘可以參加公職人員考試，主要是行使哪一種基本權利？",
+        "options": [
+          "平等權",
+          "自由權",
+          "參政權",
+          "隱私權"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "勞工組織工會，其性質與下列哪一基本權利最為相關？",
+        "options": [
+          "表現自由",
+          "信仰宗教自由",
+          "人身自由",
+          "集會及結社自由"
+        ],
+        "correct": 3
+      },
+      {
+        "q": "圖(五)與我國《憲法》保障的哪一項基本權利有關？",
+        "image": "images/civ2/q20.png",
+        "options": [
+          "受益權",
+          "自由權",
+          "平等權",
+          "參政權"
+        ],
+        "correct": 0
+      }
+    ]
+  },
+  {
+    "type": "reading",
+    "title": "二、題組",
+    "meta": "12%，每題3分",
+    "passages": [
+      {
+        "label": "(一)",
+        "text": "我國《憲法》修正的程序過程相當繁複，通過的門檻也很高。修正須經立法院提案，並公告半年後，交由選舉人投票複決。這樣的修憲門檻，有可能會導致《憲法》難以順應社會的變化，而必須要依靠司法審理去擴充《憲法》的保障範圍。",
+        "items": [
+          {
+            "q": "上述過程主要在凸顯《憲法》的何種特性？",
+            "options": [
+              "最高性",
+              "原則性",
+              "固定性",
+              "普遍性"
+            ],
+            "correct": 2
+          },
+          {
+            "q": "文中提到的「選舉人」主要行使哪一基本權利？",
+            "options": [
+              "受益權",
+              "平等權",
+              "參政權",
+              "自由權"
+            ],
+            "correct": 2
+          }
+        ]
+      },
+      {
+        "label": "(二)",
+        "text": "2023 年因調整連假，導致補班日高達 6 天，讓上班族抱怨連連，於是有關單位修正相關的規定，但 2024 年起二二八、中秋節等不再放連假又惹民怨。2025 年立法院通過將原有的《紀念日及節日實施辦法》改為法律層級，納入放假與補假原則，避免政府臨時變動規則影響民眾假期規畫，並重新檢視需要增減哪些國定假日。",
+        "items": [
+          {
+            "q": "針對上文中提及的原有法規，下列何者敘述正確？",
+            "options": [
+              "可由行政機關自行修正",
+              "為命令，由立法院制定",
+              "須議會三讀通過後成立",
+              "位階效力較「法律」高"
+            ],
+            "correct": 0
+          },
+          {
+            "q": "依據上文所述，立法院通過後，下列何者最可能為新法規的名稱？",
+            "options": [
+              "《國定假日施行準則》",
+              "《國定假日施行細則》",
+              "《紀念日及節日實施條例》",
+              "《紀念日及節日實施規則》"
+            ],
+            "correct": 2
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "type": "mc",
+    "title": "三、進階思考題",
+    "meta": "28%，每題4分",
+    "items": [
+      {
+        "q": "下列是老師上課時準備的資料，根據內容判斷，老師講解的內容應該是下列哪一項主題？",
+        "image": "images/civ2/a1.png",
+        "options": [
+          "平等權",
+          "隱私權",
+          "參政權",
+          "環境權"
+        ],
+        "correct": 1
+      },
+      {
+        "q": "某國政府為了興建捷運引發民怨，下列是媒體報導此事的新聞標題，若報導屬實，則報導中政府所侵犯的人民權利何者正確？",
+        "image": "images/civ2/a2.png",
+        "options": [
+          "橘子日報—遷徙自由",
+          "西瓜日報—平等權",
+          "芭樂日報—結社自由",
+          "香蕉日報—受益權"
+        ],
+        "correct": 3
+      },
+      {
+        "q": "圖(六)是萱蕙在報告《憲法》的特性時所製作的海報。根據內容判斷，萱蕙說明的是《憲法》的何項特性？",
+        "image": "images/civ2/a3.png",
+        "options": [
+          "最高性",
+          "固定性",
+          "原則性",
+          "神聖性"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "教育部訂有《學校衛生法施行細則》，依其規定，學校應定期舉辦健康檢查、視力保健、預防接種、簡易急救教學等活動。關於此法規的敘述何者正確？",
+        "options": [
+          "與《公益勸募條例》屬同一位階",
+          "此法規若牴觸《憲法》仍有效",
+          "在法律位階中的效力最強",
+          "是由行政機關依法律授權而制定"
+        ],
+        "correct": 3
+      },
+      {
+        "q": "勞動部為協助街友重返職場，訂定「協助特定對象及弱勢者求職面試整備服務計畫」，可提供面試服裝、修整儀容、交通及餐食補助，而雇主亦可申請僱用獎勵。上述政策與下列何者屬於同一類《憲法》保障的基本權利？",
+        "options": [
+          "23 歲可參選",
+          "往來各地旅遊",
+          "擔任公職人員",
+          "到法院打官司"
+        ],
+        "correct": 3
+      },
+      {
+        "q": "一位法學學者提出「法律金字塔」的概念：「命令之所以有效，是因為其得到法律的授權依據，而法律之所以有效，則是經過《憲法》的制定過程。」此法源依據概念說明了《憲法》的何項特性？",
+        "options": [
+          "原則性",
+          "最高性",
+          "固定性",
+          "複雜性"
+        ],
+        "correct": 1
+      },
+      {
+        "q": "當前日本的《皇室典範》明確規定，皇位繼承僅限於男性，且女性皇族在出嫁後便需脫離皇籍。2024 年 10 月，聯合國消除對婦女歧視委員會對日本發出正式建議，日本應修改此規定，允許女性皇族繼承皇位。此建議與人民的何項權利有關？",
+        "options": [
+          "工作權",
+          "表現自由",
+          "平等權",
+          "選舉罷免"
+        ],
+        "correct": 2
+      }
+    ]
+  }
+]
+};
+
+let currentMode = "quiz"; // quiz | print
+
+const contentEl = document.getElementById("content");
+const scoreBar = document.getElementById("scoreBar");
+const scoreText = document.getElementById("scoreText");
+
+function render(){
+  window.examAnswersRevealed = false;
+  contentEl.innerHTML = "";
+  DATA.sections.forEach((sec, si)=> contentEl.appendChild(renderSection(sec, si)));
+  if(currentMode==="quiz"){
+    scoreBar.classList.add("show");
+    updateScore();
+  } else {
+    scoreBar.classList.remove("show");
+    contentEl.querySelectorAll(".opt").forEach(o=>o.classList.add("disabled"));
+    contentEl.querySelectorAll(".opt.is-correct").forEach(o=>o.classList.add("correct"));
+  }
+}
+
+function renderSection(sec, si){
+  const block = document.createElement("section");
+  block.className = "block";
+  block.innerHTML = `<h2>${sec.title}</h2><p class="meta">${sec.meta}</p>`;
+
+  if(sec.type==="mc"){
+    sec.items.forEach((it,i)=>{
+      const q = document.createElement("div");
+      q.className = "q";
+      const optsHtml = it.options.map((op,oi)=>`
+        <div class="opt" data-idx="${oi}" data-correct="${oi===it.correct}">
+          <span class="tag">(${String.fromCharCode(65+oi)})</span><span>${op}</span>
+        </div>`).join("");
+      const imgHtml = it.image ? `<img src="${it.image}" alt="題目附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">` : "";
+      const img2Html = it.image2 ? `<img src="${it.image2}" alt="題目附圖2" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">` : "";
+      q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q}</div>
+        ${imgHtml}${img2Html}
+        <div class="opts">${optsHtml}</div>`;
+      q.querySelectorAll(".opt").forEach(optEl=>{
+        if(optEl.dataset.correct==="true") optEl.classList.add("is-correct");
+        optEl.addEventListener("click", ()=>selectOption(q, optEl));
+      });
+      block.appendChild(q);
+    });
+  }
+
+  else if(sec.type==="reading"){
+    sec.passages.forEach(p=>{
+      const passageDiv = document.createElement("div");
+      passageDiv.className = "passage";
+      passageDiv.innerHTML = `${p.label ? `<span class="passage-label">${p.label}</span>`:""}${p.text}${p.image ? `<img src="${p.image}" alt="題組附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-top:10px;border:1px solid var(--paper-line);">`:""}`;
+      block.appendChild(passageDiv);
+      p.items.forEach((it,i)=>{
+        const q = document.createElement("div");
+        q.className = "q";
+        const optsHtml = it.options.map((op,oi)=>`
+          <div class="opt" data-idx="${oi}" data-correct="${oi===it.correct}">
+            <span class="tag">(${String.fromCharCode(65+oi)})</span><span>${op}</span>
+          </div>`).join("");
+        q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q}</div>
+          ${it.image ? `<img src="${it.image}" alt="題目附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">`:""}
+          <div class="opts">${optsHtml}</div>`;
+        q.querySelectorAll(".opt").forEach(optEl=>{
+          if(optEl.dataset.correct==="true") optEl.classList.add("is-correct");
+          optEl.addEventListener("click", ()=>selectOption(q, optEl));
+        });
+        block.appendChild(q);
+      });
+    });
+  }
+
+  return block;
+}
+
+function selectOption(qEl, optEl){
+  if(currentMode!=="quiz") return;
+  if(qEl.dataset.answered==="true") return;
+  qEl.dataset.answered = "true";
+  qEl.querySelectorAll(".opt").forEach(o=>o.classList.add("disabled"));
+  optEl.classList.add("selected");
+  const correctOpt = qEl.querySelector('.opt[data-correct="true"]');
+  qEl.dataset.studentAnswer = optEl.textContent.trim();
+  qEl.dataset.correctAnswer = correctOpt ? correctOpt.textContent.trim() : "";
+  qEl.dataset.isCorrect = (optEl.dataset.correct==="true") ? "true" : "false";
+  updateScore();
+}
+
+function updateScore(){
+  let total = 0, answered = 0, correct = 0;
+  contentEl.querySelectorAll(".q").forEach(q=>{
+    const gradable = q.querySelector(".opts");
+    if(!gradable) return;
+    total++;
+    if(q.dataset.studentAnswer !== undefined){
+      answered++;
+      if(q.dataset.isCorrect === "true") correct++;
+    }
+  });
+  if(window.examAnswersRevealed){
+    scoreText.textContent = `${correct} / ${total}`;
+  } else {
+    scoreText.textContent = `已作答 ${answered} / ${total} 題`;
+  }
+}
+window.updateScore = updateScore;
+
+document.getElementById("resetBtn").addEventListener("click", render);
+document.getElementById("quizModeBtn").addEventListener("click", ()=>{
+  currentMode = "quiz";
+  document.getElementById("quizModeBtn").classList.add("active");
+  document.getElementById("printModeBtn").classList.remove("active");
+  render();
+});
+document.getElementById("printModeBtn").addEventListener("click", ()=>{
+  if(document.getElementById("printModeBtn").disabled) return;
+  currentMode = "print";
+  document.getElementById("printModeBtn").classList.add("active");
+  document.getElementById("quizModeBtn").classList.remove("active");
+  render();
+});
+
+window.unlockPrintMode = function(){
+  document.getElementById("printModeBtn").disabled = false;
+};
+
+render();
+</script>
+<script src="../sync.js"></script>
+</body>
+</html>

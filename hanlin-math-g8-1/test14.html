@@ -1,0 +1,871 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>段考題庫｜第14回 - 第5章 統計資料處理</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@500;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#faf6ec;
+    --paper-line:#e3dcc8;
+    --ink:#26332b;
+    --ink-soft:#5b6b5f;
+    --chalk-green:#2f4538;
+    --chalk-green-2:#3d5a48;
+    --pen-red:#b8433a;
+    --pen-red-soft:#f4dedb;
+    --ok-green:#3f7d52;
+    --ok-green-soft:#dfeee1;
+    --gold:#b5842a;
+    --radius:10px;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:"Noto Sans TC",sans-serif;
+    line-height:1.7;
+  }
+  header.hero{
+    background:var(--chalk-green);
+    color:#eef2ea;
+    padding:28px 20px 40px;
+    position:relative;
+  }
+  header.hero::after{
+    content:"";
+    position:absolute;
+    left:0; right:0; bottom:-1px;
+    height:14px;
+    background:repeating-linear-gradient(90deg,var(--paper) 0 18px, transparent 18px 20px);
+  }
+  .hero-inner{max-width:880px;margin:0 auto;}
+  .breadcrumb a{color:#cfe0d1;text-decoration:none;font-size:14px;}
+  .breadcrumb a:hover{text-decoration:underline;}
+  h1{
+    font-family:"Noto Serif TC",serif;
+    font-weight:700;
+    font-size:clamp(24px,4vw,34px);
+    margin:10px 0 6px;
+  }
+  .subtitle{color:#cfe0d1;font-size:15px;margin:0;}
+  main{max-width:880px;margin:0 auto;padding:28px 20px 80px;}
+
+  .controls{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:22px;
+  }
+  .mode-toggle{display:flex;border:2px solid var(--chalk-green);border-radius:999px;overflow:hidden;}
+  .mode-toggle button{
+    background:transparent;border:none;padding:8px 16px;font-size:14px;font-weight:700;
+    color:var(--chalk-green);cursor:pointer;font-family:"Noto Sans TC",sans-serif;
+  }
+  .mode-toggle button.active{background:var(--gold);color:#fff;}
+  .mode-toggle button:disabled{opacity:.4;cursor:not-allowed;}
+
+  .score-bar{
+    display:none;
+    align-items:center;
+    justify-content:space-between;
+    background:#fff;
+    border:1px solid var(--paper-line);
+    border-left:5px solid var(--gold);
+    border-radius:var(--radius);
+    padding:12px 18px;
+    margin-bottom:22px;
+    font-size:14px;
+  }
+  .score-bar.show{display:flex;}
+  .score-bar strong{font-size:18px;color:var(--gold);}
+  .score-bar button{
+    background:none;border:1px solid var(--ink-soft);color:var(--ink-soft);
+    border-radius:6px;padding:6px 12px;font-size:13px;cursor:pointer;
+  }
+
+  section.block{
+    background:#fff;
+    border:1px solid var(--paper-line);
+    border-radius:var(--radius);
+    padding:22px 22px 26px;
+    margin-bottom:20px;
+  }
+  .block h2{
+    font-family:"Noto Serif TC",serif;
+    font-size:19px;
+    margin:0 0 4px;
+    color:var(--chalk-green);
+  }
+  .block .meta{color:var(--ink-soft);font-size:13px;margin:0 0 16px;}
+  .block audio{width:100%;margin-bottom:16px;}
+
+  .q{margin-bottom:18px;padding-bottom:16px;border-bottom:1px dashed var(--paper-line);}
+  .q:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0;}
+  .q-text{font-size:15.5px;margin-bottom:8px;}
+  .q-num{color:var(--gold);font-weight:700;margin-right:4px;}
+
+  .opts{display:grid;gap:8px;}
+  .wordbank{display:flex;flex-wrap:wrap;gap:8px;background:#f5f2e8;border:1px solid var(--paper-line);
+    border-radius:8px;padding:12px 14px;margin-bottom:16px;}
+  .wb-word{font-family:"Noto Sans TC",sans-serif;font-size:14px;font-weight:700;color:var(--chalk-green);
+    background:#fff;border:1px solid var(--paper-line);border-radius:6px;padding:4px 12px;}
+  .opt{
+    display:flex;gap:8px;align-items:flex-start;
+    border:1.5px solid var(--paper-line);
+    border-radius:8px;
+    padding:9px 12px;
+    cursor:pointer;
+    font-size:14.5px;
+    background:#fffdf8;
+  }
+  .opt:hover{border-color:var(--chalk-green-2);}
+  .opt.selected{border-color:var(--chalk-green-2);background:#eef3ea;}
+  .opt.correct{border-color:var(--ok-green);background:var(--ok-green-soft);}
+  .opt.wrong{border-color:var(--pen-red);background:var(--pen-red-soft);}
+  .opt .tag{font-weight:700;color:var(--ink-soft);}
+  .opt.correct .tag{color:var(--ok-green);}
+  .opt.wrong .tag{color:var(--pen-red);}
+  .opt.disabled{cursor:default;}
+
+  input.blank, input.line-answer{
+    font-family:"Noto Sans TC",sans-serif;
+    border:none;border-bottom:2px solid var(--chalk-green-2);
+    background:transparent;font-size:15px;padding:2px 4px;
+    width:150px;
+  }
+  input.line-answer{width:100%;margin-top:4px;}
+  .check-row{display:flex;gap:8px;margin-top:6px;flex-wrap:wrap;align-items:center;}
+  .mini-btn{
+    background:var(--chalk-green);color:#fff;border:none;border-radius:6px;
+    padding:6px 14px;font-size:13px;cursor:pointer;font-family:"Noto Sans TC",sans-serif;
+  }
+  .mini-btn.secondary{background:transparent;color:var(--chalk-green);border:1.5px solid var(--chalk-green);}
+  .feedback{font-size:13.5px;font-weight:700;}
+  .feedback.ok{color:var(--ok-green);}
+  .feedback.no{color:var(--pen-red);}
+  .answer-reveal{
+    display:none;margin-top:6px;font-size:14px;color:var(--chalk-green-2);
+    background:#eef3ea;border-radius:6px;padding:8px 12px;
+  }
+  .answer-reveal.show{display:block;}
+
+  .passage{
+    background:#f5f2e8;border-radius:8px;padding:14px 16px;margin-bottom:14px;
+    font-size:14.5px;white-space:pre-line;
+  }
+  .passage-label{font-weight:700;color:var(--chalk-green);margin-bottom:4px;display:block;}
+  .data-table{width:100%;border-collapse:collapse;margin-top:10px;font-size:13.5px;background:#fff;}
+  .data-table th, .data-table td{border:1px solid var(--paper-line);padding:6px 8px;text-align:center;}
+  .data-table th{background:#eef3ea;color:var(--chalk-green);}
+
+  .footer-link{
+    display:block;text-align:center;margin-top:30px;color:var(--chalk-green);
+    text-decoration:none;font-weight:700;font-size:14px;
+  }
+  .footer-link:hover{text-decoration:underline;}
+
+  @media print{
+    header.hero, .controls, .score-bar, .check-row, .mini-btn, .footer-link{display:none !important;}
+    body{background:#fff;}
+    section.block{border:none;box-shadow:none;padding:8px 0;margin-bottom:14px;}
+    .opt.correct{background:none;border:none;font-weight:700;}
+    .opt.correct::after{content:" ← 正解";color:var(--pen-red);}
+    .opt{border:none;padding:2px 0;}
+    .answer-reveal{display:block !important;background:none;padding:2px 0;}
+    main{max-width:100%;padding:0 24px;}
+  }
+  .katex{font-size:1.05em;}
+  .q-text .katex-display{margin:6px 0;}
+  .parts{margin:6px 0 4px 1.4em;padding:0;}
+  .parts li{margin-bottom:4px;}
+  input.math-blank{width:200px;}
+  .fill-hint{font-size:12.5px;color:var(--ink-soft);margin-left:4px;}
+  .calc-stem{margin:18px 0 8px;}
+  .calc-stem:first-of-type{margin-top:0;}
+  .q.calc-part{margin-left:1.4em;}
+</style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+</head>
+<body>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="breadcrumb"><a href="https://jenlin2002.github.io/">🏠 回總目錄</a> ／ <a href="../hanlin-math-g8-1.html" style="color:#cfe0d1;">段考題庫</a></div>
+    <h1>第14回・第5章 統計資料處理</h1>
+    <p class="subtitle">第5章 統計資料處理｜翰林版八年級數學（三）Ａ卷</p>
+  </div>
+</header>
+
+<main>
+  <div class="controls">
+    <div class="mode-toggle">
+      <button id="quizModeBtn" class="active">✏️ 測驗模式</button>
+      <button id="printModeBtn" disabled title="完成測驗並送出成績後才能查看">🖨️ 完整題目與解答（送出成績後解鎖）</button>
+    </div>
+  </div>
+
+  <div class="score-bar" id="scoreBar">
+    <div>目前得分：<strong id="scoreText">0 / 0</strong>（僅計算選擇題與填充題）</div>
+    <button id="resetBtn">重新作答</button>
+  </div>
+
+  <div id="content"></div>
+
+  <a class="footer-link" href="../hanlin-math-g8-1.html">← 回段考題庫總覽</a>
+</main>
+
+<script>
+
+window.EXAM_META = { version: "數學A卷", examLabel: "第14回" };
+const DATA = {
+  sections: [
+  {
+    "type": "mc",
+    "title": "一、選擇題",
+    "meta": "【A部分 學力基礎題】每題3分，共30分",
+    "items": [
+      {
+        "q": "右表為某校七年孝班 40 位學生數學成績的次數分配表，則成績不及格（未滿 60 分）的人數占全班的百分比為多少？",
+        "image": "images/test14/q1.png",
+        "options": [
+          "10%",
+          "12.5%",
+          "15%",
+          "17.5%"
+        ],
+        "correct": 1
+      },
+      {
+        "q": "右表為某公司 200 名職員年齡的次數分配表，其中 34～40 歲及 46～52 歲的次數因汙損而無法辨識。若 34～40 歲、46～52 歲職員人數的相對次數分別為 $a\\%$、$b\\%$，則 $a+b$ 之值為何？",
+        "image": "images/test14/q2.png",
+        "options": [
+          "10",
+          "45",
+          "55",
+          "99"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "右表是某校九年二班數學成績的累積次數分配表，則下列敘述何者<u>錯誤</u>？",
+        "image": "images/test14/q3.png",
+        "options": [
+          "$A=8$，$B=21$",
+          "$B=21$，$C=35$",
+          "全班共有 35 人",
+          "成績不及格（未滿 60 分）的有 10 人"
+        ],
+        "correct": 3
+      },
+      {
+        "q": "右圖是<u>蘭宜國中</u>九年級第一次段考數學成績的累積相對次數分配折線圖，則成績及格（滿 60 分）的人數占九年級的百分比為多少？",
+        "image": "images/test14/q4.png",
+        "options": [
+          "60%",
+          "50%",
+          "40%",
+          "20%"
+        ],
+        "correct": 0
+      },
+      {
+        "q": "老師將班上同學的某次段考數學成績分成四組，並將資料記錄於下表。關於 $a$、$b$、$c$、$d$ 的值，下列哪一個選項正確？",
+        "image": "images/test14/q5.png",
+        "options": [
+          "$a=10$",
+          "$b=35$",
+          "$c=65$",
+          "$d=75$"
+        ],
+        "correct": 3
+      },
+      {
+        "q": "右圖為某班數學成績的相對次數分配折線圖。若 90～100 分這一組有 2 人，則 40～50 分這一組有多少人？",
+        "image": "images/test14/q6.png",
+        "options": [
+          "3",
+          "4",
+          "5",
+          "6"
+        ],
+        "correct": 0
+      },
+      {
+        "q": "右表是八年三班學生某次數學小考成績的次數分配表。若 50～60 分的人數占全班的 16%，60～70 分的人數占全班的 20%，則全班共有多少人？",
+        "image": "images/test14/q7.png",
+        "options": [
+          "20",
+          "25",
+          "30",
+          "40"
+        ],
+        "correct": 1
+      },
+      {
+        "q": "右圖為八年一班第三次段考數學成績的累積相對次數分配折線圖。若及格（滿 60 分）的人數有 11 人，則下列敘述何者正確？",
+        "image": "images/test14/q8.png",
+        "options": [
+          "全班有 30 人",
+          "60～80 分有 8 人",
+          "不及格的有 9 人",
+          "90～100 分有 2 人"
+        ],
+        "correct": 2
+      },
+      {
+        "pre": "※請閱讀下列敘述後，回答 9.～10. 題\n捷運公司統計 1 月及 2 月旅客當月使用悠遊卡搭乘捷運的累積相對次數分配折線圖與當月常客搭乘次數優惠方案表，如下：",
+        "preImage": "images/test14/q9_metro.png",
+        "q": "1 月使用悠遊卡搭乘 30 次以上（含）的百分比為多少？",
+        "options": [
+          "42%",
+          "50%",
+          "54%",
+          "58%"
+        ],
+        "correct": 0
+      },
+      {
+        "q": "2 月獲得回饋金 20% 的旅客占 2 月旅客的百分比為多少？",
+        "options": [
+          "10%",
+          "15%",
+          "17%",
+          "18%"
+        ],
+        "correct": 3
+      }
+    ]
+  },
+  {
+    "type": "fill",
+    "title": "二、非選擇題－填充",
+    "meta": "每格4分，共20分",
+    "items": [
+      {
+        "num": "1.",
+        "q": "右圖為<u>大信國中</u>八年七班學生 30 人的體重累積相對次數分配折線圖，在圖中有一塊區域汙損了，只知道 60～65 公斤的學生比 55～60 公斤的學生多 2 人，則 60～65 公斤的學生有多少人？",
+        "image": "images/test14/f1.png",
+        "answers": [
+          "7"
+        ],
+        "show": "7 人"
+      },
+      {
+        "num": "2.",
+        "q": "右表為量測 40 個燈泡照明時間的累積次數分配表。已知照明時間 80～120 小時的燈泡數占全部燈泡數的 47.5%，則表中 $x=$",
+        "image": "images/test14/f2.png",
+        "answers": [
+          "24"
+        ],
+        "show": "24"
+      },
+      {
+        "num": "3.",
+        "q": "右表為某次段考數學成績的資料，<u>小明</u>在製作時漏了將 $A$、$B$ 兩數填入，則數對 $(A,B)=$",
+        "image": "images/test14/f3.png",
+        "answers": [
+          "(5,30)"
+        ],
+        "show": "$(5,30)$",
+        "hint": "寫成 (1,2) 的形式"
+      },
+      {
+        "num": "4.(1)",
+        "q": "右表是某班 50 位同學第一次段考數學成績的次數分配表。若 40～60 分這一組的累積相對次數為 40%，則 $x=$",
+        "image": "images/test14/f4.png",
+        "answers": [
+          "2"
+        ],
+        "show": "2"
+      },
+      {
+        "num": "4.(2)",
+        "q": "承上題，成績 60～80 分這一組的相對次數為多少 %？",
+        "answers": [
+          "44"
+        ],
+        "show": "44%"
+      }
+    ]
+  },
+  {
+    "type": "calc",
+    "title": "三、非選擇題－計算",
+    "meta": "每題10分，共30分（過程寫在計算紙上，每小題填最後答案）",
+    "items": [
+      {
+        "q": "右圖是甲、乙兩班學生每月零用錢調查的累積次數分配折線圖。已知每班各有 40 人，請回答下列問題：",
+        "image": "images/test14/c1.png",
+        "parts": [
+          {
+            "label": "(1)",
+            "p": "哪一班零用錢不到 3000 元的人數較多？",
+            "answers": [
+              "甲班",
+              "甲"
+            ],
+            "show": "甲班",
+            "hint": "填甲班或乙班"
+          },
+          {
+            "label": "　",
+            "p": "多幾人？（(1) 共 4分）",
+            "answers": [
+              "15"
+            ],
+            "show": "15 人"
+          },
+          {
+            "label": "(2)",
+            "p": "甲班零用錢在 2000～2500 元的學生人數占該班的百分比為多少？",
+            "answers": [
+              "7.5"
+            ],
+            "show": "7.5%"
+          },
+          {
+            "label": "　",
+            "p": "乙班零用錢在 2000～2500 元的學生人數占該班的百分比為多少？（(2) 共 6分）",
+            "answers": [
+              "12.5"
+            ],
+            "show": "12.5%"
+          }
+        ]
+      },
+      {
+        "q": "右表是九年忠班全班學生體重的次數分配表。已知體重 50～60 公斤的人數占全班人數的 25%，體重 55～70 公斤的人數占全班人數的 62.5%，請回答下列問題：",
+        "image": "images/test14/c2.png",
+        "parts": [
+          {
+            "p": "全班有多少人？（7分）",
+            "answers": [
+              "40"
+            ],
+            "show": "40 人"
+          },
+          {
+            "p": "體重 50～70 公斤的人數占全班人數的百分比為多少？（3分）",
+            "answers": [
+              "72.5"
+            ],
+            "show": "72.5%"
+          }
+        ]
+      },
+      {
+        "q": "右表是暑期營隊所有隊員體重的次數分配表。已知 80～90 公斤的相對次數為 10%，且 60～70 公斤的相對次數是 40～50 公斤相對次數的 5 倍，70～80 公斤人數的 2 倍比 40～50 公斤人數的 3 倍還多 8 人。請回答下列問題：",
+        "image": "images/test14/c3.png",
+        "parts": [
+          {
+            "p": "此營隊有多少人？（3分）",
+            "answers": [
+              "40"
+            ],
+            "show": "40 人"
+          },
+          {
+            "p": "$B+C=$？（7分）",
+            "answers": [
+              "17"
+            ],
+            "show": "17"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "type": "fill",
+    "title": "非選擇題－填充",
+    "meta": "【B部分 學力精熟題】每格4分，共20分",
+    "items": [
+      {
+        "num": "1.",
+        "q": "下表是調查民眾每天使用 3C 產品時間的累積相對次數分配表的部分資料，則使用 8～10 小時有多少人？",
+        "image": "images/test14/b1.png",
+        "answers": [
+          "280"
+        ],
+        "show": "280 人"
+      },
+      {
+        "num": "2.",
+        "q": "右圖是<u>健康國中</u>全校學生體重的累積相對次數分配折線圖。若該校體重 75 公斤以上（含）的學生有 $x$ 人，但體重未滿 55 公斤的有 $y$ 人，則 $x:y$ 的比值是",
+        "image": "images/test14/b2.png",
+        "answers": [
+          "1/6"
+        ],
+        "show": "$\\dfrac{1}{6}$",
+        "hint": "分數寫成 1/6"
+      },
+      {
+        "num": "3.",
+        "q": "右圖是甲班 30 人的體重次數分配折線圖。若 60 公斤以上（含）的人數占全班的 40%，則 50～60 公斤的人數有多少人？",
+        "image": "images/test14/b3.png",
+        "answers": [
+          "14"
+        ],
+        "show": "14 人"
+      },
+      {
+        "num": "4.(1)",
+        "q": "右表是<u>建北班</u>上國文成績的累積相對次數分配表，不慎塗汙了部分資料，則 $x=$",
+        "image": "images/test14/b4.png",
+        "answers": [
+          "8"
+        ],
+        "show": "8"
+      },
+      {
+        "num": "4.(2)",
+        "q": "承上題，$y=$",
+        "answers": [
+          "40"
+        ],
+        "show": "40"
+      }
+    ]
+  }
+]
+};
+
+let currentMode = "quiz"; // quiz | print
+
+const contentEl = document.getElementById("content");
+const scoreBar = document.getElementById("scoreBar");
+const scoreText = document.getElementById("scoreText");
+
+function render(){
+  window.examAnswersRevealed = false;
+  contentEl.innerHTML = "";
+  DATA.sections.forEach((sec, si)=> contentEl.appendChild(renderSection(sec, si)));
+  if(currentMode==="quiz"){
+    scoreBar.classList.add("show");
+    updateScore();
+  } else {
+    scoreBar.classList.remove("show");
+    contentEl.querySelectorAll(".answer-reveal").forEach(e=>e.classList.add("show"));
+    contentEl.querySelectorAll(".opt").forEach(o=>o.classList.add("disabled"));
+    contentEl.querySelectorAll(".opt.is-correct").forEach(o=>o.classList.add("correct"));
+  }
+  if(window.renderMathInElement){
+    renderMathInElement(contentEl, {delimiters:[{left:"$", right:"$", display:false}], throwOnError:false});
+  }
+}
+
+function renderTable(t){
+  if(!t) return "";
+  const headHtml = `<tr>${t.head.map(h=>`<th>${h}</th>`).join("")}</tr>`;
+  const rowsHtml = t.rows.map(r=>`<tr>${r.map((c,ci)=>ci===0?`<th>${c}</th>`:`<td>${c}</td>`).join("")}</tr>`).join("");
+  return `${t.title ? `<div style="font-weight:700;text-align:center;color:var(--chalk-green);margin-bottom:6px;">${t.title}</div>`:""}
+    <table class="data-table"><thead>${headHtml}</thead><tbody>${rowsHtml}</tbody></table>
+    ${t.note ? `<div style="margin-top:8px;color:var(--ink-soft);font-size:13px;">${t.note}</div>` : ""}`;
+}
+
+function renderSection(sec, si){
+  const block = document.createElement("section");
+  block.className = "block";
+  block.innerHTML = `<h2>${sec.title}</h2><p class="meta">${sec.meta}</p>`;
+
+  if(sec.audio){
+    const audioEl = document.createElement("audio");
+    audioEl.controls = true;
+    audioEl.src = sec.audio;
+    block.appendChild(audioEl);
+  }
+
+  if(sec.image){
+    const im = document.createElement("img");
+    im.src = sec.image; im.alt = "題目附圖";
+    im.style.cssText = "width:100%;max-width:560px;display:block;margin:0 auto 16px;border-radius:8px;border:1px solid var(--paper-line);";
+    block.appendChild(im);
+  }
+
+  if(sec.wordbank){
+    const wb = document.createElement("div");
+    wb.className = "wordbank";
+    wb.innerHTML = sec.wordbank.map(w=>`<span class="wb-word">${w}</span>`).join("");
+    block.appendChild(wb);
+  }
+
+  if(sec.type==="vocab"){
+    sec.items.forEach((it,i)=>{
+      const q = document.createElement("div");
+      q.className = "q";
+      if(it.answers){
+        q.innerHTML = `<div class="q-text"><span class="q-num">${(sec.start||1)+i}.</span>${it.q}
+          &nbsp; ${it.answers.map(a=>`<input type="text" class="micro-blank" data-answer="${a}" style="width:${Math.max(90,a.length*13)}px;" placeholder="填入單字">`).join(" ")}</div>
+          <div class="answer-reveal">正解：${it.answers.join(", ")}</div>`;
+        q.querySelectorAll(".micro-blank").forEach(inp=>inp.addEventListener("input", ()=>checkMultiBlank(q)));
+      } else {
+        q.innerHTML = `<div class="q-text"><span class="q-num">${(sec.start||1)+i}.</span>${it.q}
+          &nbsp; <input type="text" class="blank" data-answer="${it.answer}" placeholder="填入單字">
+          <span class="feedback"></span></div>
+          <div class="answer-reveal">正解：${it.answer}</div>`;
+        const input = q.querySelector("input");
+        input.addEventListener("input", ()=>checkBlank(input));
+      }
+      block.appendChild(q);
+    });
+  }
+
+  else if(sec.type==="mc"){
+    sec.items.forEach((it,i)=>{
+      const q = document.createElement("div");
+      q.className = "q";
+      const optsHtml = it.options.map((op,oi)=>`
+        <div class="opt" data-idx="${oi}" data-correct="${oi===it.correct}">
+          <span class="tag">(${String.fromCharCode(65+oi)})</span><span>${op}</span>
+        </div>`).join("");
+      q.innerHTML = `${it.pre ? `<div class="passage">${it.pre}${it.preImage ? `<img src="${it.preImage}" alt="附圖" style="width:100%;max-width:420px;display:block;margin:10px auto 0;border-radius:8px;border:1px solid var(--paper-line);background:#fff;">` : ""}</div>` : ""}<div class="q-text"><span class="q-num">${(sec.start||1)+i}.</span>${it.q||""}</div>
+        ${it.image ? `<img src="${it.image}" alt="題目附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">`:""}
+        <div class="opts">${optsHtml}</div>`;
+      q.querySelectorAll(".opt").forEach(optEl=>{
+        if(optEl.dataset.correct==="true") optEl.classList.add("is-correct");
+        optEl.addEventListener("click", ()=>selectOption(q, optEl));
+      });
+      block.appendChild(q);
+    });
+  }
+
+  else if(sec.type==="guided" || sec.type==="translation"){
+    sec.items.forEach((it,i)=>{
+      const q = document.createElement("div");
+      q.className = "q";
+      const prompt = sec.type==="guided" ? `${it.prompt} <em style="color:var(--ink-soft);font-style:normal;">${it.hint}</em>` : it.zh;
+      q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${prompt}</div>
+        ${it.image ? `<img src="${it.image}" alt="題目附圖" style="width:100%;max-width:240px;display:block;border-radius:8px;margin:4px 0 8px;border:1px solid var(--paper-line);">`:""}
+        <input type="text" class="line-answer" placeholder="請輸入英文句子">
+        <div class="check-row"><button class="mini-btn secondary reveal-btn" style="display:none;">對答案</button></div>
+        <div class="answer-reveal">正解：${it.answer}</div>`;
+      q.querySelector(".reveal-btn").addEventListener("click", (e)=>{
+        q.querySelector(".answer-reveal").classList.add("show");
+      });
+      block.appendChild(q);
+    });
+  }
+
+  else if(sec.type==="guided-multi"){
+    sec.items.forEach((it,i)=>{
+      const q = document.createElement("div");
+      q.className = "q";
+      const linesHtml = it.lines.map(line=>{
+        const parts = line.split(/\{\{(.*?)\}\}/g);
+        return parts.map((part,pi)=> pi%2===1
+          ? `<input type="text" class="micro-blank" data-answer="${part}" style="width:${Math.max(60,part.length*13)}px;">`
+          : part
+        ).join("");
+      }).join("<br>");
+      q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.zh ? it.zh+"<br>" : ""}${linesHtml}</div>
+        <div class="answer-reveal">正解：${it.lines.map(l=>l.replace(/\{\{(.*?)\}\}/g,"$1")).join("　")}</div>`;
+      q.querySelectorAll(".micro-blank").forEach(inp=>{
+        inp.addEventListener("input", ()=>checkMultiBlank(q));
+      });
+      block.appendChild(q);
+    });
+  }
+
+  else if(sec.type==="cloze"){
+    const passageDiv = document.createElement("div");
+    passageDiv.className = "passage";
+    passageDiv.textContent = sec.passage;
+    block.appendChild(passageDiv);
+    sec.items.forEach((it,i)=>{
+      const q = document.createElement("div");
+      q.className = "q";
+      const optsHtml = it.options.map((op,oi)=>`
+        <div class="opt" data-idx="${oi}" data-correct="${oi===it.correct}">
+          <span class="tag">(${String.fromCharCode(65+oi)})</span><span>${op}</span>
+        </div>`).join("");
+      q.innerHTML = `<div class="q-text"><span class="q-num">${(sec.start||1)+i}.</span></div><div class="opts">${optsHtml}</div>`;
+      q.querySelectorAll(".opt").forEach(optEl=>{
+        if(optEl.dataset.correct==="true") optEl.classList.add("is-correct");
+        optEl.addEventListener("click", ()=>selectOption(q, optEl));
+      });
+      block.appendChild(q);
+    });
+  }
+
+  else if(sec.type==="fill"){
+    sec.items.forEach((it,i)=>{
+      const q = document.createElement("div");
+      q.className = "q";
+      q.innerHTML = `<div class="q-text"><span class="q-num">${it.num || ((sec.start||1)+i)+"."}</span>${it.q}</div>
+        ${it.image ? `<img src="${it.image}" alt="題目附圖" style="width:100%;max-width:260px;display:block;border-radius:8px;margin:4px 0 10px;border:1px solid var(--paper-line);background:#fff;">`:""}
+        <div><input type="text" class="blank math-blank" placeholder="填入答案" autocomplete="off"><span class="feedback"></span>${it.hint ? `<span class="fill-hint">（${it.hint}）</span>` : ""}</div>
+        <div class="answer-reveal">正解：${it.show}</div>`;
+      const input = q.querySelector("input");
+      input.dataset.answer = it.answers[0];
+      input.addEventListener("input", ()=>checkMath(input, it.answers));
+      block.appendChild(q);
+    });
+  }
+
+  else if(sec.type==="calc"){
+    // 題幹＋附圖，每個小題各自一格最後答案（自動批改）；過程寫在紙上
+    sec.items.forEach((it,i)=>{
+      const stem = document.createElement("div");
+      stem.className = "calc-stem";
+      stem.innerHTML = `<div class="q-text"><span class="q-num">${(sec.start||1)+i}.</span>${it.q}</div>
+        ${it.image ? `<img src="${it.image}" alt="題目附圖" style="width:100%;max-width:260px;display:block;border-radius:8px;margin:4px 0 10px;border:1px solid var(--paper-line);background:#fff;">`:""}`;
+      block.appendChild(stem);
+      it.parts.forEach((pt,pi)=>{
+        const q = document.createElement("div");
+        q.className = "q calc-part";
+        q.innerHTML = `<div class="q-text"><span class="q-num">${pt.label || "("+(pi+1)+")"}</span>${pt.p}</div>
+          <div><input type="text" class="blank math-blank" placeholder="填入最後答案" autocomplete="off"><span class="feedback"></span>${pt.hint ? `<span class="fill-hint">（${pt.hint}）</span>` : ""}</div>
+          <div class="answer-reveal">正解：${pt.show}</div>`;
+        const input = q.querySelector("input");
+        input.dataset.answer = pt.answers[0];
+        input.addEventListener("input", ()=>checkMath(input, pt.answers));
+        block.appendChild(q);
+      });
+    });
+  }
+
+  else if(sec.type==="reading"){
+    sec.passages.forEach(p=>{
+      const passageDiv = document.createElement("div");
+      passageDiv.className = "passage";
+      passageDiv.innerHTML = `${p.label ? `<span class="passage-label">${p.label}</span>`:""}${p.text}${p.image ? `<img src="${p.image}" alt="附圖" style="width:100%;max-width:520px;display:block;margin:10px auto 0;border-radius:8px;border:1px solid var(--paper-line);">`:""}${p.table ? renderTable(p.table) : ""}`;
+      block.appendChild(passageDiv);
+      p.items.forEach((it,i)=>{
+        const q = document.createElement("div");
+        q.className = "q";
+        const optsHtml = it.options.map((op,oi)=>`
+          <div class="opt" data-idx="${oi}" data-correct="${oi===it.correct}">
+            <span class="tag">(${String.fromCharCode(65+oi)})</span><span>${op}</span>
+          </div>`).join("");
+        q.innerHTML = `<div class="q-text"><span class="q-num">${(p.start||1)+i}.</span>${it.q}</div>
+          ${it.image ? `<img src="${it.image}" alt="題目附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">`:""}
+          <div class="opts">${optsHtml}</div>`;
+        q.querySelectorAll(".opt").forEach(optEl=>{
+          if(optEl.dataset.correct==="true") optEl.classList.add("is-correct");
+          optEl.addEventListener("click", ()=>selectOption(q, optEl));
+        });
+        block.appendChild(q);
+      });
+    });
+  }
+
+  return block;
+}
+
+function selectOption(qEl, optEl){
+  if(currentMode!=="quiz") return;
+  if(qEl.dataset.answered==="true") return;
+  qEl.dataset.answered = "true";
+  qEl.querySelectorAll(".opt").forEach(o=>o.classList.add("disabled"));
+  optEl.classList.add("selected");
+  const correctOpt = qEl.querySelector('.opt[data-correct="true"]');
+  qEl.dataset.studentAnswer = optEl.textContent.trim();
+  qEl.dataset.correctAnswer = correctOpt ? correctOpt.textContent.trim() : "";
+  qEl.dataset.isCorrect = (optEl.dataset.correct==="true") ? "true" : "false";
+  updateScore();
+}
+
+function checkBlank(input){
+  const val = input.value.trim().toLowerCase();
+  const ans = input.dataset.answer.trim().toLowerCase();
+  const qEl = input.closest(".q");
+  if(val.length===0){ if(qEl) delete qEl.dataset.studentAnswer; updateScore(); return; }
+  if(qEl){
+    qEl.dataset.studentAnswer = input.value.trim();
+    qEl.dataset.correctAnswer = input.dataset.answer;
+    qEl.dataset.isCorrect = (val===ans) ? "true" : "false";
+  }
+  updateScore();
+}
+
+function checkMultiBlank(qEl){
+  const inputs = Array.from(qEl.querySelectorAll(".micro-blank"));
+  const anyEmpty = inputs.some(inp=>inp.value.trim().length===0);
+  if(anyEmpty){ delete qEl.dataset.studentAnswer; updateScore(); return; }
+  const allCorrect = inputs.every(inp=> inp.dataset.answer.split("/").some(a=>a.trim().toLowerCase() === inp.value.trim().toLowerCase()));
+  qEl.dataset.studentAnswer = inputs.map(inp=>inp.value.trim()).join(" / ");
+  qEl.dataset.correctAnswer = inputs.map(inp=>inp.dataset.answer).join(" / ");
+  qEl.dataset.isCorrect = allCorrect ? "true" : "false";
+  updateScore();
+}
+
+function normMath(s){
+  return s.toLowerCase()
+    .replace(/(\d)\s*x\s*(?=\d)/g,"$1*")
+    .replace(/[＋]/g,"+").replace(/[，、；;]/g,",").replace(/[（]/g,"(").replace(/[）]/g,")").replace(/[＝]/g,"=").replace(/[：]/g,":").replace(/[＜]/g,"<").replace(/[＞]/g,">").replace(/[－−–—]/g,"-").replace(/[×＊]/g,"*").replace(/[／÷]/g,"/")
+    .replace(/[⁰¹²³⁴⁵⁶⁷⁸⁹]/g, c=>"⁰¹²³⁴⁵⁶⁷⁸⁹".indexOf(c)).replace(/\^/g,"").replace(/π/g,"pi")
+    .replace(/根號|sqrt/g,"√").replace(/\+-|\+\/-/g,"±").replace(/或|or|and|和/g,",")
+    .replace(/[\s　]+/g,"")
+    .replace(/平方公分|平方公尺|平方公寸|平方單位|公分|公尺|公寸|單位|毫升|公克|公斤|公里|元|個|人|題|秒|次|片|班|瓶蓋|顆|杯|圈|歲|位|天|%|％|°c|度|\(重根\)|重根/g,"")
+    .replace(/√\((\w+)\)/g,"√$1").replace(/[。．.]+$/,"");
+}
+// 「或」「,」分隔的多個答案不計順序；座標 (a,b) 等括號包住的整串保留順序
+function canonMath(s){
+  let t = normMath(s).replace(/\*/g,"");
+  // 因式分解：係數＋括號因式的乘積，因式順序不同也算對
+  const m = t.match(/^(-?\d*)((?:\([^()]+\)\d?)+)$/);
+  if(m) t = m[1] + m[2].match(/\([^()]+\)\d?/g).sort().join("");
+  if(!t.includes(",") || /^\(.*\)$/.test(t)) return t;
+  return t.split(",").filter(Boolean).sort().join(",");
+}
+function checkMath(input, answers){
+  const qEl = input.closest(".q");
+  const val = input.value.trim();
+  if(!val){ delete qEl.dataset.studentAnswer; updateScore(); return; }
+  qEl.dataset.studentAnswer = val;
+  qEl.dataset.correctAnswer = answers[0];
+  qEl.dataset.isCorrect = answers.some(a=>canonMath(a)===canonMath(val)) ? "true" : "false";
+  updateScore();
+}
+
+function updateScore(){
+  let total = 0, answered = 0, correct = 0;
+  contentEl.querySelectorAll(".q").forEach(q=>{
+    const gradable = q.querySelector(".opts") || q.querySelector("input.blank") || q.querySelector("input.micro-blank");
+    if(!gradable) return;
+    total++;
+    if(q.dataset.studentAnswer !== undefined){
+      answered++;
+      if(q.dataset.isCorrect === "true") correct++;
+    }
+  });
+  if(window.examAnswersRevealed){
+    scoreText.textContent = `${correct} / ${total}`;
+  } else {
+    scoreText.textContent = `已作答 ${answered} / ${total} 題`;
+  }
+}
+window.updateScore = updateScore;
+
+document.getElementById("resetBtn").addEventListener("click", render);
+document.getElementById("quizModeBtn").addEventListener("click", ()=>{
+  currentMode = "quiz";
+  document.getElementById("quizModeBtn").classList.add("active");
+  document.getElementById("printModeBtn").classList.remove("active");
+  render();
+});
+document.getElementById("printModeBtn").addEventListener("click", ()=>{
+  if(document.getElementById("printModeBtn").disabled) return;
+  currentMode = "print";
+  document.getElementById("printModeBtn").classList.add("active");
+  document.getElementById("quizModeBtn").classList.remove("active");
+  render();
+});
+
+window.unlockPrintMode = function(){
+  document.getElementById("printModeBtn").disabled = false;
+};
+
+render();
+</script>
+<script src="../sync.js"></script>
+</body>
+</html>

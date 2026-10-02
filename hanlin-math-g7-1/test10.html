@@ -1,0 +1,849 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>段考題庫｜第10回 - 2-1～2-4 複習</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@500;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#faf6ec;
+    --paper-line:#e3dcc8;
+    --ink:#26332b;
+    --ink-soft:#5b6b5f;
+    --chalk-green:#2f4538;
+    --chalk-green-2:#3d5a48;
+    --pen-red:#b8433a;
+    --pen-red-soft:#f4dedb;
+    --ok-green:#3f7d52;
+    --ok-green-soft:#dfeee1;
+    --gold:#b5842a;
+    --radius:10px;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:"Noto Sans TC",sans-serif;
+    line-height:1.7;
+  }
+  header.hero{
+    background:var(--chalk-green);
+    color:#eef2ea;
+    padding:28px 20px 40px;
+    position:relative;
+  }
+  header.hero::after{
+    content:"";
+    position:absolute;
+    left:0; right:0; bottom:-1px;
+    height:14px;
+    background:repeating-linear-gradient(90deg,var(--paper) 0 18px, transparent 18px 20px);
+  }
+  .hero-inner{max-width:880px;margin:0 auto;}
+  .breadcrumb a{color:#cfe0d1;text-decoration:none;font-size:14px;}
+  .breadcrumb a:hover{text-decoration:underline;}
+  h1{
+    font-family:"Noto Serif TC",serif;
+    font-weight:700;
+    font-size:clamp(24px,4vw,34px);
+    margin:10px 0 6px;
+  }
+  .subtitle{color:#cfe0d1;font-size:15px;margin:0;}
+  main{max-width:880px;margin:0 auto;padding:28px 20px 80px;}
+
+  .controls{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:22px;
+  }
+  .mode-toggle{display:flex;border:2px solid var(--chalk-green);border-radius:999px;overflow:hidden;}
+  .mode-toggle button{
+    background:transparent;border:none;padding:8px 16px;font-size:14px;font-weight:700;
+    color:var(--chalk-green);cursor:pointer;font-family:"Noto Sans TC",sans-serif;
+  }
+  .mode-toggle button.active{background:var(--gold);color:#fff;}
+  .mode-toggle button:disabled{opacity:.4;cursor:not-allowed;}
+
+  .score-bar{
+    display:none;
+    align-items:center;
+    justify-content:space-between;
+    background:#fff;
+    border:1px solid var(--paper-line);
+    border-left:5px solid var(--gold);
+    border-radius:var(--radius);
+    padding:12px 18px;
+    margin-bottom:22px;
+    font-size:14px;
+  }
+  .score-bar.show{display:flex;}
+  .score-bar strong{font-size:18px;color:var(--gold);}
+  .score-bar button{
+    background:none;border:1px solid var(--ink-soft);color:var(--ink-soft);
+    border-radius:6px;padding:6px 12px;font-size:13px;cursor:pointer;
+  }
+
+  section.block{
+    background:#fff;
+    border:1px solid var(--paper-line);
+    border-radius:var(--radius);
+    padding:22px 22px 26px;
+    margin-bottom:20px;
+  }
+  .block h2{
+    font-family:"Noto Serif TC",serif;
+    font-size:19px;
+    margin:0 0 4px;
+    color:var(--chalk-green);
+  }
+  .block .meta{color:var(--ink-soft);font-size:13px;margin:0 0 16px;}
+  .block audio{width:100%;margin-bottom:16px;}
+
+  .q{margin-bottom:18px;padding-bottom:16px;border-bottom:1px dashed var(--paper-line);}
+  .q:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0;}
+  .q-text{font-size:15.5px;margin-bottom:8px;}
+  .q-num{color:var(--gold);font-weight:700;margin-right:4px;}
+
+  .opts{display:grid;gap:8px;}
+  .wordbank{display:flex;flex-wrap:wrap;gap:8px;background:#f5f2e8;border:1px solid var(--paper-line);
+    border-radius:8px;padding:12px 14px;margin-bottom:16px;}
+  .wb-word{font-family:"Noto Sans TC",sans-serif;font-size:14px;font-weight:700;color:var(--chalk-green);
+    background:#fff;border:1px solid var(--paper-line);border-radius:6px;padding:4px 12px;}
+  .opt{
+    display:flex;gap:8px;align-items:flex-start;
+    border:1.5px solid var(--paper-line);
+    border-radius:8px;
+    padding:9px 12px;
+    cursor:pointer;
+    font-size:14.5px;
+    background:#fffdf8;
+  }
+  .opt:hover{border-color:var(--chalk-green-2);}
+  .opt.selected{border-color:var(--chalk-green-2);background:#eef3ea;}
+  .opt.correct{border-color:var(--ok-green);background:var(--ok-green-soft);}
+  .opt.wrong{border-color:var(--pen-red);background:var(--pen-red-soft);}
+  .opt .tag{font-weight:700;color:var(--ink-soft);}
+  .opt.correct .tag{color:var(--ok-green);}
+  .opt.wrong .tag{color:var(--pen-red);}
+  .opt.disabled{cursor:default;}
+
+  input.blank, input.line-answer{
+    font-family:"Noto Sans TC",sans-serif;
+    border:none;border-bottom:2px solid var(--chalk-green-2);
+    background:transparent;font-size:15px;padding:2px 4px;
+    width:150px;
+  }
+  input.line-answer{width:100%;margin-top:4px;}
+  .check-row{display:flex;gap:8px;margin-top:6px;flex-wrap:wrap;align-items:center;}
+  .mini-btn{
+    background:var(--chalk-green);color:#fff;border:none;border-radius:6px;
+    padding:6px 14px;font-size:13px;cursor:pointer;font-family:"Noto Sans TC",sans-serif;
+  }
+  .mini-btn.secondary{background:transparent;color:var(--chalk-green);border:1.5px solid var(--chalk-green);}
+  .feedback{font-size:13.5px;font-weight:700;}
+  .feedback.ok{color:var(--ok-green);}
+  .feedback.no{color:var(--pen-red);}
+  .answer-reveal{
+    display:none;margin-top:6px;font-size:14px;color:var(--chalk-green-2);
+    background:#eef3ea;border-radius:6px;padding:8px 12px;
+  }
+  .answer-reveal.show{display:block;}
+
+  .passage{
+    background:#f5f2e8;border-radius:8px;padding:14px 16px;margin-bottom:14px;
+    font-size:14.5px;white-space:pre-line;
+  }
+  .passage-label{font-weight:700;color:var(--chalk-green);margin-bottom:4px;display:block;}
+  .data-table{width:100%;border-collapse:collapse;margin-top:10px;font-size:13.5px;background:#fff;}
+  .data-table th, .data-table td{border:1px solid var(--paper-line);padding:6px 8px;text-align:center;}
+  .data-table th{background:#eef3ea;color:var(--chalk-green);}
+
+  .footer-link{
+    display:block;text-align:center;margin-top:30px;color:var(--chalk-green);
+    text-decoration:none;font-weight:700;font-size:14px;
+  }
+  .footer-link:hover{text-decoration:underline;}
+
+  @media print{
+    header.hero, .controls, .score-bar, .check-row, .mini-btn, .footer-link{display:none !important;}
+    body{background:#fff;}
+    section.block{border:none;box-shadow:none;padding:8px 0;margin-bottom:14px;}
+    .opt.correct{background:none;border:none;font-weight:700;}
+    .opt.correct::after{content:" ← 正解";color:var(--pen-red);}
+    .opt{border:none;padding:2px 0;}
+    .answer-reveal{display:block !important;background:none;padding:2px 0;}
+    main{max-width:100%;padding:0 24px;}
+  }
+  .katex{font-size:1.05em;}
+  .q-text .katex-display{margin:6px 0;}
+  .parts{margin:6px 0 4px 1.4em;padding:0;}
+  .parts li{margin-bottom:4px;}
+  input.math-blank{width:200px;}
+  .fill-hint{font-size:12.5px;color:var(--ink-soft);margin-left:4px;}
+  .calc-stem{margin:18px 0 8px;}
+  .calc-stem:first-of-type{margin-top:0;}
+  .q.calc-part{margin-left:1.4em;}
+</style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+</head>
+<body>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="breadcrumb"><a href="https://jenlin2002.github.io/">🏠 回總目錄</a> ／ <a href="../hanlin-math-g7-1.html" style="color:#cfe0d1;">段考題庫</a></div>
+    <h1>第10回・2-1～2-4 複習</h1>
+    <p class="subtitle">2-1～2-4 複習｜翰林版七年級數學（一）Ａ卷</p>
+  </div>
+</header>
+
+<main>
+  <div class="controls">
+    <div class="mode-toggle">
+      <button id="quizModeBtn" class="active">✏️ 測驗模式</button>
+      <button id="printModeBtn" disabled title="完成測驗並送出成績後才能查看">🖨️ 完整題目與解答（送出成績後解鎖）</button>
+    </div>
+  </div>
+
+  <div class="score-bar" id="scoreBar">
+    <div>目前得分：<strong id="scoreText">0 / 0</strong>（僅計算選擇題與填充題）</div>
+    <button id="resetBtn">重新作答</button>
+  </div>
+
+  <div id="content"></div>
+
+  <a class="footer-link" href="../hanlin-math-g7-1.html">← 回段考題庫總覽</a>
+</main>
+
+<script>
+
+window.EXAM_META = { version: "數學A卷", examLabel: "第10回" };
+const DATA = {
+  sections: [
+  {
+    "type": "mc",
+    "title": "一、選擇題",
+    "meta": "【A部分 學力基礎題】每題3分，共30分",
+    "items": [
+      {
+        "q": "算式 $\\dfrac{2}{3}+\\dfrac{5}{3}\\div\\left(-1\\dfrac{1}{4}\\right)$ 之值為何？",
+        "options": [
+          "$-\\dfrac{35}{12}$",
+          "$-\\dfrac{28}{15}$",
+          "$-\\dfrac{2}{3}$",
+          "$\\dfrac{5}{12}$"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "已知甲 $=-2\\dfrac{7}{8}$，乙 $=-2+\\dfrac{7}{8}$，丙 $=-2.875$，則下列何者正確？",
+        "options": [
+          "甲＝乙",
+          "乙＝丙",
+          "甲＝丙",
+          "甲×乙×丙＞0"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "算式 $\\left(-\\dfrac{2}{3}\\right)^0\\div\\left(-\\dfrac{5}{4}\\right)^2+1$ 之值為何？",
+        "options": [
+          "$\\dfrac{41}{25}$",
+          "$\\dfrac{9}{25}$",
+          "$-\\dfrac{9}{25}$",
+          "$-\\dfrac{41}{25}$"
+        ],
+        "correct": 0
+      },
+      {
+        "q": "若七位數 $2a9608b$ 是 66 的倍數，則 $a+b=$？",
+        "options": [
+          "2",
+          "5",
+          "9",
+          "11"
+        ],
+        "correct": 1
+      },
+      {
+        "q": "若 $A=1.04\\times10^5$，則下列哪一個數<u>不是</u> $A$ 的因數？",
+        "options": [
+          "26",
+          "65",
+          "128",
+          "320"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "已知 $A=2^2\\times3^2\\times5^4$，$B=2\\times3^2\\times5^2\\times7^2$，$C=2\\times3^4\\times5^3$，則 $A$、$B$、$C$ 三數的大小關係為何？",
+        "options": [
+          "$A>B>C$",
+          "$B>A>C$",
+          "$A>C>B$",
+          "$B>C>A$"
+        ],
+        "correct": 0
+      },
+      {
+        "q": "<u>建明</u>和<u>宏志</u>兩人到運動用品店買了若干顆價格相同的棒球，已知<u>建明</u>花了 840 元，<u>宏志</u>花了 960 元。若一顆棒球價格在 50～100 元間，則他們共買了多少顆棒球？",
+        "options": [
+          "28",
+          "30",
+          "32",
+          "34"
+        ],
+        "correct": 1
+      },
+      {
+        "q": "算式 $\\left(1+\\dfrac{1}{2}\\right)\\times\\left(1+\\dfrac{1}{3}\\right)\\times\\left(1+\\dfrac{1}{4}\\right)\\times\\cdots\\times\\left(1+\\dfrac{1}{99}\\right)\\times\\left(1+\\dfrac{1}{100}\\right)$ 之值為何？",
+        "options": [
+          "$\\dfrac{99}{100}$",
+          "$\\dfrac{101}{99}$",
+          "$\\dfrac{2}{101}$",
+          "$\\dfrac{101}{2}$"
+        ],
+        "correct": 3
+      },
+      {
+        "pre": "※請閱讀下列敘述後，回答 9.～10. 題\n張老師有 3 種不同形狀的磁磚，分別是正方形，等腰直角三角形及長方形，他將 3 種磁磚發給小真、小正、小美，請 3 人同時拼貼相同大小的正方形區域，則 3 人在磁磚拼貼彩繪後的作品，如下圖所示。",
+        "preImage": "images/test10/q9_tiles.png",
+        "q": "<u>小正</u>的作品中彩繪（塗色）部分占整個正方形區域的幾分之幾？",
+        "options": [
+          "$\\dfrac{3}{8}$",
+          "$\\dfrac{1}{2}$",
+          "$\\dfrac{5}{8}$",
+          "$\\dfrac{7}{8}$"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "承 9. 題，3 人的塗色面積最小的是誰？比塗色面積最大的少了多少？",
+        "options": [
+          "<u>小正</u>最小，比<u>小美</u>少 $\\dfrac{1}{8}$",
+          "<u>小正</u>最小，比<u>小真</u>少 $\\dfrac{1}{9}$",
+          "<u>小真</u>最小，比<u>小美</u>少 $\\dfrac{1}{9}$",
+          "<u>小美</u>最小，比<u>小正</u>少 $\\dfrac{1}{8}$"
+        ],
+        "correct": 2
+      }
+    ]
+  },
+  {
+    "type": "fill",
+    "title": "二、非選擇題－填充",
+    "meta": "每格4分，共20分",
+    "items": [
+      {
+        "q": "計算 $\\left(-2\\dfrac{1}{3}\\right)-(-4.25)+3.125=$",
+        "answers": [
+          "121/24",
+          "5 1/24"
+        ],
+        "show": "$\\dfrac{121}{24}$",
+        "hint": "分數寫成 3/4"
+      },
+      {
+        "q": "若 $a=2^5\\times3^4\\times7$，$b=2^3\\times3^2\\times5$，則 $\\dfrac{[a,b]}{(a,b)}=$",
+        "answers": [
+          "1260"
+        ],
+        "show": "1260"
+      },
+      {
+        "q": "為迎接聖誕節，<u>美琳</u>買了 3 條彩帶來佈置教室，彩帶長度分別為 126 公分、147 公分、189 公分，若想將這些彩帶剪成每條等長的小彩帶，則最少可剪成幾條？",
+        "answers": [
+          "22"
+        ],
+        "show": "22 條"
+      },
+      {
+        "q": "<u>我家便利商店</u>因全年無休，每天都必須有人輪班，採輪休制，若店員<u>陳</u>先生每上班 4 天休息 1 天，而店員<u>李</u>小姐則是每上班 3 天休息 1 天。若兩人在 3 月 28 日（週四）同時休假，則下一次兩人同時在週四休假是幾月幾日？",
+        "answers": [
+          "8月15日",
+          "8/15"
+        ],
+        "show": "8 月 15 日",
+        "hint": "例：4月1日"
+      },
+      {
+        "q": "計算 $\\left(-\\dfrac{16}{33}\\right)\\times\\dfrac{9}{17}+\\dfrac{18}{33}\\div\\left(-\\dfrac{17}{9}\\right)=$",
+        "answers": [
+          "-6/11"
+        ],
+        "show": "$-\\dfrac{6}{11}$",
+        "hint": "分數寫成 3/4"
+      }
+    ]
+  },
+  {
+    "type": "calc",
+    "title": "三、非選擇題－計算",
+    "meta": "每題10分，共30分（過程寫在計算紙上，每小題填最後答案）",
+    "items": [
+      {
+        "q": "<u>兩津</u>、<u>本田</u>、<u>寺井</u>三人繞著一個周長為 120 公尺的操場慢跑，已知<u>兩津</u>每秒跑 6 公尺，<u>本田</u>每秒跑 5 公尺，<u>寺井</u>每秒跑 4 公尺，且三人同時同地點同方向出發，則：",
+        "parts": [
+          {
+            "label": "(1)",
+            "p": "<u>兩津</u>跑一圈操場需幾秒？",
+            "answers": [
+              "20"
+            ],
+            "show": "20 秒"
+          },
+          {
+            "label": "　",
+            "p": "<u>本田</u>跑一圈操場需幾秒？",
+            "answers": [
+              "24"
+            ],
+            "show": "24 秒"
+          },
+          {
+            "label": "　",
+            "p": "<u>寺井</u>跑一圈操場需幾秒？（(1) 共 6分）",
+            "answers": [
+              "30"
+            ],
+            "show": "30 秒"
+          },
+          {
+            "label": "(2)",
+            "p": "當從起點起跑後，3 人第一次在起跑點相遇時，<u>寺井</u>已經跑了多少圈？（4分）",
+            "answers": [
+              "4"
+            ],
+            "show": "4 圈"
+          }
+        ]
+      },
+      {
+        "q": "<u>靜涵</u>在賣場買了一罐水果彩虹糖，她發現裡面有 $\\dfrac{1}{5}$ 是紅色糖果，$\\dfrac{1}{4}$ 是橙色糖果，$\\dfrac{1}{3}$ 是黃色糖果，其餘都是綠色糖果。回家後，弟弟馬上挑了綠色糖果出來吃，並且說：「我吃了綠色糖果的一半，共有 13 顆！」，則：",
+        "parts": [
+          {
+            "p": "綠色糖果占全部的幾分之幾？",
+            "answers": [
+              "13/60"
+            ],
+            "show": "$\\dfrac{13}{60}$",
+            "hint": "分數寫成 3/4"
+          },
+          {
+            "p": "罐子裡的黃色糖果有多少顆？",
+            "answers": [
+              "40"
+            ],
+            "show": "40 顆"
+          }
+        ]
+      },
+      {
+        "q": "<u>國銀</u>買了相同容量且瓶蓋大小相同的洗衣精和柔軟精各 1 瓶，其使用說明如圖(一)、圖(二)所示。他先按照自己的使用習慣，每次洗衣服都用 $\\dfrac{2}{5}$ 瓶蓋的洗衣精加上 $\\dfrac{1}{2}$ 瓶蓋的柔軟精，在洗衣服 20 次後，感覺洗衣的效果不好，此時柔軟精剩 $\\dfrac{3}{4}$ 瓶，則：",
+        "image": "images/test10/c3.png",
+        "parts": [
+          {
+            "p": "每瓶柔軟精的容量可倒滿幾瓶蓋？",
+            "answers": [
+              "40"
+            ],
+            "show": "40 瓶蓋"
+          },
+          {
+            "p": "若之後<u>國銀</u>改成圖(一)的使用方式，則洗衣精最多還可再完整使用多少次？",
+            "answers": [
+              "53"
+            ],
+            "show": "53 次"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "type": "fill",
+    "title": "非選擇題－填充",
+    "meta": "【B部分 學力精熟題】每格4分，共20分",
+    "items": [
+      {
+        "q": "計算 $6^7\\times7^2\\times15^6\\times13^2$ 乘開後，末尾有幾個 0？",
+        "answers": [
+          "6"
+        ],
+        "show": "6 個"
+      },
+      {
+        "q": "已知 $-5\\dfrac{2}{11}$ 和 $7\\dfrac{4}{13}$ 同乘以一個正分數後，均可化為整數，則此正分數最小為",
+        "answers": [
+          "143/19",
+          "7 10/19"
+        ],
+        "show": "$\\dfrac{143}{19}$",
+        "hint": "分數寫成 3/4"
+      },
+      {
+        "q": "有紅、白兩色的卡片共 96 張，甲、乙兩人各拿 48 張。若甲拿的卡片中有 $\\dfrac{7}{16}$ 是紅色的，乙拿的白色卡片是甲拿的白色卡片的 $\\dfrac{2}{3}$，則此 96 張卡片中，紅色卡片比白色卡片多幾張？",
+        "answers": [
+          "6"
+        ],
+        "show": "6 張"
+      },
+      {
+        "q": "若 $a=8^9$，$b=16^7$，$c=32^5$，則 $a$、$b$、$c$ 的大小關係為",
+        "answers": [
+          "b>a>c",
+          "c<a<b"
+        ],
+        "show": "$b>a>c$",
+        "hint": "例：a>b>c"
+      },
+      {
+        "q": "有一個整數介於 300～400 之間，此數除以 8 餘 6，除以 9 餘 7，除以 15 餘 13，則這個正整數為",
+        "answers": [
+          "358"
+        ],
+        "show": "358"
+      }
+    ]
+  }
+]
+};
+
+let currentMode = "quiz"; // quiz | print
+
+const contentEl = document.getElementById("content");
+const scoreBar = document.getElementById("scoreBar");
+const scoreText = document.getElementById("scoreText");
+
+function render(){
+  window.examAnswersRevealed = false;
+  contentEl.innerHTML = "";
+  DATA.sections.forEach((sec, si)=> contentEl.appendChild(renderSection(sec, si)));
+  if(currentMode==="quiz"){
+    scoreBar.classList.add("show");
+    updateScore();
+  } else {
+    scoreBar.classList.remove("show");
+    contentEl.querySelectorAll(".answer-reveal").forEach(e=>e.classList.add("show"));
+    contentEl.querySelectorAll(".opt").forEach(o=>o.classList.add("disabled"));
+    contentEl.querySelectorAll(".opt.is-correct").forEach(o=>o.classList.add("correct"));
+  }
+  if(window.renderMathInElement){
+    renderMathInElement(contentEl, {delimiters:[{left:"$", right:"$", display:false}], throwOnError:false});
+  }
+}
+
+function renderTable(t){
+  if(!t) return "";
+  const headHtml = `<tr>${t.head.map(h=>`<th>${h}</th>`).join("")}</tr>`;
+  const rowsHtml = t.rows.map(r=>`<tr>${r.map((c,ci)=>ci===0?`<th>${c}</th>`:`<td>${c}</td>`).join("")}</tr>`).join("");
+  return `${t.title ? `<div style="font-weight:700;text-align:center;color:var(--chalk-green);margin-bottom:6px;">${t.title}</div>`:""}
+    <table class="data-table"><thead>${headHtml}</thead><tbody>${rowsHtml}</tbody></table>
+    ${t.note ? `<div style="margin-top:8px;color:var(--ink-soft);font-size:13px;">${t.note}</div>` : ""}`;
+}
+
+function renderSection(sec, si){
+  const block = document.createElement("section");
+  block.className = "block";
+  block.innerHTML = `<h2>${sec.title}</h2><p class="meta">${sec.meta}</p>`;
+
+  if(sec.audio){
+    const audioEl = document.createElement("audio");
+    audioEl.controls = true;
+    audioEl.src = sec.audio;
+    block.appendChild(audioEl);
+  }
+
+  if(sec.image){
+    const im = document.createElement("img");
+    im.src = sec.image; im.alt = "題目附圖";
+    im.style.cssText = "width:100%;max-width:560px;display:block;margin:0 auto 16px;border-radius:8px;border:1px solid var(--paper-line);";
+    block.appendChild(im);
+  }
+
+  if(sec.wordbank){
+    const wb = document.createElement("div");
+    wb.className = "wordbank";
+    wb.innerHTML = sec.wordbank.map(w=>`<span class="wb-word">${w}</span>`).join("");
+    block.appendChild(wb);
+  }
+
+  if(sec.type==="vocab"){
+    sec.items.forEach((it,i)=>{
+      const q = document.createElement("div");
+      q.className = "q";
+      if(it.answers){
+        q.innerHTML = `<div class="q-text"><span class="q-num">${(sec.start||1)+i}.</span>${it.q}
+          &nbsp; ${it.answers.map(a=>`<input type="text" class="micro-blank" data-answer="${a}" style="width:${Math.max(90,a.length*13)}px;" placeholder="填入單字">`).join(" ")}</div>
+          <div class="answer-reveal">正解：${it.answers.join(", ")}</div>`;
+        q.querySelectorAll(".micro-blank").forEach(inp=>inp.addEventListener("input", ()=>checkMultiBlank(q)));
+      } else {
+        q.innerHTML = `<div class="q-text"><span class="q-num">${(sec.start||1)+i}.</span>${it.q}
+          &nbsp; <input type="text" class="blank" data-answer="${it.answer}" placeholder="填入單字">
+          <span class="feedback"></span></div>
+          <div class="answer-reveal">正解：${it.answer}</div>`;
+        const input = q.querySelector("input");
+        input.addEventListener("input", ()=>checkBlank(input));
+      }
+      block.appendChild(q);
+    });
+  }
+
+  else if(sec.type==="mc"){
+    sec.items.forEach((it,i)=>{
+      const q = document.createElement("div");
+      q.className = "q";
+      const optsHtml = it.options.map((op,oi)=>`
+        <div class="opt" data-idx="${oi}" data-correct="${oi===it.correct}">
+          <span class="tag">(${String.fromCharCode(65+oi)})</span><span>${op}</span>
+        </div>`).join("");
+      q.innerHTML = `${it.pre ? `<div class="passage">${it.pre}${it.preImage ? `<img src="${it.preImage}" alt="附圖" style="width:100%;max-width:420px;display:block;margin:10px auto 0;border-radius:8px;border:1px solid var(--paper-line);background:#fff;">` : ""}</div>` : ""}<div class="q-text"><span class="q-num">${(sec.start||1)+i}.</span>${it.q||""}</div>
+        ${it.image ? `<img src="${it.image}" alt="題目附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">`:""}
+        <div class="opts">${optsHtml}</div>`;
+      q.querySelectorAll(".opt").forEach(optEl=>{
+        if(optEl.dataset.correct==="true") optEl.classList.add("is-correct");
+        optEl.addEventListener("click", ()=>selectOption(q, optEl));
+      });
+      block.appendChild(q);
+    });
+  }
+
+  else if(sec.type==="guided" || sec.type==="translation"){
+    sec.items.forEach((it,i)=>{
+      const q = document.createElement("div");
+      q.className = "q";
+      const prompt = sec.type==="guided" ? `${it.prompt} <em style="color:var(--ink-soft);font-style:normal;">${it.hint}</em>` : it.zh;
+      q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${prompt}</div>
+        ${it.image ? `<img src="${it.image}" alt="題目附圖" style="width:100%;max-width:240px;display:block;border-radius:8px;margin:4px 0 8px;border:1px solid var(--paper-line);">`:""}
+        <input type="text" class="line-answer" placeholder="請輸入英文句子">
+        <div class="check-row"><button class="mini-btn secondary reveal-btn" style="display:none;">對答案</button></div>
+        <div class="answer-reveal">正解：${it.answer}</div>`;
+      q.querySelector(".reveal-btn").addEventListener("click", (e)=>{
+        q.querySelector(".answer-reveal").classList.add("show");
+      });
+      block.appendChild(q);
+    });
+  }
+
+  else if(sec.type==="guided-multi"){
+    sec.items.forEach((it,i)=>{
+      const q = document.createElement("div");
+      q.className = "q";
+      const linesHtml = it.lines.map(line=>{
+        const parts = line.split(/\{\{(.*?)\}\}/g);
+        return parts.map((part,pi)=> pi%2===1
+          ? `<input type="text" class="micro-blank" data-answer="${part}" style="width:${Math.max(60,part.length*13)}px;">`
+          : part
+        ).join("");
+      }).join("<br>");
+      q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.zh ? it.zh+"<br>" : ""}${linesHtml}</div>
+        <div class="answer-reveal">正解：${it.lines.map(l=>l.replace(/\{\{(.*?)\}\}/g,"$1")).join("　")}</div>`;
+      q.querySelectorAll(".micro-blank").forEach(inp=>{
+        inp.addEventListener("input", ()=>checkMultiBlank(q));
+      });
+      block.appendChild(q);
+    });
+  }
+
+  else if(sec.type==="cloze"){
+    const passageDiv = document.createElement("div");
+    passageDiv.className = "passage";
+    passageDiv.textContent = sec.passage;
+    block.appendChild(passageDiv);
+    sec.items.forEach((it,i)=>{
+      const q = document.createElement("div");
+      q.className = "q";
+      const optsHtml = it.options.map((op,oi)=>`
+        <div class="opt" data-idx="${oi}" data-correct="${oi===it.correct}">
+          <span class="tag">(${String.fromCharCode(65+oi)})</span><span>${op}</span>
+        </div>`).join("");
+      q.innerHTML = `<div class="q-text"><span class="q-num">${(sec.start||1)+i}.</span></div><div class="opts">${optsHtml}</div>`;
+      q.querySelectorAll(".opt").forEach(optEl=>{
+        if(optEl.dataset.correct==="true") optEl.classList.add("is-correct");
+        optEl.addEventListener("click", ()=>selectOption(q, optEl));
+      });
+      block.appendChild(q);
+    });
+  }
+
+  else if(sec.type==="fill"){
+    sec.items.forEach((it,i)=>{
+      const q = document.createElement("div");
+      q.className = "q";
+      q.innerHTML = `<div class="q-text"><span class="q-num">${it.num || ((sec.start||1)+i)+"."}</span>${it.q}</div>
+        ${it.image ? `<img src="${it.image}" alt="題目附圖" style="width:100%;max-width:260px;display:block;border-radius:8px;margin:4px 0 10px;border:1px solid var(--paper-line);background:#fff;">`:""}
+        <div><input type="text" class="blank math-blank" placeholder="填入答案" autocomplete="off"><span class="feedback"></span>${it.hint ? `<span class="fill-hint">（${it.hint}）</span>` : ""}</div>
+        <div class="answer-reveal">正解：${it.show}</div>`;
+      const input = q.querySelector("input");
+      input.dataset.answer = it.answers[0];
+      input.addEventListener("input", ()=>checkMath(input, it.answers));
+      block.appendChild(q);
+    });
+  }
+
+  else if(sec.type==="calc"){
+    // 題幹＋附圖，每個小題各自一格最後答案（自動批改）；過程寫在紙上
+    sec.items.forEach((it,i)=>{
+      const stem = document.createElement("div");
+      stem.className = "calc-stem";
+      stem.innerHTML = `<div class="q-text"><span class="q-num">${(sec.start||1)+i}.</span>${it.q}</div>
+        ${it.image ? `<img src="${it.image}" alt="題目附圖" style="width:100%;max-width:260px;display:block;border-radius:8px;margin:4px 0 10px;border:1px solid var(--paper-line);background:#fff;">`:""}`;
+      block.appendChild(stem);
+      it.parts.forEach((pt,pi)=>{
+        const q = document.createElement("div");
+        q.className = "q calc-part";
+        q.innerHTML = `<div class="q-text"><span class="q-num">${pt.label || "("+(pi+1)+")"}</span>${pt.p}</div>
+          <div><input type="text" class="blank math-blank" placeholder="填入最後答案" autocomplete="off"><span class="feedback"></span>${pt.hint ? `<span class="fill-hint">（${pt.hint}）</span>` : ""}</div>
+          <div class="answer-reveal">正解：${pt.show}</div>`;
+        const input = q.querySelector("input");
+        input.dataset.answer = pt.answers[0];
+        input.addEventListener("input", ()=>checkMath(input, pt.answers));
+        block.appendChild(q);
+      });
+    });
+  }
+
+  else if(sec.type==="reading"){
+    sec.passages.forEach(p=>{
+      const passageDiv = document.createElement("div");
+      passageDiv.className = "passage";
+      passageDiv.innerHTML = `${p.label ? `<span class="passage-label">${p.label}</span>`:""}${p.text}${p.image ? `<img src="${p.image}" alt="附圖" style="width:100%;max-width:520px;display:block;margin:10px auto 0;border-radius:8px;border:1px solid var(--paper-line);">`:""}${p.table ? renderTable(p.table) : ""}`;
+      block.appendChild(passageDiv);
+      p.items.forEach((it,i)=>{
+        const q = document.createElement("div");
+        q.className = "q";
+        const optsHtml = it.options.map((op,oi)=>`
+          <div class="opt" data-idx="${oi}" data-correct="${oi===it.correct}">
+            <span class="tag">(${String.fromCharCode(65+oi)})</span><span>${op}</span>
+          </div>`).join("");
+        q.innerHTML = `<div class="q-text"><span class="q-num">${(p.start||1)+i}.</span>${it.q}</div>
+          ${it.image ? `<img src="${it.image}" alt="題目附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">`:""}
+          <div class="opts">${optsHtml}</div>`;
+        q.querySelectorAll(".opt").forEach(optEl=>{
+          if(optEl.dataset.correct==="true") optEl.classList.add("is-correct");
+          optEl.addEventListener("click", ()=>selectOption(q, optEl));
+        });
+        block.appendChild(q);
+      });
+    });
+  }
+
+  return block;
+}
+
+function selectOption(qEl, optEl){
+  if(currentMode!=="quiz") return;
+  if(qEl.dataset.answered==="true") return;
+  qEl.dataset.answered = "true";
+  qEl.querySelectorAll(".opt").forEach(o=>o.classList.add("disabled"));
+  optEl.classList.add("selected");
+  const correctOpt = qEl.querySelector('.opt[data-correct="true"]');
+  qEl.dataset.studentAnswer = optEl.textContent.trim();
+  qEl.dataset.correctAnswer = correctOpt ? correctOpt.textContent.trim() : "";
+  qEl.dataset.isCorrect = (optEl.dataset.correct==="true") ? "true" : "false";
+  updateScore();
+}
+
+function checkBlank(input){
+  const val = input.value.trim().toLowerCase();
+  const ans = input.dataset.answer.trim().toLowerCase();
+  const qEl = input.closest(".q");
+  if(val.length===0){ if(qEl) delete qEl.dataset.studentAnswer; updateScore(); return; }
+  if(qEl){
+    qEl.dataset.studentAnswer = input.value.trim();
+    qEl.dataset.correctAnswer = input.dataset.answer;
+    qEl.dataset.isCorrect = (val===ans) ? "true" : "false";
+  }
+  updateScore();
+}
+
+function checkMultiBlank(qEl){
+  const inputs = Array.from(qEl.querySelectorAll(".micro-blank"));
+  const anyEmpty = inputs.some(inp=>inp.value.trim().length===0);
+  if(anyEmpty){ delete qEl.dataset.studentAnswer; updateScore(); return; }
+  const allCorrect = inputs.every(inp=> inp.dataset.answer.split("/").some(a=>a.trim().toLowerCase() === inp.value.trim().toLowerCase()));
+  qEl.dataset.studentAnswer = inputs.map(inp=>inp.value.trim()).join(" / ");
+  qEl.dataset.correctAnswer = inputs.map(inp=>inp.dataset.answer).join(" / ");
+  qEl.dataset.isCorrect = allCorrect ? "true" : "false";
+  updateScore();
+}
+
+function normMath(s){
+  return s.toLowerCase()
+    .replace(/(\d)\s*x\s*(?=\d)/g,"$1*")
+    .replace(/[＋]/g,"+").replace(/[，、；;]/g,",").replace(/[（]/g,"(").replace(/[）]/g,")").replace(/[＝]/g,"=").replace(/[：]/g,":").replace(/[＜]/g,"<").replace(/[＞]/g,">").replace(/[－−–—]/g,"-").replace(/[×＊]/g,"*").replace(/[／÷]/g,"/")
+    .replace(/[⁰¹²³⁴⁵⁶⁷⁸⁹]/g, c=>"⁰¹²³⁴⁵⁶⁷⁸⁹".indexOf(c)).replace(/\^/g,"").replace(/π/g,"pi")
+    .replace(/根號|sqrt/g,"√").replace(/\+-|\+\/-/g,"±").replace(/或|or|and|和/g,",")
+    .replace(/[\s　]+/g,"")
+    .replace(/平方公分|平方公尺|平方公寸|平方單位|公分|公尺|公寸|單位|毫升|公克|公斤|公里|元|個|人|題|秒|次|片|班|瓶蓋|顆|杯|圈|歲|位|天|%|％|°c|度|\(重根\)|重根/g,"")
+    .replace(/√\((\w+)\)/g,"√$1").replace(/[。．.]+$/,"");
+}
+// 「或」「,」分隔的多個答案不計順序；座標 (a,b) 等括號包住的整串保留順序
+function canonMath(s){
+  let t = normMath(s).replace(/\*/g,"");
+  // 因式分解：係數＋括號因式的乘積，因式順序不同也算對
+  const m = t.match(/^(-?\d*)((?:\([^()]+\)\d?)+)$/);
+  if(m) t = m[1] + m[2].match(/\([^()]+\)\d?/g).sort().join("");
+  if(!t.includes(",") || /^\(.*\)$/.test(t)) return t;
+  return t.split(",").filter(Boolean).sort().join(",");
+}
+function checkMath(input, answers){
+  const qEl = input.closest(".q");
+  const val = input.value.trim();
+  if(!val){ delete qEl.dataset.studentAnswer; updateScore(); return; }
+  qEl.dataset.studentAnswer = val;
+  qEl.dataset.correctAnswer = answers[0];
+  qEl.dataset.isCorrect = answers.some(a=>canonMath(a)===canonMath(val)) ? "true" : "false";
+  updateScore();
+}
+
+function updateScore(){
+  let total = 0, answered = 0, correct = 0;
+  contentEl.querySelectorAll(".q").forEach(q=>{
+    const gradable = q.querySelector(".opts") || q.querySelector("input.blank") || q.querySelector("input.micro-blank");
+    if(!gradable) return;
+    total++;
+    if(q.dataset.studentAnswer !== undefined){
+      answered++;
+      if(q.dataset.isCorrect === "true") correct++;
+    }
+  });
+  if(window.examAnswersRevealed){
+    scoreText.textContent = `${correct} / ${total}`;
+  } else {
+    scoreText.textContent = `已作答 ${answered} / ${total} 題`;
+  }
+}
+window.updateScore = updateScore;
+
+document.getElementById("resetBtn").addEventListener("click", render);
+document.getElementById("quizModeBtn").addEventListener("click", ()=>{
+  currentMode = "quiz";
+  document.getElementById("quizModeBtn").classList.add("active");
+  document.getElementById("printModeBtn").classList.remove("active");
+  render();
+});
+document.getElementById("printModeBtn").addEventListener("click", ()=>{
+  if(document.getElementById("printModeBtn").disabled) return;
+  currentMode = "print";
+  document.getElementById("printModeBtn").classList.add("active");
+  document.getElementById("quizModeBtn").classList.remove("active");
+  render();
+});
+
+window.unlockPrintMode = function(){
+  document.getElementById("printModeBtn").disabled = false;
+};
+
+render();
+</script>
+<script src="../sync.js"></script>
+</body>
+</html>

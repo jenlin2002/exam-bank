@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>段考題庫｜歷史第5回 - 明清時期東亞世界的變動</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@500;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#faf6ec;
+    --paper-line:#e3dcc8;
+    --ink:#26332b;
+    --ink-soft:#5b6b5f;
+    --chalk-green:#2f4538;
+    --chalk-green-2:#3d5a48;
+    --pen-red:#b8433a;
+    --pen-red-soft:#f4dedb;
+    --ok-green:#3f7d52;
+    --ok-green-soft:#dfeee1;
+    --gold:#b5842a;
+    --radius:10px;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:"Noto Sans TC",sans-serif;
+    line-height:1.7;
+  }
+  header.hero{
+    background:var(--chalk-green);
+    color:#eef2ea;
+    padding:28px 20px 40px;
+    position:relative;
+  }
+  header.hero::after{
+    content:"";
+    position:absolute;
+    left:0; right:0; bottom:-1px;
+    height:14px;
+    background:repeating-linear-gradient(90deg,var(--paper) 0 18px, transparent 18px 20px);
+  }
+  .hero-inner{max-width:880px;margin:0 auto;}
+  .breadcrumb a{color:#cfe0d1;text-decoration:none;font-size:14px;}
+  .breadcrumb a:hover{text-decoration:underline;}
+  h1{
+    font-family:"Noto Serif TC",serif;
+    font-weight:700;
+    font-size:clamp(24px,4vw,34px);
+    margin:10px 0 6px;
+  }
+  .subtitle{color:#cfe0d1;font-size:15px;margin:0;}
+  main{max-width:880px;margin:0 auto;padding:28px 20px 80px;}
+
+  .controls{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:22px;
+  }
+  .mode-toggle{display:flex;border:2px solid var(--chalk-green);border-radius:999px;overflow:hidden;}
+  .mode-toggle button{
+    background:transparent;border:none;padding:8px 16px;font-size:14px;font-weight:700;
+    color:var(--chalk-green);cursor:pointer;font-family:"Noto Sans TC",sans-serif;
+  }
+  .mode-toggle button.active{background:var(--gold);color:#fff;}
+  .mode-toggle button:disabled{opacity:.4;cursor:not-allowed;}
+
+  .score-bar{
+    display:none;
+    align-items:center;
+    justify-content:space-between;
+    background:#fff;
+    border:1px solid var(--paper-line);
+    border-left:5px solid var(--gold);
+    border-radius:var(--radius);
+    padding:12px 18px;
+    margin-bottom:22px;
+    font-size:14px;
+  }
+  .score-bar.show{display:flex;}
+  .score-bar strong{font-size:18px;color:var(--gold);}
+  .score-bar button{
+    background:none;border:1px solid var(--ink-soft);color:var(--ink-soft);
+    border-radius:6px;padding:6px 12px;font-size:13px;cursor:pointer;
+  }
+
+  section.block{
+    background:#fff;
+    border:1px solid var(--paper-line);
+    border-radius:var(--radius);
+    padding:22px 22px 26px;
+    margin-bottom:20px;
+  }
+  .block h2{
+    font-family:"Noto Serif TC",serif;
+    font-size:19px;
+    margin:0 0 4px;
+    color:var(--chalk-green);
+  }
+  .block .meta{color:var(--ink-soft);font-size:13px;margin:0 0 16px;}
+
+  .q{margin-bottom:18px;padding-bottom:16px;border-bottom:1px dashed var(--paper-line);}
+  .q:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0;}
+  .q-text{font-size:15.5px;margin-bottom:8px;}
+  .q-num{color:var(--gold);font-weight:700;margin-right:4px;}
+
+  .opts{display:grid;gap:8px;}
+  .opt{
+    display:flex;gap:8px;align-items:flex-start;
+    border:1.5px solid var(--paper-line);
+    border-radius:8px;
+    padding:9px 12px;
+    cursor:pointer;
+    font-size:14.5px;
+    background:#fffdf8;
+  }
+  .opt:hover{border-color:var(--chalk-green-2);}
+  .opt.selected{border-color:var(--chalk-green-2);background:#eef3ea;}
+  .opt.correct{border-color:var(--ok-green);background:var(--ok-green-soft);}
+  .opt.wrong{border-color:var(--pen-red);background:var(--pen-red-soft);}
+  .opt .tag{font-weight:700;color:var(--ink-soft);}
+  .opt.correct .tag{color:var(--ok-green);}
+  .opt.wrong .tag{color:var(--pen-red);}
+  .opt.disabled{cursor:default;}
+
+  .passage{
+    background:#f5f2e8;border-radius:8px;padding:14px 16px;margin-bottom:14px;
+    font-size:14.5px;white-space:pre-line;
+  }
+  .passage-label{font-weight:700;color:var(--chalk-green);margin-bottom:4px;display:block;}
+
+  .footer-link{
+    display:block;text-align:center;margin-top:30px;color:var(--chalk-green);
+    text-decoration:none;font-weight:700;font-size:14px;
+  }
+  .footer-link:hover{text-decoration:underline;}
+
+  @media print{
+    header.hero, .controls, .score-bar, .mini-btn, .footer-link{display:none !important;}
+    body{background:#fff;}
+    section.block{border:none;box-shadow:none;padding:8px 0;margin-bottom:14px;}
+    .opt.correct{background:none;border:none;font-weight:700;}
+    .opt.correct::after{content:" ← 正解";color:var(--pen-red);}
+    .opt{border:none;padding:2px 0;}
+    main{max-width:100%;padding:0 24px;}
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="breadcrumb"><a href="https://jenlin2002.github.io/">🏠 回總目錄</a> ／ <a href="../hanlin-social-g8-1.html" style="color:#cfe0d1;">段考題庫</a></div>
+    <h1>歷史・第5回</h1>
+    <p class="subtitle">第三篇第4章 明清時期東亞世界的變動｜翰林版八年級社會（三）Ａ卷</p>
+  </div>
+</header>
+
+<main>
+  <div class="controls">
+    <div class="mode-toggle">
+      <button id="quizModeBtn" class="active">✏️ 測驗模式</button>
+      <button id="printModeBtn" disabled title="完成測驗並送出成績後才能查看">🖨️ 完整題目與解答（送出成績後解鎖）</button>
+    </div>
+  </div>
+
+  <div class="score-bar" id="scoreBar">
+    <div>目前得分：<strong id="scoreText">0 / 0</strong>（僅計算選擇題）</div>
+    <button id="resetBtn">重新作答</button>
+  </div>
+
+  <div id="content"></div>
+
+  <a class="footer-link" href="../hanlin-social-g8-1.html">← 回段考題庫總覽</a>
+</main>
+
+<script>
+
+window.EXAM_META = { version: "A卷", examLabel: "歷史第5回" };
+const DATA = {
+  sections: [
+  {
+    "type": "mc",
+    "title": "一、單題",
+    "meta": "60%，每題3分",
+    "items": [
+      {
+        "q": "聯合國教科文組織正式將「長崎與天草地區隱藏基督徒相關遺產」登記為世界文化遺產，該遺產分布在日本長崎附近，隨著這些「隱藏教會」被公諸於世，更確立了 17 世紀基督教在日本受迫害的足跡。上述基督教在當地的發展與下列何者有關？",
+        "options": [
+          "大化革新",
+          "鎖國政策",
+          "朝貢貿易",
+          "清廷禁教"
+        ],
+        "correct": 1
+      },
+      {
+        "q": "電視劇《大明風華》描述建文 4 年，朱棣攻下帝都應天，自立為帝，他將首都遷到北京、修築長城，並經營南洋、揚威海外。該劇中「朱棣」最可能是下列何人？",
+        "options": [
+          "明太祖",
+          "明成祖",
+          "康熙皇帝",
+          "雍正皇帝"
+        ],
+        "correct": 1
+      },
+      {
+        "q": "前副總統陳建仁盛讚利瑪竇是東西文化交流的先驅，引進了西方的科學知識，包括點線面等用語都是其所創造，並沿用至今。上文中的利瑪竇與明朝大臣徐光啟合譯下列哪本書籍？",
+        "options": [
+          "《職貢圖卷》",
+          "《四書集注》",
+          "《幾何原本》",
+          "《坤輿萬國全圖》"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "西方傳教士在華傳教期間，將中國經典和庭園藝術西傳歐洲，一度形成歐洲的「中國熱」。圖(一)是 17 世紀西方書籍中的孔子像，這說明下列哪一學說的經典西傳？",
+        "image": "images/hist5/q4.png",
+        "options": [
+          "儒家",
+          "道家",
+          "墨家",
+          "法家"
+        ],
+        "correct": 0
+      },
+      {
+        "q": "西藏與新疆又稱為「圖博」與「東突厥斯坦」，在歷史上都曾是國家。在被納入中國版圖後，西藏是「西方的藏土」之意，而新疆則是「新闢的疆土」。上述地區皆在下列何時始納入中國版圖？",
+        "options": [
+          "唐代",
+          "宋代",
+          "明代",
+          "清代"
+        ],
+        "correct": 3
+      },
+      {
+        "q": "下表是大航海時代，某國家的海外拓殖活動，由內容判斷這個國家應是下列何國？",
+        "image": "images/hist5/q6.png",
+        "options": [
+          "葡萄牙",
+          "西班牙",
+          "英國",
+          "荷蘭"
+        ],
+        "correct": 3
+      },
+      {
+        "q": "長期關注言論自由的美國筆會發表全球寫作自由指數，揭露全球至少 339 名作家或知識分子遭囚禁，其中中國達 107 人，許多被囚者只因評論官方政策或政經情勢就被捕。上述這種從文人文章中摘取字句，羅織罪名的政策，在下列哪一朝代最盛行？",
+        "options": [
+          "北宋",
+          "南宋",
+          "元代",
+          "清代"
+        ],
+        "correct": 3
+      },
+      {
+        "q": "北京李自成雕像日前被遷移至其陝西老家「闖王寨」風景區。該人物加入反政府的軍隊，後成為當時民變領袖之一，於 1644 年在西安稱帝，之後更攻入北京，促使皇帝自縊殉國。上述人物的作為導致下列哪個朝代的滅亡？",
+        "options": [
+          "宋",
+          "元",
+          "明",
+          "清"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "明清之際，中西文化交流頻繁，但這樣的榮景，卻因清代發生何事而宣告中斷？",
+        "options": [
+          "康熙大興文字獄，排斥西學、洋教",
+          "乾隆積極經營西域，防止歐人東來",
+          "雍正厲行海禁政策，阻止外人入境",
+          "雍正實施禁教，將傳教士逐出中國"
+        ],
+        "correct": 3
+      },
+      {
+        "q": "滿清入主中國後，曾用多種方式來統治漢人，下列哪一措施屬於清帝國採用的高壓統治方式？",
+        "options": [
+          "推廣儒學",
+          "朝貢貿易",
+          "薙髮留辮",
+          "停辦科舉"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "張老師到德國旅行，參觀德國城堡中的瓷屋。領隊介紹說：「17、18 世紀時，歐洲宮廷喜歡將各式各樣的青花瓷作為屋內的裝飾品。」上述城堡中的瓷器若是從製瓷業的專業市鎮製造，應是產自中國何地？",
+        "options": [
+          "廣州",
+          "泉州",
+          "景德鎮",
+          "北京"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "明代為防備倭寇、清初為打擊鄭氏政權都曾實施下列何項政策？",
+        "options": [
+          "渡臺禁令",
+          "海禁政策",
+          "鎖國政策",
+          "劃界封山"
+        ],
+        "correct": 1
+      },
+      {
+        "q": "小呈在某書中看見一段史料如下：「凡外夷者，我朝皆設市舶司以領之。……許帶方物，官設牙行與民貿易，謂之互市。是有貢船，即有互市，非入貢即不許其互市。」上述史料最可能與下列何者相關？",
+        "options": [
+          "邊市貿易",
+          "走私貿易",
+          "朝貢貿易",
+          "開港通商"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "日治時期，臺灣總督府將纏足、辮髮和吸食鴉片視為臺灣社會三大陋習，因此明令禁止纏足辮髮，違反者處以百圓以下罰金。上述的辮髮是受下列何者習俗的影響？",
+        "options": [
+          "蒙古人",
+          "藏人",
+          "漢人",
+          "滿人"
+        ],
+        "correct": 3
+      },
+      {
+        "q": "15 世紀前期，中國皇帝下令鄭和展開七次大規模的遠洋航海，並留下世界現存最早的航海圖。上述人物出使西洋對後世的歷史發展有何影響？",
+        "options": [
+          "陸上絲路的興起",
+          "討平倭寇的入侵",
+          "美洲新作物的傳入",
+          "各國紛紛前來中國貿易"
+        ],
+        "correct": 3
+      },
+      {
+        "q": "歷史老師提問：「何者是促成明代衰亡的原因？」下列哪一位同學的回答<u>錯誤</u>？",
+        "options": [
+          "饑荒嚴重。",
+          "靖康之禍。",
+          "滿清入關。",
+          "流寇之禍。"
+        ],
+        "correct": 1
+      },
+      {
+        "q": "湘綾在歷史課本上看見了一張疆域圖，如圖(二)。由其版圖輪廓可判斷，此圖可呈現出哪一民族的擴張？",
+        "image": "images/hist5/q17.png",
+        "options": [
+          "契丹",
+          "女真",
+          "突厥",
+          "蒙古"
+        ],
+        "correct": 1
+      },
+      {
+        "q": "「自宋朝覆亡，北方外族入主中原，百年不到，天下大亂，我本是平民，被眾人推舉，率軍攻占金陵（今南京），再北上驅逐韃虜。色目等雖為異族，但若衷心歸順，仍是中華子民。」上文最可能是下列何人的自述？",
+        "options": [
+          "鄭和",
+          "朱元璋",
+          "李自成",
+          "吳三桂"
+        ],
+        "correct": 1
+      },
+      {
+        "q": "「1636 年，把國號大金改『大清』，並改族名為滿洲。可能是因為歷史上□□族建立的金曾滅北宋，為了消除漢人的負面印象才有這樣的作法。」上文記載的是何族的事蹟？",
+        "options": [
+          "蒙古",
+          "突厥",
+          "女真",
+          "契丹"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "紀錄片《東方西儒──利瑪竇》結合戲劇演出及紀實，忠實呈現了首位進入中國的耶穌會教士利瑪竇神父的生平，此片可讓同信仰的教友認識該人物的傳教貢獻及促進中西文化交流之功。上述傳教士傳播的是下列哪一宗教？",
+        "options": [
+          "佛教",
+          "猶太教",
+          "天主教",
+          "伊斯蘭教"
+        ],
+        "correct": 2
+      }
+    ]
+  },
+  {
+    "type": "reading",
+    "title": "二、題組",
+    "meta": "12%，每題3分",
+    "passages": [
+      {
+        "label": "(一)",
+        "text": "避暑山莊又稱熱河行宮，興建於康熙年間，是中國古代皇家園林中占地最廣，更是目前保存最為完好的皇家行宮。每年 5～9 月間，皇帝暫住山莊避暑，並接見蒙藏活佛與王公貴族，外國使節也因皇帝暫住而赴山莊觀見，避暑山莊在帝國的地位，已成為紫禁城之外，帝國的第二政治中心。",
+        "image": "images/hist5/g2.png",
+        "items": [
+          {
+            "q": "興建上述山莊的是下列哪一政權？",
+            "options": [
+              "宋",
+              "元",
+              "明",
+              "清"
+            ],
+            "correct": 3
+          },
+          {
+            "q": "上文中的帝國首要政治中心，今位在圖(三)中何地？",
+            "options": [
+              "甲",
+              "乙",
+              "丙",
+              "丁"
+            ],
+            "correct": 1
+          }
+        ]
+      },
+      {
+        "label": "(二)",
+        "text": "國立臺灣歷史博物館舉辦「鄭和與海洋文化──鄭和下西洋六百周年特展」。展出內容分為鄭和下西洋史跡、海上絲路及古代航海科技三大主題，展出物品包括鄭和船隊「寶船」模型、木刻塗金的「天妃坐像」及比利時國家海洋博物館提供的十艘中國船模。",
+        "image": "images/hist5/g3.png",
+        "items": [
+          {
+            "q": "上述的西洋指的是圖(四)中何地？",
+            "options": [
+              "甲",
+              "乙",
+              "丙",
+              "丁"
+            ],
+            "correct": 1
+          },
+          {
+            "q": "上述航海行動奠定華人在下列何地的發展基礎？",
+            "options": [
+              "琉球",
+              "朝鮮",
+              "日本",
+              "東南亞"
+            ],
+            "correct": 3
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "type": "mc",
+    "title": "三、進階思考題",
+    "meta": "28%，每題4分",
+    "items": [
+      {
+        "q": "明末清初西方傳教士陸續來到中國，並且將西方的近代科技傳入中國，促進中西文化交流，當時傳入的西方科技<u>不包括</u>下列何者？",
+        "options": [
+          "天文曆法",
+          "《幾何原本》",
+          "海上導航的指南針",
+          "畫有經緯線的地圖"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "上歷史課時，老師要同學以「北魏、元帝國、清帝國」進行比較，下列哪位同學的說法最正確？",
+        "options": [
+          "都厲行漢化政策。",
+          "將人民分為四等級。",
+          "都實施科舉取士。",
+          "統治者皆為外族。"
+        ],
+        "correct": 3
+      },
+      {
+        "q": "中國的經濟週期通常與王朝的興衰更迭互相對應，經濟重心也隨著政治、戰爭、人口遷徙、工農商及海陸交通的發展而不斷改變。老師請同學就明清時期的經濟發展進行討論，下列哪一位同學的說法<u>不正確</u>？",
+        "options": [
+          "景德鎮等專業市鎮的興起。",
+          "引進美洲作物，緩和糧食不足。",
+          "因受坊市制度限制，住商分離。",
+          "明帝國末年以白銀和銅錢並用。"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "許文是明末的平民百姓，他可能有下列哪一種生活經歷？",
+        "options": [
+          "跟隨鄭和出使西洋",
+          "聽到流寇攻陷南京",
+          "靠吃番薯等作物果腹",
+          "熟讀《幾何原本》參加科舉"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "明清時期東亞世界大致在朝貢貿易體制下進行互動，隨著大航海時代的來臨，西方商人和傳教士東來，東西方的商貿往來和文化交流日益密切。歷史讀書會中，幾位同學探討清帝國初期的中外貿易發展，哪位同學的說法需要<u>修正</u>？",
+        "options": [
+          "康熙皇帝收復臺灣後解除海禁。",
+          "當時的對外貿易主要以朝貢貿易為主。",
+          "主要使用白銀與銅錢交易。",
+          "首在廣州、泉州設立市舶司。"
+        ],
+        "correct": 3
+      },
+      {
+        "q": "大雄是清初的福建商人，海上貿易帶來了許多財富，他<u>不可能</u>有下列哪一種生活經驗？",
+        "options": [
+          "逛夜市以白銀買烤玉米",
+          "透過朝貢貿易與外國往來",
+          "與同鄉商人集資成立市舶司",
+          "因政府打擊鄭氏而無法出海貿易"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "書懷在看電視劇時，看到劇情中的統治者要求受統治的人民依自身習俗薙髮留辮，以表示臣服。根據上述劇情判斷，劇中出現下列哪一場景才符合史實？",
+        "options": [
+          "官員與耶穌會傳教士會面",
+          "配合政策改姓氏、禁胡語",
+          "鄭和奉命七次下西洋",
+          "以紙幣作為主要貨幣"
+        ],
+        "correct": 0
+      }
+    ]
+  }
+]
+};
+
+let currentMode = "quiz"; // quiz | print
+
+const contentEl = document.getElementById("content");
+const scoreBar = document.getElementById("scoreBar");
+const scoreText = document.getElementById("scoreText");
+
+function render(){
+  window.examAnswersRevealed = false;
+  contentEl.innerHTML = "";
+  DATA.sections.forEach((sec, si)=> contentEl.appendChild(renderSection(sec, si)));
+  if(currentMode==="quiz"){
+    scoreBar.classList.add("show");
+    updateScore();
+  } else {
+    scoreBar.classList.remove("show");
+    contentEl.querySelectorAll(".opt").forEach(o=>o.classList.add("disabled"));
+    contentEl.querySelectorAll(".opt.is-correct").forEach(o=>o.classList.add("correct"));
+  }
+}
+
+function renderSection(sec, si){
+  const block = document.createElement("section");
+  block.className = "block";
+  block.innerHTML = `<h2>${sec.title}</h2><p class="meta">${sec.meta}</p>`;
+
+  if(sec.type==="mc"){
+    sec.items.forEach((it,i)=>{
+      const q = document.createElement("div");
+      q.className = "q";
+      const optsHtml = it.options.map((op,oi)=>`
+        <div class="opt" data-idx="${oi}" data-correct="${oi===it.correct}">
+          <span class="tag">(${String.fromCharCode(65+oi)})</span><span>${op}</span>
+        </div>`).join("");
+      const imgHtml = it.image ? `<img src="${it.image}" alt="題目附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">` : "";
+      const img2Html = it.image2 ? `<img src="${it.image2}" alt="題目附圖2" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">` : "";
+      q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q}</div>
+        ${imgHtml}${img2Html}
+        <div class="opts">${optsHtml}</div>`;
+      q.querySelectorAll(".opt").forEach(optEl=>{
+        if(optEl.dataset.correct==="true") optEl.classList.add("is-correct");
+        optEl.addEventListener("click", ()=>selectOption(q, optEl));
+      });
+      block.appendChild(q);
+    });
+  }
+
+  else if(sec.type==="reading"){
+    sec.passages.forEach(p=>{
+      const passageDiv = document.createElement("div");
+      passageDiv.className = "passage";
+      passageDiv.innerHTML = `${p.label ? `<span class="passage-label">${p.label}</span>`:""}${p.text}${p.image ? `<img src="${p.image}" alt="題組附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-top:10px;border:1px solid var(--paper-line);">`:""}`;
+      block.appendChild(passageDiv);
+      p.items.forEach((it,i)=>{
+        const q = document.createElement("div");
+        q.className = "q";
+        const optsHtml = it.options.map((op,oi)=>`
+          <div class="opt" data-idx="${oi}" data-correct="${oi===it.correct}">
+            <span class="tag">(${String.fromCharCode(65+oi)})</span><span>${op}</span>
+          </div>`).join("");
+        q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q}</div>
+          ${it.image ? `<img src="${it.image}" alt="題目附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">`:""}
+          <div class="opts">${optsHtml}</div>`;
+        q.querySelectorAll(".opt").forEach(optEl=>{
+          if(optEl.dataset.correct==="true") optEl.classList.add("is-correct");
+          optEl.addEventListener("click", ()=>selectOption(q, optEl));
+        });
+        block.appendChild(q);
+      });
+    });
+  }
+
+  return block;
+}
+
+function selectOption(qEl, optEl){
+  if(currentMode!=="quiz") return;
+  if(qEl.dataset.answered==="true") return;
+  qEl.dataset.answered = "true";
+  qEl.querySelectorAll(".opt").forEach(o=>o.classList.add("disabled"));
+  optEl.classList.add("selected");
+  const correctOpt = qEl.querySelector('.opt[data-correct="true"]');
+  qEl.dataset.studentAnswer = optEl.textContent.trim();
+  qEl.dataset.correctAnswer = correctOpt ? correctOpt.textContent.trim() : "";
+  qEl.dataset.isCorrect = (optEl.dataset.correct==="true") ? "true" : "false";
+  updateScore();
+}
+
+function updateScore(){
+  let total = 0, answered = 0, correct = 0;
+  contentEl.querySelectorAll(".q").forEach(q=>{
+    const gradable = q.querySelector(".opts");
+    if(!gradable) return;
+    total++;
+    if(q.dataset.studentAnswer !== undefined){
+      answered++;
+      if(q.dataset.isCorrect === "true") correct++;
+    }
+  });
+  if(window.examAnswersRevealed){
+    scoreText.textContent = `${correct} / ${total}`;
+  } else {
+    scoreText.textContent = `已作答 ${answered} / ${total} 題`;
+  }
+}
+window.updateScore = updateScore;
+
+document.getElementById("resetBtn").addEventListener("click", render);
+document.getElementById("quizModeBtn").addEventListener("click", ()=>{
+  currentMode = "quiz";
+  document.getElementById("quizModeBtn").classList.add("active");
+  document.getElementById("printModeBtn").classList.remove("active");
+  render();
+});
+document.getElementById("printModeBtn").addEventListener("click", ()=>{
+  if(document.getElementById("printModeBtn").disabled) return;
+  currentMode = "print";
+  document.getElementById("printModeBtn").classList.add("active");
+  document.getElementById("quizModeBtn").classList.remove("active");
+  render();
+});
+
+window.unlockPrintMode = function(){
+  document.getElementById("printModeBtn").disabled = false;
+};
+
+render();
+</script>
+<script src="../sync.js"></script>
+</body>
+</html>

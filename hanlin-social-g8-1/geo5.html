@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>段考題庫｜地理第5回 - 中國的經濟發展與全球關連</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@500;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#faf6ec;
+    --paper-line:#e3dcc8;
+    --ink:#26332b;
+    --ink-soft:#5b6b5f;
+    --chalk-green:#2f4538;
+    --chalk-green-2:#3d5a48;
+    --pen-red:#b8433a;
+    --pen-red-soft:#f4dedb;
+    --ok-green:#3f7d52;
+    --ok-green-soft:#dfeee1;
+    --gold:#b5842a;
+    --radius:10px;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:"Noto Sans TC",sans-serif;
+    line-height:1.7;
+  }
+  header.hero{
+    background:var(--chalk-green);
+    color:#eef2ea;
+    padding:28px 20px 40px;
+    position:relative;
+  }
+  header.hero::after{
+    content:"";
+    position:absolute;
+    left:0; right:0; bottom:-1px;
+    height:14px;
+    background:repeating-linear-gradient(90deg,var(--paper) 0 18px, transparent 18px 20px);
+  }
+  .hero-inner{max-width:880px;margin:0 auto;}
+  .breadcrumb a{color:#cfe0d1;text-decoration:none;font-size:14px;}
+  .breadcrumb a:hover{text-decoration:underline;}
+  h1{
+    font-family:"Noto Serif TC",serif;
+    font-weight:700;
+    font-size:clamp(24px,4vw,34px);
+    margin:10px 0 6px;
+  }
+  .subtitle{color:#cfe0d1;font-size:15px;margin:0;}
+  main{max-width:880px;margin:0 auto;padding:28px 20px 80px;}
+
+  .controls{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:22px;
+  }
+  .mode-toggle{display:flex;border:2px solid var(--chalk-green);border-radius:999px;overflow:hidden;}
+  .mode-toggle button{
+    background:transparent;border:none;padding:8px 16px;font-size:14px;font-weight:700;
+    color:var(--chalk-green);cursor:pointer;font-family:"Noto Sans TC",sans-serif;
+  }
+  .mode-toggle button.active{background:var(--gold);color:#fff;}
+  .mode-toggle button:disabled{opacity:.4;cursor:not-allowed;}
+
+  .score-bar{
+    display:none;
+    align-items:center;
+    justify-content:space-between;
+    background:#fff;
+    border:1px solid var(--paper-line);
+    border-left:5px solid var(--gold);
+    border-radius:var(--radius);
+    padding:12px 18px;
+    margin-bottom:22px;
+    font-size:14px;
+  }
+  .score-bar.show{display:flex;}
+  .score-bar strong{font-size:18px;color:var(--gold);}
+  .score-bar button{
+    background:none;border:1px solid var(--ink-soft);color:var(--ink-soft);
+    border-radius:6px;padding:6px 12px;font-size:13px;cursor:pointer;
+  }
+
+  section.block{
+    background:#fff;
+    border:1px solid var(--paper-line);
+    border-radius:var(--radius);
+    padding:22px 22px 26px;
+    margin-bottom:20px;
+  }
+  .block h2{
+    font-family:"Noto Serif TC",serif;
+    font-size:19px;
+    margin:0 0 4px;
+    color:var(--chalk-green);
+  }
+  .block .meta{color:var(--ink-soft);font-size:13px;margin:0 0 16px;}
+
+  .q{margin-bottom:18px;padding-bottom:16px;border-bottom:1px dashed var(--paper-line);}
+  .q:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0;}
+  .q-text{font-size:15.5px;margin-bottom:8px;}
+  .q-num{color:var(--gold);font-weight:700;margin-right:4px;}
+
+  .opts{display:grid;gap:8px;}
+  .opt{
+    display:flex;gap:8px;align-items:flex-start;
+    border:1.5px solid var(--paper-line);
+    border-radius:8px;
+    padding:9px 12px;
+    cursor:pointer;
+    font-size:14.5px;
+    background:#fffdf8;
+  }
+  .opt:hover{border-color:var(--chalk-green-2);}
+  .opt.selected{border-color:var(--chalk-green-2);background:#eef3ea;}
+  .opt.correct{border-color:var(--ok-green);background:var(--ok-green-soft);}
+  .opt.wrong{border-color:var(--pen-red);background:var(--pen-red-soft);}
+  .opt .tag{font-weight:700;color:var(--ink-soft);}
+  .opt.correct .tag{color:var(--ok-green);}
+  .opt.wrong .tag{color:var(--pen-red);}
+  .opt.disabled{cursor:default;}
+
+  .passage{
+    background:#f5f2e8;border-radius:8px;padding:14px 16px;margin-bottom:14px;
+    font-size:14.5px;white-space:pre-line;
+  }
+  .passage-label{font-weight:700;color:var(--chalk-green);margin-bottom:4px;display:block;}
+
+  .footer-link{
+    display:block;text-align:center;margin-top:30px;color:var(--chalk-green);
+    text-decoration:none;font-weight:700;font-size:14px;
+  }
+  .footer-link:hover{text-decoration:underline;}
+
+  @media print{
+    header.hero, .controls, .score-bar, .mini-btn, .footer-link{display:none !important;}
+    body{background:#fff;}
+    section.block{border:none;box-shadow:none;padding:8px 0;margin-bottom:14px;}
+    .opt.correct{background:none;border:none;font-weight:700;}
+    .opt.correct::after{content:" ← 正解";color:var(--pen-red);}
+    .opt{border:none;padding:2px 0;}
+    main{max-width:100%;padding:0 24px;}
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="breadcrumb"><a href="https://jenlin2002.github.io/">🏠 回總目錄</a> ／ <a href="../hanlin-social-g8-1.html" style="color:#cfe0d1;">段考題庫</a></div>
+    <h1>地理・第5回</h1>
+    <p class="subtitle">第4章 中國的經濟發展與全球關連｜翰林版八年級社會（三）Ａ卷</p>
+  </div>
+</header>
+
+<main>
+  <div class="controls">
+    <div class="mode-toggle">
+      <button id="quizModeBtn" class="active">✏️ 測驗模式</button>
+      <button id="printModeBtn" disabled title="完成測驗並送出成績後才能查看">🖨️ 完整題目與解答（送出成績後解鎖）</button>
+    </div>
+  </div>
+
+  <div class="score-bar" id="scoreBar">
+    <div>目前得分：<strong id="scoreText">0 / 0</strong>（僅計算選擇題）</div>
+    <button id="resetBtn">重新作答</button>
+  </div>
+
+  <div id="content"></div>
+
+  <a class="footer-link" href="../hanlin-social-g8-1.html">← 回段考題庫總覽</a>
+</main>
+
+<script>
+
+window.EXAM_META = { version: "A卷", examLabel: "地理第5回" };
+const DATA = {
+  sections: [
+  {
+    "type": "mc",
+    "title": "一、單題",
+    "meta": "60%，每題3分",
+    "items": [
+      {
+        "q": "中國從被稱為「世界工廠」到成為「世界市場」，主要均與下列哪項因素有密切關係？",
+        "options": [
+          "土地遼闊",
+          "氣候複雜",
+          "人口眾多",
+          "教育發達"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "貿易總額為一國在一定期間內出口總額和進口總額的合計值，圖(一)為某年世界前五大貿易總額國家。由圖中判斷，中國的經濟發展現況為何？",
+        "image": "images/geo5/q2.png",
+        "options": [
+          "中國經濟成長快速成為最大貿易國家",
+          "中國的人口增加率持續上升吸引外資",
+          "美國積極將工廠從東南亞遷移至中國",
+          "中國對美國的部分進口商品減免關稅"
+        ],
+        "correct": 0
+      },
+      {
+        "q": "「非洲肯亞的『中國廣場』超市開幕，這家超市以大量且低廉的價格出售從中國進口的各種商品，包括家具、衣物等，開業兩週就賺了超過 15 萬美元，而引發當地商家抗議。」上述現象與中國的何項經濟特色最相關？",
+        "options": [
+          "農礦資源豐富",
+          "邊境貿易活絡",
+          "國內消費市場廣大",
+          "勞工多且工資低廉"
+        ],
+        "correct": 3
+      },
+      {
+        "q": "昔日中國北部以重工業為主，南部以輕工業為主。這與下列哪一項工業區位要素的關係最密切？",
+        "options": [
+          "原料",
+          "勞工",
+          "交通",
+          "資金"
+        ],
+        "correct": 0
+      },
+      {
+        "q": "中國此經濟區瀕臨海洋，有綿長海岸線和眾多港口，是中國最早改革開放的地方，有利於與多國進行技術交流，其經濟生產總額占全國總量達 60% 以上。上述是指中國哪一經濟區的發展？",
+        "options": [
+          "東北地區",
+          "東部地區",
+          "中部地區",
+          "西部地區"
+        ],
+        "correct": 1
+      },
+      {
+        "q": "中國各地區的交通運輸特色不同，而鐵路、公路分布密集的地區通常具有下列哪一項特色？",
+        "options": [
+          "環境負載力低",
+          "氣候乾燥少雨",
+          "水力蘊藏豐富",
+          "工商業較發達"
+        ],
+        "correct": 3
+      },
+      {
+        "q": "圖(二)中深色處為某貿易協定的簽署國家分布圖，該協定最有可能為下列何者？",
+        "image": "images/geo5/q7.png",
+        "options": [
+          "一帶一路",
+          "世界貿易組織",
+          "亞太經濟合作會議",
+          "區域全面經濟伙伴協定"
+        ],
+        "correct": 3
+      },
+      {
+        "q": "中國透過一帶一路政策協助各參與國的基礎建設，並增強彼此經濟連結，但也造成部分負面影響，下列何者最有可能為一帶一路政策所造成？",
+        "options": [
+          "交通易達性下降",
+          "製造業比例偏高",
+          "主權與利益糾紛",
+          "各國以關稅報復"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "「中歐班列」從中國出發，以歐洲為終點，其中一條是經中亞、俄羅斯到達歐洲；另一條是經中亞、西亞到達波斯灣和地中海沿岸各國。可知中歐班列的開通與下列哪一項政策最有關聯？",
+        "options": [
+          "改革開放",
+          "一帶一路",
+          "西部開發",
+          "中部崛起"
+        ],
+        "correct": 1
+      },
+      {
+        "q": "中國山東省業者利用太陽能捕蟲燈抓捕農田害蟲，並可用於分析蟲害，提升農產與品質。上述作法最能反映哪一項中國現代農業轉型的方向？",
+        "options": [
+          "擴大農地面積，增加糧食產量",
+          "吸引外資設廠，提高生產效率",
+          "限制農村發展，維持傳統農業模式",
+          "發展生態農業，兼顧環境與農產量"
+        ],
+        "correct": 3
+      },
+      {
+        "q": "「2016 年到 2020 年中國的消費增量高達 1.8 萬億美元，這個增量相當於英國全年度的消費市場規模。也就是中國五年的消費增量相當於英國一年的消費總量。」上述內容最符合下列哪一關鍵字？",
+        "options": [
+          "一帶一路",
+          "世界市場",
+          "世界工廠",
+          "改革開放"
+        ],
+        "correct": 1
+      },
+      {
+        "q": "新疆的喀什是中國西部經濟區的都市，中國政府期望將喀什建設成向西出口的加工基地，可出口紡織品、食品加工產品至塔吉克等鄰國。根據上述，中國在喀什採行的經濟政策，與下列哪個都市較為雷同？",
+        "options": [
+          "北京",
+          "上海",
+          "武漢",
+          "深圳"
+        ],
+        "correct": 3
+      },
+      {
+        "q": "中國企業擁有龐大的財力，並以此併購各國具有指標性、高技術性的公司。透過併購可以讓中國企業得到哪項優勢？",
+        "options": [
+          "成為世界工廠",
+          "吸引外商投資",
+          "提高國內需求",
+          "獲取產業技術"
+        ],
+        "correct": 3
+      },
+      {
+        "q": "2020 年中國與多個國家簽署貿易協定所組成的自由貿易區，其 GDP 占全球總產值的 30%，參與此協定的國家享有下列哪一優勢？",
+        "options": [
+          "享有關稅減免",
+          "提高進口商品價格",
+          "協助他國基礎建設",
+          "豁免參與國的債務"
+        ],
+        "correct": 0
+      },
+      {
+        "q": "圖(三)為中國單位面積糧食產量統計圖，該圖的變化趨勢與下列何者最有關聯？",
+        "image": "images/geo5/q15.png",
+        "options": [
+          "農田規模小而採集約化耕作",
+          "壯年人口大量返鄉投入農業",
+          "透過機械輔助並研發新的農業技術",
+          "糧食作物生產面積的比例逐年增加"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "圖(四)為中國空氣汙染 PM2.5 示意圖，其中最嚴重地區是因大量的開發行為，使懸浮微粒持續不減。發生上述情況最可能為下列哪一因素？",
+        "image": "images/geo5/q16.png",
+        "options": [
+          "大規模開採能源礦產",
+          "勞力密集型產業進駐",
+          "海港地區多交通廢氣",
+          "老舊重工業工廠重建"
+        ],
+        "correct": 0
+      },
+      {
+        "q": "中國曾經因世界工廠的優勢，成為手機供應鏈核心。但隨著經濟情勢轉變，預計 2025 年將有四分之一的產品移往印度生產。除了國際局勢關係外，造成上述產地轉移的主因最可能為下列何者？",
+        "options": [
+          "平均薪資提升",
+          "礦產資源缺乏",
+          "水力資源不足",
+          "基礎建設落後"
+        ],
+        "correct": 0
+      },
+      {
+        "q": "中國自改革開放後，製造業發展迅速，電子商品、服飾上的「中國製造」成為家喻戶曉的標籤。上述現象與中國具有何項經濟特色有關？",
+        "options": [
+          "勞力成本低廉",
+          "專注農業發展",
+          "發展高科技產業",
+          "開放市場零關稅"
+        ],
+        "correct": 0
+      },
+      {
+        "q": "位於中部經濟區的湖北近年來積極建構高鐵網絡，圖(五)為該省的交通運輸路線圖。當地推動鐵路建設對下列何者最有幫助？",
+        "image": "images/geo5/q19.png",
+        "options": [
+          "強化對外直達全球海運優勢",
+          "連接沿海與內陸的交通樞紐",
+          "推動重化工業轉型提升效能",
+          "大量輸出能源礦資源至東部"
+        ],
+        "correct": 1
+      },
+      {
+        "q": "圖(六)則為中國各地方政府所預估的地方經濟年增率。圖中標示斜線處的行政區發展最快速，與中國哪一項政策較相關？",
+        "image": "images/geo5/q20.png",
+        "options": [
+          "開放生育",
+          "西部開發",
+          "東部率先發展",
+          "經濟改革開放"
+        ],
+        "correct": 1
+      }
+    ]
+  },
+  {
+    "type": "reading",
+    "title": "二、題組",
+    "meta": "12%，每題3分",
+    "passages": [
+      {
+        "label": "(一)",
+        "text": "中國積極推動「一帶一路」政策向各國倡導區域經濟合作計畫，希望藉此擴大中國影響力。",
+        "items": [
+          {
+            "q": "文中「一帶」會經過哈薩克、吉爾吉斯、烏茲別克等國家，中國可從這些國家取得何種資源？",
+            "options": [
+              "對外港口",
+              "海外資金",
+              "研發技術",
+              "礦產資源"
+            ],
+            "correct": 3
+          },
+          {
+            "q": "中國推動上文中的政策，其主要目的為何？",
+            "options": [
+              "均衡工業發展",
+              "降低生產成本",
+              "減少工業汙染",
+              "擴大貿易市場"
+            ],
+            "correct": 3
+          }
+        ]
+      },
+      {
+        "label": "(二)",
+        "text": "隨著科技進步，中國積極推動產業升級，「中國製造 2025」旨在提升製造能力，減少對外技術依賴，而「中國標準 2035」則希望透過制定國際技術標準，提高全球影響力。這些政策不僅改變中國產業結構，也對國際貿易與科技發展產生影響。",
+        "items": [
+          {
+            "q": "中國積極推動上述政策，主要目標為何？",
+            "options": [
+              "擴張經濟市場版圖",
+              "取得關鍵糧食資源",
+              "提升勞工薪資待遇",
+              "提高進口產品比例"
+            ],
+            "correct": 0
+          },
+          {
+            "q": "上述提及的產業結構轉變，何者將成為具優勢的發展要素？",
+            "options": [
+              "原料",
+              "勞力",
+              "動力",
+              "技術"
+            ],
+            "correct": 3
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "type": "mc",
+    "title": "三、實戰模擬題",
+    "meta": "28%，每題4分",
+    "items": [
+      {
+        "q": "中國四大經濟區因所具備的條件不同，造成區域間發展差異。下列有關各經濟區特色的敘述，何者正確？",
+        "options": [
+          "東北地區的重工業面臨設備老舊問題",
+          "東部地區因工礦原料充足而發展最佳",
+          "中部地區因缺乏天然資源而發展落後",
+          "西部地區平原廣大吸引外資積極投入"
+        ],
+        "correct": 0
+      },
+      {
+        "q": "「中國深圳因民工眾多，有業者推出用貨櫃做成的廉價旅館，住宿一個晚上的費用不到新臺幣 30 元，但許多在內陸地區找不到工作而流浪至此打工的人，仍負擔不起租金。」上述情況可能與哪一中國社會現象關係最密切？",
+        "options": [
+          "人口數量眾多",
+          "通貨膨脹嚴重",
+          "區域發展不均",
+          "勞工成本上漲"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "表(一)為中國推行某項建設要達成的政策目標，下列哪一城市的設立最符合此目標？",
+        "image": "images/geo5/a3.png",
+        "options": [
+          "甲",
+          "乙",
+          "丙",
+          "丁"
+        ],
+        "correct": 3
+      },
+      {
+        "q": "表(二)是中國 2020 年 GDP 前三大都市排名，依據所在位置來判斷多屬於哪一個經濟區？",
+        "image": "images/geo5/a4.png",
+        "options": [
+          "東部經濟區",
+          "中部經濟區",
+          "西部經濟區",
+          "東北經濟區"
+        ],
+        "correct": 0
+      },
+      {
+        "q": "圖(八)為中國進出口貿易的發展圖。根據此圖可知，1990 年後貿易總額逐漸成長，此一現象主要受下列哪一因素的影響？",
+        "image": "images/geo5/a5.png",
+        "options": [
+          "實施改革開放後，吸引外商投資",
+          "香港回歸中國後，資金大量湧入",
+          "中國推動「一帶一路」政策，市場門戶大開",
+          "中國、亞洲與大洋洲多國簽訂自由貿易協定"
+        ],
+        "correct": 0
+      },
+      {
+        "q": "圖(九)為 2020 年外資企業在中國登記數量分布圖，其分布並不平均。若要研究外資考量的因素，最可能與下列何者有關？",
+        "image": "images/geo5/a6.png",
+        "options": [
+          "中國礦產分布圖",
+          "中國人口分布圖",
+          "中國三級產業產值比例統計圖",
+          "中國一帶一路的陸上絲路路線圖"
+        ],
+        "correct": 1
+      },
+      {
+        "q": "圖(十)為中國近年來的國際貿易統計，由圖中資料可推估，中國經濟的發展有何特色？",
+        "image": "images/geo5/a7.png",
+        "options": [
+          "製造業的產量龐大",
+          "對外貿易長期入超",
+          "國內消費市場萎縮",
+          "電子商務相當發達"
+        ],
+        "correct": 0
+      }
+    ]
+  }
+]
+};
+
+let currentMode = "quiz"; // quiz | print
+
+const contentEl = document.getElementById("content");
+const scoreBar = document.getElementById("scoreBar");
+const scoreText = document.getElementById("scoreText");
+
+function render(){
+  window.examAnswersRevealed = false;
+  contentEl.innerHTML = "";
+  DATA.sections.forEach((sec, si)=> contentEl.appendChild(renderSection(sec, si)));
+  if(currentMode==="quiz"){
+    scoreBar.classList.add("show");
+    updateScore();
+  } else {
+    scoreBar.classList.remove("show");
+    contentEl.querySelectorAll(".opt").forEach(o=>o.classList.add("disabled"));
+    contentEl.querySelectorAll(".opt.is-correct").forEach(o=>o.classList.add("correct"));
+  }
+}
+
+function renderSection(sec, si){
+  const block = document.createElement("section");
+  block.className = "block";
+  block.innerHTML = `<h2>${sec.title}</h2><p class="meta">${sec.meta}</p>`;
+
+  if(sec.type==="mc"){
+    sec.items.forEach((it,i)=>{
+      const q = document.createElement("div");
+      q.className = "q";
+      const optsHtml = it.options.map((op,oi)=>`
+        <div class="opt" data-idx="${oi}" data-correct="${oi===it.correct}">
+          <span class="tag">(${String.fromCharCode(65+oi)})</span><span>${op}</span>
+        </div>`).join("");
+      const imgHtml = it.image ? `<img src="${it.image}" alt="題目附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">` : "";
+      const img2Html = it.image2 ? `<img src="${it.image2}" alt="題目附圖2" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">` : "";
+      q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q}</div>
+        ${imgHtml}${img2Html}
+        <div class="opts">${optsHtml}</div>`;
+      q.querySelectorAll(".opt").forEach(optEl=>{
+        if(optEl.dataset.correct==="true") optEl.classList.add("is-correct");
+        optEl.addEventListener("click", ()=>selectOption(q, optEl));
+      });
+      block.appendChild(q);
+    });
+  }
+
+  else if(sec.type==="reading"){
+    sec.passages.forEach(p=>{
+      const passageDiv = document.createElement("div");
+      passageDiv.className = "passage";
+      passageDiv.innerHTML = `${p.label ? `<span class="passage-label">${p.label}</span>`:""}${p.text}${p.image ? `<img src="${p.image}" alt="題組附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-top:10px;border:1px solid var(--paper-line);">`:""}`;
+      block.appendChild(passageDiv);
+      p.items.forEach((it,i)=>{
+        const q = document.createElement("div");
+        q.className = "q";
+        const optsHtml = it.options.map((op,oi)=>`
+          <div class="opt" data-idx="${oi}" data-correct="${oi===it.correct}">
+            <span class="tag">(${String.fromCharCode(65+oi)})</span><span>${op}</span>
+          </div>`).join("");
+        q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q}</div>
+          ${it.image ? `<img src="${it.image}" alt="題目附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">`:""}
+          <div class="opts">${optsHtml}</div>`;
+        q.querySelectorAll(".opt").forEach(optEl=>{
+          if(optEl.dataset.correct==="true") optEl.classList.add("is-correct");
+          optEl.addEventListener("click", ()=>selectOption(q, optEl));
+        });
+        block.appendChild(q);
+      });
+    });
+  }
+
+  return block;
+}
+
+function selectOption(qEl, optEl){
+  if(currentMode!=="quiz") return;
+  if(qEl.dataset.answered==="true") return;
+  qEl.dataset.answered = "true";
+  qEl.querySelectorAll(".opt").forEach(o=>o.classList.add("disabled"));
+  optEl.classList.add("selected");
+  const correctOpt = qEl.querySelector('.opt[data-correct="true"]');
+  qEl.dataset.studentAnswer = optEl.textContent.trim();
+  qEl.dataset.correctAnswer = correctOpt ? correctOpt.textContent.trim() : "";
+  qEl.dataset.isCorrect = (optEl.dataset.correct==="true") ? "true" : "false";
+  updateScore();
+}
+
+function updateScore(){
+  let total = 0, answered = 0, correct = 0;
+  contentEl.querySelectorAll(".q").forEach(q=>{
+    const gradable = q.querySelector(".opts");
+    if(!gradable) return;
+    total++;
+    if(q.dataset.studentAnswer !== undefined){
+      answered++;
+      if(q.dataset.isCorrect === "true") correct++;
+    }
+  });
+  if(window.examAnswersRevealed){
+    scoreText.textContent = `${correct} / ${total}`;
+  } else {
+    scoreText.textContent = `已作答 ${answered} / ${total} 題`;
+  }
+}
+window.updateScore = updateScore;
+
+document.getElementById("resetBtn").addEventListener("click", render);
+document.getElementById("quizModeBtn").addEventListener("click", ()=>{
+  currentMode = "quiz";
+  document.getElementById("quizModeBtn").classList.add("active");
+  document.getElementById("printModeBtn").classList.remove("active");
+  render();
+});
+document.getElementById("printModeBtn").addEventListener("click", ()=>{
+  if(document.getElementById("printModeBtn").disabled) return;
+  currentMode = "print";
+  document.getElementById("printModeBtn").classList.add("active");
+  document.getElementById("quizModeBtn").classList.remove("active");
+  render();
+});
+
+window.unlockPrintMode = function(){
+  document.getElementById("printModeBtn").disabled = false;
+};
+
+render();
+</script>
+<script src="../sync.js"></script>
+</body>
+</html>
