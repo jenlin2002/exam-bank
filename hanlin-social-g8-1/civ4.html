@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>段考題庫｜公民第4回 - 法治與權力分立</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@500;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#faf6ec;
+    --paper-line:#e3dcc8;
+    --ink:#26332b;
+    --ink-soft:#5b6b5f;
+    --chalk-green:#2f4538;
+    --chalk-green-2:#3d5a48;
+    --pen-red:#b8433a;
+    --pen-red-soft:#f4dedb;
+    --ok-green:#3f7d52;
+    --ok-green-soft:#dfeee1;
+    --gold:#b5842a;
+    --radius:10px;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:"Noto Sans TC",sans-serif;
+    line-height:1.7;
+  }
+  header.hero{
+    background:var(--chalk-green);
+    color:#eef2ea;
+    padding:28px 20px 40px;
+    position:relative;
+  }
+  header.hero::after{
+    content:"";
+    position:absolute;
+    left:0; right:0; bottom:-1px;
+    height:14px;
+    background:repeating-linear-gradient(90deg,var(--paper) 0 18px, transparent 18px 20px);
+  }
+  .hero-inner{max-width:880px;margin:0 auto;}
+  .breadcrumb a{color:#cfe0d1;text-decoration:none;font-size:14px;}
+  .breadcrumb a:hover{text-decoration:underline;}
+  h1{
+    font-family:"Noto Serif TC",serif;
+    font-weight:700;
+    font-size:clamp(24px,4vw,34px);
+    margin:10px 0 6px;
+  }
+  .subtitle{color:#cfe0d1;font-size:15px;margin:0;}
+  main{max-width:880px;margin:0 auto;padding:28px 20px 80px;}
+
+  .controls{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:22px;
+  }
+  .mode-toggle{display:flex;border:2px solid var(--chalk-green);border-radius:999px;overflow:hidden;}
+  .mode-toggle button{
+    background:transparent;border:none;padding:8px 16px;font-size:14px;font-weight:700;
+    color:var(--chalk-green);cursor:pointer;font-family:"Noto Sans TC",sans-serif;
+  }
+  .mode-toggle button.active{background:var(--gold);color:#fff;}
+  .mode-toggle button:disabled{opacity:.4;cursor:not-allowed;}
+
+  .score-bar{
+    display:none;
+    align-items:center;
+    justify-content:space-between;
+    background:#fff;
+    border:1px solid var(--paper-line);
+    border-left:5px solid var(--gold);
+    border-radius:var(--radius);
+    padding:12px 18px;
+    margin-bottom:22px;
+    font-size:14px;
+  }
+  .score-bar.show{display:flex;}
+  .score-bar strong{font-size:18px;color:var(--gold);}
+  .score-bar button{
+    background:none;border:1px solid var(--ink-soft);color:var(--ink-soft);
+    border-radius:6px;padding:6px 12px;font-size:13px;cursor:pointer;
+  }
+
+  section.block{
+    background:#fff;
+    border:1px solid var(--paper-line);
+    border-radius:var(--radius);
+    padding:22px 22px 26px;
+    margin-bottom:20px;
+  }
+  .block h2{
+    font-family:"Noto Serif TC",serif;
+    font-size:19px;
+    margin:0 0 4px;
+    color:var(--chalk-green);
+  }
+  .block .meta{color:var(--ink-soft);font-size:13px;margin:0 0 16px;}
+
+  .q{margin-bottom:18px;padding-bottom:16px;border-bottom:1px dashed var(--paper-line);}
+  .q:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0;}
+  .q-text{font-size:15.5px;margin-bottom:8px;}
+  .q-num{color:var(--gold);font-weight:700;margin-right:4px;}
+
+  .opts{display:grid;gap:8px;}
+  .opt{
+    display:flex;gap:8px;align-items:flex-start;
+    border:1.5px solid var(--paper-line);
+    border-radius:8px;
+    padding:9px 12px;
+    cursor:pointer;
+    font-size:14.5px;
+    background:#fffdf8;
+  }
+  .opt:hover{border-color:var(--chalk-green-2);}
+  .opt.selected{border-color:var(--chalk-green-2);background:#eef3ea;}
+  .opt.correct{border-color:var(--ok-green);background:var(--ok-green-soft);}
+  .opt.wrong{border-color:var(--pen-red);background:var(--pen-red-soft);}
+  .opt .tag{font-weight:700;color:var(--ink-soft);}
+  .opt.correct .tag{color:var(--ok-green);}
+  .opt.wrong .tag{color:var(--pen-red);}
+  .opt.disabled{cursor:default;}
+
+  .passage{
+    background:#f5f2e8;border-radius:8px;padding:14px 16px;margin-bottom:14px;
+    font-size:14.5px;white-space:pre-line;
+  }
+  .passage-label{font-weight:700;color:var(--chalk-green);margin-bottom:4px;display:block;}
+
+  .footer-link{
+    display:block;text-align:center;margin-top:30px;color:var(--chalk-green);
+    text-decoration:none;font-weight:700;font-size:14px;
+  }
+  .footer-link:hover{text-decoration:underline;}
+
+  @media print{
+    header.hero, .controls, .score-bar, .mini-btn, .footer-link{display:none !important;}
+    body{background:#fff;}
+    section.block{border:none;box-shadow:none;padding:8px 0;margin-bottom:14px;}
+    .opt.correct{background:none;border:none;font-weight:700;}
+    .opt.correct::after{content:" ← 正解";color:var(--pen-red);}
+    .opt{border:none;padding:2px 0;}
+    main{max-width:100%;padding:0 24px;}
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="breadcrumb"><a href="https://jenlin2002.github.io/">🏠 回總目錄</a> ／ <a href="../hanlin-social-g8-1.html" style="color:#cfe0d1;">段考題庫</a></div>
+    <h1>公民・第4回</h1>
+    <p class="subtitle">第四篇第3章 法治與權力分立｜翰林版八年級社會（三）Ａ卷</p>
+  </div>
+</header>
+
+<main>
+  <div class="controls">
+    <div class="mode-toggle">
+      <button id="quizModeBtn" class="active">✏️ 測驗模式</button>
+      <button id="printModeBtn" disabled title="完成測驗並送出成績後才能查看">🖨️ 完整題目與解答（送出成績後解鎖）</button>
+    </div>
+  </div>
+
+  <div class="score-bar" id="scoreBar">
+    <div>目前得分：<strong id="scoreText">0 / 0</strong>（僅計算選擇題）</div>
+    <button id="resetBtn">重新作答</button>
+  </div>
+
+  <div id="content"></div>
+
+  <a class="footer-link" href="../hanlin-social-g8-1.html">← 回段考題庫總覽</a>
+</main>
+
+<script>
+
+window.EXAM_META = { version: "A卷", examLabel: "公民第4回" };
+const DATA = {
+  sections: [
+  {
+    "type": "mc",
+    "title": "一、單題",
+    "meta": "60%，每題3分",
+    "items": [
+      {
+        "q": "在以下哪一類型的國家中，法律的主要目的是鞏固統治者的權力，作為限制人民的工具？",
+        "options": [
+          "法治",
+          "民主",
+          "人治",
+          "權力分立"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "西方的三權分立原則中，並未將監察權從立法權中獨立出來，此模式可能會引發下列哪一項問題？",
+        "options": [
+          "行政效率不佳",
+          "國會權力過大",
+          "濫用私人或親信",
+          "政黨利益被犧牲"
+        ],
+        "correct": 1
+      },
+      {
+        "q": "根據圖(一)內容判斷，警察與人民各自主張行使何者？",
+        "image": "images/civ4/q3.png",
+        "options": [
+          "警察行使權力，駕駛人行使權利",
+          "警察行使權力，駕駛人行使權力",
+          "警察行使權利，駕駛人行使權利",
+          "警察行使權利，駕駛人行使權力"
+        ],
+        "correct": 0
+      },
+      {
+        "q": "黃小弟撰寫的中國古代小說，其中的君王口頭禪如下列，哪一句較<u>無法</u>凸顯人治社會的概念？",
+        "options": [
+          "順我者生，逆我者亡。",
+          "王子犯法與庶民同罪。",
+          "寧可錯殺一百，不可放過一人。",
+          "律法乃朕所定，朕之言便是天理。"
+        ],
+        "correct": 1
+      },
+      {
+        "q": "有關三權分立的學說，下列何者敘述正確？",
+        "options": [
+          "司法權由執政政黨運作",
+          "立法機關可掌握行政權",
+          "權力間相互制衡的制度",
+          "監察權自立法權中獨立"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "現代民主國家為了防止政府濫權，而建構出權力受限的「有限政府」。此政府的運作原則是透過將國家權力與運作方式納入下列何者之中？",
+        "options": [
+          "《憲法》的規範",
+          "統治者的良知",
+          "國家競爭力",
+          "文化環境改善"
+        ],
+        "correct": 0
+      },
+      {
+        "q": "在三權分立的國家中，哪一個權力必須超出黨派，依據法律來獨立行使職權？",
+        "options": [
+          "行政權",
+          "立法權",
+          "司法權",
+          "考試權"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "父母不履行使該就學的學齡兒童接受國民教育的義務，國家可依法處罰，並強迫入學。上述現象主要說明下列何者的意義？",
+        "options": [
+          "政府行使的權力",
+          "人民行使的權力",
+          "政府行使的權利",
+          "人民行使的權利"
+        ],
+        "correct": 0
+      },
+      {
+        "q": "普遍被現代民主國家所接受的三權分立的學說，是由法國思想家孟德斯鳩提出。下列何者是他當初提出該學說的主要目的？",
+        "options": [
+          "防止權力濫用",
+          "侵犯人民權利",
+          "確立專制發展",
+          "維護政府權威"
+        ],
+        "correct": 0
+      },
+      {
+        "q": "孫中山先生考察西方三權分立制度後，提出許多不同的見解，下列何者<u>不是</u>他所提出的見解？",
+        "options": [
+          "監察權從立法權中獨立",
+          "考試權從行政權中獨立",
+          "修改三權分立並提出五權分立",
+          "五權分立為我國地方政府體制"
+        ],
+        "correct": 3
+      },
+      {
+        "q": "右列是某次社會課程探討議題的重點。根據內容判斷，該項議題應為下列何者的特色？",
+        "image": "images/civ4/q11.png",
+        "options": [
+          "人治國家",
+          "法治國家",
+          "獨裁國家",
+          "君主國家"
+        ],
+        "correct": 1
+      },
+      {
+        "q": "政治學上有句名言：「權力使人腐化，絕對的權力，絕對的腐化。」意旨權力不能集中在同一群人手中，以免權力被濫用，因而現代國家對於中央政府體制的設計依此理論採用何種原則？",
+        "options": [
+          "中央集權",
+          "權力分立",
+          "人治社會",
+          "主權在民"
+        ],
+        "correct": 1
+      },
+      {
+        "q": "佩芳利用周末假期整理有關「有限政府」主題的公民報告，她依據查詢到的資料，仔細分析，並在製作簡報時特別摘要其特點。關於上述報告主題，下列何者應該放入佩芳簡報內容中？",
+        "options": [
+          "政府權力應集中於中央",
+          "政府權力受執政者規範",
+          "政府權力受到限制",
+          "政府權力無限擴大"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "現代國家對於中央政府體制的設計，大多將各種功能的權力加以分散，交由不同的政府機關執行。這樣設計是為了達到下列何種目的？",
+        "options": [
+          "權力集中",
+          "分權制衡",
+          "人治社會",
+          "主權在民"
+        ],
+        "correct": 1
+      },
+      {
+        "q": "依據下表的內容判斷，下列相關說明何者正確？",
+        "image": "images/civ4/q15.png",
+        "options": [
+          "甲─限制發布的條件，來約束人民的權利",
+          "乙─作為統治者，權力不會受到法律約束",
+          "丙─需要有制衡機制，避免淪為人治社會",
+          "丁─可看出我國監察權大於總統的行政權"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "希臘哲學家亞里斯多德曾說：「法治比任何一個人的統治來得更好」，這句彰顯出法治社會中法律的哪一項主要功能？",
+        "options": [
+          "擴大君主權力",
+          "限制人民行為",
+          "防止個人濫權",
+          "強化統治權力"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "關於孟德斯鳩的三權分立學說，哪一項觀念正確？",
+        "options": [
+          "由行政機關監督政府官員",
+          "由立法機關審查政府預算",
+          "由司法機關獨立制定法律",
+          "由考試機關為國公正舉才"
+        ],
+        "correct": 1
+      },
+      {
+        "q": "大翰國將調整總統職權如下列所示，這個國家政府未來的發展狀況，最可能呈現為何？",
+        "image": "images/civ4/q18.png",
+        "options": [
+          "形成有限政府，依法行政",
+          "三權分立並有能相互牽制",
+          "立法權過大導致專制獨裁",
+          "總統權力擴張且缺乏制衡"
+        ],
+        "correct": 3
+      },
+      {
+        "q": "公民監督國會聯盟召開記者會，指出立法院 115 年度提出的國會外交預算竟高達六千萬，要求立委應公開出國費用項目、行程目的及成效供民眾檢視。上述要求是因為目前的制度，立法院自己編列的預算自己審，且內部稽核制度不透明，可能導致下列何種問題？",
+        "options": [
+          "缺乏人力",
+          "缺乏效率",
+          "缺乏制衡",
+          "缺乏執行力"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "圖(二)是疫情相關的消息，依圖判斷，(甲)機關可提出法律修正案，是因為擁有下列何種權力？",
+        "image": "images/civ4/q20.png",
+        "options": [
+          "司法權",
+          "考試權",
+          "行政權",
+          "立法權"
+        ],
+        "correct": 3
+      }
+    ]
+  },
+  {
+    "type": "reading",
+    "title": "二、題組",
+    "meta": "12%，每題3分",
+    "passages": [
+      {
+        "label": "(一)",
+        "text": "2024 年 8 月，宜蘭地方法院法官因違反交通規則被警察攔查，因酒測值有超標，經審判後被判處有期徒刑，司法院也將其停職。監察委員認為該名法官違反《公務員服務法》及法官倫理規範，情節重大，亦對其提出彈劾，移送懲戒法庭審理。",
+        "items": [
+          {
+            "q": "針對上文提到的公職人員，下列說明何者正確？",
+            "options": [
+              "警察有任意攔查車輛的權力",
+              "法官有依法獨立審判的權利",
+              "監察委員隸屬立法機關",
+              "法庭審理權歸司法機關"
+            ],
+            "correct": 3
+          },
+          {
+            "q": "從上述案件分析政府的體制，下列說明何者<u>錯誤</u>？",
+            "options": [
+              "符合人治社會",
+              "實施權力分立",
+              "政府依法行政",
+              "落實責任政治"
+            ],
+            "correct": 0
+          }
+        ]
+      },
+      {
+        "label": "(二)",
+        "text": "美國總統候選人賀錦麗與其所屬的民主黨皆敗選，她發表演說：「我已致電恭賀川普當選，並承諾將政權和平轉移。美國民主的原則就是『選舉輸了就要接受這個結果』，正是這個原則讓民主不同於君主制或暴君獨裁。然而，在美國，<u>所有人都沒有義務效忠於總統或政黨，美國人的義務是效忠美國憲法</u>，我會繼續為憲法所捍衛的自由、公平、機會和尊嚴而奮戰到底。」",
+        "items": [
+          {
+            "q": "上文中畫底線的部分最能彰顯什麼核心價值？",
+            "options": [
+              "人治社會",
+              "法治社會",
+              "無限政府",
+              "主權在民"
+            ],
+            "correct": 1
+          },
+          {
+            "q": "依據上文推測美國選後的政局發展，何者最符合權力分立的政府體制？",
+            "options": [
+              "川普成為總統，掌握行政與立法權",
+              "川普掌握司法權，將政敵審判定罪",
+              "民主黨掌握國會立法權，監督行政",
+              "民主黨把持統治權，不讓政敵上位"
+            ],
+            "correct": 2
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "type": "mc",
+    "title": "三、進階思考題",
+    "meta": "28%，每題4分",
+    "items": [
+      {
+        "q": "我國疫情嚴峻時期，曾發生政府為避免疫情擴散而禁止人民出國一事，引發外界質疑此舉是否欠缺法律明確授權而有違憲疑慮，政府因而多次對外公開說明政策相關依據。上述疑慮，是因政府政策有可能違反下列何者？",
+        "options": [
+          "人治社會",
+          "多數民意",
+          "依法行政",
+          "總統指令"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "下列是一則國內新聞報導的節錄內容，依內容判斷，監察院的權力產生是基於何種原則？",
+        "image": "images/civ4/a2.png",
+        "options": [
+          "政黨輪替",
+          "權力分立",
+          "主權在民",
+          "無限政府"
+        ],
+        "correct": 1
+      },
+      {
+        "q": "圖(三)是我國某中央政府機關在網頁上發布的消息，依圖判斷，此為屬於何種政府權力的執行？",
+        "image": "images/civ4/a3.png",
+        "options": [
+          "考試權",
+          "立法權",
+          "行政權",
+          "監察權"
+        ],
+        "correct": 0
+      },
+      {
+        "q": "右列是政府發布的一則訊息。這是何項政府權力具體發揮的結果？",
+        "image": "images/civ4/a4.png",
+        "options": [
+          "行政權",
+          "考試權",
+          "立法權",
+          "司法權"
+        ],
+        "correct": 0
+      },
+      {
+        "q": "下列哪一個歷史事件較符合有限政府的精神？",
+        "options": [
+          "袁世凱強迫國會選他擔任總統，之後又解散國會，立法允許總統終身連任並指定繼承人",
+          "凱撒削弱了元老院議事權，將行政、軍事和宗教權力集中於自己手中，控制財政、司法和軍隊",
+          "史達林成立祕密警察監控社會，負責逮捕、審判和處決任何被懷疑對政權不忠的人",
+          "康熙皇帝強調以法治國，要求官員依法審判，不受情感或政治考量影響。"
+        ],
+        "correct": 3
+      },
+      {
+        "q": "2025 年 2 月我國總統召見五院院長進行國政會商，特地準備「花開富貴五福臨門」紅花饗杯五入禮盒，送給五院院長。下列對禮物意義的揣測，何者最符合我國的中央政府體制？",
+        "options": [
+          "五院歸總統管轄，須聽命於總統",
+          "五院需互相合作，不可互相監督",
+          "五院須互相制衡，建構有限政府",
+          "五院須保持對立，堅持黨派對立"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "右列是知名的英國政治哲學家洛克說過的一段話。根據內容判斷，這段話最可能是在傳達下列何種觀念的重要？",
+        "image": "images/civ4/a7.png",
+        "options": [
+          "權力分立",
+          "主權在民",
+          "人治",
+          "法治"
+        ],
+        "correct": 0
+      }
+    ]
+  }
+]
+};
+
+let currentMode = "quiz"; // quiz | print
+
+const contentEl = document.getElementById("content");
+const scoreBar = document.getElementById("scoreBar");
+const scoreText = document.getElementById("scoreText");
+
+function render(){
+  window.examAnswersRevealed = false;
+  contentEl.innerHTML = "";
+  DATA.sections.forEach((sec, si)=> contentEl.appendChild(renderSection(sec, si)));
+  if(currentMode==="quiz"){
+    scoreBar.classList.add("show");
+    updateScore();
+  } else {
+    scoreBar.classList.remove("show");
+    contentEl.querySelectorAll(".opt").forEach(o=>o.classList.add("disabled"));
+    contentEl.querySelectorAll(".opt.is-correct").forEach(o=>o.classList.add("correct"));
+  }
+}
+
+function renderSection(sec, si){
+  const block = document.createElement("section");
+  block.className = "block";
+  block.innerHTML = `<h2>${sec.title}</h2><p class="meta">${sec.meta}</p>`;
+
+  if(sec.type==="mc"){
+    sec.items.forEach((it,i)=>{
+      const q = document.createElement("div");
+      q.className = "q";
+      const optsHtml = it.options.map((op,oi)=>`
+        <div class="opt" data-idx="${oi}" data-correct="${oi===it.correct}">
+          <span class="tag">(${String.fromCharCode(65+oi)})</span><span>${op}</span>
+        </div>`).join("");
+      const imgHtml = it.image ? `<img src="${it.image}" alt="題目附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">` : "";
+      const img2Html = it.image2 ? `<img src="${it.image2}" alt="題目附圖2" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">` : "";
+      q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q}</div>
+        ${imgHtml}${img2Html}
+        <div class="opts">${optsHtml}</div>`;
+      q.querySelectorAll(".opt").forEach(optEl=>{
+        if(optEl.dataset.correct==="true") optEl.classList.add("is-correct");
+        optEl.addEventListener("click", ()=>selectOption(q, optEl));
+      });
+      block.appendChild(q);
+    });
+  }
+
+  else if(sec.type==="reading"){
+    sec.passages.forEach(p=>{
+      const passageDiv = document.createElement("div");
+      passageDiv.className = "passage";
+      passageDiv.innerHTML = `${p.label ? `<span class="passage-label">${p.label}</span>`:""}${p.text}${p.image ? `<img src="${p.image}" alt="題組附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-top:10px;border:1px solid var(--paper-line);">`:""}`;
+      block.appendChild(passageDiv);
+      p.items.forEach((it,i)=>{
+        const q = document.createElement("div");
+        q.className = "q";
+        const optsHtml = it.options.map((op,oi)=>`
+          <div class="opt" data-idx="${oi}" data-correct="${oi===it.correct}">
+            <span class="tag">(${String.fromCharCode(65+oi)})</span><span>${op}</span>
+          </div>`).join("");
+        q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q}</div>
+          ${it.image ? `<img src="${it.image}" alt="題目附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">`:""}
+          <div class="opts">${optsHtml}</div>`;
+        q.querySelectorAll(".opt").forEach(optEl=>{
+          if(optEl.dataset.correct==="true") optEl.classList.add("is-correct");
+          optEl.addEventListener("click", ()=>selectOption(q, optEl));
+        });
+        block.appendChild(q);
+      });
+    });
+  }
+
+  return block;
+}
+
+function selectOption(qEl, optEl){
+  if(currentMode!=="quiz") return;
+  if(qEl.dataset.answered==="true") return;
+  qEl.dataset.answered = "true";
+  qEl.querySelectorAll(".opt").forEach(o=>o.classList.add("disabled"));
+  optEl.classList.add("selected");
+  const correctOpt = qEl.querySelector('.opt[data-correct="true"]');
+  qEl.dataset.studentAnswer = optEl.textContent.trim();
+  qEl.dataset.correctAnswer = correctOpt ? correctOpt.textContent.trim() : "";
+  qEl.dataset.isCorrect = (optEl.dataset.correct==="true") ? "true" : "false";
+  updateScore();
+}
+
+function updateScore(){
+  let total = 0, answered = 0, correct = 0;
+  contentEl.querySelectorAll(".q").forEach(q=>{
+    const gradable = q.querySelector(".opts");
+    if(!gradable) return;
+    total++;
+    if(q.dataset.studentAnswer !== undefined){
+      answered++;
+      if(q.dataset.isCorrect === "true") correct++;
+    }
+  });
+  if(window.examAnswersRevealed){
+    scoreText.textContent = `${correct} / ${total}`;
+  } else {
+    scoreText.textContent = `已作答 ${answered} / ${total} 題`;
+  }
+}
+window.updateScore = updateScore;
+
+document.getElementById("resetBtn").addEventListener("click", render);
+document.getElementById("quizModeBtn").addEventListener("click", ()=>{
+  currentMode = "quiz";
+  document.getElementById("quizModeBtn").classList.add("active");
+  document.getElementById("printModeBtn").classList.remove("active");
+  render();
+});
+document.getElementById("printModeBtn").addEventListener("click", ()=>{
+  if(document.getElementById("printModeBtn").disabled) return;
+  currentMode = "print";
+  document.getElementById("printModeBtn").classList.add("active");
+  document.getElementById("quizModeBtn").classList.remove("active");
+  render();
+});
+
+window.unlockPrintMode = function(){
+  document.getElementById("printModeBtn").disabled = false;
+};
+
+render();
+</script>
+<script src="../sync.js"></script>
+</body>
+</html>

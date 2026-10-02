@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>段考題庫｜地理第8回 - 東北亞的經濟發展與挑戰</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@500;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#faf6ec;
+    --paper-line:#e3dcc8;
+    --ink:#26332b;
+    --ink-soft:#5b6b5f;
+    --chalk-green:#2f4538;
+    --chalk-green-2:#3d5a48;
+    --pen-red:#b8433a;
+    --pen-red-soft:#f4dedb;
+    --ok-green:#3f7d52;
+    --ok-green-soft:#dfeee1;
+    --gold:#b5842a;
+    --radius:10px;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:"Noto Sans TC",sans-serif;
+    line-height:1.7;
+  }
+  header.hero{
+    background:var(--chalk-green);
+    color:#eef2ea;
+    padding:28px 20px 40px;
+    position:relative;
+  }
+  header.hero::after{
+    content:"";
+    position:absolute;
+    left:0; right:0; bottom:-1px;
+    height:14px;
+    background:repeating-linear-gradient(90deg,var(--paper) 0 18px, transparent 18px 20px);
+  }
+  .hero-inner{max-width:880px;margin:0 auto;}
+  .breadcrumb a{color:#cfe0d1;text-decoration:none;font-size:14px;}
+  .breadcrumb a:hover{text-decoration:underline;}
+  h1{
+    font-family:"Noto Serif TC",serif;
+    font-weight:700;
+    font-size:clamp(24px,4vw,34px);
+    margin:10px 0 6px;
+  }
+  .subtitle{color:#cfe0d1;font-size:15px;margin:0;}
+  main{max-width:880px;margin:0 auto;padding:28px 20px 80px;}
+
+  .controls{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:22px;
+  }
+  .mode-toggle{display:flex;border:2px solid var(--chalk-green);border-radius:999px;overflow:hidden;}
+  .mode-toggle button{
+    background:transparent;border:none;padding:8px 16px;font-size:14px;font-weight:700;
+    color:var(--chalk-green);cursor:pointer;font-family:"Noto Sans TC",sans-serif;
+  }
+  .mode-toggle button.active{background:var(--gold);color:#fff;}
+  .mode-toggle button:disabled{opacity:.4;cursor:not-allowed;}
+
+  .score-bar{
+    display:none;
+    align-items:center;
+    justify-content:space-between;
+    background:#fff;
+    border:1px solid var(--paper-line);
+    border-left:5px solid var(--gold);
+    border-radius:var(--radius);
+    padding:12px 18px;
+    margin-bottom:22px;
+    font-size:14px;
+  }
+  .score-bar.show{display:flex;}
+  .score-bar strong{font-size:18px;color:var(--gold);}
+  .score-bar button{
+    background:none;border:1px solid var(--ink-soft);color:var(--ink-soft);
+    border-radius:6px;padding:6px 12px;font-size:13px;cursor:pointer;
+  }
+
+  section.block{
+    background:#fff;
+    border:1px solid var(--paper-line);
+    border-radius:var(--radius);
+    padding:22px 22px 26px;
+    margin-bottom:20px;
+  }
+  .block h2{
+    font-family:"Noto Serif TC",serif;
+    font-size:19px;
+    margin:0 0 4px;
+    color:var(--chalk-green);
+  }
+  .block .meta{color:var(--ink-soft);font-size:13px;margin:0 0 16px;}
+
+  .q{margin-bottom:18px;padding-bottom:16px;border-bottom:1px dashed var(--paper-line);}
+  .q:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0;}
+  .q-text{font-size:15.5px;margin-bottom:8px;}
+  .q-num{color:var(--gold);font-weight:700;margin-right:4px;}
+
+  .opts{display:grid;gap:8px;}
+  .opt{
+    display:flex;gap:8px;align-items:flex-start;
+    border:1.5px solid var(--paper-line);
+    border-radius:8px;
+    padding:9px 12px;
+    cursor:pointer;
+    font-size:14.5px;
+    background:#fffdf8;
+  }
+  .opt:hover{border-color:var(--chalk-green-2);}
+  .opt.selected{border-color:var(--chalk-green-2);background:#eef3ea;}
+  .opt.correct{border-color:var(--ok-green);background:var(--ok-green-soft);}
+  .opt.wrong{border-color:var(--pen-red);background:var(--pen-red-soft);}
+  .opt .tag{font-weight:700;color:var(--ink-soft);}
+  .opt.correct .tag{color:var(--ok-green);}
+  .opt.wrong .tag{color:var(--pen-red);}
+  .opt.disabled{cursor:default;}
+
+  .passage{
+    background:#f5f2e8;border-radius:8px;padding:14px 16px;margin-bottom:14px;
+    font-size:14.5px;white-space:pre-line;
+  }
+  .passage-label{font-weight:700;color:var(--chalk-green);margin-bottom:4px;display:block;}
+
+  .footer-link{
+    display:block;text-align:center;margin-top:30px;color:var(--chalk-green);
+    text-decoration:none;font-weight:700;font-size:14px;
+  }
+  .footer-link:hover{text-decoration:underline;}
+
+  @media print{
+    header.hero, .controls, .score-bar, .mini-btn, .footer-link{display:none !important;}
+    body{background:#fff;}
+    section.block{border:none;box-shadow:none;padding:8px 0;margin-bottom:14px;}
+    .opt.correct{background:none;border:none;font-weight:700;}
+    .opt.correct::after{content:" ← 正解";color:var(--pen-red);}
+    .opt{border:none;padding:2px 0;}
+    main{max-width:100%;padding:0 24px;}
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="breadcrumb"><a href="https://jenlin2002.github.io/">🏠 回總目錄</a> ／ <a href="../hanlin-social-g8-1.html" style="color:#cfe0d1;">段考題庫</a></div>
+    <h1>地理・第8回</h1>
+    <p class="subtitle">第二篇第2章 東北亞的經濟發展與挑戰｜翰林版八年級社會（三）Ａ卷</p>
+  </div>
+</header>
+
+<main>
+  <div class="controls">
+    <div class="mode-toggle">
+      <button id="quizModeBtn" class="active">✏️ 測驗模式</button>
+      <button id="printModeBtn" disabled title="完成測驗並送出成績後才能查看">🖨️ 完整題目與解答（送出成績後解鎖）</button>
+    </div>
+  </div>
+
+  <div class="score-bar" id="scoreBar">
+    <div>目前得分：<strong id="scoreText">0 / 0</strong>（僅計算選擇題）</div>
+    <button id="resetBtn">重新作答</button>
+  </div>
+
+  <div id="content"></div>
+
+  <a class="footer-link" href="../hanlin-social-g8-1.html">← 回段考題庫總覽</a>
+</main>
+
+<script>
+
+window.EXAM_META = { version: "A卷", examLabel: "地理第8回" };
+const DATA = {
+  sections: [
+  {
+    "type": "mc",
+    "title": "一、單題",
+    "meta": "60%，每題3分",
+    "items": [
+      {
+        "q": "Made in Japan 幾乎是品質的保證，圖(一)為日本主要工業區分布圖。根據圖中資料判斷，日本工業區設置首要考量的區位因素為何？",
+        "image": "images/geo8/q1.png",
+        "options": [
+          "勞工",
+          "交通",
+          "原料",
+          "市場"
+        ],
+        "correct": 1
+      },
+      {
+        "q": "面對發展停滯、產業低迷的經濟現況，日本政府欲利用觀光產業提振整體經濟成長率，並針對日本的觀光客主要客源地加強行銷。根據此目標，下列哪一個國家<u>不是</u>其行銷重點國家？",
+        "options": [
+          "中國",
+          "美國",
+          "臺灣",
+          "南韓"
+        ],
+        "correct": 1
+      },
+      {
+        "q": "2023 年全球自由度調查報告出爐，東北亞某國家僅得 3 分，名列全球最不自由國家前 5 名，圖(二)為東北亞地區簡圖，上文所述國家應為圖中何者？",
+        "image": "images/geo8/q3.png",
+        "options": [
+          "甲",
+          "乙",
+          "丙",
+          "丁"
+        ],
+        "correct": 1
+      },
+      {
+        "q": "「南北韓停戰後，兩國南韓把某緯度停戰線上的一個村落當作分界點，該軍事分界線叫 MDL，分界線南北韓各退 2 公里做為緩衝區就叫做 DMZ。」文中提及的緯度線最可能為下列何者？",
+        "options": [
+          "13°N",
+          "25°N",
+          "38°N",
+          "66.5°N"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "小翰是旅遊社的新人，下列是他規畫南韓五日遊的行程宣傳海報，何者內容最為正確？",
+        "image": "images/geo8/q5.png",
+        "options": [
+          "秋葉原動漫嘉年華",
+          "清水寺一日和服體驗",
+          "東大門失心瘋購物行",
+          "本州溫泉度假泡湯趣"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "為了快速產業轉型，增加就業機會，南韓轉向改以扶植大型財團為主要策略。此種經濟發展傾向將可能衍生下列哪一個問題？",
+        "options": [
+          "國內勞動人口大量外流",
+          "企業經營主導國家經濟",
+          "過於重視國防工業發展",
+          "產業類型朝向單一集中"
+        ],
+        "correct": 1
+      },
+      {
+        "q": "釜山面向太平洋，為南韓最大的港口城市，該城市也被稱為大海、高山及大河和諧相融的「三抱之鄉」。早期是紡織、鞋子及纖維製造出口中心；近年利用其氣候及地理位置優勢，朝觀光、影劇產業轉型，舉辦國際電影節及音樂節等。由上述內容判斷，釜山應為圖(三)中哪一個城市？",
+        "image": "images/geo8/q7.png",
+        "options": [
+          "甲",
+          "乙",
+          "丙",
+          "丁"
+        ],
+        "correct": 3
+      },
+      {
+        "q": "日本近年積極將醫療服務結合高科技，包括遠距看診、開發外骨骼輔具等，主要是針對哪一個消費族群的需求？",
+        "options": [
+          "幼年人口",
+          "女性人口",
+          "壯年人口",
+          "老年人口"
+        ],
+        "correct": 3
+      },
+      {
+        "q": "南韓脫北者團體發放反朝鮮傳單，激怒北韓政府，一舉炸毀邊界附近的兩韓聯絡辦公室。所謂的「脫北者」，通常是指通過非正常渠道離開北韓到達其他國家的北韓國民。「脫北者」的出現與下列北韓哪一項特徵有關？",
+        "options": [
+          "海岸曲折，出海便利",
+          "人口老化，勞力不足",
+          "礦產豐富，國防工業發達",
+          "共產制度，民生物資缺乏"
+        ],
+        "correct": 3
+      },
+      {
+        "q": "2020 年，《哆啦 A 夢》這部陪伴許多人成長的漫畫正式邁入 50 周年，除了動漫、電影外，其周邊商品及卡通人物的肖像授權都為日本帶來巨大的經濟效益。由上述可知，下列何者是日本的重要產業？",
+        "options": [
+          "製造業",
+          "文化產業",
+          "高科技產業",
+          "觀光旅遊業"
+        ],
+        "correct": 1
+      },
+      {
+        "q": "圖(四)為朝鮮半島夜間衛星影像圖，白點為夜晚的燈光。從圖中資訊判斷，南、北韓存在何項差異？",
+        "image": "images/geo8/q11.png",
+        "options": [
+          "北韓人口較南韓多",
+          "北韓地形較南韓崎嶇",
+          "北韓經濟發展較南韓差",
+          "北韓礦產資源較南韓多"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "北韓領導者曾說：「若經濟上要超越南韓，就必須發展本國有利條件。」上文所述的「有利條件」為何？",
+        "options": [
+          "礦產豐富",
+          "勞力充足",
+          "市場廣大",
+          "運輸便利"
+        ],
+        "correct": 0
+      },
+      {
+        "q": "近年來，日本將部分產業外移到中國及東南亞等國家，其主要原因是日本當地面臨何種問題？",
+        "options": [
+          "工業原料缺乏",
+          "勞工薪資上揚",
+          "資金嚴重不足",
+          "環保意識高漲"
+        ],
+        "correct": 1
+      },
+      {
+        "q": "北韓的工業發展歷史比南韓早，但隨著時間推移，經濟停滯不前，國民平均所得遠低於南韓。上述現象可用下列哪個因素來解釋？",
+        "options": [
+          "地理位置",
+          "礦產資源",
+          "陸運交通",
+          "經濟制度"
+        ],
+        "correct": 3
+      },
+      {
+        "q": "日本任天堂遊戲機廣受全球歡迎，其搭載的各類遊戲軟體也因此掀起熱潮。任天堂產品凸顯日本工業產品具有哪一項優勢？",
+        "options": [
+          "高勞力密集",
+          "低能源需求",
+          "高研創能力",
+          "低汙染製造"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "天巡網是全球機票、飯店、租車服務的搜尋引擎。該網站統計某一年中國遊客的搜尋關鍵字，發現「南韓」是搜尋次數增加幅度最大的旅遊地。該網站分析是因為韓流文化在中國擁有相當大的人氣。根據上述判斷，該南韓的外國觀光客人數增加與近年該國積極扶植下列哪項產業最相關？",
+        "options": [
+          "加工出口業",
+          "娛樂影視業",
+          "高科技工業",
+          "動漫文化業"
+        ],
+        "correct": 1
+      },
+      {
+        "q": "日本政府公布 2024 年因國外市場需求強勁，出口額連續四年成長。但也因資源匱乏的劣勢，「甲」品項進口價格上漲使得成本增加。由上文判斷，「甲」品項最可能為下列何者？",
+        "options": [
+          "原油",
+          "家電",
+          "汽車",
+          "電玩"
+        ],
+        "correct": 0
+      },
+      {
+        "q": "圖(五)為日本某公司在國內外銷售額比例，該公司主要是透過漫畫圖像授權給不同領域的廠商生產周邊或代言以創造產值，近年來更與航空公司合作打造彩繪班機、動漫人物擔任美國職棒開球嘉賓等。上述顯示出日本產業的哪一特色？",
+        "image": "images/geo8/q18.png",
+        "options": [
+          "少子化使國內勞動力外移",
+          "經濟低迷需國外資金援助",
+          "國際貿易多仰賴交通區位",
+          "以文化產業創造海外收入"
+        ],
+        "correct": 3
+      },
+      {
+        "q": "日本鐵路通票提供短期逗留之外國旅客使用，購買後可於期間內不限次數使用全日本 JR 鐵路網，也可乘坐 JR 經營的許多地方巴士。上述日本所推出的交通票券，是為了帶動何項產業的發展？",
+        "options": [
+          "文化產業",
+          "觀光產業",
+          "電玩產業",
+          "影視產業"
+        ],
+        "correct": 1
+      },
+      {
+        "q": "日本近年來有愈來愈多企業響應政府延遲退休政策，並表現在圖(六)老年人就業率變化上。此種變化趨勢與該國哪一社會現象的關係最為密切？",
+        "image": "images/geo8/q20.png",
+        "options": [
+          "勞動力短缺",
+          "人力成本高",
+          "經濟力衰退",
+          "性別比失衡"
+        ],
+        "correct": 0
+      }
+    ]
+  },
+  {
+    "type": "reading",
+    "title": "二、題組",
+    "meta": "12%，每題3分",
+    "passages": [
+      {
+        "label": "(一)",
+        "text": "中國是北韓政治及經濟的盟友，新義州緊鄰中國與北韓的分界河，向來為兩國的貿易重鎮，是北韓的第四大都市。",
+        "items": [
+          {
+            "q": "上文中新義州依傍的河川應為下列何者？",
+            "options": [
+              "長江",
+              "漢江",
+              "圖們江",
+              "鴨綠江"
+            ],
+            "correct": 3
+          },
+          {
+            "q": "中國若欲加強與朝鮮半島的經濟合作，考量北韓的工業發展優勢下，應選擇下列哪一項產業？",
+            "options": [
+              "鋼鐵工業",
+              "農產加工業",
+              "高科技工業",
+              "流行文化產業"
+            ],
+            "correct": 0
+          }
+        ]
+      },
+      {
+        "label": "(二)",
+        "text": "日本 2024 年 65 歲以上人口達到 3,625 萬人，創下歷史新高；南韓 65 歲以上的人口為 1,024 萬，兩國老年人口占總人口比例皆超過 20%，屬於超高齡社會。",
+        "items": [
+          {
+            "q": "上文中，造成日本人口組成轉變的主要原因為何？",
+            "options": [
+              "生活環境條件優良",
+              "海外退休人士移入",
+              "出生人數持續下降",
+              "國際移工總數增加"
+            ],
+            "correct": 2
+          },
+          {
+            "q": "由上文可知，兩國未來應採取何項策略以因應人口組成的轉變？",
+            "options": [
+              "加強人工智慧機器人設計",
+              "發展高度勞力密集之產業",
+              "加強農業集約式耕作模式",
+              "提高生育補助之申請門檻"
+            ],
+            "correct": 0
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "type": "mc",
+    "title": "三、實戰模擬題",
+    "meta": "28%，每題4分",
+    "items": [
+      {
+        "q": "2020 年梅雨鋒面發威，朝鮮半島 8 月遭受豪雨重創，兩韓交界的臨津江洪水暴漲，加上上游的北韓無預警開啟大壩洩洪，造成下游的南韓一片汪洋。若南韓當局欲監控即時水情，避免憾事再度發生，則監控站應設置於下列哪一個地點？",
+        "options": [
+          "35°N，140°E",
+          "38°N，126°E",
+          "40°N，125°E",
+          "30°N，120°E"
+        ],
+        "correct": 1
+      },
+      {
+        "q": "南韓泡麵出口在 2025 年大幅增加為 15 億多美元，為農食產品出口排行首位，其主要出口中國與美國，合計占出口額超過 40%。風靡多國的韓流文化，被認為是韓國泡麵受全球喜愛的重要推手。上述內容呈現出南韓哪一產業的發展特色？",
+        "options": [
+          "強調地方特色文化的觀光產業",
+          "強調有機與高品質的精緻農業",
+          "娛樂影視產業創造高附加價值",
+          "高科技產業產品行銷世界各國"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "日本政府公布 2025 年的人口統計顯示，人口總數較去年減少約 90.8 萬人，創下歷史新高。此現象衝擊該國經濟，其影響<u>不包括</u>以下何項？",
+        "options": [
+          "農村土地無人耕作，農產量減少",
+          "針對照護產業發展智慧型機器人",
+          "推動觀光客倍增計畫，刺激經濟",
+          "勞力密集的製造業部門逐漸外移"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "人口組成是擬定國家未來發展方向的重要參考，若日本政府想針對人口組成問題擬定產業發展政策，則所參照的應為下列何圖？",
+        "image": "images/geo8/a4.png",
+        "options": [
+          "A",
+          "B",
+          "C",
+          "D"
+        ],
+        "correct": 0
+      },
+      {
+        "q": "日本制定多項經濟計畫，旨在應對通膨、刺激經濟發展並促進能源轉型。下列何者<u>不是</u>日本國內近年經濟上面臨的挑戰？",
+        "options": [
+          "礦產缺乏，仰賴國外供應",
+          "人口老化，勞力缺口擴大",
+          "環境髒亂，國際旅客消失",
+          "薪資高漲，生產成本上升"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "同為亞洲四小龍的南韓與臺灣在經濟發展上有許多雷同點，至今也常被並列比較。下列何者是南韓與臺灣的共同點？",
+        "options": [
+          "原料與礦產資源充足",
+          "經濟倚賴少數大財閥",
+          "高科技產業十分發達",
+          "重工業的發展條件佳"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "南北韓政治上持續分治而對立，是朝鮮半島經濟發展的最大不確定因素。下列關於兩韓經濟發展現況的比較，何者正確？",
+        "options": [
+          "煤鐵礦資源：北韓＞南韓",
+          "工商業產值：北韓＞南韓",
+          "國民所得：北韓＞南韓",
+          "都市化程度：北韓＞南韓"
+        ],
+        "correct": 0
+      }
+    ]
+  }
+]
+};
+
+let currentMode = "quiz"; // quiz | print
+
+const contentEl = document.getElementById("content");
+const scoreBar = document.getElementById("scoreBar");
+const scoreText = document.getElementById("scoreText");
+
+function render(){
+  window.examAnswersRevealed = false;
+  contentEl.innerHTML = "";
+  DATA.sections.forEach((sec, si)=> contentEl.appendChild(renderSection(sec, si)));
+  if(currentMode==="quiz"){
+    scoreBar.classList.add("show");
+    updateScore();
+  } else {
+    scoreBar.classList.remove("show");
+    contentEl.querySelectorAll(".opt").forEach(o=>o.classList.add("disabled"));
+    contentEl.querySelectorAll(".opt.is-correct").forEach(o=>o.classList.add("correct"));
+  }
+}
+
+function renderSection(sec, si){
+  const block = document.createElement("section");
+  block.className = "block";
+  block.innerHTML = `<h2>${sec.title}</h2><p class="meta">${sec.meta}</p>`;
+
+  if(sec.type==="mc"){
+    sec.items.forEach((it,i)=>{
+      const q = document.createElement("div");
+      q.className = "q";
+      const optsHtml = it.options.map((op,oi)=>`
+        <div class="opt" data-idx="${oi}" data-correct="${oi===it.correct}">
+          <span class="tag">(${String.fromCharCode(65+oi)})</span><span>${op}</span>
+        </div>`).join("");
+      const imgHtml = it.image ? `<img src="${it.image}" alt="題目附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">` : "";
+      const img2Html = it.image2 ? `<img src="${it.image2}" alt="題目附圖2" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">` : "";
+      q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q}</div>
+        ${imgHtml}${img2Html}
+        <div class="opts">${optsHtml}</div>`;
+      q.querySelectorAll(".opt").forEach(optEl=>{
+        if(optEl.dataset.correct==="true") optEl.classList.add("is-correct");
+        optEl.addEventListener("click", ()=>selectOption(q, optEl));
+      });
+      block.appendChild(q);
+    });
+  }
+
+  else if(sec.type==="reading"){
+    sec.passages.forEach(p=>{
+      const passageDiv = document.createElement("div");
+      passageDiv.className = "passage";
+      passageDiv.innerHTML = `${p.label ? `<span class="passage-label">${p.label}</span>`:""}${p.text}${p.image ? `<img src="${p.image}" alt="題組附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-top:10px;border:1px solid var(--paper-line);">`:""}`;
+      block.appendChild(passageDiv);
+      p.items.forEach((it,i)=>{
+        const q = document.createElement("div");
+        q.className = "q";
+        const optsHtml = it.options.map((op,oi)=>`
+          <div class="opt" data-idx="${oi}" data-correct="${oi===it.correct}">
+            <span class="tag">(${String.fromCharCode(65+oi)})</span><span>${op}</span>
+          </div>`).join("");
+        q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q}</div>
+          ${it.image ? `<img src="${it.image}" alt="題目附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">`:""}
+          <div class="opts">${optsHtml}</div>`;
+        q.querySelectorAll(".opt").forEach(optEl=>{
+          if(optEl.dataset.correct==="true") optEl.classList.add("is-correct");
+          optEl.addEventListener("click", ()=>selectOption(q, optEl));
+        });
+        block.appendChild(q);
+      });
+    });
+  }
+
+  return block;
+}
+
+function selectOption(qEl, optEl){
+  if(currentMode!=="quiz") return;
+  if(qEl.dataset.answered==="true") return;
+  qEl.dataset.answered = "true";
+  qEl.querySelectorAll(".opt").forEach(o=>o.classList.add("disabled"));
+  optEl.classList.add("selected");
+  const correctOpt = qEl.querySelector('.opt[data-correct="true"]');
+  qEl.dataset.studentAnswer = optEl.textContent.trim();
+  qEl.dataset.correctAnswer = correctOpt ? correctOpt.textContent.trim() : "";
+  qEl.dataset.isCorrect = (optEl.dataset.correct==="true") ? "true" : "false";
+  updateScore();
+}
+
+function updateScore(){
+  let total = 0, answered = 0, correct = 0;
+  contentEl.querySelectorAll(".q").forEach(q=>{
+    const gradable = q.querySelector(".opts");
+    if(!gradable) return;
+    total++;
+    if(q.dataset.studentAnswer !== undefined){
+      answered++;
+      if(q.dataset.isCorrect === "true") correct++;
+    }
+  });
+  if(window.examAnswersRevealed){
+    scoreText.textContent = `${correct} / ${total}`;
+  } else {
+    scoreText.textContent = `已作答 ${answered} / ${total} 題`;
+  }
+}
+window.updateScore = updateScore;
+
+document.getElementById("resetBtn").addEventListener("click", render);
+document.getElementById("quizModeBtn").addEventListener("click", ()=>{
+  currentMode = "quiz";
+  document.getElementById("quizModeBtn").classList.add("active");
+  document.getElementById("printModeBtn").classList.remove("active");
+  render();
+});
+document.getElementById("printModeBtn").addEventListener("click", ()=>{
+  if(document.getElementById("printModeBtn").disabled) return;
+  currentMode = "print";
+  document.getElementById("printModeBtn").classList.add("active");
+  document.getElementById("quizModeBtn").classList.remove("active");
+  render();
+});
+
+window.unlockPrintMode = function(){
+  document.getElementById("printModeBtn").disabled = false;
+};
+
+render();
+</script>
+<script src="../sync.js"></script>
+</body>
+</html>

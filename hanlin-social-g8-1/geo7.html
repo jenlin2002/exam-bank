@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>段考題庫｜地理第7回 - 東北亞的自然環境與文化</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@500;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#faf6ec;
+    --paper-line:#e3dcc8;
+    --ink:#26332b;
+    --ink-soft:#5b6b5f;
+    --chalk-green:#2f4538;
+    --chalk-green-2:#3d5a48;
+    --pen-red:#b8433a;
+    --pen-red-soft:#f4dedb;
+    --ok-green:#3f7d52;
+    --ok-green-soft:#dfeee1;
+    --gold:#b5842a;
+    --radius:10px;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:"Noto Sans TC",sans-serif;
+    line-height:1.7;
+  }
+  header.hero{
+    background:var(--chalk-green);
+    color:#eef2ea;
+    padding:28px 20px 40px;
+    position:relative;
+  }
+  header.hero::after{
+    content:"";
+    position:absolute;
+    left:0; right:0; bottom:-1px;
+    height:14px;
+    background:repeating-linear-gradient(90deg,var(--paper) 0 18px, transparent 18px 20px);
+  }
+  .hero-inner{max-width:880px;margin:0 auto;}
+  .breadcrumb a{color:#cfe0d1;text-decoration:none;font-size:14px;}
+  .breadcrumb a:hover{text-decoration:underline;}
+  h1{
+    font-family:"Noto Serif TC",serif;
+    font-weight:700;
+    font-size:clamp(24px,4vw,34px);
+    margin:10px 0 6px;
+  }
+  .subtitle{color:#cfe0d1;font-size:15px;margin:0;}
+  main{max-width:880px;margin:0 auto;padding:28px 20px 80px;}
+
+  .controls{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:22px;
+  }
+  .mode-toggle{display:flex;border:2px solid var(--chalk-green);border-radius:999px;overflow:hidden;}
+  .mode-toggle button{
+    background:transparent;border:none;padding:8px 16px;font-size:14px;font-weight:700;
+    color:var(--chalk-green);cursor:pointer;font-family:"Noto Sans TC",sans-serif;
+  }
+  .mode-toggle button.active{background:var(--gold);color:#fff;}
+  .mode-toggle button:disabled{opacity:.4;cursor:not-allowed;}
+
+  .score-bar{
+    display:none;
+    align-items:center;
+    justify-content:space-between;
+    background:#fff;
+    border:1px solid var(--paper-line);
+    border-left:5px solid var(--gold);
+    border-radius:var(--radius);
+    padding:12px 18px;
+    margin-bottom:22px;
+    font-size:14px;
+  }
+  .score-bar.show{display:flex;}
+  .score-bar strong{font-size:18px;color:var(--gold);}
+  .score-bar button{
+    background:none;border:1px solid var(--ink-soft);color:var(--ink-soft);
+    border-radius:6px;padding:6px 12px;font-size:13px;cursor:pointer;
+  }
+
+  section.block{
+    background:#fff;
+    border:1px solid var(--paper-line);
+    border-radius:var(--radius);
+    padding:22px 22px 26px;
+    margin-bottom:20px;
+  }
+  .block h2{
+    font-family:"Noto Serif TC",serif;
+    font-size:19px;
+    margin:0 0 4px;
+    color:var(--chalk-green);
+  }
+  .block .meta{color:var(--ink-soft);font-size:13px;margin:0 0 16px;}
+
+  .q{margin-bottom:18px;padding-bottom:16px;border-bottom:1px dashed var(--paper-line);}
+  .q:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0;}
+  .q-text{font-size:15.5px;margin-bottom:8px;}
+  .q-num{color:var(--gold);font-weight:700;margin-right:4px;}
+
+  .opts{display:grid;gap:8px;}
+  .opt{
+    display:flex;gap:8px;align-items:flex-start;
+    border:1.5px solid var(--paper-line);
+    border-radius:8px;
+    padding:9px 12px;
+    cursor:pointer;
+    font-size:14.5px;
+    background:#fffdf8;
+  }
+  .opt:hover{border-color:var(--chalk-green-2);}
+  .opt.selected{border-color:var(--chalk-green-2);background:#eef3ea;}
+  .opt.correct{border-color:var(--ok-green);background:var(--ok-green-soft);}
+  .opt.wrong{border-color:var(--pen-red);background:var(--pen-red-soft);}
+  .opt .tag{font-weight:700;color:var(--ink-soft);}
+  .opt.correct .tag{color:var(--ok-green);}
+  .opt.wrong .tag{color:var(--pen-red);}
+  .opt.disabled{cursor:default;}
+
+  .passage{
+    background:#f5f2e8;border-radius:8px;padding:14px 16px;margin-bottom:14px;
+    font-size:14.5px;white-space:pre-line;
+  }
+  .passage-label{font-weight:700;color:var(--chalk-green);margin-bottom:4px;display:block;}
+
+  .footer-link{
+    display:block;text-align:center;margin-top:30px;color:var(--chalk-green);
+    text-decoration:none;font-weight:700;font-size:14px;
+  }
+  .footer-link:hover{text-decoration:underline;}
+
+  @media print{
+    header.hero, .controls, .score-bar, .mini-btn, .footer-link{display:none !important;}
+    body{background:#fff;}
+    section.block{border:none;box-shadow:none;padding:8px 0;margin-bottom:14px;}
+    .opt.correct{background:none;border:none;font-weight:700;}
+    .opt.correct::after{content:" ← 正解";color:var(--pen-red);}
+    .opt{border:none;padding:2px 0;}
+    main{max-width:100%;padding:0 24px;}
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="breadcrumb"><a href="https://jenlin2002.github.io/">🏠 回總目錄</a> ／ <a href="../hanlin-social-g8-1.html" style="color:#cfe0d1;">段考題庫</a></div>
+    <h1>地理・第7回</h1>
+    <p class="subtitle">第二篇第1章 東北亞的自然環境與文化｜翰林版八年級社會（三）Ａ卷</p>
+  </div>
+</header>
+
+<main>
+  <div class="controls">
+    <div class="mode-toggle">
+      <button id="quizModeBtn" class="active">✏️ 測驗模式</button>
+      <button id="printModeBtn" disabled title="完成測驗並送出成績後才能查看">🖨️ 完整題目與解答（送出成績後解鎖）</button>
+    </div>
+  </div>
+
+  <div class="score-bar" id="scoreBar">
+    <div>目前得分：<strong id="scoreText">0 / 0</strong>（僅計算選擇題）</div>
+    <button id="resetBtn">重新作答</button>
+  </div>
+
+  <div id="content"></div>
+
+  <a class="footer-link" href="../hanlin-social-g8-1.html">← 回段考題庫總覽</a>
+</main>
+
+<script>
+
+window.EXAM_META = { version: "A卷", examLabel: "地理第7回" };
+const DATA = {
+  sections: [
+  {
+    "type": "mc",
+    "title": "一、單題",
+    "meta": "60%，每題3分",
+    "items": [
+      {
+        "q": "日本與朝鮮半島位居中緯度，西倚亞洲大陸，東臨太平洋。根據上文描述，日本與朝鮮半島應位於圖(一)中何處？",
+        "image": "images/geo7/q1.png",
+        "options": [
+          "甲",
+          "乙",
+          "丙",
+          "丁"
+        ],
+        "correct": 3
+      },
+      {
+        "q": "朝鮮半島傳統民居中多設有類似中國北方「暖炕」的「溫突」設施，延續至今，仍有將地面加熱的文化，習慣進屋就脫鞋，坐地上、躺地上。形成以上獨特民居文化的主要原因與該地何種自然環境特徵有關？",
+        "options": [
+          "多山",
+          "少雨",
+          "冬寒",
+          "夏熱"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "日本與臺灣的農業發展條件相似，現階段也同樣面臨貿易自由化的壓力。比較兩國農業發展，其共同點包括下列何項？",
+        "options": [
+          "山多平原少",
+          "農產價位低",
+          "多粗放農業",
+          "冬季較寒長"
+        ],
+        "correct": 0
+      },
+      {
+        "q": "日本領土僅 37 萬平方公里，但其經濟海域卻廣達 440 萬平方公里，此差距的成因與日本的哪一項地理特徵有關？",
+        "options": [
+          "位居板塊交接帶",
+          "季風吹拂氣候溼潤",
+          "地形多山少平原",
+          "國土由數千島嶼組成"
+        ],
+        "correct": 3
+      },
+      {
+        "q": "2011 年 3 月日本發生強震，震央位於本州島東北部東南偏東約 130 公里的海面上，該地震引發海嘯。圖(二)為東北亞板塊分布圖，可知此次地震為圖中哪兩個板塊碰撞的結果？",
+        "image": "images/geo7/q5.png",
+        "options": [
+          "歐亞、太平洋",
+          "北美、太平洋",
+          "北美、菲律賓海",
+          "歐亞、菲律賓海"
+        ],
+        "correct": 1
+      },
+      {
+        "q": "位於朝鮮半島東部的平昌，曾是南韓冬季奧運的舉辦地，因位於哪一地形而成為滑雪勝地？",
+        "options": [
+          "鴨綠江畔",
+          "蓋馬高原",
+          "長白山脈",
+          "太白山脈"
+        ],
+        "correct": 3
+      },
+      {
+        "q": "小華為欣賞日本第一波楓葉，特地規畫五天日本行。從天氣轉涼，楓葉就轉紅的特性判斷，第 1 天的行程應為圖(三)中何處？",
+        "image": "images/geo7/q7.png",
+        "options": [
+          "甲",
+          "乙",
+          "丙",
+          "丁"
+        ],
+        "correct": 0
+      },
+      {
+        "q": "日本文化多元，昔日遣唐使引入漢文化，明治維新後更融入西方文化。日本之所以能接納東西文化，交融創新，與其何項地理特徵有關？",
+        "options": [
+          "地理位置得天獨厚",
+          "山地為主體的地形",
+          "位於歐亞大陸交界",
+          "氣候較亞洲大陸暖溼"
+        ],
+        "correct": 0
+      },
+      {
+        "q": "位居朝鮮半島的南韓與北韓皆有製作泡菜的飲食習慣，所以到南韓旅遊時一定要品嘗當地的泡菜料理。上述的泡菜文化與下列哪一因素密切相關？",
+        "options": [
+          "國家四面環海",
+          "人口分布不均",
+          "地形為山多田少",
+          "作物生長季不長"
+        ],
+        "correct": 3
+      },
+      {
+        "q": "日本群島的氣候條件相較朝鮮半島優越，如夏季較涼爽，冬季較溫暖，年降水量較豐富。造成此種地理現象與下列哪一因素關係最為密切？",
+        "options": [
+          "緯度的高低",
+          "海洋的調節",
+          "地勢的高低",
+          "季風的風向"
+        ],
+        "correct": 1
+      },
+      {
+        "q": "圖(四)為亞洲某種氣候分布圖，該種氣候又可分三種類型，依圖中的分布位置判斷，應該是何種氣候？",
+        "image": "images/geo7/q11.png",
+        "options": [
+          "季風",
+          "乾燥",
+          "寒帶",
+          "高地"
+        ],
+        "correct": 0
+      },
+      {
+        "q": "朝鮮半島和臺灣島的人口、都市和產業活動大多分布於西部地區，而東部地區較少。造成此種空間分布差異與西部地區何種特徵最有關係？",
+        "options": [
+          "地形較平坦",
+          "氣候較優良",
+          "礦產較豐富",
+          "水力較充足"
+        ],
+        "correct": 0
+      },
+      {
+        "q": "朝鮮半島形狀南北狹長，南北之間的地理環境差異頗大。此一現象在半島南部造成何種優勢？",
+        "options": [
+          "工業較先進",
+          "礦產較豐富",
+          "資訊較發達",
+          "生長季較長"
+        ],
+        "correct": 3
+      },
+      {
+        "q": "「2024 年受凱米颱風豪雨影響，大量漂流木隨著溪水被沖入宜蘭沿海，一度堵塞漁港並阻礙漁民出海；部分珍貴林木包括檜木、肖楠等，更隨著洋流漂向日本海域。」上文所述的洋流最可能為下列何者？",
+        "options": [
+          "黑潮",
+          "親潮",
+          "中國沿岸流",
+          "親潮支流"
+        ],
+        "correct": 0
+      },
+      {
+        "q": "東北亞包括日本群島與朝鮮半島，兩者在地形上有哪一共同特色？",
+        "options": [
+          "地勢北高南低",
+          "山地多平原少",
+          "海岸線平直少灣澳",
+          "山脈皆為東西走向"
+        ],
+        "correct": 1
+      },
+      {
+        "q": "東北亞由日本群島和朝鮮半島所組成，下列何者與「東北亞」的氣候類型最相似？",
+        "image": "images/geo7/q16.png",
+        "options": [
+          "A",
+          "B",
+          "C",
+          "D"
+        ],
+        "correct": 0
+      },
+      {
+        "q": "「全球飢餓指數」排名前幾名的國家以非洲地區居多，而北韓的飢餓指數從 1990 年的 16.2 分上升到 2024 年的 31.4 分。除了受到政治制度的影響外，與下列何項自然因素關係最密切？",
+        "options": [
+          "地處板塊的接觸帶，地震活動頻繁",
+          "位於東南季風背風坡，年降水量少",
+          "夏、秋有颱風侵襲，造成嚴重水患",
+          "平原少、生長季短，作物年僅一穫"
+        ],
+        "correct": 3
+      },
+      {
+        "q": "韓國大白菜的生長期為夏季，大多種植在低於 25°C 山區。但氣候變遷導致夏季變得更暖、更長，韓國農業部表示：「2023 年產量已降至 20 年前的一半，未來夏天可能得放棄用大白菜製作泡菜。」上述提到的泡菜主要是在何種地理環境背景下所產生？",
+        "options": [
+          "避免大型財閥壟斷，以民生產業發展為主",
+          "冬季不利蔬菜生產，以發酵延長食物期限",
+          "為增加出口貿易額，大量出口至鄰近國家",
+          "韓流文化帶動觀光，推動在地文化至全球"
+        ],
+        "correct": 1
+      },
+      {
+        "q": "日本漢字能力檢定協會舉辦票選 2024 年度代表漢字活動，在清水寺名僧揮毫寫下「金」字，象徵奧運奪金、運動員大谷翔平表現價值千金與各界捐款賑災等。上述活動展現該國具有下列何項特色？",
+        "options": [
+          "極高度經濟發展",
+          "寒、暖洋流交會",
+          "位於板塊接觸帶",
+          "同屬東亞文化圈"
+        ],
+        "correct": 3
+      },
+      {
+        "q": "圖(五)的日本能登半島於 2024 年 1 月發生規模 7.6 強震，因道路中斷、震災隔日降下暴雪，使賑援難度加倍。當地天氣降雪最可能為下列何者？",
+        "image": "images/geo7/q20.png",
+        "options": [
+          "經日本海而來的西北季風",
+          "經太平洋而來的東北季風",
+          "經日本海而來的東北季風",
+          "經太平洋而來的西北季風"
+        ],
+        "correct": 0
+      }
+    ]
+  },
+  {
+    "type": "reading",
+    "title": "二、題組",
+    "meta": "12%，每題3分",
+    "passages": [
+      {
+        "label": "(一)",
+        "text": "朝鮮半島連接太平洋與歐亞大陸，東南隔海與日本群島對望，西北以山河與中俄相連，向有「東亞橋梁」之稱。",
+        "items": [
+          {
+            "q": "朝鮮半島與日本群島中間的海域為下列何者？",
+            "options": [
+              "黃海",
+              "北極海",
+              "日本海",
+              "南海"
+            ],
+            "correct": 2
+          },
+          {
+            "q": "下列何者<u>不是</u>朝鮮半島與中俄間的天然山河界線？",
+            "options": [
+              "太白山脈",
+              "圖們江",
+              "鴨綠江",
+              "長白山脈"
+            ],
+            "correct": 0
+          }
+        ]
+      },
+      {
+        "label": "(二)",
+        "text": "日本本州於 2025 年 2 月 26 日爆發近 30 年來最大規模的山林火災，主因為該區域位於盛行風背風側相對乾燥，且島嶼北方植物為落葉林，乾燥落葉遇強風而使火勢蔓延。",
+        "image": "images/geo7/g2.png",
+        "items": [
+          {
+            "q": "上文中的火災最可能在圖(六)何處？",
+            "options": [
+              "甲",
+              "乙",
+              "丙",
+              "丁"
+            ],
+            "correct": 1
+          },
+          {
+            "q": "上文中的強風可能將大火煙霧吹送至哪一個地區？",
+            "options": [
+              "四國島南部",
+              "北海道北部",
+              "日本海沿岸",
+              "太平洋沿岸"
+            ],
+            "correct": 3
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "type": "mc",
+    "title": "三、實戰模擬題",
+    "meta": "28%，每題4分",
+    "items": [
+      {
+        "q": "房屋方位會影響居住品質，為達到冬暖夏涼的效果，建築師在設計房子時，大門會避開寒冷的冬季季風。若要避免寒風入侵，日本的房子坐向應為何？",
+        "options": [
+          "坐東北朝西南",
+          "坐東南朝西北",
+          "坐西北朝東南",
+          "坐西南朝東北"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "人類為了適應多樣的氣候，全球各地的居民在食、衣、住、行上發展出不同的生活方式。日本與韓國的民眾在日常生活上有許多地方深受氣候影響。下列四位同學所舉的例子，何者受氣候影響<u>最小</u>？",
+        "options": [
+          "小德：「日韓主食為米飯。」",
+          "欣萍：「日本溫泉旅館林立。」",
+          "彥文：「泡菜為韓國的飲食文化。」",
+          "阿甘：「日本各地櫻花盛開時間不同。」"
+        ],
+        "correct": 1
+      },
+      {
+        "q": "季風的風向是影響亞洲各地區降水時空差異的主要因素，下列關於東北亞的降水季節與風向的配對，何者正確？",
+        "options": [
+          "冬季，↙",
+          "夏季，↖",
+          "冬季，↗",
+          "夏季，↘"
+        ],
+        "correct": 1
+      },
+      {
+        "q": "「日本西之島（27°N，140°E）為小笠原群島中的一個島，2013 年起，該島及周邊海底火山持續噴發，使島嶼面積逐漸增加，2020 年 6 月的噴發，其火山灰於 8 月飄至 2,000 公里外的臺灣，影響東部地區空氣品質。」若學者欲調查該島現況，從東京（35°N，139°E）出發，應朝哪一個方向飛行？",
+        "options": [
+          "↑",
+          "→",
+          "↓",
+          "←"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "圖(七)為南韓「甲」河川位置圖，該河在古代是王國戰略和經濟的生命線，近代隨著工業與都市發展，下游地區成為人口聚集的稠密地區，政經中心首爾即位於此。由圖文可知，關於「甲」河川的敘述，下列何項最正確？",
+        "image": "images/geo7/a5.png",
+        "options": [
+          "出海口為太平洋的主要港口",
+          "流經南韓與俄羅斯的國界處",
+          "地勢北高南低，多流經高原",
+          "主要山脈偏東，向西流入海"
+        ],
+        "correct": 3
+      },
+      {
+        "q": "盛產於秋季的秋刀魚，為日本料理中常見的食材，因鄰近太平洋漁場的地理優勢，2024 年累計漁獲量近 4 萬噸，具有強大產業競爭力，也成為當地飲食文化。圖(八)為太平洋海域簡圖，圖中何地為日本捕獲秋刀魚之主要漁場所在？",
+        "image": "images/geo7/a6.png",
+        "options": [
+          "甲",
+          "乙",
+          "丙",
+          "丁"
+        ],
+        "correct": 0
+      },
+      {
+        "q": "北韓官方媒體於 2024 年報導：「領導人要求徹底改善國內農業機械產業，並視為迫切的需求，將制定長期計畫來實現農業工業化，以實踐農業高穩定生產。」透過報導可知，此政策擬定是為解決農業發展上的何種現況？",
+        "options": [
+          "生產成本高昂",
+          "國際經濟制裁",
+          "生產技術落後",
+          "勞動人口不足"
+        ],
+        "correct": 2
+      }
+    ]
+  }
+]
+};
+
+let currentMode = "quiz"; // quiz | print
+
+const contentEl = document.getElementById("content");
+const scoreBar = document.getElementById("scoreBar");
+const scoreText = document.getElementById("scoreText");
+
+function render(){
+  window.examAnswersRevealed = false;
+  contentEl.innerHTML = "";
+  DATA.sections.forEach((sec, si)=> contentEl.appendChild(renderSection(sec, si)));
+  if(currentMode==="quiz"){
+    scoreBar.classList.add("show");
+    updateScore();
+  } else {
+    scoreBar.classList.remove("show");
+    contentEl.querySelectorAll(".opt").forEach(o=>o.classList.add("disabled"));
+    contentEl.querySelectorAll(".opt.is-correct").forEach(o=>o.classList.add("correct"));
+  }
+}
+
+function renderSection(sec, si){
+  const block = document.createElement("section");
+  block.className = "block";
+  block.innerHTML = `<h2>${sec.title}</h2><p class="meta">${sec.meta}</p>`;
+
+  if(sec.type==="mc"){
+    sec.items.forEach((it,i)=>{
+      const q = document.createElement("div");
+      q.className = "q";
+      const optsHtml = it.options.map((op,oi)=>`
+        <div class="opt" data-idx="${oi}" data-correct="${oi===it.correct}">
+          <span class="tag">(${String.fromCharCode(65+oi)})</span><span>${op}</span>
+        </div>`).join("");
+      const imgHtml = it.image ? `<img src="${it.image}" alt="題目附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">` : "";
+      const img2Html = it.image2 ? `<img src="${it.image2}" alt="題目附圖2" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">` : "";
+      q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q}</div>
+        ${imgHtml}${img2Html}
+        <div class="opts">${optsHtml}</div>`;
+      q.querySelectorAll(".opt").forEach(optEl=>{
+        if(optEl.dataset.correct==="true") optEl.classList.add("is-correct");
+        optEl.addEventListener("click", ()=>selectOption(q, optEl));
+      });
+      block.appendChild(q);
+    });
+  }
+
+  else if(sec.type==="reading"){
+    sec.passages.forEach(p=>{
+      const passageDiv = document.createElement("div");
+      passageDiv.className = "passage";
+      passageDiv.innerHTML = `${p.label ? `<span class="passage-label">${p.label}</span>`:""}${p.text}${p.image ? `<img src="${p.image}" alt="題組附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-top:10px;border:1px solid var(--paper-line);">`:""}`;
+      block.appendChild(passageDiv);
+      p.items.forEach((it,i)=>{
+        const q = document.createElement("div");
+        q.className = "q";
+        const optsHtml = it.options.map((op,oi)=>`
+          <div class="opt" data-idx="${oi}" data-correct="${oi===it.correct}">
+            <span class="tag">(${String.fromCharCode(65+oi)})</span><span>${op}</span>
+          </div>`).join("");
+        q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q}</div>
+          ${it.image ? `<img src="${it.image}" alt="題目附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">`:""}
+          <div class="opts">${optsHtml}</div>`;
+        q.querySelectorAll(".opt").forEach(optEl=>{
+          if(optEl.dataset.correct==="true") optEl.classList.add("is-correct");
+          optEl.addEventListener("click", ()=>selectOption(q, optEl));
+        });
+        block.appendChild(q);
+      });
+    });
+  }
+
+  return block;
+}
+
+function selectOption(qEl, optEl){
+  if(currentMode!=="quiz") return;
+  if(qEl.dataset.answered==="true") return;
+  qEl.dataset.answered = "true";
+  qEl.querySelectorAll(".opt").forEach(o=>o.classList.add("disabled"));
+  optEl.classList.add("selected");
+  const correctOpt = qEl.querySelector('.opt[data-correct="true"]');
+  qEl.dataset.studentAnswer = optEl.textContent.trim();
+  qEl.dataset.correctAnswer = correctOpt ? correctOpt.textContent.trim() : "";
+  qEl.dataset.isCorrect = (optEl.dataset.correct==="true") ? "true" : "false";
+  updateScore();
+}
+
+function updateScore(){
+  let total = 0, answered = 0, correct = 0;
+  contentEl.querySelectorAll(".q").forEach(q=>{
+    const gradable = q.querySelector(".opts");
+    if(!gradable) return;
+    total++;
+    if(q.dataset.studentAnswer !== undefined){
+      answered++;
+      if(q.dataset.isCorrect === "true") correct++;
+    }
+  });
+  if(window.examAnswersRevealed){
+    scoreText.textContent = `${correct} / ${total}`;
+  } else {
+    scoreText.textContent = `已作答 ${answered} / ${total} 題`;
+  }
+}
+window.updateScore = updateScore;
+
+document.getElementById("resetBtn").addEventListener("click", render);
+document.getElementById("quizModeBtn").addEventListener("click", ()=>{
+  currentMode = "quiz";
+  document.getElementById("quizModeBtn").classList.add("active");
+  document.getElementById("printModeBtn").classList.remove("active");
+  render();
+});
+document.getElementById("printModeBtn").addEventListener("click", ()=>{
+  if(document.getElementById("printModeBtn").disabled) return;
+  currentMode = "print";
+  document.getElementById("printModeBtn").classList.add("active");
+  document.getElementById("quizModeBtn").classList.remove("active");
+  render();
+});
+
+window.unlockPrintMode = function(){
+  document.getElementById("printModeBtn").disabled = false;
+};
+
+render();
+</script>
+<script src="../sync.js"></script>
+</body>
+</html>

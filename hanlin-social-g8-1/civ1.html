@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>段考題庫｜公民第1回 - 國家與民主政治</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@500;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#faf6ec;
+    --paper-line:#e3dcc8;
+    --ink:#26332b;
+    --ink-soft:#5b6b5f;
+    --chalk-green:#2f4538;
+    --chalk-green-2:#3d5a48;
+    --pen-red:#b8433a;
+    --pen-red-soft:#f4dedb;
+    --ok-green:#3f7d52;
+    --ok-green-soft:#dfeee1;
+    --gold:#b5842a;
+    --radius:10px;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:"Noto Sans TC",sans-serif;
+    line-height:1.7;
+  }
+  header.hero{
+    background:var(--chalk-green);
+    color:#eef2ea;
+    padding:28px 20px 40px;
+    position:relative;
+  }
+  header.hero::after{
+    content:"";
+    position:absolute;
+    left:0; right:0; bottom:-1px;
+    height:14px;
+    background:repeating-linear-gradient(90deg,var(--paper) 0 18px, transparent 18px 20px);
+  }
+  .hero-inner{max-width:880px;margin:0 auto;}
+  .breadcrumb a{color:#cfe0d1;text-decoration:none;font-size:14px;}
+  .breadcrumb a:hover{text-decoration:underline;}
+  h1{
+    font-family:"Noto Serif TC",serif;
+    font-weight:700;
+    font-size:clamp(24px,4vw,34px);
+    margin:10px 0 6px;
+  }
+  .subtitle{color:#cfe0d1;font-size:15px;margin:0;}
+  main{max-width:880px;margin:0 auto;padding:28px 20px 80px;}
+
+  .controls{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:22px;
+  }
+  .mode-toggle{display:flex;border:2px solid var(--chalk-green);border-radius:999px;overflow:hidden;}
+  .mode-toggle button{
+    background:transparent;border:none;padding:8px 16px;font-size:14px;font-weight:700;
+    color:var(--chalk-green);cursor:pointer;font-family:"Noto Sans TC",sans-serif;
+  }
+  .mode-toggle button.active{background:var(--gold);color:#fff;}
+  .mode-toggle button:disabled{opacity:.4;cursor:not-allowed;}
+
+  .score-bar{
+    display:none;
+    align-items:center;
+    justify-content:space-between;
+    background:#fff;
+    border:1px solid var(--paper-line);
+    border-left:5px solid var(--gold);
+    border-radius:var(--radius);
+    padding:12px 18px;
+    margin-bottom:22px;
+    font-size:14px;
+  }
+  .score-bar.show{display:flex;}
+  .score-bar strong{font-size:18px;color:var(--gold);}
+  .score-bar button{
+    background:none;border:1px solid var(--ink-soft);color:var(--ink-soft);
+    border-radius:6px;padding:6px 12px;font-size:13px;cursor:pointer;
+  }
+
+  section.block{
+    background:#fff;
+    border:1px solid var(--paper-line);
+    border-radius:var(--radius);
+    padding:22px 22px 26px;
+    margin-bottom:20px;
+  }
+  .block h2{
+    font-family:"Noto Serif TC",serif;
+    font-size:19px;
+    margin:0 0 4px;
+    color:var(--chalk-green);
+  }
+  .block .meta{color:var(--ink-soft);font-size:13px;margin:0 0 16px;}
+
+  .q{margin-bottom:18px;padding-bottom:16px;border-bottom:1px dashed var(--paper-line);}
+  .q:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0;}
+  .q-text{font-size:15.5px;margin-bottom:8px;}
+  .q-num{color:var(--gold);font-weight:700;margin-right:4px;}
+
+  .opts{display:grid;gap:8px;}
+  .opt{
+    display:flex;gap:8px;align-items:flex-start;
+    border:1.5px solid var(--paper-line);
+    border-radius:8px;
+    padding:9px 12px;
+    cursor:pointer;
+    font-size:14.5px;
+    background:#fffdf8;
+  }
+  .opt:hover{border-color:var(--chalk-green-2);}
+  .opt.selected{border-color:var(--chalk-green-2);background:#eef3ea;}
+  .opt.correct{border-color:var(--ok-green);background:var(--ok-green-soft);}
+  .opt.wrong{border-color:var(--pen-red);background:var(--pen-red-soft);}
+  .opt .tag{font-weight:700;color:var(--ink-soft);}
+  .opt.correct .tag{color:var(--ok-green);}
+  .opt.wrong .tag{color:var(--pen-red);}
+  .opt.disabled{cursor:default;}
+
+  .passage{
+    background:#f5f2e8;border-radius:8px;padding:14px 16px;margin-bottom:14px;
+    font-size:14.5px;white-space:pre-line;
+  }
+  .passage-label{font-weight:700;color:var(--chalk-green);margin-bottom:4px;display:block;}
+
+  .footer-link{
+    display:block;text-align:center;margin-top:30px;color:var(--chalk-green);
+    text-decoration:none;font-weight:700;font-size:14px;
+  }
+  .footer-link:hover{text-decoration:underline;}
+
+  @media print{
+    header.hero, .controls, .score-bar, .mini-btn, .footer-link{display:none !important;}
+    body{background:#fff;}
+    section.block{border:none;box-shadow:none;padding:8px 0;margin-bottom:14px;}
+    .opt.correct{background:none;border:none;font-weight:700;}
+    .opt.correct::after{content:" ← 正解";color:var(--pen-red);}
+    .opt{border:none;padding:2px 0;}
+    main{max-width:100%;padding:0 24px;}
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="breadcrumb"><a href="https://jenlin2002.github.io/">🏠 回總目錄</a> ／ <a href="../hanlin-social-g8-1.html" style="color:#cfe0d1;">段考題庫</a></div>
+    <h1>公民・第1回</h1>
+    <p class="subtitle">第四篇第1章 國家與民主政治｜翰林版八年級社會（三）Ａ卷</p>
+  </div>
+</header>
+
+<main>
+  <div class="controls">
+    <div class="mode-toggle">
+      <button id="quizModeBtn" class="active">✏️ 測驗模式</button>
+      <button id="printModeBtn" disabled title="完成測驗並送出成績後才能查看">🖨️ 完整題目與解答（送出成績後解鎖）</button>
+    </div>
+  </div>
+
+  <div class="score-bar" id="scoreBar">
+    <div>目前得分：<strong id="scoreText">0 / 0</strong>（僅計算選擇題）</div>
+    <button id="resetBtn">重新作答</button>
+  </div>
+
+  <div id="content"></div>
+
+  <a class="footer-link" href="../hanlin-social-g8-1.html">← 回段考題庫總覽</a>
+</main>
+
+<script>
+
+window.EXAM_META = { version: "A卷", examLabel: "公民第1回" };
+const DATA = {
+  sections: [
+  {
+    "type": "mc",
+    "title": "一、單題",
+    "meta": "60%，每題3分",
+    "items": [
+      {
+        "q": "閱讀圖(一)新聞，下列哪一項說明最符合圖中內容？",
+        "image": "images/civ1/q1.png",
+        "options": [
+          "選舉失利者應為此辭職",
+          "執政不力者應辭職下臺",
+          "人民有權罷免政府官員",
+          "政黨輪替前應辭職下臺"
+        ],
+        "correct": 1
+      },
+      {
+        "q": "政府權力的行使，不以個人的主觀好惡決定，而是依據明文規定的《憲法》或法律而行使職權。上述屬於下列何者？",
+        "options": [
+          "民意政治",
+          "責任政治",
+          "政黨政治",
+          "法治政治"
+        ],
+        "correct": 3
+      },
+      {
+        "q": "民主治理的特色中，下列何者最符合政黨政治？",
+        "options": [
+          "政府組成需要人民支持，施政以人民需求為考量",
+          "各政黨應透過公平、公開選舉制度獲得執政機會",
+          "若政策失敗，官員需承擔人民或民意機關的責難",
+          "司法機關依法行使職權，不受外力干涉做出裁判"
+        ],
+        "correct": 1
+      },
+      {
+        "q": "依據圖(二)資料來看，該統計最可能影響到下列哪一項國家組成要素？",
+        "image": "images/civ1/q4.png",
+        "options": [
+          "主權",
+          "政府",
+          "領土",
+          "人民"
+        ],
+        "correct": 3
+      },
+      {
+        "q": "定期舉辦選舉是現代國家發展的主要趨勢，藉此最主要可達到下列哪一目的？",
+        "options": [
+          "促進社會流動",
+          "和平轉移政權",
+          "實踐主權獨立",
+          "維護社會秩序"
+        ],
+        "correct": 1
+      },
+      {
+        "q": "同婚專法上路已有一段時日，但相關配套仍未完善，例如跨國同婚問題、無法共同收養等，希望相關單位解決；法務部與司法院代表表示將研究檢討。由上文可知，該法的制定有助於落實何種國家具有的功能？",
+        "options": [
+          "保障人權",
+          "保國衛民",
+          "促進文化",
+          "發展經濟"
+        ],
+        "correct": 0
+      },
+      {
+        "q": "主權是國家組成的關鍵要素，下列對於主權的敘述何者正確？",
+        "options": [
+          "是國家次高的統治權力",
+          "能與他國建立平等關係",
+          "會因政權的轉移而變化",
+          "公權力執行政策的機構"
+        ],
+        "correct": 1
+      },
+      {
+        "q": "國家為打擊犯罪，建立檢察及警察系統，這是展現出現代民主國家的何項功能？",
+        "options": [
+          "實施福利",
+          "發展經濟",
+          "保障人權",
+          "維護秩序"
+        ],
+        "correct": 3
+      },
+      {
+        "q": "右列是某次社會課程探討議題的重點。根據內容判斷，該項議題應為下列何者？",
+        "image": "images/civ1/q9.png",
+        "options": [
+          "政黨的政治影響",
+          "民主國家的特色",
+          "立法保障的人權",
+          "國家的主要功能"
+        ],
+        "correct": 1
+      },
+      {
+        "q": "人類以群居生活為主，多數群體逐漸從部落生活演變到國家形式。下列對於「國家的組成要素」之敘述何者正確？",
+        "options": [
+          "擁有一國國籍者即為該國的公民",
+          "領土範圍僅包括陸地及領海兩大部分",
+          "主權是國家的統治權力，對內具有最高性",
+          "國家是政府統治機關，為執行政策不可缺少的"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "圖(三)為政府派遣軍隊「護漁」的舉動，依圖判斷，其展現出國家具有的何種功能？",
+        "image": "images/civ1/q11.png",
+        "options": [
+          "保國衛民",
+          "保障人權",
+          "促進文化",
+          "扶助弱勢"
+        ],
+        "correct": 0
+      },
+      {
+        "q": "圖(四)是某次大選後的兩政黨地位改變，對此的相關說明下列何項正確？",
+        "image": "images/civ1/q12.png",
+        "options": [
+          "甲黨成為在野黨",
+          "甲黨未獲人民授予",
+          "乙黨監督甲黨施政",
+          "乙黨負責執行政策"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "政府制定政策前，會召開公聽會邀請機關團體、學者專家或民眾參加，聆聽各方意見，修改之後才拍板定案。下列何者最適合用來說明上述內容？",
+        "options": [
+          "政府的運作必須考量民意",
+          "政權和平轉移需透過選舉",
+          "主權是國家最高統治權力",
+          "召開公聽會彰顯法治政治"
+        ],
+        "correct": 0
+      },
+      {
+        "q": "在國家組成要素中，以公權力治理國家的為何？",
+        "options": [
+          "人民",
+          "政府",
+          "主權",
+          "領土"
+        ],
+        "correct": 1
+      },
+      {
+        "q": "「法律扶助」是指對於需要法律服務卻無力負擔費用的人民，由國家出資提供法律協助，保障其權利，以減少因經濟因素而導致的不平等。上述政府的作法，最有助於國家達成下列哪一項功能？",
+        "options": [
+          "保衛國民不受外來侵略",
+          "促進教育文化",
+          "協助人民就業改善經濟",
+          "落實福利政策"
+        ],
+        "correct": 3
+      },
+      {
+        "q": "國防部長針對 2025 年漢光演習規畫表示，將延長實兵演練至 10 天，並增加電子作戰、無人機及整體空中飛彈防禦等。此舉主要落實哪一種國家的功能？",
+        "options": [
+          "發展經濟",
+          "維護秩序",
+          "保國衛民",
+          "實施福利"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "老師在課堂中向同學說明，在民主國家中，法律制定後，無論是人民或是政府都必須遵守。從上述內容判斷，老師的說明呈現了民主治理的何項特色？",
+        "options": [
+          "民意政治",
+          "責任政治",
+          "政黨政治",
+          "法治政治"
+        ],
+        "correct": 3
+      },
+      {
+        "q": "快樂縣政府結合政府與民間團體資源，關懷照顧弱勢群體。上述落實的國家功能與下列何者相同？",
+        "options": [
+          "成立科學工業園區，積極招商",
+          "主辦文化藝術研習班接受民眾報名",
+          "成立婦女中心，提供婦女醫療保健等服務",
+          "縣警局針對容易發生竊案地點，加強巡邏"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "勞動部本應維護勞工權益，但 2024 年卻發生勞動部的公務員在辦公室輕生的憾事，<u>分署長因涉及職場霸凌，記大過懲戒並停職、署長因督導不周也記一大過調離現職</u>。上述畫底線的部分符合哪一項內涵？",
+        "options": [
+          "民意政治",
+          "責任政治",
+          "政黨政治",
+          "人治政治"
+        ],
+        "correct": 1
+      },
+      {
+        "q": "下列哪位同學所述正確且符合國家組成要素？",
+        "options": [
+          "阿梅：我國的國花是梅花",
+          "翔翔：從我國港口駛出的貨輪均會懸掛我國國旗",
+          "阿強：凡是住在臺灣的人都是我國的國民",
+          "婷婷：我國的領陸包含臺、澎、金、馬等地區"
+        ],
+        "correct": 3
+      }
+    ]
+  },
+  {
+    "type": "reading",
+    "title": "二、題組",
+    "meta": "12%，每題3分",
+    "passages": [
+      {
+        "label": "(一)",
+        "text": "我國於 2024 年與諾魯共和國斷交，這是全世界最小的國家之一，面積只有 21.2 平方公里，約 1/4 個臺北市，人口約為 1 萬 1,550 人，是南太平洋海上的小島。近年來島上因過度開採磷酸鹽礦已變得不適合居住，又受到海水面上升的威脅，該國政府打算讓居民向內陸搬遷，並計畫出售「黃金護照」來販售公民身分，籌措遷村費用。",
+        "items": [
+          {
+            "q": "根據上文分析諾魯的國家構成要素，下列何者說明正確？",
+            "options": [
+              "斷交代表兩國政府的統治權移轉",
+              "國家行使主權的範圍持續的擴張",
+              "因為領土太小，而無法形成國家",
+              "取得黃金護照可歸化為該國國民"
+            ],
+            "correct": 3
+          },
+          {
+            "q": "該國遷村政策主要是落實國家的什麼功能？",
+            "options": [
+              "提升國防武力",
+              "保障人民權利",
+              "維護社會秩序",
+              "促進產業發展"
+            ],
+            "correct": 1
+          }
+        ]
+      },
+      {
+        "label": "(二)",
+        "text": "2024 年 11 月，帛琉舉辦總統大選，由惠恕仁總統成功連任。我國總統也於隔月到帛琉訪問，強化兩國間的邦交關係，並感謝帛琉總統，不論在聯合國各個組織，或各項世界性活動等多次為臺灣發聲，帛琉總統也感謝臺灣在基礎道路建設、農業、漁業等領域的發展提供協助與合作，期待看到臺灣與帛琉有更多產業合作。",
+        "items": [
+          {
+            "q": "根據上文推論帛琉政府的運作，以下何者正確？",
+            "options": [
+              "我國可以干涉帛琉的國內事務",
+              "選後政府調整將危及國家存續",
+              "辦理總統大選，符合民意政治",
+              "總統成功連任，符合法治政治"
+            ],
+            "correct": 2
+          },
+          {
+            "q": "文中提到我國對帛琉的實質協助，最有利於帛琉提升國家的何種功能？",
+            "options": [
+              "維護秩序",
+              "文化傳承",
+              "發展經濟",
+              "實施福利"
+            ],
+            "correct": 2
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "type": "mc",
+    "title": "三、進階思考題",
+    "meta": "28%，每題4分",
+    "items": [
+      {
+        "q": "2023 年哈瑪斯突襲以色列後，以色列準備發動戰爭來回擊，我國外交部立即派遣撤僑專機至以色列，協助國民及友邦瓜地馬拉和巴拉圭的僑民離開。我國為何要採取上述舉動？",
+        "options": [
+          "捍衛國家的主權獨立",
+          "抵禦外國侵略我國土",
+          "協助人民參與政治",
+          "國家有義務保護人民"
+        ],
+        "correct": 3
+      },
+      {
+        "q": "圖(五)為一則新聞報導，依據圖中內容判斷，下列哪一敘述最符合其意旨？",
+        "image": "images/civ1/a2.png",
+        "options": [
+          "政府的組成應得到多數選民的支持",
+          "政府隨時可能因政權轉移而被取代",
+          "政策若違背民意，政府官員須承擔民意的責難",
+          "政府應針對公共政策舉辦公聽會，使順利進行"
+        ],
+        "correct": 3
+      },
+      {
+        "q": "圖(六)是我國行政院網站有關某政策的說明圖，根據圖中內容判斷，此政策最可能實現國家存在的哪一項主要功能？",
+        "image": "images/civ1/a3.png",
+        "options": [
+          "保國衛民",
+          "促進文化",
+          "發展經濟",
+          "實施福利"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "根據統計，臺灣是 2024 年全世界出生率最低國家，不利國家未來發展，因此國家須提出相關政策來因應少子化的現況，下列何者最有利於國家發揮社會福利的功能，因應上述現況？",
+        "options": [
+          "促進產業升級，減少人力需求",
+          "放寬移民政策，吸引外國人才",
+          "提供生育津貼與成家購屋貸款",
+          "勞雇雙方得協調延後退休年齡"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "圖(七)為一則新聞內容，依圖判斷，此法律的通過主要在實踐現代民主國家中的何種功能？",
+        "image": "images/civ1/a5.png",
+        "options": [
+          "提升國家主權地位",
+          "改善國內文化環境",
+          "積極扶助弱勢群體",
+          "重視社會福利措施"
+        ],
+        "correct": 1
+      },
+      {
+        "q": "○○國定期舉辦國會大選，各選區僅一名政府指定的候選人，不出席投票或投反對票者會被調查，投票率和贊成率都接近 100%。現任總統由人民直選產生，已連任 7 次，所屬政黨為該國唯一合法政黨。上述是否符合民主政治的特色？",
+        "options": [
+          "是，由人民直選可知符合民意政治",
+          "是，由連任次數可知符合責任政治",
+          "否，由高投票率可知違反法治政治",
+          "否，由政黨數量可知違反政黨政治"
+        ],
+        "correct": 3
+      },
+      {
+        "q": "學生玩耍時打亂了下列課程道具，請根據內容分類，甲～丁應分別屬於「國家」或「政府」？",
+        "image": "images/civ1/a7.png",
+        "options": [
+          "國家：(甲)(乙)，政府：(丙)(丁)",
+          "國家：(甲)(丙)，政府：(乙)(丁)",
+          "國家：(甲)(丁)，政府：(丙)(乙)",
+          "國家：(丙)(丁)，政府：(甲)(乙)"
+        ],
+        "correct": 1
+      }
+    ]
+  }
+]
+};
+
+let currentMode = "quiz"; // quiz | print
+
+const contentEl = document.getElementById("content");
+const scoreBar = document.getElementById("scoreBar");
+const scoreText = document.getElementById("scoreText");
+
+function render(){
+  window.examAnswersRevealed = false;
+  contentEl.innerHTML = "";
+  DATA.sections.forEach((sec, si)=> contentEl.appendChild(renderSection(sec, si)));
+  if(currentMode==="quiz"){
+    scoreBar.classList.add("show");
+    updateScore();
+  } else {
+    scoreBar.classList.remove("show");
+    contentEl.querySelectorAll(".opt").forEach(o=>o.classList.add("disabled"));
+    contentEl.querySelectorAll(".opt.is-correct").forEach(o=>o.classList.add("correct"));
+  }
+}
+
+function renderSection(sec, si){
+  const block = document.createElement("section");
+  block.className = "block";
+  block.innerHTML = `<h2>${sec.title}</h2><p class="meta">${sec.meta}</p>`;
+
+  if(sec.type==="mc"){
+    sec.items.forEach((it,i)=>{
+      const q = document.createElement("div");
+      q.className = "q";
+      const optsHtml = it.options.map((op,oi)=>`
+        <div class="opt" data-idx="${oi}" data-correct="${oi===it.correct}">
+          <span class="tag">(${String.fromCharCode(65+oi)})</span><span>${op}</span>
+        </div>`).join("");
+      const imgHtml = it.image ? `<img src="${it.image}" alt="題目附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">` : "";
+      const img2Html = it.image2 ? `<img src="${it.image2}" alt="題目附圖2" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">` : "";
+      q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q}</div>
+        ${imgHtml}${img2Html}
+        <div class="opts">${optsHtml}</div>`;
+      q.querySelectorAll(".opt").forEach(optEl=>{
+        if(optEl.dataset.correct==="true") optEl.classList.add("is-correct");
+        optEl.addEventListener("click", ()=>selectOption(q, optEl));
+      });
+      block.appendChild(q);
+    });
+  }
+
+  else if(sec.type==="reading"){
+    sec.passages.forEach(p=>{
+      const passageDiv = document.createElement("div");
+      passageDiv.className = "passage";
+      passageDiv.innerHTML = `${p.label ? `<span class="passage-label">${p.label}</span>`:""}${p.text}${p.image ? `<img src="${p.image}" alt="題組附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-top:10px;border:1px solid var(--paper-line);">`:""}`;
+      block.appendChild(passageDiv);
+      p.items.forEach((it,i)=>{
+        const q = document.createElement("div");
+        q.className = "q";
+        const optsHtml = it.options.map((op,oi)=>`
+          <div class="opt" data-idx="${oi}" data-correct="${oi===it.correct}">
+            <span class="tag">(${String.fromCharCode(65+oi)})</span><span>${op}</span>
+          </div>`).join("");
+        q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q}</div>
+          ${it.image ? `<img src="${it.image}" alt="題目附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">`:""}
+          <div class="opts">${optsHtml}</div>`;
+        q.querySelectorAll(".opt").forEach(optEl=>{
+          if(optEl.dataset.correct==="true") optEl.classList.add("is-correct");
+          optEl.addEventListener("click", ()=>selectOption(q, optEl));
+        });
+        block.appendChild(q);
+      });
+    });
+  }
+
+  return block;
+}
+
+function selectOption(qEl, optEl){
+  if(currentMode!=="quiz") return;
+  if(qEl.dataset.answered==="true") return;
+  qEl.dataset.answered = "true";
+  qEl.querySelectorAll(".opt").forEach(o=>o.classList.add("disabled"));
+  optEl.classList.add("selected");
+  const correctOpt = qEl.querySelector('.opt[data-correct="true"]');
+  qEl.dataset.studentAnswer = optEl.textContent.trim();
+  qEl.dataset.correctAnswer = correctOpt ? correctOpt.textContent.trim() : "";
+  qEl.dataset.isCorrect = (optEl.dataset.correct==="true") ? "true" : "false";
+  updateScore();
+}
+
+function updateScore(){
+  let total = 0, answered = 0, correct = 0;
+  contentEl.querySelectorAll(".q").forEach(q=>{
+    const gradable = q.querySelector(".opts");
+    if(!gradable) return;
+    total++;
+    if(q.dataset.studentAnswer !== undefined){
+      answered++;
+      if(q.dataset.isCorrect === "true") correct++;
+    }
+  });
+  if(window.examAnswersRevealed){
+    scoreText.textContent = `${correct} / ${total}`;
+  } else {
+    scoreText.textContent = `已作答 ${answered} / ${total} 題`;
+  }
+}
+window.updateScore = updateScore;
+
+document.getElementById("resetBtn").addEventListener("click", render);
+document.getElementById("quizModeBtn").addEventListener("click", ()=>{
+  currentMode = "quiz";
+  document.getElementById("quizModeBtn").classList.add("active");
+  document.getElementById("printModeBtn").classList.remove("active");
+  render();
+});
+document.getElementById("printModeBtn").addEventListener("click", ()=>{
+  if(document.getElementById("printModeBtn").disabled) return;
+  currentMode = "print";
+  document.getElementById("printModeBtn").classList.add("active");
+  document.getElementById("quizModeBtn").classList.remove("active");
+  render();
+});
+
+window.unlockPrintMode = function(){
+  document.getElementById("printModeBtn").disabled = false;
+};
+
+render();
+</script>
+<script src="../sync.js"></script>
+</body>
+</html>

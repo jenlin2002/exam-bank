@@ -53,6 +53,12 @@
   - 自動批改另外支援：根號（√/sqrt/根號）、±（+-）、「或」分隔的多解（不計順序）、因式分解的因式順序、全形符號、% 與單位。
   - 15 頁都驗證過：每題的官方答案都判為正確、KaTeX 沒有錯誤、圖片都有載入。
   - 待辦：數學 B、C 卷（原始檔在 `PDF-RAW-DATA/MATH/hanlin/hanlin-g8-1/`，資料放 `mathdataB/`、`mathdataC/`）。
+- 晚上：**翰林二上社會 A 卷完成**（地理、歷史、公民各 9 回，共 27 回）。
+  - 頁面：`hanlin-social-g8-1.html` 和 `hanlin-social-g8-1/{geo,hist,civ}1~9.html`。`social.html` 的「國中二上・翰林」已開放。
+  - 版型沿用家裡做的翰林七上社會（`hanlin-social-g7-1/geo1.html`）。每回的題型是：單題 20 題、題組 4 題、進階思考題 7 題。
+  - 產生方式：`tools/hanlin-g8-1-build/socdata/*.py` → `python gen_soc.py`（會一併裁切附圖；原始 PDF 路徑寫死為公司電腦的 OneDrive）。B、C 卷的資料放 `socdataB/`、`socdataC/`。
+  - 27 頁都驗證過：答案標記數＝題數，圖片都有載入，可以正常送出。
+  - 待辦：社會 B、C 卷；數學 B、C 卷。
 - 社會七上（翰林）是在家裡電腦做的，做到地理第 5 回 A 卷。截至 10/02 上午**尚未 Push 到 GitHub**。
 
 ### 待辦／注意
