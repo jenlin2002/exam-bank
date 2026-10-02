@@ -1,0 +1,888 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>段考題庫｜第14回 - Review Test 4</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@500;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#faf6ec;
+    --paper-line:#e3dcc8;
+    --ink:#26332b;
+    --ink-soft:#5b6b5f;
+    --chalk-green:#2f4538;
+    --chalk-green-2:#3d5a48;
+    --pen-red:#b8433a;
+    --pen-red-soft:#f4dedb;
+    --ok-green:#3f7d52;
+    --ok-green-soft:#dfeee1;
+    --gold:#b5842a;
+    --radius:10px;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:"Noto Sans TC",sans-serif;
+    line-height:1.7;
+  }
+  header.hero{
+    background:var(--chalk-green);
+    color:#eef2ea;
+    padding:28px 20px 40px;
+    position:relative;
+  }
+  header.hero::after{
+    content:"";
+    position:absolute;
+    left:0; right:0; bottom:-1px;
+    height:14px;
+    background:repeating-linear-gradient(90deg,var(--paper) 0 18px, transparent 18px 20px);
+  }
+  .hero-inner{max-width:880px;margin:0 auto;}
+  .breadcrumb a{color:#cfe0d1;text-decoration:none;font-size:14px;}
+  .breadcrumb a:hover{text-decoration:underline;}
+  h1{
+    font-family:"Noto Serif TC",serif;
+    font-weight:700;
+    font-size:clamp(24px,4vw,34px);
+    margin:10px 0 6px;
+  }
+  .subtitle{color:#cfe0d1;font-size:15px;margin:0;}
+  main{max-width:880px;margin:0 auto;padding:28px 20px 80px;}
+
+  .controls{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:22px;
+  }
+  .mode-toggle{display:flex;border:2px solid var(--chalk-green);border-radius:999px;overflow:hidden;}
+  .mode-toggle button{
+    background:transparent;border:none;padding:8px 16px;font-size:14px;font-weight:700;
+    color:var(--chalk-green);cursor:pointer;font-family:"Noto Sans TC",sans-serif;
+  }
+  .mode-toggle button.active{background:var(--gold);color:#fff;}
+  .mode-toggle button:disabled{opacity:.4;cursor:not-allowed;}
+
+  .score-bar{
+    display:none;
+    align-items:center;
+    justify-content:space-between;
+    background:#fff;
+    border:1px solid var(--paper-line);
+    border-left:5px solid var(--gold);
+    border-radius:var(--radius);
+    padding:12px 18px;
+    margin-bottom:22px;
+    font-size:14px;
+  }
+  .score-bar.show{display:flex;}
+  .score-bar strong{font-size:18px;color:var(--gold);}
+  .score-bar button{
+    background:none;border:1px solid var(--ink-soft);color:var(--ink-soft);
+    border-radius:6px;padding:6px 12px;font-size:13px;cursor:pointer;
+  }
+
+  section.block{
+    background:#fff;
+    border:1px solid var(--paper-line);
+    border-radius:var(--radius);
+    padding:22px 22px 26px;
+    margin-bottom:20px;
+  }
+  .block h2{
+    font-family:"Noto Serif TC",serif;
+    font-size:19px;
+    margin:0 0 4px;
+    color:var(--chalk-green);
+  }
+  .block .meta{color:var(--ink-soft);font-size:13px;margin:0 0 16px;}
+  .block audio{width:100%;margin-bottom:16px;}
+
+  .q{margin-bottom:18px;padding-bottom:16px;border-bottom:1px dashed var(--paper-line);}
+  .q:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0;}
+  .q-text{font-size:15.5px;margin-bottom:8px;}
+  .q-num{color:var(--gold);font-weight:700;margin-right:4px;}
+
+  .opts{display:grid;gap:8px;}
+  .wordbank{display:flex;flex-wrap:wrap;gap:8px;background:#f5f2e8;border:1px solid var(--paper-line);
+    border-radius:8px;padding:12px 14px;margin-bottom:16px;}
+  .wb-word{font-family:"Noto Sans TC",sans-serif;font-size:14px;font-weight:700;color:var(--chalk-green);
+    background:#fff;border:1px solid var(--paper-line);border-radius:6px;padding:4px 12px;}
+  .opt{
+    display:flex;gap:8px;align-items:flex-start;
+    border:1.5px solid var(--paper-line);
+    border-radius:8px;
+    padding:9px 12px;
+    cursor:pointer;
+    font-size:14.5px;
+    background:#fffdf8;
+  }
+  .opt:hover{border-color:var(--chalk-green-2);}
+  .opt.selected{border-color:var(--chalk-green-2);background:#eef3ea;}
+  .opt.correct{border-color:var(--ok-green);background:var(--ok-green-soft);}
+  .opt.wrong{border-color:var(--pen-red);background:var(--pen-red-soft);}
+  .opt .tag{font-weight:700;color:var(--ink-soft);}
+  .opt.correct .tag{color:var(--ok-green);}
+  .opt.wrong .tag{color:var(--pen-red);}
+  .opt.disabled{cursor:default;}
+
+  input.blank, input.line-answer{
+    font-family:"Noto Sans TC",sans-serif;
+    border:none;border-bottom:2px solid var(--chalk-green-2);
+    background:transparent;font-size:15px;padding:2px 4px;
+    width:150px;
+  }
+  input.line-answer{width:100%;margin-top:4px;}
+  .check-row{display:flex;gap:8px;margin-top:6px;flex-wrap:wrap;align-items:center;}
+  .mini-btn{
+    background:var(--chalk-green);color:#fff;border:none;border-radius:6px;
+    padding:6px 14px;font-size:13px;cursor:pointer;font-family:"Noto Sans TC",sans-serif;
+  }
+  .mini-btn.secondary{background:transparent;color:var(--chalk-green);border:1.5px solid var(--chalk-green);}
+  .feedback{font-size:13.5px;font-weight:700;}
+  .feedback.ok{color:var(--ok-green);}
+  .feedback.no{color:var(--pen-red);}
+  .answer-reveal{
+    display:none;margin-top:6px;font-size:14px;color:var(--chalk-green-2);
+    background:#eef3ea;border-radius:6px;padding:8px 12px;
+  }
+  .answer-reveal.show{display:block;}
+
+  .passage{
+    background:#f5f2e8;border-radius:8px;padding:14px 16px;margin-bottom:14px;
+    font-size:14.5px;white-space:pre-line;
+  }
+  .passage-label{font-weight:700;color:var(--chalk-green);margin-bottom:4px;display:block;}
+  .data-table{width:100%;border-collapse:collapse;margin-top:10px;font-size:13.5px;background:#fff;}
+  .data-table th, .data-table td{border:1px solid var(--paper-line);padding:6px 8px;text-align:center;}
+  .data-table th{background:#eef3ea;color:var(--chalk-green);}
+
+  .footer-link{
+    display:block;text-align:center;margin-top:30px;color:var(--chalk-green);
+    text-decoration:none;font-weight:700;font-size:14px;
+  }
+  .footer-link:hover{text-decoration:underline;}
+
+  @media print{
+    header.hero, .controls, .score-bar, .check-row, .mini-btn, .footer-link{display:none !important;}
+    body{background:#fff;}
+    section.block{border:none;box-shadow:none;padding:8px 0;margin-bottom:14px;}
+    .opt.correct{background:none;border:none;font-weight:700;}
+    .opt.correct::after{content:" ← 正解";color:var(--pen-red);}
+    .opt{border:none;padding:2px 0;}
+    .answer-reveal{display:block !important;background:none;padding:2px 0;}
+    main{max-width:100%;padding:0 24px;}
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="breadcrumb"><a href="https://jenlin2002.github.io/">🏠 回總目錄</a> ／ <a href="../hanlin-g7-1.html" style="color:#cfe0d1;">段考題庫</a></div>
+    <h1>第14回・Review Test 4</h1>
+    <p class="subtitle">Review Test 4（Unit 1～Unit 6）｜翰林版七年級英語（一）Ａ卷</p>
+  </div>
+</header>
+
+<main>
+  <div class="controls">
+    <div class="mode-toggle">
+      <button id="quizModeBtn" class="active">✏️ 測驗模式</button>
+      <button id="printModeBtn" disabled title="完成測驗並送出成績後才能查看">🖨️ 完整題目與解答（送出成績後解鎖）</button>
+    </div>
+  </div>
+
+  <div class="score-bar" id="scoreBar">
+    <div>目前得分：<strong id="scoreText">0 / 0</strong>（僅計算選擇題與字彙填空）</div>
+    <button id="resetBtn">重新作答</button>
+  </div>
+
+  <div id="content"></div>
+
+  <a class="footer-link" href="../hanlin-g7-1.html">← 回段考題庫總覽</a>
+</main>
+
+<script>
+
+window.EXAM_META = { version: "A卷", examLabel: "第14回" };
+const DATA = {
+  sections: [
+  {
+    "type": "mc",
+    "title": "一、單題：請依文意選出一個正確或最佳的答案",
+    "meta": "40分，每題2分",
+    "items": [
+      {
+        "q": "Look at the picture. The singer is ___ with the fans.",
+        "image": "images/test14/q1_pic.png",
+        "options": [
+          "taking a walk",
+          "shaking hands",
+          "taking pictures",
+          "watching a video"
+        ],
+        "correct": 1
+      },
+      {
+        "q": "In the Greta Zoo, there are ___ lions, but there are not ___ tigers.",
+        "options": [
+          "any; any",
+          "any; some",
+          "some; any",
+          "some; some"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "A: Who is the tall guy over there? B: That's Camille's ___, Jack. The boy next to him is their son.",
+        "options": [
+          "uncle",
+          "cousin",
+          "father",
+          "husband"
+        ],
+        "correct": 3
+      },
+      {
+        "q": "A: ___ is Melena's basketball game? B: It's on May 4.",
+        "options": [
+          "What day",
+          "What year",
+          "What time",
+          "What date"
+        ],
+        "correct": 3
+      },
+      {
+        "q": "A: What is Ricky doing in the ___? B: He's cooking dinner for us.",
+        "options": [
+          "kitchen",
+          "bedroom",
+          "bathroom",
+          "living room"
+        ],
+        "correct": 0
+      },
+      {
+        "q": "A: Look. Celine is ___ the food on the table. B: Oh no! Bad dog. You can't ___ that.",
+        "options": [
+          "eat; eat",
+          "eating; eat",
+          "eat; eating",
+          "eating; eating"
+        ],
+        "correct": 1
+      },
+      {
+        "q": "Please don't run in the classroom. It's not ___.",
+        "options": [
+          "safe",
+          "enough",
+          "clean",
+          "important"
+        ],
+        "correct": 0
+      },
+      {
+        "q": "A: Are those birthday cards for Cindy? B: Yes, ___ are.",
+        "options": [
+          "they",
+          "these",
+          "there",
+          "those"
+        ],
+        "correct": 0
+      },
+      {
+        "q": "A: Is Brady's favorite ___ black? B: No. It's brown. Everything（一切事物）in his room is brown.",
+        "options": [
+          "gift",
+          "rule",
+          "sign",
+          "color"
+        ],
+        "correct": 3
+      },
+      {
+        "q": "A: Who's Mrs. Lorna? B: She's an English ___ at my school. I'm her student.",
+        "options": [
+          "teacher",
+          "housewife",
+          "police officer",
+          "office worker"
+        ],
+        "correct": 0
+      },
+      {
+        "q": "A: When is the movie? B: It's ___ 5 p.m. ___ today.",
+        "options": [
+          "at; ×",
+          "×; at",
+          "on; ×",
+          "×; on"
+        ],
+        "correct": 0
+      },
+      {
+        "q": "A: What is Ashton doing? B: He is ___ and washing his car.",
+        "options": [
+          "using",
+          "taking",
+          "cleaning",
+          "following"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "A: Let's ___ together after school. B: Sure. You can come to my place.",
+        "options": [
+          "study",
+          "studying",
+          "can study",
+          "to study"
+        ],
+        "correct": 0
+      },
+      {
+        "q": "A: Are there any big ___ in the zoo? B: Yes. There are lions and elephants.",
+        "options": [
+          "bugs",
+          "kings",
+          "bands",
+          "animals"
+        ],
+        "correct": 3
+      },
+      {
+        "q": "A: Please ___ careful with the eggs. B: Yes, Mr. Hyde.",
+        "options": [
+          "do",
+          "be",
+          "let's",
+          "can"
+        ],
+        "correct": 1
+      },
+      {
+        "q": "A: My sister is ten years old. B: My brother is ten years old, ___.",
+        "options": [
+          "too",
+          "also",
+          "around",
+          "now"
+        ],
+        "correct": 0
+      },
+      {
+        "q": "A: Where is your cat? Isn't she in the living room? B: She is, but she's ___ the sofa. You can't see her from here.",
+        "options": [
+          "above",
+          "inside",
+          "behind",
+          "between"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "A: You can have the turkey on the table. B: Thank you, but I am very ___.",
+        "options": [
+          "full",
+          "hungry",
+          "healthy",
+          "popular"
+        ],
+        "correct": 0
+      },
+      {
+        "q": "There is a tree ___ the farm, and there are birds ___ that tree.",
+        "options": [
+          "in; in",
+          "on; in",
+          "on; of",
+          "in; on"
+        ],
+        "correct": 1
+      },
+      {
+        "q": "Please ___ the TV. It's time for bed.",
+        "options": [
+          "talk to",
+          "wait for",
+          "turn off",
+          "clean up"
+        ],
+        "correct": 2
+      }
+    ]
+  },
+  {
+    "type": "reading",
+    "title": "二、題組：請依所附的短文或圖表，選出一個最適當的答案",
+    "meta": "60分，每題4分",
+    "passages": [
+      {
+        "label": "（21–23）",
+        "start": 21,
+        "text": "Boys and girls can be very different. Their favorite colors can be different, too. ___21___ They are showing the boys' and girls' favorite colors from Town Creek Junior High School. For the girls, the most popular color is purple, but for the boys, the most popular color is blue. And the second most popular color for the girls is blue, but for the boys, it is the color black. From the pictures, you can also see red as some girls' favorite color, but ___22___. For them, red is not a favorite. And the two colors ___23___ are popular with the boys but not the girls.\n\n【字詞】different 不同的　show 顯示　most 最…　as 當作",
+        "image": "images/test14/pie.png",
+        "imageWidth": 560,
+        "items": [
+          {
+            "q": "（21）空格應填入：",
+            "options": [
+              "What is your favorite color?",
+              "Take a look at the two pictures.",
+              "The two pictures are of the boys and girls.",
+              "There are five different colors in the picture."
+            ],
+            "correct": 1
+          },
+          {
+            "q": "（22）空格應填入：",
+            "options": [
+              "red is not in the two pictures",
+              "orange is many boys' favorite",
+              "it is not a popular color for the boys",
+              "it is also very popular with the boys"
+            ],
+            "correct": 2
+          },
+          {
+            "q": "（23）空格應填入：",
+            "options": [
+              "red and green",
+              "black and blue",
+              "yellow and purple",
+              "orange and yellow"
+            ],
+            "correct": 3
+          }
+        ]
+      },
+      {
+        "label": "（24–26）",
+        "start": 24,
+        "text": "Evie: What are you reading on your phone, Jim?\nJim: I am reading about Purple World.\nEvie: What is that?\nJim: It's a park, and there are many trees and some bears. The bears there are very special. The color of their coat is between purple and black, and for baby bears, their coat is purple. The park's name is Purple World thanks to the color of their coat.\nEvie: Wow! Are the bears <u>dangerous</u>?\nJim: No. They are very nice, and they are friends with people.\nEvie: That's great.\nJim: Yes. Sadly, there are not many bears in the park now. Some bad guys are hunting them for their beautiful coat. Now, the police are after those bad people.\nEvie: Good to know <u>that</u>.\n\n【字詞】sadly 令人遺憾地　hunt 獵捕",
+        "items": [
+          {
+            "q": "Which（哪一個）is close to（接近）<u>dangerous</u>?",
+            "options": [
+              "Lucky.",
+              "Not safe.",
+              "Nervous.",
+              "Important."
+            ],
+            "correct": 1
+          },
+          {
+            "q": "What is <u>that</u> in the last line（最後一行）?",
+            "options": [
+              "People are hunting the bears.",
+              "The bears can never eat people.",
+              "The police are helping the bears.",
+              "The coat of the bears is beautiful."
+            ],
+            "correct": 2
+          },
+          {
+            "q": "Which is right about Purple World?",
+            "options": [
+              "The trees are purple there.",
+              "There aren't any baby bears there.",
+              "There are too many bears in the park today.",
+              "The name of this place is from the color of the bears."
+            ],
+            "correct": 3
+          }
+        ]
+      },
+      {
+        "label": "（27–29）",
+        "start": 27,
+        "text": "There is a big white house in the USA. What is special about it? Well, it is not only a house. It is a home to the president of the USA and the president's family. It is the White House. In the big house, there are 132 rooms, 35 bathrooms, and 412 doors. In those rooms, there are many bedrooms and offices. There is also a game room, a music room, and a big dining room. The big dining room is the State Dining Room. It is big enough for 140 people. Inside the White House, there is a museum and a <u>theater</u>, too. The theater is for the president's family and guests. They can see movies there. The beautiful big white house is not only for the president and the president's family. It is open to everyone. People can have a tour around the White House.\n\n【字詞】president 總統　guest 賓客　tour 參觀",
+        "items": [
+          {
+            "q": "Which is a picture of a <u>theater</u>?",
+            "image": "images/test14/q27_theater.png",
+            "options": [
+              "A",
+              "B",
+              "C",
+              "D"
+            ],
+            "correct": 0
+          },
+          {
+            "q": "What is the reading mainly（主要的）about?",
+            "options": [
+              "The rooms in the White House.",
+              "The White House tours for people.",
+              "The president and the president's family.",
+              "The big dining room in the White House."
+            ],
+            "correct": 0
+          },
+          {
+            "q": "Which is NOT right about the White House?",
+            "options": [
+              "There are many bathrooms inside the house.",
+              "Some bedrooms there are for the president's family.",
+              "The president's guests can see a movie at the theater there.",
+              "Only the president and the president's family can go inside the house."
+            ],
+            "correct": 3
+          }
+        ]
+      },
+      {
+        "label": "（30–31）",
+        "start": 30,
+        "text": "I am a number,\nA number with three <i>e</i>'s.\nI am a number,\nA number with three <i>n</i>'s.\nThere aren't any <i>h</i>'s in me,\nYou can see no <i>v</i>'s in me.\nBut yes, there is an <i>i</i>,\nWith an <i>i</i>, there is also a <i>t</i>.\nI am above ten and under twenty,\nWhat number am I?\n\n【字詞】with 有著…",
+        "items": [
+          {
+            "q": "How many <i>v</i>'s are there in the number?",
+            "options": [
+              "One.",
+              "Two.",
+              "Three.",
+              "There aren't any v's in it."
+            ],
+            "correct": 3
+          },
+          {
+            "q": "What number is it?",
+            "options": [
+              "17.",
+              "18.",
+              "19.",
+              "21."
+            ],
+            "correct": 2
+          }
+        ]
+      },
+      {
+        "label": "（32–35）",
+        "start": 32,
+        "text": "Betty is standing right in front of the door of her house. She cannot open the door. The <u>key</u> to the house is not in her schoolbag. Can it be in the classroom at her school? Now, she can only wait for her parents, but they are not coming home before nine o'clock this evening. It's five o'clock. \"What can I do?\" Betty is looking at the street and thinking. Near the yellow house on the street, there is an old man. He is walking right to Betty. Betty is very nervous. She cannot go inside the house, and that old man is coming up to her. This is not good. <u>Today is really not her day</u>.\n\nBetty: Don't come near me. I'm calling the police.\nOld man: Oh no! I'm not a bad guy. Is this your <u>key</u>?\nBetty: Oh yes! That's my <u>key</u>. I am sorry.\nOld man: It's okay. Here.\nBetty: Thank you.\n\n【字詞】street 街道　call 打電話",
+        "items": [
+          {
+            "q": "Betty's parents are home now. What time can it be?",
+            "options": [
+              "5:30 p.m.",
+              "7:30 p.m.",
+              "8:45 p.m.",
+              "9:15 p.m."
+            ],
+            "correct": 3
+          },
+          {
+            "q": "With a <u>key</u>, people can ______.",
+            "options": [
+              "open a door",
+              "go to school",
+              "call the police",
+              "fight with each other"
+            ],
+            "correct": 0
+          },
+          {
+            "q": "\"<u>Today is really not her day</u>\" means（意指）\"______.\"",
+            "options": [
+              "today she's a bad girl",
+              "today she is not lucky",
+              "today is not her birthday",
+              "today is important to her"
+            ],
+            "correct": 1
+          },
+          {
+            "q": "What can we know from the reading（文章）?",
+            "options": [
+              "The old man's house is yellow.",
+              "At four thirty, the girl is at home.",
+              "The old man is not helping Betty.",
+              "The old man is giving Betty her key."
+            ],
+            "correct": 3
+          }
+        ]
+      }
+    ]
+  }
+]
+};
+
+let currentMode = "quiz"; // quiz | print
+
+const contentEl = document.getElementById("content");
+const scoreBar = document.getElementById("scoreBar");
+const scoreText = document.getElementById("scoreText");
+
+function render(){
+  window.examAnswersRevealed = false;
+  contentEl.innerHTML = "";
+  DATA.sections.forEach((sec, si)=> contentEl.appendChild(renderSection(sec, si)));
+  if(currentMode==="quiz"){
+    scoreBar.classList.add("show");
+    updateScore();
+  } else {
+    scoreBar.classList.remove("show");
+    contentEl.querySelectorAll(".answer-reveal").forEach(e=>e.classList.add("show"));
+    contentEl.querySelectorAll(".opt").forEach(o=>o.classList.add("disabled"));
+    contentEl.querySelectorAll(".opt.is-correct").forEach(o=>o.classList.add("correct"));
+  }
+}
+
+function renderTable(t){
+  if(!t) return "";
+  const headHtml = `<tr>${t.head.map(h=>`<th>${h}</th>`).join("")}</tr>`;
+  const rowsHtml = t.rows.map(r=>`<tr>${r.map((c,ci)=>ci===0?`<th>${c}</th>`:`<td>${c}</td>`).join("")}</tr>`).join("");
+  return `${t.title ? `<div style="font-weight:700;text-align:center;color:var(--chalk-green);margin-bottom:6px;">${t.title}</div>`:""}
+    <table class="data-table"><thead>${headHtml}</thead><tbody>${rowsHtml}</tbody></table>
+    ${t.note ? `<div style="margin-top:8px;color:var(--ink-soft);font-size:13px;">${t.note}</div>` : ""}`;
+}
+
+function renderSection(sec, si){
+  const block = document.createElement("section");
+  block.className = "block";
+  block.innerHTML = `<h2>${sec.title}</h2><p class="meta">${sec.meta}</p>`;
+
+  if(sec.audio){
+    const audioEl = document.createElement("audio");
+    audioEl.controls = true;
+    audioEl.src = sec.audio;
+    block.appendChild(audioEl);
+  }
+
+  if(sec.image){
+    const im = document.createElement("img");
+    im.src = sec.image; im.alt = "題目附圖";
+    im.style.cssText = "width:100%;max-width:" + (sec.imageWidth || 560) + "px;display:block;margin:0 auto 16px;border-radius:8px;border:1px solid var(--paper-line);";
+    block.appendChild(im);
+  }
+
+  if(sec.wordbank){
+    const wb = document.createElement("div");
+    wb.className = "wordbank";
+    wb.innerHTML = sec.wordbank.map(w=>`<span class="wb-word">${w}</span>`).join("");
+    block.appendChild(wb);
+  }
+
+  if(sec.type==="vocab"){
+    sec.items.forEach((it,i)=>{
+      const q = document.createElement("div");
+      q.className = "q";
+      const ex = (sec.exact || it.exact) ? ' data-exact="1"' : '';
+      if(it.answers){
+        q.innerHTML = `<div class="q-text"><span class="q-num">${(sec.start||1)+i}.</span>${it.q}
+          &nbsp; ${it.answers.map(a=>`<input type="text" class="micro-blank"${ex} data-answer="${a}" style="width:${Math.max(90,a.length*13)}px;" placeholder="填入單字">`).join(" ")}</div>
+          <div class="answer-reveal">正解：${it.answers.join(", ")}</div>`;
+        q.querySelectorAll(".micro-blank").forEach(inp=>inp.addEventListener("input", ()=>checkMultiBlank(q)));
+      } else {
+        q.innerHTML = `<div class="q-text"><span class="q-num">${(sec.start||1)+i}.</span>${it.q}
+          &nbsp; <input type="text" class="blank"${ex} data-answer="${it.answer}" placeholder="填入單字">
+          <span class="feedback"></span></div>
+          <div class="answer-reveal">正解：${it.answer}</div>`;
+        const input = q.querySelector("input");
+        input.addEventListener("input", ()=>checkBlank(input));
+      }
+      block.appendChild(q);
+    });
+  }
+
+  else if(sec.type==="mc"){
+    sec.items.forEach((it,i)=>{
+      const q = document.createElement("div");
+      q.className = "q";
+      const optsHtml = it.options.map((op,oi)=>`
+        <div class="opt" data-idx="${oi}" data-correct="${oi===it.correct}">
+          <span class="tag">(${String.fromCharCode(65+oi)})</span><span>${op}</span>
+        </div>`).join("");
+      q.innerHTML = `<div class="q-text"><span class="q-num">${(sec.start||1)+i}.</span>${it.q||""}</div>
+        ${it.image ? `<img src="${it.image}" alt="題目附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">`:""}
+        <div class="opts">${optsHtml}</div>`;
+      q.querySelectorAll(".opt").forEach(optEl=>{
+        if(optEl.dataset.correct==="true") optEl.classList.add("is-correct");
+        optEl.addEventListener("click", ()=>selectOption(q, optEl));
+      });
+      block.appendChild(q);
+    });
+  }
+
+  else if(sec.type==="guided" || sec.type==="translation"){
+    sec.items.forEach((it,i)=>{
+      const q = document.createElement("div");
+      q.className = "q";
+      const prompt = sec.type==="guided" ? `${it.prompt} <em style="color:var(--ink-soft);font-style:normal;">${it.hint}</em>` : it.zh;
+      q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${prompt}</div>
+        ${it.image ? `<img src="${it.image}" alt="題目附圖" style="width:100%;max-width:${it.imageWidth||240}px;display:block;border-radius:8px;margin:4px 0 8px;border:1px solid var(--paper-line);">`:""}
+        <input type="text" class="line-answer" placeholder="請輸入英文句子">
+        <div class="check-row"><button class="mini-btn secondary reveal-btn" style="display:none;">對答案</button></div>
+        <div class="answer-reveal">正解：${it.answer}</div>`;
+      q.querySelector(".reveal-btn").addEventListener("click", (e)=>{
+        q.querySelector(".answer-reveal").classList.add("show");
+      });
+      block.appendChild(q);
+    });
+  }
+
+  else if(sec.type==="guided-multi"){
+    sec.items.forEach((it,i)=>{
+      const q = document.createElement("div");
+      q.className = "q";
+      const linesHtml = it.lines.map(line=>{
+        const parts = line.split(/\{\{(.*?)\}\}/g);
+        return parts.map((part,pi)=> pi%2===1
+          ? `<input type="text" class="micro-blank"${(sec.exact||it.exact)?' data-exact="1"':''} data-answer="${part}" style="width:${Math.max(60,part.length*13)}px;">`
+          : part
+        ).join("");
+      }).join("<br>");
+      q.innerHTML = `${it.image ? `<img src="${it.image}" alt="題目附圖" style="width:100%;max-width:${it.imageWidth||220}px;display:block;border-radius:8px;margin:0 0 6px;border:1px solid var(--paper-line);">`:""}<div class="q-text"><span class="q-num">${(sec.start||1)+i}.</span>${it.zh ? it.zh+"<br>" : ""}${linesHtml}</div>
+        <div class="answer-reveal">正解：${it.lines.map(l=>l.replace(/\{\{(.*?)\}\}/g,"$1")).join("　")}</div>`;
+      q.querySelectorAll(".micro-blank").forEach(inp=>{
+        inp.addEventListener("input", ()=>checkMultiBlank(q));
+      });
+      block.appendChild(q);
+    });
+  }
+
+  else if(sec.type==="cloze"){
+    const passageDiv = document.createElement("div");
+    passageDiv.className = "passage";
+    passageDiv.textContent = sec.passage;
+    block.appendChild(passageDiv);
+    sec.items.forEach((it,i)=>{
+      const q = document.createElement("div");
+      q.className = "q";
+      const optsHtml = it.options.map((op,oi)=>`
+        <div class="opt" data-idx="${oi}" data-correct="${oi===it.correct}">
+          <span class="tag">(${String.fromCharCode(65+oi)})</span><span>${op}</span>
+        </div>`).join("");
+      q.innerHTML = `<div class="q-text"><span class="q-num">${(sec.start||1)+i}.</span></div><div class="opts">${optsHtml}</div>`;
+      q.querySelectorAll(".opt").forEach(optEl=>{
+        if(optEl.dataset.correct==="true") optEl.classList.add("is-correct");
+        optEl.addEventListener("click", ()=>selectOption(q, optEl));
+      });
+      block.appendChild(q);
+    });
+  }
+
+  else if(sec.type==="reading"){
+    sec.passages.forEach(p=>{
+      const passageDiv = document.createElement("div");
+      passageDiv.className = "passage";
+      passageDiv.innerHTML = `${p.label ? `<span class="passage-label">${p.label}</span>`:""}${p.text}${p.image ? `<img src="${p.image}" alt="附圖" style="width:100%;max-width:${p.imageWidth||520}px;display:block;margin:10px auto 0;border-radius:8px;border:1px solid var(--paper-line);">`:""}${p.table ? renderTable(p.table) : ""}`;
+      block.appendChild(passageDiv);
+      p.items.forEach((it,i)=>{
+        const q = document.createElement("div");
+        q.className = "q";
+        const optsHtml = it.options.map((op,oi)=>`
+          <div class="opt" data-idx="${oi}" data-correct="${oi===it.correct}">
+            <span class="tag">(${String.fromCharCode(65+oi)})</span><span>${op}</span>
+          </div>`).join("");
+        q.innerHTML = `<div class="q-text"><span class="q-num">${(p.start||1)+i}.</span>${it.q}</div>
+          ${it.image ? `<img src="${it.image}" alt="題目附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">`:""}
+          <div class="opts">${optsHtml}</div>`;
+        q.querySelectorAll(".opt").forEach(optEl=>{
+          if(optEl.dataset.correct==="true") optEl.classList.add("is-correct");
+          optEl.addEventListener("click", ()=>selectOption(q, optEl));
+        });
+        block.appendChild(q);
+      });
+    });
+  }
+
+  return block;
+}
+
+function selectOption(qEl, optEl){
+  if(currentMode!=="quiz") return;
+  if(qEl.dataset.answered==="true") return;
+  qEl.dataset.answered = "true";
+  qEl.querySelectorAll(".opt").forEach(o=>o.classList.add("disabled"));
+  optEl.classList.add("selected");
+  const correctOpt = qEl.querySelector('.opt[data-correct="true"]');
+  qEl.dataset.studentAnswer = optEl.textContent.trim();
+  qEl.dataset.correctAnswer = correctOpt ? correctOpt.textContent.trim() : "";
+  qEl.dataset.isCorrect = (optEl.dataset.correct==="true") ? "true" : "false";
+  updateScore();
+}
+
+function normTxt(s, exact){ s = s.trim().replace(/[’‘]/g, "'").replace(/[-‐–]/g, " ").replace(/\s+/g, " "); return exact ? s : s.toLowerCase(); }
+function checkBlank(input){
+  const ex = input.dataset.exact==="1";
+  const val = normTxt(input.value, ex);
+  const ans = normTxt(input.dataset.answer, ex);
+  const qEl = input.closest(".q");
+  if(val.length===0){ if(qEl) delete qEl.dataset.studentAnswer; updateScore(); return; }
+  if(qEl){
+    qEl.dataset.studentAnswer = input.value.trim();
+    qEl.dataset.correctAnswer = input.dataset.answer;
+    qEl.dataset.isCorrect = (val===ans) ? "true" : "false";
+  }
+  updateScore();
+}
+
+function checkMultiBlank(qEl){
+  const inputs = Array.from(qEl.querySelectorAll(".micro-blank"));
+  const anyEmpty = inputs.some(inp=>inp.value.trim().length===0);
+  if(anyEmpty){ delete qEl.dataset.studentAnswer; updateScore(); return; }
+  const allCorrect = inputs.every(inp=> inp.dataset.answer.split("/").some(a=>normTxt(a, inp.dataset.exact==="1") === normTxt(inp.value, inp.dataset.exact==="1")));
+  qEl.dataset.studentAnswer = inputs.map(inp=>inp.value.trim()).join(" / ");
+  qEl.dataset.correctAnswer = inputs.map(inp=>inp.dataset.answer).join(" / ");
+  qEl.dataset.isCorrect = allCorrect ? "true" : "false";
+  updateScore();
+}
+
+function updateScore(){
+  let total = 0, answered = 0, correct = 0;
+  contentEl.querySelectorAll(".q").forEach(q=>{
+    const gradable = q.querySelector(".opts") || q.querySelector("input.blank") || q.querySelector("input.micro-blank");
+    if(!gradable) return;
+    total++;
+    if(q.dataset.studentAnswer !== undefined){
+      answered++;
+      if(q.dataset.isCorrect === "true") correct++;
+    }
+  });
+  if(window.examAnswersRevealed){
+    scoreText.textContent = `${correct} / ${total}`;
+  } else {
+    scoreText.textContent = `已作答 ${answered} / ${total} 題`;
+  }
+}
+window.updateScore = updateScore;
+
+document.getElementById("resetBtn").addEventListener("click", render);
+document.getElementById("quizModeBtn").addEventListener("click", ()=>{
+  currentMode = "quiz";
+  document.getElementById("quizModeBtn").classList.add("active");
+  document.getElementById("printModeBtn").classList.remove("active");
+  render();
+});
+document.getElementById("printModeBtn").addEventListener("click", ()=>{
+  if(document.getElementById("printModeBtn").disabled) return;
+  currentMode = "print";
+  document.getElementById("printModeBtn").classList.add("active");
+  document.getElementById("quizModeBtn").classList.remove("active");
+  render();
+});
+
+window.unlockPrintMode = function(){
+  document.getElementById("printModeBtn").disabled = false;
+};
+
+render();
+</script>
+<script src="../sync.js"></script>
+</body>
+</html>
