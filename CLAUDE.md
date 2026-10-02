@@ -59,6 +59,10 @@
   - 產生方式：`tools/hanlin-g8-1-build/socdata/*.py` → `python gen_soc.py`（會一併裁切附圖；原始 PDF 路徑寫死為公司電腦的 OneDrive）。B、C 卷的資料放 `socdataB/`、`socdataC/`。
   - 27 頁都驗證過：答案標記數＝題數，圖片都有載入，可以正常送出。
   - 待辦：社會 B、C 卷；數學 B、C 卷。
+- **翰林一上數學 A 卷完成**（第 1～14 回）：`hanlin-math-g7-1.html`、`hanlin-math-g7-1/test1~14.html`，`math.html` 的「國中一上・翰林」已開放。
+  - 產生方式：`math7data/tNN.py` → `python crop_math.py --g7`、`python gen_math.py --g7`（不加 `--g7` 就是產生二上）。原始 PDF 讀自 OneDrive 的 `115上國中1年級校卷\115上翰林1上校卷\115上翰林數學1上校卷`。
+  - 自動批改另外支援：上標數字（²、⁵）、× 打成 x、常見單位（毫升、公克、題、秒、°C 等）。
+  - 14 頁都驗證過：官方答案都判為正確、KaTeX 沒有錯誤、圖片都有載入。
 - 社會七上（翰林）是在家裡電腦做的，做到地理第 5 回 A 卷。截至 10/02 上午**尚未 Push 到 GitHub**。
 
 ### 待辦／注意

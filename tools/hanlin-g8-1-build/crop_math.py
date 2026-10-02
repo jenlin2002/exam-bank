@@ -1,9 +1,12 @@
 """Crop figures out of the scanned 翰林數學 PDFs. Each mathdata*/tNN.py lists CROPS = [(name, page, box)],
 boxes in 110-dpi preview pixels. Rounds 1–2 (written before CROPS existed) are listed here."""
-import pymupdf, os, glob, importlib.util
+import pymupdf, os, glob, importlib.util, sys
 HERE = os.path.dirname(os.path.abspath(__file__))
-RAW = r"E:\GitHub\exam-bank\PDF-RAW-DATA\MATH\hanlin\hanlin-g8-1\115上翰林數學2上{}卷_學用.pdf"
-OUT = r"E:\GitHub\exam-bank\hanlin-math-g8-1\images"
+G7 = "--g7" in sys.argv   # 翰林一上: math7data*/ -> hanlin-math-g7-1/
+RAW = (r"C:\Users\jenlin2002\OneDrive - avc.co\興雅國中\XXY\校用券1到3 年級全出版社\115年\115上國中1年級校卷\115上翰林1上校卷\115上翰林數學1上校卷\115上翰林數學1上{}卷_學用.pdf"
+       if G7 else r"E:\GitHub\exam-bank\PDF-RAW-DATA\MATH\hanlin\hanlin-g8-1\115上翰林數學2上{}卷_學用.pdf")
+OUT = r"E:\GitHub\exam-bank\hanlin-math-g7-1\images" if G7 else r"E:\GitHub\exam-bank\hanlin-math-g8-1\images"
+PREFIX = "math7data" if G7 else "mathdata"
 k = 72 / 110
 
 EARLY = {
@@ -17,7 +20,8 @@ def crop(doc, folder, name, page, b):
     os.makedirs(os.path.join(OUT, folder), exist_ok=True)
     doc[page-1].get_pixmap(dpi=200, clip=pymupdf.Rect(b[0]*k, b[1]*k, b[2]*k, b[3]*k)).save(os.path.join(OUT, folder, name + ".png"))
 
-for ver, src_folder, suf in [("A","mathdata",""), ("B","mathdataB","b"), ("C","mathdataC","c")]:
+if G7: EARLY = {}
+for ver, src_folder, suf in [("A",PREFIX,""), ("B",PREFIX+"B","b"), ("C",PREFIX+"C","c")]:
     files = sorted(glob.glob(os.path.join(HERE, src_folder, "t*.py")))
     if not files: continue
     doc = pymupdf.open(RAW.format(ver))

@@ -765,11 +765,12 @@ function checkMultiBlank(qEl){
 
 function normMath(s){
   return s.toLowerCase()
+    .replace(/(\d)\s*x\s*(?=\d)/g,"$1*")
     .replace(/[＋]/g,"+").replace(/[，、；;]/g,",").replace(/[（]/g,"(").replace(/[）]/g,")").replace(/[＝]/g,"=").replace(/[：]/g,":").replace(/[＜]/g,"<").replace(/[＞]/g,">").replace(/[－−–—]/g,"-").replace(/[×＊]/g,"*").replace(/[／÷]/g,"/")
-    .replace(/²/g,"2").replace(/³/g,"3").replace(/\^/g,"").replace(/π/g,"pi")
+    .replace(/[⁰¹²³⁴⁵⁶⁷⁸⁹]/g, c=>"⁰¹²³⁴⁵⁶⁷⁸⁹".indexOf(c)).replace(/\^/g,"").replace(/π/g,"pi")
     .replace(/根號|sqrt/g,"√").replace(/\+-|\+\/-/g,"±").replace(/或|or|and|和/g,",")
     .replace(/[\s　]+/g,"")
-    .replace(/平方公分|平方公尺|平方公寸|平方單位|公分|公尺|公寸|單位|元|個|人|%|％|\(重根\)|重根/g,"")
+    .replace(/平方公分|平方公尺|平方公寸|平方單位|公分|公尺|公寸|單位|毫升|公克|公斤|公里|元|個|人|題|秒|次|片|班|瓶蓋|顆|杯|圈|歲|位|天|%|％|°c|度|\(重根\)|重根/g,"")
     .replace(/√\((\w+)\)/g,"√$1").replace(/[。．.]+$/,"");
 }
 // 「或」「,」分隔的多個答案不計順序；座標 (a,b) 等括號包住的整串保留順序
