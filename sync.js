@@ -1,4 +1,15 @@
 /* 段考題庫 - 共用的 Google Sheet 回傳邏輯 (exam-bank/sync.js) */
+// 學習點數存摺：每個頁面都載入 sync.js，所以在這裡順便載入同資料夾的 points.js（不用每頁各加一行）。
+// 送出成績時 submitExamResults() 會呼叫 Points.earn()；沒有 points.js 或沒登入時什麼都不會發生。
+(function(){
+  const cs = document.currentScript;
+  if(cs && cs.src && !window.Points){
+    const s = document.createElement("script");
+    s.src = new URL("points.js", cs.src).href;
+    document.head.appendChild(s);
+  }
+})();
+
 (function(){
   const SHEET_ENDPOINT = "https://script.google.com/macros/s/AKfycbxO7EkmhoM2Bex59yRrBJrvY9nXEHCpUGykEP0YdkvCvtSYZ4lhDPB2N6uDHO2y3uCu/exec";
 
@@ -17,30 +28,37 @@
     }).catch(()=>{});
   }
 
+  // 目前登入的人：points.js 的「你是誰？」關卡驗證 PIN 之後，名字存在 localStorage 的 quizStudentName
+  function loggedInStudent(){
+    let n = "";
+    try{ n = (localStorage.getItem("quizStudentName") || "").trim().toUpperCase(); }catch(e){}
+    return (!n || /^訪客/.test(n)) ? "" : n;
+  }
+
   function injectPicker(){
     if(document.getElementById("examSyncBar")) return;
     const bar = document.createElement("div");
     bar.id = "examSyncBar";
-    bar.style.cssText = "position:fixed;bottom:16px;right:16px;z-index:999;background:#2f4538;color:#eef2ea;"
+    // 右下角最下面是點數存摺的「🪙 點數」按鈕（z-index 9000），送出列要放在它上面，不然會被蓋住
+    bar.style.cssText = "position:fixed;bottom:calc(70px + env(safe-area-inset-bottom,0px));right:14px;z-index:999;background:#2f4538;color:#eef2ea;"
       + "padding:10px 14px;border-radius:10px;box-shadow:0 4px 14px rgba(0,0,0,.25);"
       + "font-family:'Noto Sans TC',sans-serif;font-size:13.5px;display:flex;gap:8px;align-items:center;";
     bar.innerHTML = `
-      <select id="examStudentSelect" style="border-radius:6px;border:none;padding:6px 8px;font-size:13.5px;">
-        <option value="">選擇學生</option>
-        <option value="BRANDEN">BRANDEN</option>
-        <option value="MELISSA">MELISSA</option>
-      </select>
+      <span id="examWho" style="font-weight:700;"></span>
       <button id="examSubmitBtn" style="background:#b5842a;color:#fff;border:none;border-radius:6px;
         padding:7px 14px;font-size:13.5px;cursor:pointer;">送出成績</button>
       <span id="examSyncStatus" style="font-size:12px;color:#cfe0d1;"></span>
     `;
     document.body.appendChild(bar);
 
-    const saved = localStorage.getItem("examBankStudent");
-    if(saved) document.getElementById("examStudentSelect").value = saved;
-    document.getElementById("examStudentSelect").addEventListener("change", (e)=>{
-      localStorage.setItem("examBankStudent", e.target.value);
-    });
+    // 不用再選學生：成績自動記在「登入者」（用 PIN 登入點數存摺的人）名下。登入／切換帳號後這裡的名字會跟著更新。
+    const who = document.getElementById("examWho");
+    function showWho(){
+      const n = loggedInStudent();
+      who.textContent = n ? ("登入者：" + n) : "尚未登入";
+    }
+    showWho();
+    setInterval(showWho, 1500);
 
     document.getElementById("examSubmitBtn").addEventListener("click", (e)=>{
       if(e.target.disabled) return; // 防止重複點擊、重複送出
@@ -145,9 +163,9 @@
   };
 
   window.submitExamResults = async function(){
-    const student = document.getElementById("examStudentSelect").value;
+    const student = loggedInStudent();
     const statusEl = document.getElementById("examSyncStatus");
-    if(!student){ alert("請先在右下角選擇學生身分"); return; }
+    if(!student){ alert("請先登入（在「你是誰？」選名字並輸入 PIN），成績才會記在你的名下"); return; }
     if(!window.EXAM_META){ alert("這個頁面尚未設定考卷資訊"); return; }
 
     // 檢查所有可判斷對錯的題目是否都已作答
@@ -178,6 +196,7 @@
     // 逐一依序送出（不要同時平行送出多個單元），
     // 避免多個請求同時打到 Apps Script 造成寫入衝突、漏掉部分列。
     const blocks = Array.from(document.querySelectorAll("section.block"));
+    let allScore = 0, allTotal = 0;
     for(const block of blocks){
       const h2 = block.querySelector("h2");
       const sectionTitle = h2 ? h2.textContent.trim() : "";
@@ -200,8 +219,10 @@
       });
       if(items.length){
         sections++;
+        allScore += score; allTotal += total;
         statusEl.textContent = `送出中...（第 ${sections} 個單元）`;
-        await sendToSheet({
+        // 家長（PARENT）測試時不寫進成績單，只在點數的測試存摺記一筆
+        if(student !== "PARENT") await sendToSheet({
           date, student,
           version: window.EXAM_META.version,
           examLabel: window.EXAM_META.examLabel,
@@ -225,6 +246,10 @@
     } else {
       statusEl.textContent = `已送出 ${sections} 個單元的成績！`;
       submitBtn.textContent = "已送出成績";
+      // 計入學習點數（每題 1 點、同一份考卷每天第一次才算，規則在點數後端）
+      if(window.Points){
+        Points.earn({ name: student, label: document.title + "（" + window.EXAM_META.version + "）", mode: "全卷", correct: allScore, total: allTotal });
+      }
       // 成功送出後按鈕維持鎖住，避免手滑重複點擊造成同一份成績送出兩次
       if(typeof window.unlockPrintMode === "function"){
         window.unlockPrintMode();

@@ -72,8 +72,13 @@
   讓頁面把新選的答案當成第一次作答；送出成績後（`#examSubmitBtn` 被鎖住，body 加上 `exam-locked`）才真的不能改。按「重新作答」會解鎖。
   填空、翻譯、計算題本來就是 input 事件，可以隨時修改。以後新做的頁面只要照舊慣例（`.q`、`.opt`、`dataset.answered`）並載入 `sync.js` 就自動有這個行為。
   已測：社會（hanlin-social-g8-1/geo1）、英語一般回與聽力回（hanlin-g8-1/test4）、數學（hanlin-math-g8-1/test1）；改選後作答數、對錯、已選樣式都正確，鎖住後點選無效。
+- **段考題庫接上學習點數存摺（使用者要求：只要是測驗都記錄、都納入點數）**：根目錄新增 `points.js`（和英文測驗系統共用的同一份，第 6 份副本，主檔在 english-quiz-plan/points/points.js；改主檔要同步各處）。
+  `sync.js` 一載入就用 `document.currentScript.src` 找同資料夾的 `points.js` 動態載入（所以 281 頁不用逐頁加 script）；
+  `submitExamResults()` 成功送出後呼叫 `Points.earn({ name: 選的學生, label: 頁面標題（A卷）, mode: "全卷", correct, total })`。
+  **不用再選學生了（使用者 2026-10-04）**：右下角的下拉選單拿掉，改顯示「登入者：XXX」；「送出成績」自動帶登入者（localStorage 的 `quizStudentName`，由 points.js 的 PIN 關卡寫入）回傳試算表與點數；沒登入會提示先登入；家長（PARENT）測試只記點數的測試存摺、不寫進成績單。規則同其他網站：每題 1 點、同一份考卷每天第一次才算、每天上限 50 點。
+  沒登入的人會先看到「你是誰？」關卡。已用社會地理第 1 回測過（stub 掉真正的送出）：回報的名字、標題、答對／總題數都正確。
 
 ### 待辦／注意
 - 以上變更要在 GitHub Desktop 裡 Commit + Push，換電腦後先 Pull。
 - 尚未製作：翰林二上數學網頁（原始檔已放進 `PDF-RAW-DATA/MATH/hanlin/hanlin-g8-1/`）。另外康軒數學 K 卷只在 OneDrive 裡，沒有放進專案。
-- 學生名單寫在 `sync.js` 的 `<select>`（目前是 BRANDEN、MELISSA）。
+- 學生名單不再寫在 `sync.js`：改由點數存摺的登入帳號決定（家長在「帳號管理」建立）。
