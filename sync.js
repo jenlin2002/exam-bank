@@ -56,11 +56,35 @@
         btn.disabled = false;
         btn.style.opacity = "";
         btn.style.cursor = "";
+        document.body.classList.remove("exam-locked");
         btn.textContent = "送出成績";
         if(status) status.textContent = "";
       });
     }
   }
+
+  // 選擇題在「送出成績」之前都還在考試中，可以改選答案。
+  // 各頁面自己的點選程式在選過之後會把這題鎖住（dataset.answered），這裡用捕捉階段的點擊事件，
+  // 在頁面自己的程式執行之前先把該題的作答狀態清掉，讓頁面把新選的答案當成第一次作答；
+  // 送出成績之後（按鈕變成鎖住）才真的不能再改。
+  const lockStyle = document.createElement("style");
+  lockStyle.textContent = "body:not(.exam-locked) .q .opt.disabled{cursor:pointer;}";   // 還沒送出時，選過的題目看起來也是可以再點的
+  document.head.appendChild(lockStyle);
+  function examLocked(){
+    const b = document.getElementById("examSubmitBtn");
+    return !!(b && b.disabled);
+  }
+  document.addEventListener("click", (e)=>{
+    const opt = e.target.closest && e.target.closest(".q .opt");
+    if(!opt) return;
+    const q = opt.closest(".q");
+    if(!q || q.dataset.answered !== "true" || examLocked()) return;
+    delete q.dataset.answered;
+    delete q.dataset.studentAnswer;
+    delete q.dataset.correctAnswer;
+    delete q.dataset.isCorrect;
+    q.querySelectorAll(".opt").forEach(o=>o.classList.remove("selected", "correct", "wrong", "disabled"));
+  }, true);
 
   // 依提示作答／翻譯題（input.line-answer）：打字時記錄作答內容，
   // 否則送出前的「尚未作答」檢查永遠過不了。用事件委派，「重新作答」重繪後仍有效。
@@ -144,6 +168,7 @@
     submitBtn.disabled = true;
     submitBtn.style.opacity = "0.6";
     submitBtn.style.cursor = "not-allowed";
+    document.body.classList.add("exam-locked");
 
     const date = nowStr();
     let sections = 0;
@@ -196,6 +221,7 @@
       submitBtn.disabled = false;
       submitBtn.style.opacity = "";
       submitBtn.style.cursor = "";
+      document.body.classList.remove("exam-locked");
     } else {
       statusEl.textContent = `已送出 ${sections} 個單元的成績！`;
       submitBtn.textContent = "已送出成績";

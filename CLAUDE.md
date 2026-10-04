@@ -65,6 +65,14 @@
   - 14 頁都驗證過：官方答案都判為正確、KaTeX 沒有錯誤、圖片都有載入。
 - 社會七上（翰林）是在家裡電腦做的，做到地理第 5 回 A 卷。截至 10/02 上午**尚未 Push 到 GitHub**。
 
+### 2026-10-04（家裡電腦）
+- **選擇題在「送出成績」之前可以改選答案**（使用者要求：沒送出前都還在考試中，不要鎖死）。
+  各頁面自己的 `selectOption` 在選過之後會設 `dataset.answered="true"` 鎖住該題；修在共用的 `sync.js`（所有英語／數學／社會頁都載入它）：
+  捕捉階段的 click 事件，在頁面程式執行前先清掉該題的作答狀態（answered／studentAnswer／correctAnswer／isCorrect、selected／disabled 樣式），
+  讓頁面把新選的答案當成第一次作答；送出成績後（`#examSubmitBtn` 被鎖住，body 加上 `exam-locked`）才真的不能改。按「重新作答」會解鎖。
+  填空、翻譯、計算題本來就是 input 事件，可以隨時修改。以後新做的頁面只要照舊慣例（`.q`、`.opt`、`dataset.answered`）並載入 `sync.js` 就自動有這個行為。
+  已測：社會（hanlin-social-g8-1/geo1）、英語一般回與聽力回（hanlin-g8-1/test4）、數學（hanlin-math-g8-1/test1）；改選後作答數、對錯、已選樣式都正確，鎖住後點選無效。
+
 ### 待辦／注意
 - 以上變更要在 GitHub Desktop 裡 Commit + Push，換電腦後先 Pull。
 - 尚未製作：翰林二上數學網頁（原始檔已放進 `PDF-RAW-DATA/MATH/hanlin/hanlin-g8-1/`）。另外康軒數學 K 卷只在 OneDrive 裡，沒有放進專案。
