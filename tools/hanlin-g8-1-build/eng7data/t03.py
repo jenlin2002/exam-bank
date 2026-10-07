@@ -1,0 +1,86 @@
+META = dict(n=3, h1="第3回・Unit 2", subtitle="Where Are My Pencils?")
+I = "images/test3/"
+CROPS = [("cloze",5,(610,728,765,975)), ("p1",5,(620,1482,745,1590)), ("p2",6,(90,50,205,160)), ("p3",6,(85,150,205,262)), ("house",6,(602,688,1105,1180))]
+BOX = '<div style="background:#fff;border:1px solid var(--paper-line);border-radius:8px;padding:10px 14px;font-style:italic;margin-bottom:8px;">{}</div>'
+SECTIONS = [
+  dict(type="vocab", title="一、文意字彙", meta="【A部分 基礎題】每格1分，共11分", items=[
+    dict(q="Mr. Chu is my f___e singer; he is very handsome.", answer="favorite"),
+    dict(q="A: Is Grandma i___e the house? B: Yes. She is in the dining room.", answer="inside"),
+    dict(q="A: What c___r is your bag? B: It's brown.", answer="color"),
+    dict(q="A: Mom's not in the k___n. Where is she? B: M___e she is in the bathroom.", answers=["kitchen","Maybe"]),
+    dict(q="The w___ls of your room are purple. That is really sp___l.", answers=["walls","special"]),
+    dict(q="A: Where are the birds? B: They are a___e the trees.", answer="above"),
+    dict(q="A: Is the marker black? B: No. It's g___y.", answer="gray"),
+    dict(q="This house is small. It is not big e___h for a family of five.", answer="enough"),
+    dict(q="A: Is your school n___r the zoo? B: Yes. In fact（事實上）, my school is behind the zoo.", answer="near"),
+  ]),
+  dict(type="mc", title="二、文法選擇", meta="每題2分，共20分", items=[
+    dict(q="___ Tom's cats.", options=["It's","These","They're","That's"], correct=2),
+    dict(q="The park is ___ the farm.", options=["next","behind","in front","between"], correct=1),
+    dict(q="The bathroom is between the living room ___ the bedroom.", options=["for","near","and","from"], correct=2),
+    dict(q="A: Are these your rulers? B: Yes, ___.", options=["they're","they are","these are","those are"], correct=1),
+    dict(q="Those ___ are from Meg. They are beautiful.", options=["picture book","picture books","pictures book","picture's books"], correct=1),
+    dict(q="A: What are ___ in the picture? B: ___ are green apples.", options=["this; This","this; They","these; This","these; They"], correct=3),
+    dict(q="A: Everything（每樣事物）in your pencil case is new. B: Yes, ___ the ruler isn't. It's very old.", options=["for","and","but","maybe"], correct=2),
+    dict(q="George and his friends are ___ Poland（波蘭）.", options=["at","in","on","under"], correct=1),
+    dict(q="A: ___ is Daniel? B: Look! He's ___ the desk.", options=["What; in","What; at","Where; in","Where; at"], correct=3),
+    dict(q="A: Is Juliet ___ school? B: No. She's ___ her room.", options=["at; in","on; at","in; at","in; on"], correct=0),
+  ]),
+  dict(type="mc", title="三、對話選擇", meta="每題2分，共8分", items=[
+    dict(q="A: ___ B: Those are my cousin's markers.", options=["What are these?","Is that your marker?","Are they your cousins?","Where are your markers?"], correct=0),
+    dict(q="A: What are those on the desk? B: ___", options=["That's my pen.","This is a pencil box.","They're very beautiful.","A watch, an umbrella, and a book."], correct=3),
+    dict(q="A: ___ B: Isn't he in the classroom?", options=["Where's Andy?","Is Andy's watch here?","What's under the table?","Are Andy's classmates in the classroom?"], correct=0),
+    dict(q="A: Where's your dog? B: ___", options=["She is very fat.","She's five this year.","She's my good friend.","She is under the chair."], correct=3),
+  ]),
+  dict(type="cloze", title="四、克漏字選擇", meta="每題1分，共5分",
+    passage="My pets are my favorite. They are a dog, a bird, and two cats. Look at the pictures. The dog and the bird ___1___ in the garden. The dog's name is Toby, and the bird's name is Rocky. Toby is ___2___ the tree, and Rocky is ___3___ the tree. ___4___ the house are my two cats. The white cat is Snow, and the black cat is Coco. They are ___5___ the sofa. Aren't they cute?\n\n【字詞】pet 寵物　garden 花園　cute 可愛的",
+    items=[
+      dict(options=["is","be","am","are"], correct=3),
+      dict(options=["on","in","from","under"], correct=3),
+      dict(options=["in","from","under","inside"], correct=0),
+      dict(options=["On","From","Inside","Above"], correct=2),
+      dict(options=["to","on","under","behind"], correct=1),
+  ]),
+  dict(type="guided-multi", title="五、依提示填入正確的字詞形式", meta="每題1分，共5分", items=[
+    dict(zh="(mouse)", lines=["They are {{mice}}, not rabbits."]),
+    dict(zh="(gift)", lines=["These {{gifts}} are from her students."]),
+    dict(zh="(baby)", lines=["The {{babies}} in this room are very small."]),
+    dict(zh="(person)", lines=["Look at these {{people}}. They are really tall."]),
+    dict(zh="(housewife)", lines=["My mom and my aunt are good {{housewives}}. They are good cooks, too."]),
+  ]),
+  dict(type="guided", title="六、看圖詳答問題", meta="每題3分，共9分", items=[
+    dict(prompt="Where are the girls?", hint="（看圖回答）", image=I+"p1.png", answer="They are in front of / near the house."),
+    dict(prompt="Are they erasers?", hint="（先簡答，再詳答）", image=I+"p2.png", answer="No, they're not / they aren't. They are cookies."),
+    dict(prompt="Is Nancy in the living room?", hint="（先簡答，再詳答）", image=I+"p3.png", answer="No, she isn't / she's not. She is in the kitchen."),
+  ]),
+  dict(type="guided", title="七、依提示作答", meta="每題3分，共9分", items=[
+    dict(prompt="The bathroom is <u>between the two rooms</u>.", hint="（依畫線部分造原問句）", answer="Where is the bathroom?"),
+    dict(prompt="Those are old notebooks.", hint="（改為單數句）", answer="That is an old notebook."),
+    dict(prompt="This brown brush is for you.", hint="（改為複數句）", answer="These brown brushes are for you."),
+  ]),
+  dict(type="translation", title="八、整句式翻譯", meta="每題3分，共9分", items=[
+    dict(zh="那些桌子不是彼此相鄰嗎？", answer="Aren't those tables next to each other?"),
+    dict(zh="他在那間紫色的屋子裡，但他的父母沒有。", answer="He's in that purple house, but his parents aren't."),
+    dict(zh="A：那些女人在哪裡？B：在客廳裡。", answer="A: Where are those women? B: In the living room."),
+  ]),
+  dict(type="mc", title="一、單題", meta="【B部分 活用題】每題2分，共10分", items=[
+    dict(q="A: ___ Joe and Lynn your brother and sister? B: ___. They are my cousins.", options=["Isn't; Yes","Isn't; No","Aren't; No","Aren't; Yes"], correct=2),
+    dict(q="The living room is ___ the house.", options=["front","in front","in front of","in the front of"], correct=3),
+    dict(q="A: Who is he? B: That's Mr. Chen. He's those ___ teacher.", options=["student","students'","student's","students"], correct=1),
+    dict(q="A: Where are my dolls? B: ___ A: Thanks!", options=["No, not on the desk.","Your dolls aren't gray.","Aren't they on the chair?","Really? Where are they?"], correct=2),
+    dict(q="A: Are they ___ mothers? B: Yes. Amy and Jane are their mothers.", options=["Kevin and Vivian","Kevin's and Vivian","Kevin and Vivian's","Kevin's and Vivian's"], correct=3),
+  ]),
+  dict(type="reading", title="二、依短文或圖表選出適當的答案", meta="每題2分，共14分", passages=[
+    dict(label="【A】", text="Patty: Welcome to my house.\nAmanda: Wow! Your house is beautiful.\nPatty: Thank you. This is the living room, and that is the dining room. <u>It</u>'s next to the bathroom.\nAmanda: And where's your bedroom?\nPatty: Oh, my bedroom is next to the kitchen.\nAmanda: Where are your parents? Are they home?\nPatty: No, they aren't. They're at my uncle's house.\nAmanda: So... you're home alone?\nPatty: No. My dog, Max, is home, too. Look! He's under the dining table.\n\n【字詞】so 所以　alone 單獨地", items=[
+      dict(q="<u>It</u> in line 4（第四行）means（意指）___.", options=["the house","the living room","Patty's bedroom","the dining room"], correct=3),
+      dict(q="Where's Max?", options=["In the kitchen.","In the living room.","In Patty's bedroom.","In the dining room."], correct=3),
+      dict(q="Patty's bedroom is ___.", options=["next to the kitchen","next to the bathroom","next to the living room","next to the dining room"], correct=0),
+      dict(q="Where are Patty's parents?", options=["In the kitchen.","In Patty's bedroom.","In the living room.","At Patty's uncle's house."], correct=3),
+    ]),
+    dict(label="【B】", text="", image=I+"house.png", items=[
+      dict(q="Who's in the kitchen?", options=["Allen.","Julie.","Sara and Vicki.","Leo and Mark."], correct=3),
+      dict(q="Where's the bathroom?", options=["Behind the kitchen.","Right next to Sara's bedroom.","Between Vicki's room and the kitchen.","Between the living room and the kitchen."], correct=1),
+      dict(q=BOX.format("A: I'm really hungry.<br>B: Me too. Oh, look! The cookies are ready（準備好的）.") + "Who can（可能）B be?", options=["Julie.","Leo.","Allen.","Sara."], correct=1),
+    ]),
+  ]),
+]
