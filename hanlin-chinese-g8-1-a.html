@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>翰林國文二上｜A卷試做</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@500;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --paper: #faf6ec;
+      --paper-line: #e3dcc8;
+      --ink: #26332b;
+      --ink-soft: #5b6b5f;
+      --chalk-green: #2f4538;
+      --chalk-green-2: #3d5a48;
+      --pen-red: #b8433a;
+      --pen-red-soft: #f4dedb;
+      --ok-green: #3f7d52;
+      --ok-green-soft: #dfeee1;
+      --gold: #b5842a;
+      --radius: 10px;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--paper);
+      color: var(--ink);
+      font-family: "Noto Sans TC", sans-serif;
+      line-height: 1.7;
+    }
+    header.hero {
+      background: var(--chalk-green);
+      color: #eef2ea;
+      padding: 28px 20px 40px;
+      position: relative;
+    }
+    header.hero::after {
+      content: "";
+      position: absolute;
+      left: 0; right: 0; bottom: -1px;
+      height: 14px;
+      background: repeating-linear-gradient(90deg, var(--paper) 0 18px, transparent 18px 20px);
+    }
+    .hero-inner { max-width: 900px; margin: 0 auto; }
+    .breadcrumb a { color: #cfe0d1; text-decoration: none; font-size: 14px; }
+    .breadcrumb a:hover { text-decoration: underline; }
+    h1 {
+      font-family: "Noto Serif TC", serif;
+      font-weight: 700;
+      font-size: clamp(24px, 4vw, 34px);
+      margin: 10px 0 6px;
+    }
+    .subtitle { color: #cfe0d1; font-size: 15px; margin: 0; }
+    main { max-width: 900px; margin: 0 auto; padding: 28px 20px 80px; }
+    .controls {
+      display: flex; gap: 10px; flex-wrap: wrap; align-items: center; justify-content: space-between; margin-bottom: 20px;
+    }
+    .mode-toggle { display: flex; border: 2px solid var(--chalk-green); border-radius: 999px; overflow: hidden; }
+    .mode-toggle button {
+      background: transparent; border: none; padding: 8px 16px; font-size: 14px; font-weight: 700;
+      color: var(--chalk-green); cursor: pointer; font-family: "Noto Sans TC", sans-serif;
+    }
+    .mode-toggle button.active { background: var(--gold); color: #fff; }
+    .mode-toggle button:disabled { opacity: 0.4; cursor: not-allowed; }
+    .score-bar {
+      display: none; align-items: center; justify-content: space-between; gap: 12px;
+      background: #fff; border: 1px solid var(--paper-line); border-left: 5px solid var(--gold); border-radius: var(--radius);
+      padding: 12px 18px; margin-bottom: 8px; font-size: 14px;
+    }
+    .score-bar.show { display: flex; }
+    .score-bar strong { font-size: 18px; color: var(--gold); }
+    .score-bar button {
+      background: none; border: 1px solid var(--ink-soft); color: var(--ink-soft); border-radius: 6px;
+      padding: 6px 12px; font-size: 13px; cursor: pointer;
+    }
+    .owner-badge {
+      display: inline-flex; align-items: center; gap: 8px; margin: 0 0 18px; padding: 8px 12px; border-radius: 999px;
+      background: #eef3ea; border: 1px solid #cfe1d0; color: var(--chalk-green); font-weight: 700; font-size: 13.5px;
+    }
+    .owner-badge.waiting { background: #fff7e8; border-color: #ecd7a6; color: var(--gold); }
+    section.block {
+      background: #fff; border: 1px solid var(--paper-line); border-radius: var(--radius); padding: 22px 22px 26px; margin-bottom: 20px;
+    }
+    .block h2 {
+      font-family: "Noto Serif TC", serif; font-size: 19px; margin: 0 0 4px; color: var(--chalk-green);
+    }
+    .block .meta { color: var(--ink-soft); font-size: 13px; margin: 0 0 16px; }
+    .q { margin-bottom: 18px; padding-bottom: 16px; border-bottom: 1px dashed var(--paper-line); }
+    .q:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+    .q-text { font-size: 15.5px; margin-bottom: 8px; }
+    .q-num { color: var(--gold); font-weight: 700; margin-right: 4px; }
+    .opts { display: grid; gap: 8px; }
+    .opt {
+      display: flex; gap: 8px; align-items: flex-start; border: 1.5px solid var(--paper-line); border-radius: 8px; padding: 9px 12px;
+      cursor: pointer; font-size: 14.5px; background: #fffdf8;
+    }
+    .opt:hover { border-color: var(--chalk-green-2); }
+    .opt.selected { border-color: var(--chalk-green-2); background: #eef3ea; }
+    .opt.correct { border-color: var(--ok-green); background: var(--ok-green-soft); }
+    .opt.wrong { border-color: var(--pen-red); background: var(--pen-red-soft); }
+    .opt .tag { font-weight: 700; color: var(--ink-soft); }
+    .opt.correct .tag { color: var(--ok-green); }
+    .opt.wrong .tag { color: var(--pen-red); }
+    .opt.disabled { cursor: default; }
+    input.blank, input.line-answer {
+      font-family: "Noto Sans TC", sans-serif; border: none; border-bottom: 2px solid var(--chalk-green-2); background: transparent; font-size: 15px; padding: 2px 4px; width: 180px;
+    }
+    input.line-answer { width: 100%; margin-top: 4px; }
+    .check-row { display: flex; gap: 8px; margin-top: 6px; flex-wrap: wrap; align-items: center; }
+    .mini-btn {
+      background: var(--chalk-green); color: #fff; border: none; border-radius: 6px;
+      padding: 6px 14px; font-size: 13px; cursor: pointer; font-family: "Noto Sans TC", sans-serif;
+    }
+    .mini-btn.secondary { background: transparent; color: var(--chalk-green); border: 1.5px solid var(--chalk-green); }
+    .feedback { font-size: 13.5px; font-weight: 700; }
+    .feedback.ok { color: var(--ok-green); }
+    .feedback.no { color: var(--pen-red); }
+    .answer-reveal {
+      display: none; margin-top: 6px; font-size: 14px; color: var(--chalk-green-2);
+      background: #eef3ea; border-radius: 6px; padding: 8px 12px;
+    }
+    .answer-reveal.show { display: block; }
+    .footer-link {
+      display: block; text-align: center; margin-top: 30px; color: var(--chalk-green); text-decoration: none; font-weight: 700; font-size: 14px;
+    }
+    .footer-link:hover { text-decoration: underline; }
+    @media (max-width: 560px) {
+      .controls { align-items: flex-start; }
+      .mode-toggle { width: 100%; }
+      .mode-toggle button { flex: 1; }
+      .score-bar { flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+  <header class="hero">
+    <div class="hero-inner">
+      <div class="breadcrumb">
+        <a href="https://jenlin2002.github.io/">🏠 回總目錄</a> /
+        <a href="index.html" style="color:#cfe0d1;">國中題庫</a> /
+        <a href="chinese.html" style="color:#cfe0d1;">國文科</a>
+      </div>
+      <h1>翰林版國文二上｜A卷試做</h1>
+      <p class="subtitle">網路版試卷：作答、計分、立即顯示答案與送出到 Google Excel</p>
+    </div>
+  </header>
+
+  <main>
+    <div class="controls">
+      <div class="mode-toggle">
+        <button id="quizModeBtn" class="active">✏️ 測驗模式</button>
+        <button id="printModeBtn" disabled>🖨️ 完整答案模式</button>
+      </div>
+    </div>
+
+    <div class="score-bar" id="scoreBar">
+      <div>目前得分：<strong id="scoreText">0 / 0</strong>（僅計算選擇題與填充題）</div>
+      <button id="resetBtn">重新作答</button>
+    </div>
+    <div id="studentOwnerBadge" class="owner-badge waiting">本次成績將歸屬：請先登入</div>
+
+    <div id="content"></div>
+
+    <a class="footer-link" href="hanlin-chinese-g8-1.html">← 回翰林國文二上總覽</a>
+  </main>
+
+  <script>
+    window.EXAM_META = { version: "A卷", examLabel: "翰林國文二上" };
+
+    const DATA = {
+      sections: [
+        {
+          type: "mc",
+          title: "一、選擇題",
+          meta: "每題 2 分，共 10 分",
+          items: [
+            { q: "下列「」中的字，哪一個意思最接近「明亮」？「陽光照在窗上，房間顯得格外明亮。」", options: ["昏暗", "清澈", "陰冷", "壅塞"], correct: 1 },
+            { q: "下列哪一個詞語的語氣最溫和？", options: ["立刻", "請勿", "馬上", "嚴禁"], correct: 1 },
+            { q: "「他沉思良久，才回答問題。」中的「沉思」最接近下列哪一個意思？", options: ["急忙奔跑", "反覆思考", "大聲喊叫", "悶悶不樂"], correct: 1 },
+            { q: "哪一個句子用字最正確？", options: ["我很怕黑，所以不敢獨自走夜路。", "我很怕黑，所以不敢獨自走夜路。", "我很怕黑，所以不敢獨自走夜路。", "我很怕黑，所以不敢獨自走夜路。"], correct: 0 },
+            { q: "「小華的進步讓老師感到欣慰。」中的「欣慰」意思與下列哪個最接近？", options: ["沮喪", "高興安心", "害怕", "驚訝"], correct: 1 }
+          ]
+        },
+        {
+          type: "vocab",
+          title: "二、文意字彙",
+          meta: "每題 2 分，共 10 分",
+          items: [
+            { q: "這位老師說話很有____，讓同學都願意聽。", answer: "分量" },
+            { q: "這場雨勢太大，連街道都被____。", answer: "淹沒" },
+            { q: "他很有____，即使遇到挫折也不容易放棄。", answer: "毅力" },
+            { q: "這篇文章內容生動、且有____，讓人讀完印象深刻。", answer: "感染力" },
+            { q: "家裡的長輩常提醒我們要____地珍惜時間。", answer: "珍惜" }
+          ]
+        },
+        {
+          type: "guided",
+          title: "三、依提示作答",
+          meta: "每題 3 分，共 9 分",
+          items: [
+            { prompt: "請將下列句子改成肯定句：他不喜歡這道菜。", hint: "（請寫出完整句子）", answer: "他喜歡這道菜。" },
+            { prompt: "請把「明天」改為「下週」並重寫：我們明天要參加校外教學。", hint: "（請寫出完整句子）", answer: "我們下週要參加校外教學。" },
+            { prompt: "請寫出「因為下雨，所以我們待在家裡」的簡潔版本。", hint: "（請寫出完整句子）", answer: "因為下雨，我們待在家裡。" }
+          ]
+        },
+        {
+          type: "reading",
+          title: "四、閱讀理解",
+          meta: "每題 3 分，共 6 分",
+          passages: [
+            {
+              label: "閱讀短文：",
+              text: "在一個安靜的鄉村裡，有一個小小的河流。每當清晨，河水輕輕流動，帶著薄霧與鳥鳴。村民們都很珍惜這條河，因為它不只是生活用水，也是一份自然的記憶。",
+              items: [
+                { q: "文中最能表達這條河重要性的句子是？", options: ["它帶著薄霧與鳥鳴。", "村民們都很珍惜這條河。", "它只是生活用水。", "它流動得很快。"], correct: 1 },
+                { q: "這篇短文主要想表達什麼？", options: ["河流是人類創造的美景。", "自然環境與生活記憶都值得珍惜。", "鳥鳴是鄉村最重要的事。", "清晨應該避免接觸河流。"], correct: 1 }
+              ]
+            }
+          ]
+        }
+      ]
+    };
+
+    let currentMode = "quiz";
+    const contentEl = document.getElementById("content");
+    const scoreBar = document.getElementById("scoreBar");
+    const scoreText = document.getElementById("scoreText");
+
+    function render() {
+      contentEl.innerHTML = "";
+      DATA.sections.forEach((section) => {
+        const block = document.createElement("section");
+        block.className = "block";
+        block.innerHTML = `<h2>${section.title}</h2><p class="meta">${section.meta}</p>`;
+
+        if (section.type === "mc") {
+          section.items.forEach((item, i) => {
+            const q = document.createElement("div");
+            q.className = "q";
+            const optsHtml = item.options.map((option, idx) => `
+              <div class="opt" data-idx="${idx}" data-correct="${idx === item.correct}">
+                <span class="tag">(${String.fromCharCode(65 + idx)})</span>
+                <span>${option}</span>
+              </div>
+            `).join("");
+            q.innerHTML = `<div class="q-text"><span class="q-num">${i + 1}.</span>${item.q}</div><div class="opts">${optsHtml}</div>`;
+            q.querySelectorAll(".opt").forEach((optEl) => {
+              optEl.addEventListener("click", () => selectOption(q, optEl));
+            });
+            block.appendChild(q);
+          });
+        }
+
+        if (section.type === "vocab") {
+          section.items.forEach((item, i) => {
+            const q = document.createElement("div");
+            q.className = "q";
+            q.innerHTML = `
+              <div class="q-text"><span class="q-num">${i + 1}.</span>${item.q}<input type="text" class="blank" data-answer="${item.answer}" placeholder="請填入答案"><span class="feedback"></span></div>
+              <div class="answer-reveal">正解：${item.answer}</div>
+            `;
+            const input = q.querySelector("input");
+            input.addEventListener("input", () => checkBlank(input));
+            block.appendChild(q);
+          });
+        }
+
+        if (section.type === "guided") {
+          section.items.forEach((item, i) => {
+            const q = document.createElement("div");
+            q.className = "q";
+            q.innerHTML = `
+              <div class="q-text"><span class="q-num">${i + 1}.</span>${item.prompt}</div>
+              <div style="color:#5b6b5f; font-size:13px; margin-bottom:8px;">${item.hint}</div>
+              <input type="text" class="line-answer" placeholder="請輸入答案" />
+              <div class="answer-reveal">正解：${item.answer}</div>
+            `;
+            const input = q.querySelector("input");
+            input.addEventListener("input", () => checkSentence(input));
+            block.appendChild(q);
+          });
+        }
+
+        if (section.type === "reading") {
+          section.passages.forEach((passage) => {
+            const passageBox = document.createElement("div");
+            passageBox.className = "passage";
+            passageBox.innerHTML = `<span style="font-weight:700;color:var(--chalk-green);display:block;margin-bottom:4px;">${passage.label}</span>${passage.text}`;
+            block.appendChild(passageBox);
+            passage.items.forEach((item, i) => {
+              const q = document.createElement("div");
+              q.className = "q";
+              const optsHtml = item.options.map((option, idx) => `
+                <div class="opt" data-idx="${idx}" data-correct="${idx === item.correct}">
+                  <span class="tag">(${String.fromCharCode(65 + idx)})</span>
+                  <span>${option}</span>
+                </div>
+              `).join("");
+              q.innerHTML = `<div class="q-text"><span class="q-num">${i + 1}.</span>${item.q}</div><div class="opts">${optsHtml}</div>`;
+              q.querySelectorAll(".opt").forEach((optEl) => {
+                optEl.addEventListener("click", () => selectOption(q, optEl));
+              });
+              block.appendChild(q);
+            });
+          });
+        }
+
+        contentEl.appendChild(block);
+      });
+
+      if (currentMode === "quiz") {
+        scoreBar.classList.add("show");
+        updateScore();
+      } else {
+        scoreBar.classList.remove("show");
+        document.querySelectorAll(".answer-reveal").forEach((el) => el.classList.add("show"));
+        document.querySelectorAll(".opt").forEach((el) => el.classList.add("disabled"));
+      }
+    }
+
+    function selectOption(qEl, optEl) {
+      if (currentMode !== "quiz") return;
+      qEl.dataset.answered = "true";
+      qEl.querySelectorAll(".opt").forEach((o) => o.classList.add("disabled"));
+      optEl.classList.add("selected");
+      const correctOpt = qEl.querySelector('.opt[data-correct="true"]');
+      qEl.dataset.studentAnswer = optEl.textContent.trim();
+      qEl.dataset.correctAnswer = correctOpt ? correctOpt.textContent.trim() : "";
+      qEl.dataset.isCorrect = optEl.dataset.correct === "true" ? "true" : "false";
+      updateScore();
+    }
+
+    function checkBlank(input) {
+      const qEl = input.closest(".q");
+      const val = input.value.trim();
+      if (val.length === 0) {
+        if (qEl) delete qEl.dataset.studentAnswer;
+        updateScore();
+        return;
+      }
+      if (qEl) {
+        qEl.dataset.studentAnswer = val;
+        qEl.dataset.correctAnswer = input.dataset.answer;
+        qEl.dataset.isCorrect = (val === input.dataset.answer) ? "true" : "false";
+      }
+      updateScore();
+    }
+
+    function checkSentence(input) {
+      const qEl = input.closest(".q");
+      const val = input.value.trim();
+      if (val.length === 0) {
+        if (qEl) delete qEl.dataset.studentAnswer;
+        updateScore();
+        return;
+      }
+      const answer = input.parentElement.querySelector(".answer-reveal").textContent.replace("正解：", "").trim();
+      const ok = val === answer;
+      if (qEl) {
+        qEl.dataset.studentAnswer = val;
+        qEl.dataset.correctAnswer = answer;
+        qEl.dataset.isCorrect = ok ? "true" : "false";
+      }
+      updateScore();
+    }
+
+    function updateScore() {
+      let total = 0; let answered = 0; let correct = 0;
+      contentEl.querySelectorAll(".q").forEach((q) => {
+        const isGradable = q.querySelector(".opts") || q.querySelector("input.blank") || q.querySelector("input.line-answer");
+        if (!isGradable) return;
+        total++;
+        if (q.dataset.studentAnswer !== undefined) {
+          answered++;
+          if (q.dataset.isCorrect === "true") correct++;
+        }
+      });
+      if (window.examAnswersRevealed) {
+        scoreText.textContent = `${correct} / ${total}`;
+      } else {
+        scoreText.textContent = `已作答 ${answered} / ${total} 題`;
+      }
+    }
+    window.updateScore = updateScore;
+
+    function refreshStudentOwnerBadge(studentName) {
+      const badge = document.getElementById("studentOwnerBadge");
+      if (!badge) return;
+      const name = (studentName || localStorage.getItem("quizStudentName") || "").trim();
+      if (!name || /^訪客/.test(name)) {
+        badge.textContent = "本次成績將歸屬：請先登入";
+        badge.classList.add("waiting");
+        return;
+      }
+      badge.textContent = `本次成績將歸屬：${name.toUpperCase()}`;
+      badge.classList.remove("waiting");
+    }
+    window.refreshStudentOwnerBadge = refreshStudentOwnerBadge;
+    refreshStudentOwnerBadge();
+
+    document.getElementById("resetBtn").addEventListener("click", () => {
+      render();
+      if (window.examAnswersRevealed) {
+        window.examAnswersRevealed = false;
+      }
+    });
+    document.getElementById("quizModeBtn").addEventListener("click", () => {
+      currentMode = "quiz";
+      document.getElementById("quizModeBtn").classList.add("active");
+      document.getElementById("printModeBtn").classList.remove("active");
+      render();
+    });
+    document.getElementById("printModeBtn").addEventListener("click", () => {
+      currentMode = "print";
+      document.getElementById("printModeBtn").classList.add("active");
+      document.getElementById("quizModeBtn").classList.remove("active");
+      document.querySelectorAll(".answer-reveal").forEach((el) => el.classList.add("show"));
+      document.querySelectorAll(".opt").forEach((el) => el.classList.add("disabled"));
+      scoreBar.classList.remove("show");
+    });
+
+    window.unlockPrintMode = function () {
+      document.getElementById("printModeBtn").disabled = false;
+    };
+
+    render();
+  </script>
+  <script src="sync.js"></script>
+</body>
+</html>

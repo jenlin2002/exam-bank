@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>國中題庫｜翰林版國文二上（A/B/C卷）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@500;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#faf6ec; --ink:#26332b; --ink-soft:#5b6b5f;
+    --chalk-green:#2f4538; --gold:#b5842a; --paper-line:#e3dcc8;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:"Noto Sans TC",sans-serif;line-height:1.7;}
+  header{background:var(--chalk-green);color:#eef2ea;padding:30px 20px 42px;position:relative;}
+  header::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:14px;background:repeating-linear-gradient(90deg,var(--paper) 0 18px, transparent 18px 20px);}
+  .inner{max-width:860px;margin:0 auto;}
+  .breadcrumb a{color:#cfe0d1;text-decoration:none;font-size:14px;}
+  h1{font-family:"Noto Serif TC",serif;font-size:clamp(24px,4vw,32px);margin:10px 0 6px;}
+  .sub{color:#cfe0d1;font-size:15px;margin:0;}
+  main{max-width:860px;margin:0 auto;padding:28px 20px 70px;}
+  .grid{display:grid;gap:14px;}
+  .card{
+    display:flex;justify-content:space-between;align-items:center;gap:14px;
+    background:#fff;border:1px solid var(--paper-line);border-radius:10px;
+    padding:18px 20px;text-decoration:none;color:var(--ink);
+  }
+  .card .name{font-family:"Noto Serif TC",serif;font-weight:700;font-size:17px;margin:0 0 4px;}
+  .card .desc{font-size:13.5px;color:var(--ink-soft);margin:0;}
+  .versions{display:flex;gap:8px;flex-shrink:0;flex-wrap:wrap;justify-content:flex-end;}
+  .ver-btn{
+    display:inline-block;font-family:"Noto Serif TC",serif;font-weight:700;font-size:13.5px;
+    padding:7px 16px;border-radius:999px;text-decoration:none;
+    background:var(--chalk-green);color:#eef2ea;border:1px solid var(--chalk-green);
+  }
+  .ver-btn:hover{background:var(--gold);border-color:var(--gold);}
+  .ver-btn.secondary{background:#fff;color:var(--chalk-green);border:1px solid var(--chalk-green);}
+  .ver-btn.disabled{background:transparent;color:var(--ink-soft);border:1px solid var(--paper-line);cursor:default;}
+  .footer-link{display:block;text-align:center;margin-top:34px;color:var(--chalk-green);text-decoration:none;font-weight:700;font-size:14px;}
+  .footer-link:hover{text-decoration:underline;}
+  @media (max-width:520px){
+    .card{flex-direction:column;align-items:flex-start;}
+    .versions{width:100%;justify-content:flex-start;}
+    .ver-btn{flex:1;text-align:center;padding:7px 8px;}
+  }
+</style>
+</head>
+<body>
+<header>
+  <div class="inner">
+    <div class="breadcrumb"><a href="https://jenlin2002.github.io/">🏠 回總目錄</a> ／ <a href="index.html" style="color:#cfe0d1;">國中題庫</a> ／ <a href="chinese.html" style="color:#cfe0d1;">國文科</a></div>
+    <h1>翰林版國中二上國文</h1>
+    <p class="sub">A 卷先試做（網路版）B/C 卷保留 PDF 原始題目與簡答，後續再補上完整網頁版題庫</p>
+  </div>
+</header>
+
+<main>
+  <div class="grid" id="examGrid"></div>
+  <script>
+    const EXAMS = [
+      {
+        n:1,
+        lesson:"A卷",
+        title:"115上翰林國文2上A卷",
+        web:"hanlin-chinese-g8-1-a.html",
+        pdfA:"PDF-RAW-DATA/Chinese/hanlin/hanlin-G8-1/115上翰林國文2上A卷_學用.pdf",
+        pdfB:"PDF-RAW-DATA/Chinese/hanlin/hanlin-G8-1/115上翰林國文2上A卷_簡答.pdf"
+      },
+      {
+        n:2,
+        lesson:"B卷",
+        title:"115上翰林國文2上B卷",
+        web:null,
+        pdfA:"PDF-RAW-DATA/Chinese/hanlin/hanlin-G8-1/115上翰林國文2上B卷_學用.pdf",
+        pdfB:"PDF-RAW-DATA/Chinese/hanlin/hanlin-G8-1/115上翰林國文2上B卷_簡答.pdf"
+      },
+      {
+        n:3,
+        lesson:"C卷",
+        title:"115上翰林國文2上C卷",
+        web:null,
+        pdfA:"PDF-RAW-DATA/Chinese/hanlin/hanlin-G8-1/115上翰林國文2上C卷_學用.pdf",
+        pdfB:"PDF-RAW-DATA/Chinese/hanlin/hanlin-G8-1/115上翰林國文2上C卷_簡答.pdf"
+      }
+    ];
+
+    const grid = document.getElementById("examGrid");
+    EXAMS.forEach(ex => {
+      const el = document.createElement("div");
+      el.className = "card";
+      const webBtn = ex.web ? `<a class="ver-btn secondary" href="${ex.web}">網路版試做</a>` : `<span class="ver-btn disabled">網路版試做</span>`;
+      const pdfBtn = (href, label) => href ? `<a class="ver-btn" href="${href}" target="_blank" rel="noopener noreferrer">${label}</a>` : `<span class="ver-btn disabled">${label}</span>`;
+      el.innerHTML = `
+        <div>
+          <p class="name">第${ex.n}套・${ex.lesson}</p>
+          <p class="desc">${ex.title}</p>
+        </div>
+        <div class="versions">
+          ${webBtn}
+          ${pdfBtn(ex.pdfA, "學用卷")}
+          ${pdfBtn(ex.pdfB, "簡答卷")}
+        </div>`;
+      grid.appendChild(el);
+    });
+  </script>
+  <a class="footer-link" href="chinese.html">← 回國文科總目錄</a>
+</main>
+</body>
+</html>

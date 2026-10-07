@@ -56,6 +56,9 @@
     function showWho(){
       const n = loggedInStudent();
       who.textContent = n ? ("登入者：" + n) : "尚未登入";
+      if(typeof window.refreshStudentOwnerBadge === "function"){
+        window.refreshStudentOwnerBadge(n || "");
+      }
     }
     showWho();
     setInterval(showWho, 1500);
@@ -246,6 +249,9 @@
     } else {
       statusEl.textContent = `已送出 ${sections} 個單元的成績！`;
       submitBtn.textContent = "已送出成績";
+      if(typeof window.refreshStudentOwnerBadge === "function"){
+        window.refreshStudentOwnerBadge(student);
+      }
       // 計入學習點數（每題 1 點、同一份考卷每天第一次才算，規則在點數後端）
       if(window.Points){
         Points.earn({ name: student, label: document.title + "（" + window.EXAM_META.version + "）", mode: "全卷", correct: allScore, total: allTotal });
