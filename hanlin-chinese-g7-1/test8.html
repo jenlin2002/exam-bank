@@ -1,0 +1,906 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>段考題庫｜國文第8回 - 複習</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@500;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#faf6ec;
+    --paper-line:#e3dcc8;
+    --ink:#26332b;
+    --ink-soft:#5b6b5f;
+    --chalk-green:#2f4538;
+    --chalk-green-2:#3d5a48;
+    --pen-red:#b8433a;
+    --pen-red-soft:#f4dedb;
+    --ok-green:#3f7d52;
+    --ok-green-soft:#dfeee1;
+    --gold:#b5842a;
+    --radius:10px;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:"Noto Sans TC",sans-serif;
+    line-height:1.7;
+  }
+  header.hero{
+    background:var(--chalk-green);
+    color:#eef2ea;
+    padding:28px 20px 40px;
+    position:relative;
+  }
+  header.hero::after{
+    content:"";
+    position:absolute;
+    left:0; right:0; bottom:-1px;
+    height:14px;
+    background:repeating-linear-gradient(90deg,var(--paper) 0 18px, transparent 18px 20px);
+  }
+  .hero-inner{max-width:880px;margin:0 auto;}
+  .breadcrumb a{color:#cfe0d1;text-decoration:none;font-size:14px;}
+  .breadcrumb a:hover{text-decoration:underline;}
+  h1{
+    font-family:"Noto Serif TC",serif;
+    font-weight:700;
+    font-size:clamp(24px,4vw,34px);
+    margin:10px 0 6px;
+  }
+  .subtitle{color:#cfe0d1;font-size:15px;margin:0;}
+  main{max-width:880px;margin:0 auto;padding:28px 20px 80px;}
+
+  .controls{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:22px;
+  }
+  .mode-toggle{display:flex;border:2px solid var(--chalk-green);border-radius:999px;overflow:hidden;}
+  .mode-toggle button{
+    background:transparent;border:none;padding:8px 16px;font-size:14px;font-weight:700;
+    color:var(--chalk-green);cursor:pointer;font-family:"Noto Sans TC",sans-serif;
+  }
+  .mode-toggle button.active{background:var(--gold);color:#fff;}
+  .mode-toggle button:disabled{opacity:.4;cursor:not-allowed;}
+
+  .score-bar{
+    display:none;
+    align-items:center;
+    justify-content:space-between;
+    background:#fff;
+    border:1px solid var(--paper-line);
+    border-left:5px solid var(--gold);
+    border-radius:var(--radius);
+    padding:12px 18px;
+    margin-bottom:22px;
+    font-size:14px;
+  }
+  .score-bar.show{display:flex;}
+  .score-bar strong{font-size:18px;color:var(--gold);}
+  .score-bar button{
+    background:none;border:1px solid var(--ink-soft);color:var(--ink-soft);
+    border-radius:6px;padding:6px 12px;font-size:13px;cursor:pointer;
+  }
+
+  section.block{
+    background:#fff;
+    border:1px solid var(--paper-line);
+    border-radius:var(--radius);
+    padding:22px 22px 26px;
+    margin-bottom:20px;
+  }
+  .block h2{
+    font-family:"Noto Serif TC",serif;
+    font-size:19px;
+    margin:0 0 4px;
+    color:var(--chalk-green);
+  }
+  .block .meta{color:var(--ink-soft);font-size:13px;margin:0 0 16px;}
+
+  .q{margin-bottom:18px;padding-bottom:16px;border-bottom:1px dashed var(--paper-line);}
+  .q:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0;}
+  .q-text{font-size:15.5px;margin-bottom:8px;}
+  .q-num{color:var(--gold);font-weight:700;margin-right:4px;}
+
+  .opts{display:grid;gap:8px;}
+  .opt{
+    display:flex;gap:8px;align-items:flex-start;
+    border:1.5px solid var(--paper-line);
+    border-radius:8px;
+    padding:9px 12px;
+    cursor:pointer;
+    font-size:14.5px;
+    background:#fffdf8;
+  }
+  .opt:hover{border-color:var(--chalk-green-2);}
+  .opt.selected{border-color:var(--chalk-green-2);background:#eef3ea;}
+  .opt.correct{border-color:var(--ok-green);background:var(--ok-green-soft);}
+  .opt.wrong{border-color:var(--pen-red);background:var(--pen-red-soft);}
+  .opt .tag{font-weight:700;color:var(--ink-soft);}
+  .opt.correct .tag{color:var(--ok-green);}
+  .opt.wrong .tag{color:var(--pen-red);}
+  .opt.disabled{cursor:default;}
+
+  .passage{
+    background:#f5f2e8;border-radius:8px;padding:14px 16px;margin-bottom:14px;
+    font-size:14.5px;white-space:pre-line;
+  }
+  .passage-label{font-weight:700;color:var(--chalk-green);margin-bottom:4px;display:block;}
+
+  .sec-note{font-size:13.5px;color:var(--ink-soft);background:#f5f2e8;border-radius:8px;padding:8px 12px;margin:-6px 0 14px;}
+  .sec-pre{background:#f5f2e8;border-radius:8px;padding:10px 14px;margin:-4px 0 14px;font-size:14.5px;}
+  .fill-row{display:flex;flex-wrap:wrap;align-items:center;gap:8px;}
+  input.blank{
+    font-family:"Noto Sans TC",sans-serif;font-size:15.5px;border:none;border-bottom:2px solid var(--chalk-green-2);
+    background:#fffdf8;padding:4px 6px;width:170px;max-width:100%;
+  }
+  input.blank.wide{width:100%;}
+  textarea.explain-box{
+    width:100%;min-height:52px;font-family:"Noto Sans TC",sans-serif;font-size:15px;
+    border:1.5px solid var(--paper-line);border-radius:8px;padding:8px 10px;background:#fffdf8;resize:vertical;
+  }
+  .feedback{font-weight:700;font-size:15px;}
+  .feedback.ok{color:var(--ok-green);}
+  .feedback.no{color:var(--pen-red);}
+  .answer-reveal{display:none;margin-top:8px;font-size:14px;color:var(--ok-green);background:var(--ok-green-soft);border-radius:6px;padding:6px 12px;}
+  .answer-reveal.show{display:block;}
+  .zh-und{text-decoration:underline;text-underline-offset:3px;}
+  .footer-link{
+    display:block;text-align:center;margin-top:30px;color:var(--chalk-green);
+    text-decoration:none;font-weight:700;font-size:14px;
+  }
+  .footer-link:hover{text-decoration:underline;}
+
+  @media print{
+    header.hero, .controls, .score-bar, .mini-btn, .footer-link{display:none !important;}
+    body{background:#fff;}
+    section.block{border:none;box-shadow:none;padding:8px 0;margin-bottom:14px;}
+    .opt.correct{background:none;border:none;font-weight:700;}
+    .opt.correct::after{content:" ← 正解";color:var(--pen-red);}
+    .opt{border:none;padding:2px 0;}
+    main{max-width:100%;padding:0 24px;}
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="breadcrumb"><a href="https://jenlin2002.github.io/">🏠 回總目錄</a> ／ <a href="../hanlin-chinese-g7-1.html" style="color:#cfe0d1;">段考題庫</a></div>
+    <h1>國文・第8回</h1>
+    <p class="subtitle">第四～六課・語文常識（二） 複習｜翰林版七年級國文（一）Ａ卷</p>
+  </div>
+</header>
+
+<main>
+  <div class="controls">
+    <div class="mode-toggle">
+      <button id="quizModeBtn" class="active">✏️ 測驗模式</button>
+      <button id="printModeBtn" disabled title="完成測驗並送出成績後才能查看">🖨️ 完整題目與解答（送出成績後解鎖）</button>
+    </div>
+  </div>
+
+  <div class="score-bar" id="scoreBar">
+    <div>目前得分：<strong id="scoreText">0 / 0</strong>（選擇題與填寫題；解釋題不計分）</div>
+    <button id="resetBtn">重新作答</button>
+  </div>
+
+  <div id="content"></div>
+
+  <a class="footer-link" href="../hanlin-chinese-g7-1.html">← 回段考題庫總覽</a>
+</main>
+
+<script>
+
+window.EXAM_META = { version: "國文A卷", examLabel: "國文第8回" };
+const DATA = {
+  sections: [
+  {
+    "type": "fill",
+    "title": "A部分　一、國字注音",
+    "meta": "每字1分，共10分",
+    "note": "「」裡是國字的寫注音，是注音的寫國字。注音的一聲可以不標。",
+    "placeholder": "注音或國字",
+    "items": [
+      {
+        "q": "「ㄈㄨˋ」予意義",
+        "answers": [
+          "賦"
+        ]
+      },
+      {
+        "q": "「ㄆㄢ」折花木",
+        "answers": [
+          "攀"
+        ]
+      },
+      {
+        "q": "「ㄊㄨㄟˊ」廢",
+        "answers": [
+          "頹"
+        ]
+      },
+      {
+        "q": "未成一「ㄎㄨㄟˋ」",
+        "answers": [
+          "簣"
+        ]
+      },
+      {
+        "q": "憂「ㄩˋ」",
+        "answers": [
+          "鬱"
+        ]
+      },
+      {
+        "q": "躊「躇」不決",
+        "answers": [
+          "ㄔㄨˊ"
+        ]
+      },
+      {
+        "q": "「罹」患",
+        "answers": [
+          "ㄌㄧˊ"
+        ]
+      },
+      {
+        "q": "「為」人謀",
+        "answers": [
+          "ㄨㄟˋ"
+        ]
+      },
+      {
+        "q": "「哄」堂大笑",
+        "answers": [
+          "ㄏㄨㄥ"
+        ]
+      },
+      {
+        "q": "人跡「罕」至",
+        "answers": [
+          "ㄏㄢˇ"
+        ]
+      }
+    ]
+  },
+  {
+    "type": "explain",
+    "title": "二、解釋",
+    "meta": "每題2分，共10分（自己對照參考答案，不計入自動計分）",
+    "items": [
+      {
+        "q": "慘澹",
+        "answer": "暗淡無光，此指經濟困難。"
+      },
+      {
+        "q": "譬如「為山」",
+        "answer": "堆土成山。"
+      },
+      {
+        "q": "吾「往」也",
+        "answer": "前往，此指去填平窪地。"
+      },
+      {
+        "q": "憔悴",
+        "answer": "面色黃瘦，沒有精神的樣子。"
+      },
+      {
+        "q": "沉溺",
+        "answer": "指陷於不好的嗜好或境地中。"
+      }
+    ]
+  },
+  {
+    "type": "fill",
+    "title": "三、改錯",
+    "meta": "每字1分，共10分",
+    "wide": true,
+    "note": "每句有 5 個錯字。依照出現的順序，只寫出改正後的字（例如寫成「ＯＯＯＯＯ」五個字）。",
+    "placeholder": "依序寫出正確的字",
+    "items": [
+      {
+        "q": "由於世代的差異，許多孩子常認為父母的想法過時淤腐，而父母對孩子的浮噪判逆也難免小提大作，兩代之間因此鬧得不可開焦。",
+        "answers": [
+          "迂躁叛題交"
+        ]
+      },
+      {
+        "q": "吳阿姨帶人和藹慈祥，凡是他人患錯，她總是能予以體量並寬怒，深得鄰居們的敬重與愛載。",
+        "answers": [
+          "待犯諒恕戴"
+        ]
+      }
+    ]
+  },
+  {
+    "type": "mc",
+    "title": "四、成語填空",
+    "meta": "每題2分，共10分",
+    "note": "請依句意及參考選項，在（　）中填入適當的成語。",
+    "items": [
+      {
+        "q": "他每日親自照料年邁雙親，（　　　），無微不至。",
+        "options": [
+          "綵衣娛親",
+          "烏鳥私情",
+          "風木之思",
+          "扇枕溫衾",
+          "無忝所生",
+          "菽水之養"
+        ],
+        "correct": 3
+      },
+      {
+        "q": "為人子女者雖然無法做到錦衣玉食，但總希望能夠略盡（　　　）。",
+        "options": [
+          "綵衣娛親",
+          "烏鳥私情",
+          "風木之思",
+          "扇枕溫衾",
+          "無忝所生",
+          "菽水之養"
+        ],
+        "correct": 5
+      },
+      {
+        "q": "他辭去臺北的工作，返鄉照顧年邁的父母，（　　　），令人感動。",
+        "options": [
+          "綵衣娛親",
+          "烏鳥私情",
+          "風木之思",
+          "扇枕溫衾",
+          "無忝所生",
+          "菽水之養"
+        ],
+        "correct": 1
+      },
+      {
+        "q": "侍奉父母要及時，千萬不要留下（　　　）的遺憾。",
+        "options": [
+          "綵衣娛親",
+          "烏鳥私情",
+          "風木之思",
+          "扇枕溫衾",
+          "無忝所生",
+          "菽水之養"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "她為了博取父母歡心，不惜在壽宴上搞笑又跳舞，（　　　）。",
+        "options": [
+          "綵衣娛親",
+          "烏鳥私情",
+          "風木之思",
+          "扇枕溫衾",
+          "無忝所生",
+          "菽水之養"
+        ],
+        "correct": 0
+      }
+    ]
+  },
+  {
+    "type": "mc",
+    "title": "五、基礎題",
+    "meta": "每題2分，共30分",
+    "items": [
+      {
+        "q": "下列「　」中的字，何組讀音相同？",
+        "options": [
+          "「輟」學／點「綴」",
+          "「攙」扶／「讒」言",
+          "「囑」託／「矚」目",
+          "「憔」悴／暗「礁」。"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "如果想蒐集朱自清的資料，除了人名之外，還可以在網路搜尋系統輸入哪些關鍵詞？",
+        "options": [
+          "適之、四十自述",
+          "佩弦、經典常談",
+          "生之歌、伊甸基金會",
+          "詩、兒童文學。"
+        ],
+        "correct": 1
+      },
+      {
+        "q": "下列「　」中的字，何者用字正確？",
+        "options": [
+          "誨人不「卷」",
+          "煩人「鎖」事",
+          "「績」少成多",
+          "劇本草「稿」。"
+        ],
+        "correct": 3
+      },
+      {
+        "q": "下列何者可與「禍不單行」互換而意義不變？",
+        "options": [
+          "天有不測風雲",
+          "福無雙至",
+          "屋漏偏逢連夜雨",
+          "禍福與共。"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "下列「　」中的字經替換後，何者意思<b>改變</b>？",
+        "options": [
+          "舉「箸」：筯",
+          "無動於「中」：衷",
+          "「惟」膀子疼痛得厲害：唯",
+          "妥「帖」：貼。"
+        ],
+        "correct": 0
+      },
+      {
+        "q": "「子夏問孝。子曰『色難！有事，弟子服其勞；有酒食，先生饌。曾是以為孝乎？』」文中關於「孝」的解釋，何者正確？",
+        "options": [
+          "每天讓父母優先享用飯菜就算是行孝道",
+          "不讓父母出勞力，替父母把事情完成",
+          "隨時都能保持和顏悅色才是真正的孝道",
+          "讓父母有飯吃、不需操勞，可是臉色必須為難。"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "「有些人看似生活得繁華熱鬧，卻往往是天底下最寂寞的人。」此句運用了映襯修辭，下列何者與其相同？",
+        "options": [
+          "左邊的鞋印才下午，右邊的鞋印已黃昏了",
+          "問題是，什麼是無心呢",
+          "娘（涼）什麼！老子都不老子呀",
+          "思想上的巨人，行動上的侏儒。"
+        ],
+        "correct": 3
+      },
+      {
+        "q": "使用不同工具進行資訊檢索時，下列何者敘述正確？",
+        "options": [
+          "筆畫索引僅適用於紙本辭典上",
+          "查詢成語「哄堂大笑」時，最可信的工具是 Google",
+          "使用國語辭典查閱「囹圄」一詞，可在口部 5 畫找到「囹」字",
+          "YouTube 上的資料最具公信力，無須再參照核對。"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "根據心囚一文，下列何者<b>不屬於</b>杏林子所認為的心理不健全的人？",
+        "options": [
+          "行動自如，卻迷失人生方向的伊之助",
+          "表面歡樂，心中痛苦的炭治郎",
+          "生活得繁華熱鬧，卻常感到寂寞的善逸",
+          "時時刻刻都保持樂觀的杏壽郎。"
+        ],
+        "correct": 3
+      },
+      {
+        "q": "下列何者與「大約大去之期不遠矣」同為推測語氣？",
+        "options": [
+          "唉！我現在想想，那時真是太聰明了",
+          "我想他一定出意外了，才會缺席這麼重要的會議",
+          "再交不出功課，你就要拿零分了",
+          "這題連我都不會，難不成你能算出答案。"
+        ],
+        "correct": 1
+      },
+      {
+        "q": "關於背影一文的寫作手法，下列說明何者正確？",
+        "options": [
+          "採順敘法，從父子相送到分別兩地",
+          "將父愛比喻成各種不同的物品",
+          "特寫父親買橘子的背影，為全文重點",
+          "用第三人稱立場寫作，顯得客觀又真實。"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "子曰：「事父母幾諫，見志不從，又敬不違，勞而不怨。」下列何者符合這句話所表示的精神？",
+        "options": [
+          "為了和諧，什麼建議都不說",
+          "自己心意不被接受，強逼他們認同",
+          "同心協力，一起互相監督對方",
+          "理直氣和，尋找其他方式再勸諫。"
+        ],
+        "correct": 3
+      },
+      {
+        "q": "曾子強調自我反省，以提升道德修養。下列何者<b>不屬於</b>他所提出的自我反省？",
+        "options": [
+          "不忮不求，何用不臧",
+          "傳不習乎",
+          "為人謀而不忠乎",
+          "與朋友交而不信乎。"
+        ],
+        "correct": 0
+      },
+      {
+        "q": "下列文句皆出自背影一文，何者<b>不是</b>對父愛的描述？",
+        "options": [
+          "父親要到南京謀事，我也要回北京念書，我們便同行",
+          "他再三囑咐茶房，甚是仔細",
+          "他躊躇了一會，終於決定還是自己送我去",
+          "他和我走到車上，將橘子一股腦兒放在我的皮大衣上。"
+        ],
+        "correct": 0
+      },
+      {
+        "q": "下列名言，何句<b>不是</b>樂觀、正向的意思？",
+        "options": [
+          "當你的臉面向太陽的時候，你就看不見陰影",
+          "我要扼住命運的咽喉，絕不向它屈服",
+          "痛苦留下的一切，請細加回味！苦難一經過去，接著就是甘美",
+          "如果青春的時光在閒散中度過，那麼回憶歲月將會是一場淒涼的悲劇。"
+        ],
+        "correct": 3
+      }
+    ]
+  },
+  {
+    "type": "mc",
+    "title": "B部分　一、進階題",
+    "meta": "每題2分，共14分",
+    "items": [
+      {
+        "q": "下列各「　」中的詞語，何者使用最恰當？",
+        "options": [
+          "他因喜愛游泳，所以常「臨淵羨魚」，欣賞魚兒自在地游來游去",
+          "他為人「優柔寡斷」，脾氣好、待人和善，是許多女孩心儀的對象",
+          "為人子女要善體父母的心意，「晨昏定省」是最基本的孝行",
+          "「擇善固執」的人，因堅持己見、難以溝通，大失人心。"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "「崎嶇的世路，孩子走得穩嗎？曲折的路途，孩子可曾失掉自己的方向？迷路的孩子，是否還記得回家的路？」這段話表現出父母的何種心情？",
+        "options": [
+          "希望兒女永遠留在身邊",
+          "期待孩子接受各種考驗",
+          "心中時常以子女為念",
+          "無法與孩子溝通的焦慮。"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "「父親的一生，是用儉樸和誠實作為語言寫成的一本書。是那種穩穩實實的筆調，一筆筆的誠懇寫成的書。」（王灝）此段話所呈現的父親形象為何？",
+        "options": [
+          "敦厚勤苦",
+          "不苟言笑",
+          "沉默寡言",
+          "才華洋溢。"
+        ],
+        "correct": 0
+      },
+      {
+        "q": "下列何者使用「倒反」修辭？",
+        "options": [
+          "他雖然家財萬貫卻一毛不拔，大家都叫他「富甲一方的鐵公雞」",
+          "我孑然走在這條路上，整條路散發著孤獨而無聊的味道",
+          "他年紀輕輕就遊手好閒，這種生活真是讓人肅然起敬",
+          "圍牆邊綻放的繁花，是造物主所設下的美麗陷阱。"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "朱熹云：「程子曰：『大學，孔氏之遺書，而初學入德之門也。』於今可見古人為學次第者，獨賴此篇之存，而論、孟次之。學者必由是而學焉，則庶乎其不差矣。」根據這段文字，下列何者最接近朱熹的看法？",
+        "options": [
+          "進德修業要從大學入門",
+          "大學成書要比論、孟早",
+          "程子最推崇的書是大學",
+          "論、孟內容來自於大學。"
+        ],
+        "correct": 0
+      },
+      {
+        "q": "「世界上有兩件事不能等，一是行善，二是孝順。」下列何者也說明行孝要及時的道理？",
+        "options": [
+          "樹欲靜而風不止，子欲養而親不待",
+          "人不可貌相，海水不可斗量",
+          "一朝被蛇咬，十年怕草繩",
+          "只許州官放火，不許百姓點燈。"
+        ],
+        "correct": 0
+      },
+      {
+        "q": "小可為了救治病重的母親，到藥房偷藥被捕。記者想用「其情可憫」和「其罪難容」來形容他，下列哪一個選項句意最通順？",
+        "options": [
+          "儘管其情可憫，何況其罪難容",
+          "不但其情可憫，而且其罪難容",
+          "與其其情可憫，不如其罪難容",
+          "就算其罪難容，不過其情可憫。"
+        ],
+        "correct": 3
+      }
+    ]
+  },
+  {
+    "type": "reading",
+    "title": "二、閱讀測驗",
+    "meta": "每題2分，共10分",
+    "passages": [
+      {
+        "label": "（一）",
+        "text": "微笑，像一朵美麗的花。當微笑永遠停留，溫馨也就無處不在了。微笑綻放，像和煦的陽光，融化了彼此間的冰霜和風寒。微笑是深具感染力的，當更多的微笑閃現，有一股清溪，潺潺地流過乾涸的心田；有一股暖流，在寂寞的心靈中升起，人人因諒解而寬容，因信賴而相愛。原來，微笑裡有無數個美麗的春天，當春天佇足，人間一片繁花似錦。（節錄自琹涵 永遠的微笑）",
+        "items": [
+          {
+            "q": "關於本文的寫作分析，下列何者最恰當？",
+            "options": [
+              "以具體事例說明微笑帶來的改變",
+              "透過自然意象比喻微笑的感染力",
+              "以對比手法凸顯微笑與冷漠的衝突",
+              "直接議論微笑對社會的重要性。"
+            ],
+            "correct": 1
+          },
+          {
+            "q": "根據本文，下列何者最能說明「微笑」的作用？",
+            "options": [
+              "忘卻現實的煩惱",
+              "取代語言進行溝通",
+              "消除隔閡，促進理解與信任",
+              "讓世界永遠和平。"
+            ],
+            "correct": 2
+          },
+          {
+            "q": "「微笑裡有無數個美麗的春天。」此句的涵義為何？",
+            "options": [
+              "春天適合微笑",
+              "微笑只存在於特定季節",
+              "微笑能帶來美好的生活景象",
+              "人間的美好存在於想像中。"
+            ],
+            "correct": 2
+          }
+        ]
+      },
+      {
+        "label": "（二）",
+        "text": "幽冥錄裡記錄了一個用了三十多年的玉枕，枕後破了一個小坼孔，有個叫湯林的只對著那小坼孔看了一眼，不知不覺，竟從洞口進入，走到枕頭裡去了。洞裡朱門瓊宮瑤臺，皆勝於世。湯林在枕中結婚育子歷數十年，忽然夢覺，實俄頃之間，發現自己猶在枕旁看著小坼孔，湯林愴然久之，原來朱樓瓊宮、富貴高官，盡夢中所見，桃花盛景無跡可尋，唯鄉邑零落是真。（凌拂 流螢汛起）\n注：①坼：音ㄔㄜˋ，裂開。②俄頃：很短的時間。",
+        "items": [
+          {
+            "q": "根據本文，湯林在故事中的遭遇如何？",
+            "options": [
+              "進入另一世界，享盡榮華富貴而卒",
+              "繁華原來皆是夢境，仍舊一身潦倒",
+              "忽然夢醒，已垂垂老矣",
+              "想像枕後有個小坼孔。"
+            ],
+            "correct": 1
+          },
+          {
+            "q": "「洞裡朱門瓊宮瑤臺」所對應的現實面為何？",
+            "options": [
+              "微小坼孔",
+              "富貴高官",
+              "桃花盛景",
+              "鄉邑零落。"
+            ],
+            "correct": 3
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "type": "reading",
+    "title": "三、閱讀素養題",
+    "meta": "每題3分，共6分",
+    "passages": [
+      {
+        "label": "",
+        "text": "父母與孩子間「有品質的陪伴」是穩定孩子的關鍵。「有品質的」第一步就是「專注」，且專注的焦點是放在「孩子的視角」。許多孩子會開始出現情緒和行為問題，代表他們正處在「依賴他人」和「獨立自主」之間的學習路上，他們期待有自己解決問題的方法，但同時他們的行為或思考不一定成熟，或是有能力負責承擔代價。他們為了能夠獨立，會去堅持自己的感受與作為，此時就容易產生令父母憂心的問題。\n因此，請父母們一起來練習兩種與孩子的互動方法：第一是「解決孩子問題」，陪孩子一起探討問題的成因、內在的心情與解決方式。第二則是「單純的感受與陪伴」，在這種方法裡，面對孩子的問題或行為，我們只是去觀察與了解，暫時放下擔心，專心地去感受孩子的感受。\n「當然，當父母去站在孩子立場感受思考時，往往又會有焦慮浮起，請記得保持深呼吸的放鬆姿態。」就只是回應孩子：你現在感受到什麼？看到什麼？「就讓親子之間暫時放下所有尚未解決的困擾，不讓它們占據兩人互動中所有的時光。」專注的陪伴可以幫助孩子去感受到父母的關心，以及體會到在與父母的互動中，不需時刻去戒備防衛，這是有許多困擾問題孩子所需要的一種滋養關係。（改寫自張祐誠 專注是最好的陪伴）",
+        "items": [
+          {
+            "q": "根據本文，下列哪一種屬於「單純的感受與陪伴」？",
+            "options": [
+              "觀察孩子的感官正在接觸哪些訊息",
+              "用問答和孩子找出問題的解決方式",
+              "和孩子一起探討問題的成因",
+              "找到和孩子共同成長的友伴。"
+            ],
+            "correct": 0
+          },
+          {
+            "q": "根據本文，下列哪一項敘述<b>錯誤</b>？",
+            "options": [
+              "「專注」是「有品質的陪伴」的第一步",
+              "「有品質的陪伴」必須站在孩子的角度",
+              "親子一旦缺乏互動就容易產生令父母憂心的問題",
+              "專注的陪伴是有許多困擾問題孩子所需要的一種滋養關係。"
+            ],
+            "correct": 2
+          }
+        ]
+      }
+    ]
+  }
+]
+};
+
+let currentMode = "quiz"; // quiz | print
+
+const contentEl = document.getElementById("content");
+const scoreBar = document.getElementById("scoreBar");
+const scoreText = document.getElementById("scoreText");
+
+function render(){
+  window.examAnswersRevealed = false;
+  contentEl.innerHTML = "";
+  DATA.sections.forEach((sec, si)=> contentEl.appendChild(renderSection(sec, si)));
+  if(currentMode==="quiz"){
+    scoreBar.classList.add("show");
+    updateScore();
+  } else {
+    scoreBar.classList.remove("show");
+    contentEl.querySelectorAll(".opt").forEach(o=>o.classList.add("disabled"));
+    contentEl.querySelectorAll(".opt.is-correct").forEach(o=>o.classList.add("correct"));
+  }
+}
+
+function renderSection(sec, si){
+  const block = document.createElement("section");
+  block.className = "block";
+  block.innerHTML = `<h2>${sec.title}</h2><p class="meta">${sec.meta}</p>`
+    + (sec.note ? `<div class="sec-note">${sec.note}</div>` : "")
+    + (sec.pre ? `<div class="sec-pre">${sec.pre}</div>` : "");
+
+  if(sec.type==="fill"){
+    sec.items.forEach((it,i)=>{
+      const q = document.createElement("div");
+      q.className = "q";
+      const shown = it.answers.join(" ／ ");
+      q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q}</div>
+        <div class="fill-row"><input type="text" class="blank${sec.wide ? " wide" : ""}" autocomplete="off" placeholder="${sec.placeholder || "作答"}"><span class="feedback"></span></div>
+        <div class="answer-reveal">正解：${shown}</div>`;
+      q.querySelector("input.blank").dataset.answers = JSON.stringify(it.answers);
+      if(currentMode!=="quiz"){ q.querySelector("input.blank").disabled = true; q.querySelector(".answer-reveal").classList.add("show"); }
+      block.appendChild(q);
+    });
+  }
+
+  else if(sec.type==="explain"){
+    sec.items.forEach((it,i)=>{
+      const q = document.createElement("div");
+      q.className = "q";
+      q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q}</div>
+        <textarea class="explain-box" placeholder="寫下你的解釋（送出成績後對照參考答案）"></textarea>
+        <div class="answer-reveal">參考答案：${it.answer}</div>`;
+      if(currentMode!=="quiz"){ q.querySelector("textarea").remove(); q.querySelector(".answer-reveal").classList.add("show"); }
+      block.appendChild(q);
+    });
+  }
+
+  else if(sec.type==="mc"){
+    sec.items.forEach((it,i)=>{
+      const q = document.createElement("div");
+      q.className = "q";
+      const optsHtml = it.options.map((op,oi)=>`
+        <div class="opt" data-idx="${oi}" data-correct="${oi===it.correct}">
+          <span class="tag">(${String.fromCharCode(65+oi)})</span><span>${op}</span>
+        </div>`).join("");
+      const imgHtml = it.image ? `<img src="${it.image}" alt="題目附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">` : "";
+      const img2Html = it.image2 ? `<img src="${it.image2}" alt="題目附圖2" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">` : "";
+      q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q}</div>
+        ${imgHtml}${img2Html}
+        <div class="opts">${optsHtml}</div>`;
+      q.querySelectorAll(".opt").forEach(optEl=>{
+        if(optEl.dataset.correct==="true") optEl.classList.add("is-correct");
+        optEl.addEventListener("click", ()=>selectOption(q, optEl));
+      });
+      block.appendChild(q);
+    });
+  }
+
+  else if(sec.type==="reading"){
+    sec.passages.forEach(p=>{
+      const passageDiv = document.createElement("div");
+      passageDiv.className = "passage";
+      passageDiv.innerHTML = `${p.label ? `<span class="passage-label">${p.label}</span>`:""}${p.text}${p.image ? `<img src="${p.image}" alt="題組附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-top:10px;border:1px solid var(--paper-line);">`:""}`;
+      block.appendChild(passageDiv);
+      p.items.forEach((it,i)=>{
+        const q = document.createElement("div");
+        q.className = "q";
+        const optsHtml = it.options.map((op,oi)=>`
+          <div class="opt" data-idx="${oi}" data-correct="${oi===it.correct}">
+            <span class="tag">(${String.fromCharCode(65+oi)})</span><span>${op}</span>
+          </div>`).join("");
+        q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q}</div>
+          ${it.image ? `<img src="${it.image}" alt="題目附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">`:""}
+          <div class="opts">${optsHtml}</div>`;
+        q.querySelectorAll(".opt").forEach(optEl=>{
+          if(optEl.dataset.correct==="true") optEl.classList.add("is-correct");
+          optEl.addEventListener("click", ()=>selectOption(q, optEl));
+        });
+        block.appendChild(q);
+      });
+    });
+  }
+
+  return block;
+}
+
+function selectOption(qEl, optEl){
+  if(currentMode!=="quiz") return;
+  if(qEl.dataset.answered==="true") return;
+  qEl.dataset.answered = "true";
+  qEl.querySelectorAll(".opt").forEach(o=>o.classList.add("disabled"));
+  optEl.classList.add("selected");
+  const correctOpt = qEl.querySelector('.opt[data-correct="true"]');
+  qEl.dataset.studentAnswer = optEl.textContent.trim();
+  qEl.dataset.correctAnswer = correctOpt ? correctOpt.textContent.trim() : "";
+  qEl.dataset.isCorrect = (optEl.dataset.correct==="true") ? "true" : "false";
+  updateScore();
+}
+
+function updateScore(){
+  let total = 0, answered = 0, correct = 0;
+  contentEl.querySelectorAll(".q").forEach(q=>{
+    const gradable = q.querySelector(".opts") || q.querySelector("input.blank");
+    if(!gradable) return;
+    total++;
+    if(q.dataset.studentAnswer !== undefined){
+      answered++;
+      if(q.dataset.isCorrect === "true") correct++;
+    }
+  });
+  if(window.examAnswersRevealed){
+    scoreText.textContent = `${correct} / ${total}`;
+  } else {
+    scoreText.textContent = `已作答 ${answered} / ${total} 題`;
+  }
+}
+window.updateScore = updateScore;
+
+// 填寫題（注音／國字、改錯）：去掉空白與標點後和正解比對；注音的一聲符號「ˉ」可寫可不寫
+function normFill(s){
+  return String(s).replace(/[\sˉ　，、。．.,;；:：!！?？「」『』（）()【】→\-－—]/g, "").trim();
+}
+document.addEventListener("input", (e)=>{
+  const input = e.target;
+  if(!input.matches || !input.matches("input.blank")) return;
+  const q = input.closest(".q");
+  const answers = JSON.parse(input.dataset.answers || "[]");
+  const val = input.value.trim();
+  if(!val){ delete q.dataset.studentAnswer; delete q.dataset.isCorrect; }
+  else {
+    q.dataset.studentAnswer = val;
+    q.dataset.correctAnswer = answers.join(" ／ ");
+    q.dataset.isCorrect = answers.some(a => normFill(a) === normFill(val)) ? "true" : "false";
+  }
+  updateScore();
+});
+
+document.getElementById("resetBtn").addEventListener("click", render);
+document.getElementById("quizModeBtn").addEventListener("click", ()=>{
+  currentMode = "quiz";
+  document.getElementById("quizModeBtn").classList.add("active");
+  document.getElementById("printModeBtn").classList.remove("active");
+  render();
+});
+document.getElementById("printModeBtn").addEventListener("click", ()=>{
+  if(document.getElementById("printModeBtn").disabled) return;
+  currentMode = "print";
+  document.getElementById("printModeBtn").classList.add("active");
+  document.getElementById("quizModeBtn").classList.remove("active");
+  render();
+});
+
+window.unlockPrintMode = function(){
+  document.getElementById("printModeBtn").disabled = false;
+};
+
+render();
+</script>
+<script src="../sync.js"></script>
+</body>
+</html>

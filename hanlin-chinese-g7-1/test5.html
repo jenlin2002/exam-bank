@@ -1,0 +1,903 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>段考題庫｜國文第5回 - 論語選</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@500;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#faf6ec;
+    --paper-line:#e3dcc8;
+    --ink:#26332b;
+    --ink-soft:#5b6b5f;
+    --chalk-green:#2f4538;
+    --chalk-green-2:#3d5a48;
+    --pen-red:#b8433a;
+    --pen-red-soft:#f4dedb;
+    --ok-green:#3f7d52;
+    --ok-green-soft:#dfeee1;
+    --gold:#b5842a;
+    --radius:10px;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:"Noto Sans TC",sans-serif;
+    line-height:1.7;
+  }
+  header.hero{
+    background:var(--chalk-green);
+    color:#eef2ea;
+    padding:28px 20px 40px;
+    position:relative;
+  }
+  header.hero::after{
+    content:"";
+    position:absolute;
+    left:0; right:0; bottom:-1px;
+    height:14px;
+    background:repeating-linear-gradient(90deg,var(--paper) 0 18px, transparent 18px 20px);
+  }
+  .hero-inner{max-width:880px;margin:0 auto;}
+  .breadcrumb a{color:#cfe0d1;text-decoration:none;font-size:14px;}
+  .breadcrumb a:hover{text-decoration:underline;}
+  h1{
+    font-family:"Noto Serif TC",serif;
+    font-weight:700;
+    font-size:clamp(24px,4vw,34px);
+    margin:10px 0 6px;
+  }
+  .subtitle{color:#cfe0d1;font-size:15px;margin:0;}
+  main{max-width:880px;margin:0 auto;padding:28px 20px 80px;}
+
+  .controls{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:22px;
+  }
+  .mode-toggle{display:flex;border:2px solid var(--chalk-green);border-radius:999px;overflow:hidden;}
+  .mode-toggle button{
+    background:transparent;border:none;padding:8px 16px;font-size:14px;font-weight:700;
+    color:var(--chalk-green);cursor:pointer;font-family:"Noto Sans TC",sans-serif;
+  }
+  .mode-toggle button.active{background:var(--gold);color:#fff;}
+  .mode-toggle button:disabled{opacity:.4;cursor:not-allowed;}
+
+  .score-bar{
+    display:none;
+    align-items:center;
+    justify-content:space-between;
+    background:#fff;
+    border:1px solid var(--paper-line);
+    border-left:5px solid var(--gold);
+    border-radius:var(--radius);
+    padding:12px 18px;
+    margin-bottom:22px;
+    font-size:14px;
+  }
+  .score-bar.show{display:flex;}
+  .score-bar strong{font-size:18px;color:var(--gold);}
+  .score-bar button{
+    background:none;border:1px solid var(--ink-soft);color:var(--ink-soft);
+    border-radius:6px;padding:6px 12px;font-size:13px;cursor:pointer;
+  }
+
+  section.block{
+    background:#fff;
+    border:1px solid var(--paper-line);
+    border-radius:var(--radius);
+    padding:22px 22px 26px;
+    margin-bottom:20px;
+  }
+  .block h2{
+    font-family:"Noto Serif TC",serif;
+    font-size:19px;
+    margin:0 0 4px;
+    color:var(--chalk-green);
+  }
+  .block .meta{color:var(--ink-soft);font-size:13px;margin:0 0 16px;}
+
+  .q{margin-bottom:18px;padding-bottom:16px;border-bottom:1px dashed var(--paper-line);}
+  .q:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0;}
+  .q-text{font-size:15.5px;margin-bottom:8px;}
+  .q-num{color:var(--gold);font-weight:700;margin-right:4px;}
+
+  .opts{display:grid;gap:8px;}
+  .opt{
+    display:flex;gap:8px;align-items:flex-start;
+    border:1.5px solid var(--paper-line);
+    border-radius:8px;
+    padding:9px 12px;
+    cursor:pointer;
+    font-size:14.5px;
+    background:#fffdf8;
+  }
+  .opt:hover{border-color:var(--chalk-green-2);}
+  .opt.selected{border-color:var(--chalk-green-2);background:#eef3ea;}
+  .opt.correct{border-color:var(--ok-green);background:var(--ok-green-soft);}
+  .opt.wrong{border-color:var(--pen-red);background:var(--pen-red-soft);}
+  .opt .tag{font-weight:700;color:var(--ink-soft);}
+  .opt.correct .tag{color:var(--ok-green);}
+  .opt.wrong .tag{color:var(--pen-red);}
+  .opt.disabled{cursor:default;}
+
+  .passage{
+    background:#f5f2e8;border-radius:8px;padding:14px 16px;margin-bottom:14px;
+    font-size:14.5px;white-space:pre-line;
+  }
+  .passage-label{font-weight:700;color:var(--chalk-green);margin-bottom:4px;display:block;}
+
+  .sec-note{font-size:13.5px;color:var(--ink-soft);background:#f5f2e8;border-radius:8px;padding:8px 12px;margin:-6px 0 14px;}
+  .sec-pre{background:#f5f2e8;border-radius:8px;padding:10px 14px;margin:-4px 0 14px;font-size:14.5px;}
+  .fill-row{display:flex;flex-wrap:wrap;align-items:center;gap:8px;}
+  input.blank{
+    font-family:"Noto Sans TC",sans-serif;font-size:15.5px;border:none;border-bottom:2px solid var(--chalk-green-2);
+    background:#fffdf8;padding:4px 6px;width:170px;max-width:100%;
+  }
+  input.blank.wide{width:100%;}
+  textarea.explain-box{
+    width:100%;min-height:52px;font-family:"Noto Sans TC",sans-serif;font-size:15px;
+    border:1.5px solid var(--paper-line);border-radius:8px;padding:8px 10px;background:#fffdf8;resize:vertical;
+  }
+  .feedback{font-weight:700;font-size:15px;}
+  .feedback.ok{color:var(--ok-green);}
+  .feedback.no{color:var(--pen-red);}
+  .answer-reveal{display:none;margin-top:8px;font-size:14px;color:var(--ok-green);background:var(--ok-green-soft);border-radius:6px;padding:6px 12px;}
+  .answer-reveal.show{display:block;}
+  .zh-und{text-decoration:underline;text-underline-offset:3px;}
+  .footer-link{
+    display:block;text-align:center;margin-top:30px;color:var(--chalk-green);
+    text-decoration:none;font-weight:700;font-size:14px;
+  }
+  .footer-link:hover{text-decoration:underline;}
+
+  @media print{
+    header.hero, .controls, .score-bar, .mini-btn, .footer-link{display:none !important;}
+    body{background:#fff;}
+    section.block{border:none;box-shadow:none;padding:8px 0;margin-bottom:14px;}
+    .opt.correct{background:none;border:none;font-weight:700;}
+    .opt.correct::after{content:" ← 正解";color:var(--pen-red);}
+    .opt{border:none;padding:2px 0;}
+    main{max-width:100%;padding:0 24px;}
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="breadcrumb"><a href="https://jenlin2002.github.io/">🏠 回總目錄</a> ／ <a href="../hanlin-chinese-g7-1.html" style="color:#cfe0d1;">段考題庫</a></div>
+    <h1>國文・第5回</h1>
+    <p class="subtitle">第四課 論語選｜翰林版七年級國文（一）Ａ卷</p>
+  </div>
+</header>
+
+<main>
+  <div class="controls">
+    <div class="mode-toggle">
+      <button id="quizModeBtn" class="active">✏️ 測驗模式</button>
+      <button id="printModeBtn" disabled title="完成測驗並送出成績後才能查看">🖨️ 完整題目與解答（送出成績後解鎖）</button>
+    </div>
+  </div>
+
+  <div class="score-bar" id="scoreBar">
+    <div>目前得分：<strong id="scoreText">0 / 0</strong>（選擇題與填寫題；解釋題不計分）</div>
+    <button id="resetBtn">重新作答</button>
+  </div>
+
+  <div id="content"></div>
+
+  <a class="footer-link" href="../hanlin-chinese-g7-1.html">← 回段考題庫總覽</a>
+</main>
+
+<script>
+
+window.EXAM_META = { version: "國文A卷", examLabel: "國文第5回" };
+const DATA = {
+  sections: [
+  {
+    "type": "fill",
+    "title": "A部分　一、國字注音",
+    "meta": "每字1分，共10分",
+    "note": "「」裡是國字的寫注音，是注音的寫國字。注音的一聲可以不標。",
+    "placeholder": "注音或國字",
+    "items": [
+      {
+        "q": "個性魯「ㄇㄤˇ」",
+        "answers": [
+          "莽"
+        ]
+      },
+      {
+        "q": "學問「ㄩㄢ」博",
+        "answers": [
+          "淵"
+        ]
+      },
+      {
+        "q": "溫文「ㄖㄨˊ」雅",
+        "answers": [
+          "儒"
+        ]
+      },
+      {
+        "q": "「ㄅㄧㄢˋ」才無礙",
+        "answers": [
+          "辯"
+        ]
+      },
+      {
+        "q": "「ㄉㄨˇ」實謹慎",
+        "answers": [
+          "篤"
+        ]
+      },
+      {
+        "q": "功虧一「簣」",
+        "answers": [
+          "ㄎㄨㄟˋ"
+        ]
+      },
+      {
+        "q": "「誨」人不倦",
+        "answers": [
+          "ㄏㄨㄟˋ"
+        ]
+      },
+      {
+        "q": "口碑「載」道",
+        "answers": [
+          "ㄗㄞˋ"
+        ]
+      },
+      {
+        "q": "駕「馭」車馬",
+        "answers": [
+          "ㄩˋ"
+        ]
+      },
+      {
+        "q": "「允」文允武",
+        "answers": [
+          "ㄩㄣˇ"
+        ]
+      }
+    ]
+  },
+  {
+    "type": "explain",
+    "title": "二、解釋",
+    "meta": "每題2分，共10分（自己對照參考答案，不計入自動計分）",
+    "items": [
+      {
+        "q": "三省吾身",
+        "answer": "拿三件事來反省自己。"
+      },
+      {
+        "q": "與朋友交而不「信」乎",
+        "answer": "誠信。"
+      },
+      {
+        "q": "是謂能「養」",
+        "answer": "此指以衣食等來侍奉父母。"
+      },
+      {
+        "q": "平地",
+        "answer": "填平窪地。"
+      },
+      {
+        "q": "傳不習乎",
+        "answer": "老師所傳授的課業，是否還未溫習呢？"
+      }
+    ]
+  },
+  {
+    "type": "fill",
+    "title": "三、改錯",
+    "meta": "每字1分，共10分",
+    "wide": true,
+    "note": "每句有 5 個錯字。依照出現的順序，只寫出改正後的字（例如寫成「ＯＯＯＯＯ」五個字）。",
+    "placeholder": "依序寫出正確的字",
+    "items": [
+      {
+        "q": "閱讀儒家典藉非旦可以培養好學精神，也能增進自我醒思的能力，舉凡言行舉指、應對進退、進德休業都將因此提升。",
+        "answers": [
+          "籍但省止修"
+        ]
+      },
+      {
+        "q": "朋友之間不應只重享樂，切搓琢磨、抵勵言行才是交友的重大意義。會赳正我們缺失的朋友，常因忠言膩耳不被我們喜愛，遠離了他們，我們就難以成長。",
+        "answers": [
+          "磋砥礪糾逆"
+        ]
+      }
+    ]
+  },
+  {
+    "type": "mc",
+    "title": "四、成語填空",
+    "meta": "每題2分，共10分",
+    "note": "請依句意，從參考選項中選出適當的成語填入（　）中。",
+    "items": [
+      {
+        "q": "飆車歪風若不盡快遏止，必使各地青少年（　　　）。",
+        "options": [
+          "不恥下問",
+          "有教無類",
+          "群起效尤",
+          "潰不成軍",
+          "不學無術",
+          "過猶不及"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "許老師充滿教學熱忱，一心效法孔子（　　　）的精神，公平地照顧班上程度各異的所有學生。",
+        "options": [
+          "不恥下問",
+          "有教無類",
+          "群起效尤",
+          "潰不成軍",
+          "不學無術",
+          "過猶不及"
+        ],
+        "correct": 1
+      },
+      {
+        "q": "在我軍的猛力攻擊之下，敵方早已（　　　）。",
+        "options": [
+          "不恥下問",
+          "有教無類",
+          "群起效尤",
+          "潰不成軍",
+          "不學無術",
+          "過猶不及"
+        ],
+        "correct": 3
+      },
+      {
+        "q": "真正有學問的人，對自己不懂的地方，總是（　　　）。",
+        "options": [
+          "不恥下問",
+          "有教無類",
+          "群起效尤",
+          "潰不成軍",
+          "不學無術",
+          "過猶不及"
+        ],
+        "correct": 0
+      },
+      {
+        "q": "不管做任何事都要適度，謹守中庸之道，以免（　　　）。",
+        "options": [
+          "不恥下問",
+          "有教無類",
+          "群起效尤",
+          "潰不成軍",
+          "不學無術",
+          "過猶不及"
+        ],
+        "correct": 5
+      }
+    ]
+  },
+  {
+    "type": "mc",
+    "title": "五、基礎題",
+    "meta": "每題2分，共30分",
+    "items": [
+      {
+        "q": "下列「　」中的注音寫成國字後，何組字形兩兩相同？",
+        "options": [
+          "半途而「ㄈㄟˋ」／百「ㄈㄟˋ」待舉",
+          "閉目「ㄧㄤˇ」神／有「ㄧㄤˇ」運動",
+          "不虞「ㄎㄨㄟˋ」乏／「ㄎㄨㄟˋ」贈禮物",
+          "不「ㄌㄨㄣˊ」不類／「ㄌㄨㄣˊ」番上陣。"
+        ],
+        "correct": 0
+      },
+      {
+        "q": "下列「　」中的字，何組讀音相同？",
+        "options": [
+          "不見經「傳」／眉目「傳」情",
+          "「養」育之恩／奉「養」父母",
+          "譬如「為」山／指鹿「為」馬",
+          "三「省」吾身／節「省」能源。"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "下列「　」中的字，何組意思相同？",
+        "options": [
+          "譬如「為」山／「為」善最樂",
+          "今「之」孝者／置「之」度外",
+          "圖「謀」不軌／不「謀」而合",
+          "譬如「平」地／心「平」氣和。"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "下列有關論語的說明，何者<b>錯誤</b>？",
+        "options": [
+          "由孔子的弟子和再傳弟子記述編輯而成",
+          "是孔子與老子、荀子等學者談論、應答的語錄",
+          "全書二十篇，各篇通常取首章開頭的二、三字作為篇名",
+          "是儒家重要經典，對中國的歷史文化產生廣大的影響。"
+        ],
+        "correct": 1
+      },
+      {
+        "q": "下列何者與「不敬，何以別乎」同為「激問」？",
+        "options": [
+          "學而時習之，不亦說乎",
+          "問君何能爾？心遠地自偏",
+          "與朋友交而不信乎",
+          "有一言而可以終身行之者乎。"
+        ],
+        "correct": 0
+      },
+      {
+        "q": "下列何者<b>不是</b>古人對老師的稱呼？",
+        "options": [
+          "西席",
+          "夫子",
+          "桃李",
+          "先生。"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "下列選項中的「三」字，何者為實數？",
+        "options": [
+          "貨比三家不吃虧",
+          "逢人只說三分話",
+          "一問三不知",
+          "吾日三省吾身。"
+        ],
+        "correct": 3
+      },
+      {
+        "q": "「為人謀而不忠乎？與朋友交而不信乎？傳不習乎？」這段話<b>未</b>提及下列哪一層面？",
+        "options": [
+          "處事",
+          "待人",
+          "言談",
+          "學習。"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "「今之孝者，是謂能養。至於犬馬，皆能有養。不敬，何以別乎？」此句意思與下列何者最接近？",
+        "options": [
+          "食而弗愛，豕交之也。愛而不敬，獸畜之也",
+          "父母在，不遠遊，遊必有方",
+          "父母之年，不可不知也",
+          "父母唯其疾之憂。"
+        ],
+        "correct": 0
+      },
+      {
+        "q": "「譬如平地，雖覆一簣，進，吾往也。」這段話的涵義最接近於下列何者？",
+        "options": [
+          "水能載舟，亦能覆舟",
+          "讀萬卷書，行萬里路",
+          "人在江湖，身不由己",
+          "成功與否，操之在我。"
+        ],
+        "correct": 3
+      },
+      {
+        "q": "下列有關孔子的敘述，何者<b>有誤</b>？",
+        "options": [
+          "名丘，字仲尼，魯國人",
+          "是中國古代傑出的教育思想家",
+          "親自編撰的論語流傳後世",
+          "被尊稱為「至聖先師」。"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "「子游問孝。子曰：『今之孝者，是謂能養。至於犬馬，皆能有養。不敬，何以別乎？』」關於這段話的理解，下列何人說法正確？",
+        "options": [
+          "花花：懂得給犬馬吃好的，更要懂得給父母吃好的",
+          "晴晴：飼養寵物和奉養父母的重點都在於提供飲食",
+          "倫倫：奉養父母和飼養犬馬的差別在於尊敬的態度",
+          "詮詮：善待家中的犬馬，以免父母還要為此煩心。"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "曾子每天拿三件事來反省自己，下列何者是他自省的要項之一？",
+        "options": [
+          "作息正常",
+          "運動確實",
+          "飲食均衡",
+          "待人誠信。"
+        ],
+        "correct": 3
+      },
+      {
+        "q": "「譬如為山，未成一簣，止，吾止也。」這段話的涵義同於下列何句？",
+        "options": [
+          "為山九仞，功虧一簣",
+          "學而不思則罔",
+          "君子成人之美，不成人之惡",
+          "人無遠慮，必有近憂。"
+        ],
+        "correct": 0
+      },
+      {
+        "q": "曾子有每日自我反省的習慣，下列成語，何者與自我反省<b>無關</b>？",
+        "options": [
+          "閉門思過",
+          "焚膏繼晷",
+          "反躬自省",
+          "捫心自問。"
+        ],
+        "correct": 1
+      }
+    ]
+  },
+  {
+    "type": "mc",
+    "title": "B部分　一、進階題",
+    "meta": "每題2分，共20分",
+    "items": [
+      {
+        "q": "「寧可讓學得快的人等，也不能讓不會的人繼續不會。」上述的教育理念與下列何者最相符？",
+        "options": [
+          "強調培育精英人才",
+          "教育普及到各階層",
+          "不放棄每一個學生",
+          "製作個人化教學計畫。"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "下列「　」中的成語皆出自於論語，何者使用<b>有誤</b>？",
+        "options": [
+          "為人服務，我們要有「當仁不讓」的精神",
+          "臺中女中學生曾依晴因研究麵包蟲可分解保麗龍，而揚名國際科展，真可說是「後生可畏」",
+          "為了讓臺灣的棒球能揚威世界，選手們可說是「成人之美」",
+          "如果你知錯能改，爸媽一定會「既往不咎」，不扣你的零用錢。"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "下列文句，何者最能與曾子所說的「吾日三省吾身」相呼應？",
+        "options": [
+          "小事不做，大事難成",
+          "三日不讀書，面目可憎",
+          "良藥苦口利於病，忠言逆耳利於行",
+          "日日而省之，日日而改之，是之謂日新又日新。"
+        ],
+        "correct": 3
+      },
+      {
+        "q": "「譬如平地，雖覆一簣，進，吾往也。」這句話是強調學習要持之以恆。下列文句，何者<b>沒有</b>包含「堅持」的精神？",
+        "options": [
+          "舉一隅不以三隅反，則不復也",
+          "精誠所至，金石為開",
+          "人之為學，不日進則日退",
+          "學問之功，貴乎循序漸進，經久不輟。"
+        ],
+        "correct": 0
+      },
+      {
+        "q": "子曰：「色難！有事，弟子服其勞；有酒食，先生饌。曾是以為孝乎？」這句話強調孝敬父母，最難做到的是和顏悅色。下列關於孝順的名言，何者與其涵義最相近？",
+        "options": [
+          "樹欲靜而風不止，子欲養而親不待",
+          "羊有跪乳之恩，鴉有反哺之義",
+          "身體髮膚，受之父母，不敢毀傷，孝之始也",
+          "寧食開眉粥，不食臭面飯。"
+        ],
+        "correct": 3
+      },
+      {
+        "q": "子路請教孔子的志願，孔子回答：「老者安之，朋友信之，少者懷之。」請問孔子期望達到的是什麼樣的境界？",
+        "options": [
+          "有教無類",
+          "因材施教",
+          "世界大同",
+          "兄友弟恭。"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "子曰：「吾嘗終日不食，終夜不寢，以思，無益，不如學也。」（論語 衛靈公篇）這段話主要是在強調何種道理？",
+        "options": [
+          "學重於思",
+          "思重於學",
+          "學思並重",
+          "不學不思。"
+        ],
+        "correct": 0
+      },
+      {
+        "q": "培根：「只見汪洋就認為沒有陸地的人，不過是拙劣的探索者。」關於這句話的理解，下列何者正確？",
+        "options": [
+          "為學切勿一知半解，要有追求真理的勇氣",
+          "學習需趁早，勿到老時才後悔",
+          "求學必須按部就班，不可躁進",
+          "學思並重，就能真正掌握知識。"
+        ],
+        "correct": 0
+      },
+      {
+        "q": "（圖示）讀書 → 重新組織知識 → 專注思考與批判 → 變成貨真價實的知識\n下列出自論語裡的文句，何者的學習態度可與上圖互為印證？",
+        "options": [
+          "學而時習之，不亦說乎",
+          "溫故而知新，可以為師矣",
+          "學而不思則罔，思而不學則殆",
+          "知之者不如好之者，好之者不如樂之者。"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "莎士比亞：「即使斧頭細小，只要盡力多砍，終能砍倒最堅硬的橡木。」下列何種詮釋最接近其旨意？",
+        "options": [
+          "為山九仞，功虧一簣",
+          "鍥而不舍，金石可鏤",
+          "一日暴之，十日寒之",
+          "己所不欲，勿施於人。"
+        ],
+        "correct": 1
+      }
+    ]
+  },
+  {
+    "type": "reading",
+    "title": "二、閱讀測驗",
+    "meta": "每題2分，共10分",
+    "passages": [
+      {
+        "label": "（一）",
+        "text": "子謂子貢曰：「女與回也孰愈？」對曰：「賜也，何敢望回。回也聞一以知十，賜也，聞一以知二。」子曰：「弗如也，吾與女弗如也。」（論語 公冶長篇）\n註：①女：通「汝」，你。②回：顏回。③孰愈：誰勝出、誰較高明。④賜：子貢姓端木，名賜。⑤弗：不。⑥與：贊成。",
+        "items": [
+          {
+            "q": "根據本文，子貢以何種能力的差距來表達自己不如顏淵？",
+            "options": [
+              "估算統計",
+              "領悟類推",
+              "口才辭令",
+              "分析論辯。"
+            ],
+            "correct": 1
+          },
+          {
+            "q": "依據子貢能自覺不如顏淵一事，可以說明子貢具有何種德行？",
+            "options": [
+              "廣結善緣",
+              "淡泊名利",
+              "知恩圖報",
+              "虛懷若谷。"
+            ],
+            "correct": 3
+          },
+          {
+            "q": "孔子在「弗如也，吾與女弗如也」一句中表達出對顏回的何種態度？",
+            "options": [
+              "惋惜",
+              "憐憫",
+              "讚嘆",
+              "激勵。"
+            ],
+            "correct": 2
+          }
+        ]
+      },
+      {
+        "label": "（二）",
+        "text": "子路問：「聞斯行諸？」子曰：「有父兄在，如之何其聞斯行之？」冉有問：「聞斯行諸？」子曰：「聞斯行之。」公西華曰：「由也問聞斯行諸，子曰『有父兄在』；求也問聞斯行諸，子曰『聞斯行之』。赤也惑，敢問。」子曰：「求也退，故進之；由也兼人，故退之。」（論語 先進篇）\n註：①聞斯行諸：聽到一件合於義理的事就去做嗎？斯，此，指合於義理的事。諸，「之乎」的合音。②退：畏縮不前。③兼人：好勇過人。兼，加倍、超越、勝過。",
+        "items": [
+          {
+            "q": "根據本文，孔子對不同弟子問「聞斯行諸」，回答卻不同的主要原因是什麼？",
+            "options": [
+              "故弄玄虛，讓學生分不清虛實",
+              "因材施教，不同學生給予不同的建議",
+              "循序漸進，先從較簡單的做起",
+              "操之在己，讓學生自行下判斷。"
+            ],
+            "correct": 1
+          },
+          {
+            "q": "根據本文，從孔子與公西華的談話中，可知子路和冉有的差異為何？",
+            "options": [
+              "資質",
+              "才學",
+              "個性",
+              "能力。"
+            ],
+            "correct": 2
+          }
+        ]
+      }
+    ]
+  }
+]
+};
+
+let currentMode = "quiz"; // quiz | print
+
+const contentEl = document.getElementById("content");
+const scoreBar = document.getElementById("scoreBar");
+const scoreText = document.getElementById("scoreText");
+
+function render(){
+  window.examAnswersRevealed = false;
+  contentEl.innerHTML = "";
+  DATA.sections.forEach((sec, si)=> contentEl.appendChild(renderSection(sec, si)));
+  if(currentMode==="quiz"){
+    scoreBar.classList.add("show");
+    updateScore();
+  } else {
+    scoreBar.classList.remove("show");
+    contentEl.querySelectorAll(".opt").forEach(o=>o.classList.add("disabled"));
+    contentEl.querySelectorAll(".opt.is-correct").forEach(o=>o.classList.add("correct"));
+  }
+}
+
+function renderSection(sec, si){
+  const block = document.createElement("section");
+  block.className = "block";
+  block.innerHTML = `<h2>${sec.title}</h2><p class="meta">${sec.meta}</p>`
+    + (sec.note ? `<div class="sec-note">${sec.note}</div>` : "")
+    + (sec.pre ? `<div class="sec-pre">${sec.pre}</div>` : "");
+
+  if(sec.type==="fill"){
+    sec.items.forEach((it,i)=>{
+      const q = document.createElement("div");
+      q.className = "q";
+      const shown = it.answers.join(" ／ ");
+      q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q}</div>
+        <div class="fill-row"><input type="text" class="blank${sec.wide ? " wide" : ""}" autocomplete="off" placeholder="${sec.placeholder || "作答"}"><span class="feedback"></span></div>
+        <div class="answer-reveal">正解：${shown}</div>`;
+      q.querySelector("input.blank").dataset.answers = JSON.stringify(it.answers);
+      if(currentMode!=="quiz"){ q.querySelector("input.blank").disabled = true; q.querySelector(".answer-reveal").classList.add("show"); }
+      block.appendChild(q);
+    });
+  }
+
+  else if(sec.type==="explain"){
+    sec.items.forEach((it,i)=>{
+      const q = document.createElement("div");
+      q.className = "q";
+      q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q}</div>
+        <textarea class="explain-box" placeholder="寫下你的解釋（送出成績後對照參考答案）"></textarea>
+        <div class="answer-reveal">參考答案：${it.answer}</div>`;
+      if(currentMode!=="quiz"){ q.querySelector("textarea").remove(); q.querySelector(".answer-reveal").classList.add("show"); }
+      block.appendChild(q);
+    });
+  }
+
+  else if(sec.type==="mc"){
+    sec.items.forEach((it,i)=>{
+      const q = document.createElement("div");
+      q.className = "q";
+      const optsHtml = it.options.map((op,oi)=>`
+        <div class="opt" data-idx="${oi}" data-correct="${oi===it.correct}">
+          <span class="tag">(${String.fromCharCode(65+oi)})</span><span>${op}</span>
+        </div>`).join("");
+      const imgHtml = it.image ? `<img src="${it.image}" alt="題目附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">` : "";
+      const img2Html = it.image2 ? `<img src="${it.image2}" alt="題目附圖2" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">` : "";
+      q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q}</div>
+        ${imgHtml}${img2Html}
+        <div class="opts">${optsHtml}</div>`;
+      q.querySelectorAll(".opt").forEach(optEl=>{
+        if(optEl.dataset.correct==="true") optEl.classList.add("is-correct");
+        optEl.addEventListener("click", ()=>selectOption(q, optEl));
+      });
+      block.appendChild(q);
+    });
+  }
+
+  else if(sec.type==="reading"){
+    sec.passages.forEach(p=>{
+      const passageDiv = document.createElement("div");
+      passageDiv.className = "passage";
+      passageDiv.innerHTML = `${p.label ? `<span class="passage-label">${p.label}</span>`:""}${p.text}${p.image ? `<img src="${p.image}" alt="題組附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-top:10px;border:1px solid var(--paper-line);">`:""}`;
+      block.appendChild(passageDiv);
+      p.items.forEach((it,i)=>{
+        const q = document.createElement("div");
+        q.className = "q";
+        const optsHtml = it.options.map((op,oi)=>`
+          <div class="opt" data-idx="${oi}" data-correct="${oi===it.correct}">
+            <span class="tag">(${String.fromCharCode(65+oi)})</span><span>${op}</span>
+          </div>`).join("");
+        q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q}</div>
+          ${it.image ? `<img src="${it.image}" alt="題目附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">`:""}
+          <div class="opts">${optsHtml}</div>`;
+        q.querySelectorAll(".opt").forEach(optEl=>{
+          if(optEl.dataset.correct==="true") optEl.classList.add("is-correct");
+          optEl.addEventListener("click", ()=>selectOption(q, optEl));
+        });
+        block.appendChild(q);
+      });
+    });
+  }
+
+  return block;
+}
+
+function selectOption(qEl, optEl){
+  if(currentMode!=="quiz") return;
+  if(qEl.dataset.answered==="true") return;
+  qEl.dataset.answered = "true";
+  qEl.querySelectorAll(".opt").forEach(o=>o.classList.add("disabled"));
+  optEl.classList.add("selected");
+  const correctOpt = qEl.querySelector('.opt[data-correct="true"]');
+  qEl.dataset.studentAnswer = optEl.textContent.trim();
+  qEl.dataset.correctAnswer = correctOpt ? correctOpt.textContent.trim() : "";
+  qEl.dataset.isCorrect = (optEl.dataset.correct==="true") ? "true" : "false";
+  updateScore();
+}
+
+function updateScore(){
+  let total = 0, answered = 0, correct = 0;
+  contentEl.querySelectorAll(".q").forEach(q=>{
+    const gradable = q.querySelector(".opts") || q.querySelector("input.blank");
+    if(!gradable) return;
+    total++;
+    if(q.dataset.studentAnswer !== undefined){
+      answered++;
+      if(q.dataset.isCorrect === "true") correct++;
+    }
+  });
+  if(window.examAnswersRevealed){
+    scoreText.textContent = `${correct} / ${total}`;
+  } else {
+    scoreText.textContent = `已作答 ${answered} / ${total} 題`;
+  }
+}
+window.updateScore = updateScore;
+
+// 填寫題（注音／國字、改錯）：去掉空白與標點後和正解比對；注音的一聲符號「ˉ」可寫可不寫
+function normFill(s){
+  return String(s).replace(/[\sˉ　，、。．.,;；:：!！?？「」『』（）()【】→\-－—]/g, "").trim();
+}
+document.addEventListener("input", (e)=>{
+  const input = e.target;
+  if(!input.matches || !input.matches("input.blank")) return;
+  const q = input.closest(".q");
+  const answers = JSON.parse(input.dataset.answers || "[]");
+  const val = input.value.trim();
+  if(!val){ delete q.dataset.studentAnswer; delete q.dataset.isCorrect; }
+  else {
+    q.dataset.studentAnswer = val;
+    q.dataset.correctAnswer = answers.join(" ／ ");
+    q.dataset.isCorrect = answers.some(a => normFill(a) === normFill(val)) ? "true" : "false";
+  }
+  updateScore();
+});
+
+document.getElementById("resetBtn").addEventListener("click", render);
+document.getElementById("quizModeBtn").addEventListener("click", ()=>{
+  currentMode = "quiz";
+  document.getElementById("quizModeBtn").classList.add("active");
+  document.getElementById("printModeBtn").classList.remove("active");
+  render();
+});
+document.getElementById("printModeBtn").addEventListener("click", ()=>{
+  if(document.getElementById("printModeBtn").disabled) return;
+  currentMode = "print";
+  document.getElementById("printModeBtn").classList.add("active");
+  document.getElementById("quizModeBtn").classList.remove("active");
+  render();
+});
+
+window.unlockPrintMode = function(){
+  document.getElementById("printModeBtn").disabled = false;
+};
+
+render();
+</script>
+<script src="../sync.js"></script>
+</body>
+</html>

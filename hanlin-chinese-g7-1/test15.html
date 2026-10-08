@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>段考題庫｜國文第15回 - 貪睡的長頸鹿</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@500;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#faf6ec;
+    --paper-line:#e3dcc8;
+    --ink:#26332b;
+    --ink-soft:#5b6b5f;
+    --chalk-green:#2f4538;
+    --chalk-green-2:#3d5a48;
+    --pen-red:#b8433a;
+    --pen-red-soft:#f4dedb;
+    --ok-green:#3f7d52;
+    --ok-green-soft:#dfeee1;
+    --gold:#b5842a;
+    --radius:10px;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:"Noto Sans TC",sans-serif;
+    line-height:1.7;
+  }
+  header.hero{
+    background:var(--chalk-green);
+    color:#eef2ea;
+    padding:28px 20px 40px;
+    position:relative;
+  }
+  header.hero::after{
+    content:"";
+    position:absolute;
+    left:0; right:0; bottom:-1px;
+    height:14px;
+    background:repeating-linear-gradient(90deg,var(--paper) 0 18px, transparent 18px 20px);
+  }
+  .hero-inner{max-width:880px;margin:0 auto;}
+  .breadcrumb a{color:#cfe0d1;text-decoration:none;font-size:14px;}
+  .breadcrumb a:hover{text-decoration:underline;}
+  h1{
+    font-family:"Noto Serif TC",serif;
+    font-weight:700;
+    font-size:clamp(24px,4vw,34px);
+    margin:10px 0 6px;
+  }
+  .subtitle{color:#cfe0d1;font-size:15px;margin:0;}
+  main{max-width:880px;margin:0 auto;padding:28px 20px 80px;}
+
+  .controls{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:22px;
+  }
+  .mode-toggle{display:flex;border:2px solid var(--chalk-green);border-radius:999px;overflow:hidden;}
+  .mode-toggle button{
+    background:transparent;border:none;padding:8px 16px;font-size:14px;font-weight:700;
+    color:var(--chalk-green);cursor:pointer;font-family:"Noto Sans TC",sans-serif;
+  }
+  .mode-toggle button.active{background:var(--gold);color:#fff;}
+  .mode-toggle button:disabled{opacity:.4;cursor:not-allowed;}
+
+  .score-bar{
+    display:none;
+    align-items:center;
+    justify-content:space-between;
+    background:#fff;
+    border:1px solid var(--paper-line);
+    border-left:5px solid var(--gold);
+    border-radius:var(--radius);
+    padding:12px 18px;
+    margin-bottom:22px;
+    font-size:14px;
+  }
+  .score-bar.show{display:flex;}
+  .score-bar strong{font-size:18px;color:var(--gold);}
+  .score-bar button{
+    background:none;border:1px solid var(--ink-soft);color:var(--ink-soft);
+    border-radius:6px;padding:6px 12px;font-size:13px;cursor:pointer;
+  }
+
+  section.block{
+    background:#fff;
+    border:1px solid var(--paper-line);
+    border-radius:var(--radius);
+    padding:22px 22px 26px;
+    margin-bottom:20px;
+  }
+  .block h2{
+    font-family:"Noto Serif TC",serif;
+    font-size:19px;
+    margin:0 0 4px;
+    color:var(--chalk-green);
+  }
+  .block .meta{color:var(--ink-soft);font-size:13px;margin:0 0 16px;}
+
+  .q{margin-bottom:18px;padding-bottom:16px;border-bottom:1px dashed var(--paper-line);}
+  .q:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0;}
+  .q-text{font-size:15.5px;margin-bottom:8px;}
+  .q-num{color:var(--gold);font-weight:700;margin-right:4px;}
+
+  .opts{display:grid;gap:8px;}
+  .opt{
+    display:flex;gap:8px;align-items:flex-start;
+    border:1.5px solid var(--paper-line);
+    border-radius:8px;
+    padding:9px 12px;
+    cursor:pointer;
+    font-size:14.5px;
+    background:#fffdf8;
+  }
+  .opt:hover{border-color:var(--chalk-green-2);}
+  .opt.selected{border-color:var(--chalk-green-2);background:#eef3ea;}
+  .opt.correct{border-color:var(--ok-green);background:var(--ok-green-soft);}
+  .opt.wrong{border-color:var(--pen-red);background:var(--pen-red-soft);}
+  .opt .tag{font-weight:700;color:var(--ink-soft);}
+  .opt.correct .tag{color:var(--ok-green);}
+  .opt.wrong .tag{color:var(--pen-red);}
+  .opt.disabled{cursor:default;}
+
+  .passage{
+    background:#f5f2e8;border-radius:8px;padding:14px 16px;margin-bottom:14px;
+    font-size:14.5px;white-space:pre-line;
+  }
+  .passage-label{font-weight:700;color:var(--chalk-green);margin-bottom:4px;display:block;}
+
+  .sec-note{font-size:13.5px;color:var(--ink-soft);background:#f5f2e8;border-radius:8px;padding:8px 12px;margin:-6px 0 14px;}
+  .sec-pre{background:#f5f2e8;border-radius:8px;padding:10px 14px;margin:-4px 0 14px;font-size:14.5px;}
+  .fill-row{display:flex;flex-wrap:wrap;align-items:center;gap:8px;}
+  input.blank{
+    font-family:"Noto Sans TC",sans-serif;font-size:15.5px;border:none;border-bottom:2px solid var(--chalk-green-2);
+    background:#fffdf8;padding:4px 6px;width:170px;max-width:100%;
+  }
+  input.blank.wide{width:100%;}
+  textarea.explain-box{
+    width:100%;min-height:52px;font-family:"Noto Sans TC",sans-serif;font-size:15px;
+    border:1.5px solid var(--paper-line);border-radius:8px;padding:8px 10px;background:#fffdf8;resize:vertical;
+  }
+  .feedback{font-weight:700;font-size:15px;}
+  .feedback.ok{color:var(--ok-green);}
+  .feedback.no{color:var(--pen-red);}
+  .answer-reveal{display:none;margin-top:8px;font-size:14px;color:var(--ok-green);background:var(--ok-green-soft);border-radius:6px;padding:6px 12px;}
+  .answer-reveal.show{display:block;}
+  .zh-und{text-decoration:underline;text-underline-offset:3px;}
+  .footer-link{
+    display:block;text-align:center;margin-top:30px;color:var(--chalk-green);
+    text-decoration:none;font-weight:700;font-size:14px;
+  }
+  .footer-link:hover{text-decoration:underline;}
+
+  @media print{
+    header.hero, .controls, .score-bar, .mini-btn, .footer-link{display:none !important;}
+    body{background:#fff;}
+    section.block{border:none;box-shadow:none;padding:8px 0;margin-bottom:14px;}
+    .opt.correct{background:none;border:none;font-weight:700;}
+    .opt.correct::after{content:" ← 正解";color:var(--pen-red);}
+    .opt{border:none;padding:2px 0;}
+    main{max-width:100%;padding:0 24px;}
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="breadcrumb"><a href="https://jenlin2002.github.io/">🏠 回總目錄</a> ／ <a href="../hanlin-chinese-g7-1.html" style="color:#cfe0d1;">段考題庫</a></div>
+    <h1>國文・第15回</h1>
+    <p class="subtitle">自學選文二 貪睡的長頸鹿｜翰林版七年級國文（一）Ａ卷</p>
+  </div>
+</header>
+
+<main>
+  <div class="controls">
+    <div class="mode-toggle">
+      <button id="quizModeBtn" class="active">✏️ 測驗模式</button>
+      <button id="printModeBtn" disabled title="完成測驗並送出成績後才能查看">🖨️ 完整題目與解答（送出成績後解鎖）</button>
+    </div>
+  </div>
+
+  <div class="score-bar" id="scoreBar">
+    <div>目前得分：<strong id="scoreText">0 / 0</strong>（選擇題與填寫題；解釋題不計分）</div>
+    <button id="resetBtn">重新作答</button>
+  </div>
+
+  <div id="content"></div>
+
+  <a class="footer-link" href="../hanlin-chinese-g7-1.html">← 回段考題庫總覽</a>
+</main>
+
+<script>
+
+window.EXAM_META = { version: "國文A卷", examLabel: "國文第15回" };
+const DATA = {
+  sections: [
+  {
+    "type": "mc",
+    "title": "一、單題",
+    "meta": "每題4分，共92分",
+    "items": [
+      {
+        "q": "下列「　」中的字，何組讀音相同？",
+        "options": [
+          "「嚮」導／「饗」宴",
+          "一柱「擎」天／風馳電「掣」",
+          "狩「獵」／「躐」等",
+          "嗷嗷待「哺」／相「輔」相成"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "下列選項「　」中的注音寫成國字後，何組字形前後相同？",
+        "options": [
+          "永不鬆「ㄒㄧㄝˋ」／水庫「ㄒㄧㄝˋ」洪",
+          "「ㄅㄛˊ」子／蓬「ㄅㄛˊ」",
+          "不可「ㄓˋ」信／聰明才「ㄓˋ」",
+          "窺「ㄙˋ」／「ㄙˋ」探"
+        ],
+        "correct": 3
+      },
+      {
+        "q": "下列「　」中的字，何組意思相同？",
+        "options": [
+          "「環」境／「環」節",
+          "本末倒「置」／錯「置」",
+          "「覺」悟／午「覺」",
+          "「食」髓知味／自「食」惡果"
+        ],
+        "correct": 1
+      },
+      {
+        "q": "下列「　」中的成語，何者運用正確？",
+        "options": [
+          "他平時一毛不拔，今天竟然請我們吃大餐，真令人「毋庸置疑」",
+          "颱風還未到，許多商家已經「未雨綢繆」，開始堆沙包、固定招牌等防範工作，以免發生危險",
+          "父親總是「靈光一閃」，要求孩子樹立好德性",
+          "生活經驗豐富的作家，下筆時常能「索盡枯腸」，不斷有佳作產生"
+        ],
+        "correct": 1
+      },
+      {
+        "q": "下列各文句，何者用字完全正確？",
+        "options": [
+          "長頸鹿沒有貪睡的權利，貪睡的下場就是出侷",
+          "長頸鹿為了求生存，早已練救睜眼睡覺的技能",
+          "每個人都有自己的特色，無須羨慕他人",
+          "育君出生於豪門世家，從小就過著奢移浪費的生活"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "根據貪睡的長頸鹿一文，下列說明何者正確？",
+        "options": [
+          "警覺性低的長頸鹿會變成獅子的腹中物",
+          "物競天擇的演化下，草食性動物能有長時間睡眠",
+          "獅子每天只能睡兩小時不到，每次只能睡三分鐘",
+          "草食性動物的平均睡眠時間都比肉食性動物長"
+        ],
+        "correct": 0
+      },
+      {
+        "q": "下列各句「　」中的詞語經替換後，何者意思相同？",
+        "options": [
+          "這部電影十分感人，許多觀眾看了後都「淚如雨下」：渾渾噩噩",
+          "這件事情我雖然想幫你，卻也「愛莫能助」：愛屋及烏",
+          "辯論會上，雙方代表都「振振有詞」地為自己的主張辯護：理直氣壯",
+          "這個計畫準備周詳，只要經費一來，自然「水到渠成」：揠苗助長"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "「前方的一處樹叢有窸窣聲，哇，是一個長頸鹿家族在吃『早餐』。」上文中「窸窣」為狀聲詞，下列「　」中的詞語，何者也是狀聲詞？",
+        "options": [
+          "「滾滾」長江東逝水，浪花淘盡英雄",
+          "江水「悠悠」，洗不盡我滿腔憂愁",
+          "春天一到，院子裡「離離」散紅",
+          "河水「潺潺」，草色青青"
+        ],
+        "correct": 3
+      },
+      {
+        "q": "「人生最可怕的是，錯置。所謂錯置，就是搞不清楚自己是誰或想成為什麼樣的人，沒有獅子的能力、地位，卻想過獅子的生活。」下列哪一位同學的人格特質最近於以上所述？",
+        "options": [
+          "凱婷：溫柔體貼，善解人意",
+          "煌祥：好高鶩遠，不切實際",
+          "家榆：積極認真，目標明確",
+          "雅新：認識自己，截長補短"
+        ],
+        "correct": 1
+      },
+      {
+        "q": "貪睡的長頸鹿是一篇說明文，關於這篇文章的寫作方式，下列說明何者正確？",
+        "options": [
+          "運用第三人稱寫法，刻畫細膩",
+          "事件按照時序書寫，層次井然",
+          "開頭直接破題，令人印象深刻",
+          "敘事說明穿插，內容言近旨遠"
+        ],
+        "correct": 3
+      },
+      {
+        "q": "下列各文句的描述，何者用字最精簡？",
+        "options": [
+          "要塑造建立獨立的人格，必須先有自知之明",
+          "勇敢面對不逃避，才能想辦法設法解決問題",
+          "深切體認領悟人生的目標，才有努力的方向",
+          "安逸舒適易使人消磨志氣，不如接受挑戰和鍛鍊"
+        ],
+        "correct": 3
+      },
+      {
+        "q": "「獅子有獅子的得失，何必羨慕牠一天可睡十五小時？有人想當叢林之王，碰到獵物（問題）卻搞不定。相對的，我也看過很多平凡但可愛的小人物，認分與踏實，當一隻長頸鹿就像長頸鹿。」根據這段話，可知作者想要表達的意思與下列何者最接近？",
+        "options": [
+          "就算有九十九個困難，只要有一個堅強的意志就不困難",
+          "甘於平凡才能偉大，人生沒有永遠的巔峰，忠於自己的角色也是一種榮耀",
+          "哲人無憂，智者常樂。並不是因為所愛的一切他都擁有了，而是所擁有的一切他都愛",
+          "人生就好像是回力鏢一樣，你投擲出的是什麼，收到的就是什麼"
+        ],
+        "correct": 1
+      },
+      {
+        "q": "根據貪睡的長頸鹿一文，下列何者與長頸鹿<b>無關</b>？",
+        "options": [
+          "屬於肉食性動物",
+          "可以只睡三分鐘",
+          "睡眠時間非常短，進入深度睡眠狀態只有幾分鐘",
+          "是陸地上最高的動物"
+        ],
+        "correct": 0
+      },
+      {
+        "q": "「生命原本就是一個選擇，當獅子未必好，當長頸鹿未必差，只要一切恰如其分。」根據這段話，可知作者想要表達什麼意思？",
+        "options": [
+          "謀事在人，成事在天",
+          "尺有所短，寸有所長",
+          "未雨綢繆，防患未然",
+          "失之東隅，收之桑榆"
+        ],
+        "correct": 1
+      },
+      {
+        "q": "「鳥類」在詩文中往往代表不同的意義，例如：「等是有家歸未得，杜鵑休向耳邊啼。」此處的「杜鵑」代表鄉愁。下列有關「鳥類」所代表的意義，何者敘述正確？",
+        "options": [
+          "「飄飄何所似？天地一沙鷗」，此處的「沙鷗」代表宏大的志向",
+          "「鶯啼燕語報新年，馬邑龍堆路幾千」，此處的「燕」象徵春日來臨",
+          "「得成比目何辭死，願作鴛鴦不羨仙」，此處的「鴛鴦」象徵思鄉愁緒",
+          "「鳳凰臺上鳳凰遊，鳳去臺空江自流」，此處的「鳳凰」感嘆自己身世的飄零"
+        ],
+        "correct": 1
+      },
+      {
+        "q": "「一個人養了一隻狗和一頭驢。這個人總是和狗一起玩，每次到外面用餐，都不忘帶一些回家給小狗，當小狗搖著尾巴走上前去時，就丟給牠吃。驢看到了，心裡很羨慕，也跑過去又蹦又跳，結果把主人踢倒了，主人很生氣，叫人把驢牽走，還用棍子打了牠一頓。」根據上述故事，下列詞語何者適合用來形容驢子？",
+        "options": [
+          "仗勢欺人",
+          "吃苦耐勞",
+          "巴蛇吞象",
+          "邯鄲學步"
+        ],
+        "correct": 3
+      },
+      {
+        "q": "下列有關動物的歇後語，何者意思配對<b>錯誤</b>？",
+        "options": [
+          "猴子穿新衣──裝人樣",
+          "兔子看人──白目",
+          "烏龜打架──硬碰硬",
+          "狗捉老鼠──多管閒事"
+        ],
+        "correct": 1
+      },
+      {
+        "q": "「烏龜請求老鷹教他飛翔，老鷹勸告他，說他的本性根本不適合飛翔。烏龜再三懇求，老鷹便把他抓住，帶到空中，然後扔下。烏龜掉到石頭上，摔得粉碎。」根據上文敘述，烏龜的遭遇可呼應貪睡的長頸鹿一文中的哪段話？",
+        "options": [
+          "如果你無法成為叢林之王，就要是永不鬆懈的長頸鹿。很嚴酷，你只有三分鐘睡眠，完全沒有貪睡的權利，貪睡的下場，就是出局",
+          "人生最可怕的是，錯置。所謂錯置，就是搞不清楚自己是誰或想成為什麼樣的人，沒有獅子的能力、地位，卻想過獅子的生活",
+          "這是奇妙的經驗，我正在陪「陸地上身長最高的動物」吃早餐",
+          "牠們通常站著打瞌睡"
+        ],
+        "correct": 1
+      },
+      {
+        "q": "下列文句的修辭，何者說明正確？",
+        "options": [
+          "前方的一處樹叢有窸窣聲，哇，是一個長頸鹿家族在吃「早餐」：聽覺摹寫",
+          "獅子有獅子的得失，何必羨慕牠一天可睡十五小時：排比",
+          "想擁有權力、想主導棋局的獅子，能力就要相當，也要願意承擔：譬喻",
+          "我因此好奇，後天環境如果變遷，行為能有多大改變：頂真"
+        ],
+        "correct": 0
+      },
+      {
+        "q": "秀美正在閱讀一篇新聞報導，節錄內容如下：<br>　　因為疫情嚴重，竟反而讓地球環境得以喘息！美國 NASA 最近公布一系列的空照圖，發現地球無比的清澈。推算原因，可能是不少國家採取鎖國、封城策略、航班也大幅減少，尤其是中國和義大利，是疫情重災區，原本上空一片灰濛濛，如今變得乾淨許多！中央大學 太遙中心的專家說，這是非常珍貴的資料，也是過去因為成本龐大，一直無法做的研究，希望我們從疫情中學到如何與環境共存。<br>　　環保署 環境監測及資訊處處長張順欽：「空氣品質的確受到這些汙染排放源，有很嚴重的影響。」防疫措施，讓中國工廠停止生產，街道不再塞滿汽機車，各國封城，祭出嚴格的入境限制，密密麻麻的航班，大幅減少，人類的經濟活動變少，卻意外讓地球得以喘息。（節錄自華視新聞網 2020／04／01）<br>根據上述新聞，下列何項敘述<b>不妥</b>？",
+        "options": [
+          "地球得以喘息是因為不少國家採取鎖國、封城、減少航班的策略",
+          "空氣品質的好壞與汙染源的排放有高度相關",
+          "人類的經濟活動變少造成地球環境的成本增加",
+          "我們得以反思如何與環境共存"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "關於貪睡的長頸鹿一文的寫作手法，下列說明何者正確？",
+        "options": [
+          "提出其他草食性動物的睡覺習慣與長頸鹿做比較",
+          "利用長頸鹿的睡覺行為提醒人們千萬不可貪睡",
+          "藉由提出疑問，解釋長頸鹿睡覺行為來引發人們反思",
+          "藉睡覺行為的差異，鼓勵人們要成為團體中的獅子（領導者）"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "「嬰聞之，橘生淮南則為橘，生於淮北則為枳，葉徒相似，其實味不同。所以然者何？水土異也。」下列選項的敘述，何者與上文的意思最接近？",
+        "options": [
+          "白沙在涅，與之俱黑",
+          "意志堅定，不屈不撓",
+          "深思熟慮，防患未然",
+          "謙虛自牧，慈悲為懷"
+        ],
+        "correct": 0
+      },
+      {
+        "q": "下列文句，何者解讀正確？",
+        "options": [
+          "哪一隻白目的長頸鹿膽敢深睡，就準備長眠吧：警告長頸鹿睡眠時間過長有害健康",
+          "當長頸鹿真想趴著睡時，它的三條腿彎曲在肚子下，留另一條後腿伸展在一邊，長脖子呈弓形彎向後腿：介紹長頸鹿放鬆時的睡姿",
+          "如果你無法成為叢林之王，就要是永不鬆懈的長頸鹿：勸人要認清事實才能求得生存",
+          "人生最可怕的是，錯置：說明環境足以影響每個人的發展"
+        ],
+        "correct": 2
+      }
+    ]
+  },
+  {
+    "type": "reading",
+    "title": "二、題組",
+    "meta": "每題4分，共8分",
+    "passages": [
+      {
+        "label": "",
+        "text": "　　馬西亞研究青少年的自我認同，將青少年進行下表中的四種分類，分別是定向型統合、未定型統合、早閉型統合、迷失型統合，詳細內容如下表所示：<table style=\"border-collapse:collapse;width:100%;margin:6px 0;font-size:14px;\"><tr><th style=\"border:1px solid #999;padding:4px;width:5em;\">類型</th><th style=\"border:1px solid #999;padding:4px;\">內容</th></tr><tr><td style=\"border:1px solid #999;padding:4px;text-align:center;\">定向型</td><td style=\"border:1px solid #999;padding:4px;\">1.自我追尋以達到自主定向。<br>2.了解自身所處的現實環境，已經歷過統合危機且有一番情緒掙扎，對未來已下決定並對該決定有強烈的承諾。</td></tr><tr><td style=\"border:1px solid #999;padding:4px;text-align:center;\">未定型</td><td style=\"border:1px solid #999;padding:4px;\">1.尚未確定未來方向，正處於危機尚未統合者。<br>2.了解自身所處的現實環境，但不覺滿意；有心改變想要改變但尚未確定方向。</td></tr><tr><td style=\"border:1px solid #999;padding:4px;text-align:center;\">早閉型</td><td style=\"border:1px solid #999;padding:4px;\">1.未經歷過統合危機的經驗，一切交由父母或長輩決定者。<br>2.不清楚自身所處的現實環境，也沒想過滿不滿意，反正未來方向家裡都安排好了，自己就照著做就好了。</td></tr><tr><td style=\"border:1px solid #999;padding:4px;text-align:center;\">迷失型</td><td style=\"border:1px solid #999;padding:4px;\">1.沒有認真思考未來者。<br>2.不清楚自身所處的現實環境，也沒想過滿不滿意，對未來沒有認真思量且逃避承諾，持續隨波逐流，過一天算一天。</td></tr></table>註：統合危機：指自我統合的過程中，在心理上所產生的危機感。統合危機若無法順利克服或化解，會造成青年人角色混亂的現象。",
+        "items": [
+          {
+            "q": "有關上列表格中的內容，下列敘述何者<b>有誤</b>？",
+            "options": [
+              "對未來沒有認真思考、得過且過的人屬於迷失型",
+              "早閉型的學生已經歷過統合危機的經驗，一切交給師長決定",
+              "有心想改變未來，但不確定未來方向的人屬於未定型",
+              "定向型的學生對未來已下定決心，並有強烈的承諾"
+            ],
+            "correct": 1
+          },
+          {
+            "q": "爾斯對自己未來生涯方向並無定見，他的父母因為擔任警察，認為警察是一份很穩定的工作，便鼓勵他就讀警專。爾斯認為自己既然不知未來要做什麼，也不想違背父母的期望，就聽父母的安排好了。請問爾斯的統合狀態是馬西亞自我認同理論中的哪一類？",
+            "options": [
+              "定向型統合",
+              "未定型統合",
+              "早閉型統合",
+              "迷失型統合"
+            ],
+            "correct": 2
+          }
+        ]
+      }
+    ]
+  }
+]
+};
+
+let currentMode = "quiz"; // quiz | print
+
+const contentEl = document.getElementById("content");
+const scoreBar = document.getElementById("scoreBar");
+const scoreText = document.getElementById("scoreText");
+
+function render(){
+  window.examAnswersRevealed = false;
+  contentEl.innerHTML = "";
+  DATA.sections.forEach((sec, si)=> contentEl.appendChild(renderSection(sec, si)));
+  if(currentMode==="quiz"){
+    scoreBar.classList.add("show");
+    updateScore();
+  } else {
+    scoreBar.classList.remove("show");
+    contentEl.querySelectorAll(".opt").forEach(o=>o.classList.add("disabled"));
+    contentEl.querySelectorAll(".opt.is-correct").forEach(o=>o.classList.add("correct"));
+  }
+}
+
+function renderSection(sec, si){
+  const block = document.createElement("section");
+  block.className = "block";
+  block.innerHTML = `<h2>${sec.title}</h2><p class="meta">${sec.meta}</p>`
+    + (sec.note ? `<div class="sec-note">${sec.note}</div>` : "")
+    + (sec.pre ? `<div class="sec-pre">${sec.pre}</div>` : "");
+
+  if(sec.type==="fill"){
+    sec.items.forEach((it,i)=>{
+      const q = document.createElement("div");
+      q.className = "q";
+      const shown = it.answers.join(" ／ ");
+      q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q}</div>
+        <div class="fill-row"><input type="text" class="blank${sec.wide ? " wide" : ""}" autocomplete="off" placeholder="${sec.placeholder || "作答"}"><span class="feedback"></span></div>
+        <div class="answer-reveal">正解：${shown}</div>`;
+      q.querySelector("input.blank").dataset.answers = JSON.stringify(it.answers);
+      if(currentMode!=="quiz"){ q.querySelector("input.blank").disabled = true; q.querySelector(".answer-reveal").classList.add("show"); }
+      block.appendChild(q);
+    });
+  }
+
+  else if(sec.type==="explain"){
+    sec.items.forEach((it,i)=>{
+      const q = document.createElement("div");
+      q.className = "q";
+      q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q}</div>
+        <textarea class="explain-box" placeholder="寫下你的解釋（送出成績後對照參考答案）"></textarea>
+        <div class="answer-reveal">參考答案：${it.answer}</div>`;
+      if(currentMode!=="quiz"){ q.querySelector("textarea").remove(); q.querySelector(".answer-reveal").classList.add("show"); }
+      block.appendChild(q);
+    });
+  }
+
+  else if(sec.type==="mc"){
+    sec.items.forEach((it,i)=>{
+      const q = document.createElement("div");
+      q.className = "q";
+      const optsHtml = it.options.map((op,oi)=>`
+        <div class="opt" data-idx="${oi}" data-correct="${oi===it.correct}">
+          <span class="tag">(${String.fromCharCode(65+oi)})</span><span>${op}</span>
+        </div>`).join("");
+      const imgHtml = it.image ? `<img src="${it.image}" alt="題目附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">` : "";
+      const img2Html = it.image2 ? `<img src="${it.image2}" alt="題目附圖2" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">` : "";
+      q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q}</div>
+        ${imgHtml}${img2Html}
+        <div class="opts">${optsHtml}</div>`;
+      q.querySelectorAll(".opt").forEach(optEl=>{
+        if(optEl.dataset.correct==="true") optEl.classList.add("is-correct");
+        optEl.addEventListener("click", ()=>selectOption(q, optEl));
+      });
+      block.appendChild(q);
+    });
+  }
+
+  else if(sec.type==="reading"){
+    sec.passages.forEach(p=>{
+      const passageDiv = document.createElement("div");
+      passageDiv.className = "passage";
+      passageDiv.innerHTML = `${p.label ? `<span class="passage-label">${p.label}</span>`:""}${p.text}${p.image ? `<img src="${p.image}" alt="題組附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-top:10px;border:1px solid var(--paper-line);">`:""}`;
+      block.appendChild(passageDiv);
+      p.items.forEach((it,i)=>{
+        const q = document.createElement("div");
+        q.className = "q";
+        const optsHtml = it.options.map((op,oi)=>`
+          <div class="opt" data-idx="${oi}" data-correct="${oi===it.correct}">
+            <span class="tag">(${String.fromCharCode(65+oi)})</span><span>${op}</span>
+          </div>`).join("");
+        q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q}</div>
+          ${it.image ? `<img src="${it.image}" alt="題目附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">`:""}
+          <div class="opts">${optsHtml}</div>`;
+        q.querySelectorAll(".opt").forEach(optEl=>{
+          if(optEl.dataset.correct==="true") optEl.classList.add("is-correct");
+          optEl.addEventListener("click", ()=>selectOption(q, optEl));
+        });
+        block.appendChild(q);
+      });
+    });
+  }
+
+  return block;
+}
+
+function selectOption(qEl, optEl){
+  if(currentMode!=="quiz") return;
+  if(qEl.dataset.answered==="true") return;
+  qEl.dataset.answered = "true";
+  qEl.querySelectorAll(".opt").forEach(o=>o.classList.add("disabled"));
+  optEl.classList.add("selected");
+  const correctOpt = qEl.querySelector('.opt[data-correct="true"]');
+  qEl.dataset.studentAnswer = optEl.textContent.trim();
+  qEl.dataset.correctAnswer = correctOpt ? correctOpt.textContent.trim() : "";
+  qEl.dataset.isCorrect = (optEl.dataset.correct==="true") ? "true" : "false";
+  updateScore();
+}
+
+function updateScore(){
+  let total = 0, answered = 0, correct = 0;
+  contentEl.querySelectorAll(".q").forEach(q=>{
+    const gradable = q.querySelector(".opts") || q.querySelector("input.blank");
+    if(!gradable) return;
+    total++;
+    if(q.dataset.studentAnswer !== undefined){
+      answered++;
+      if(q.dataset.isCorrect === "true") correct++;
+    }
+  });
+  if(window.examAnswersRevealed){
+    scoreText.textContent = `${correct} / ${total}`;
+  } else {
+    scoreText.textContent = `已作答 ${answered} / ${total} 題`;
+  }
+}
+window.updateScore = updateScore;
+
+// 填寫題（注音／國字、改錯）：去掉空白與標點後和正解比對；注音的一聲符號「ˉ」可寫可不寫
+function normFill(s){
+  return String(s).replace(/[\sˉ　，、。．.,;；:：!！?？「」『』（）()【】→\-－—]/g, "").trim();
+}
+document.addEventListener("input", (e)=>{
+  const input = e.target;
+  if(!input.matches || !input.matches("input.blank")) return;
+  const q = input.closest(".q");
+  const answers = JSON.parse(input.dataset.answers || "[]");
+  const val = input.value.trim();
+  if(!val){ delete q.dataset.studentAnswer; delete q.dataset.isCorrect; }
+  else {
+    q.dataset.studentAnswer = val;
+    q.dataset.correctAnswer = answers.join(" ／ ");
+    q.dataset.isCorrect = answers.some(a => normFill(a) === normFill(val)) ? "true" : "false";
+  }
+  updateScore();
+});
+
+document.getElementById("resetBtn").addEventListener("click", render);
+document.getElementById("quizModeBtn").addEventListener("click", ()=>{
+  currentMode = "quiz";
+  document.getElementById("quizModeBtn").classList.add("active");
+  document.getElementById("printModeBtn").classList.remove("active");
+  render();
+});
+document.getElementById("printModeBtn").addEventListener("click", ()=>{
+  if(document.getElementById("printModeBtn").disabled) return;
+  currentMode = "print";
+  document.getElementById("printModeBtn").classList.add("active");
+  document.getElementById("quizModeBtn").classList.remove("active");
+  render();
+});
+
+window.unlockPrintMode = function(){
+  document.getElementById("printModeBtn").disabled = false;
+};
+
+render();
+</script>
+<script src="../sync.js"></script>
+</body>
+</html>

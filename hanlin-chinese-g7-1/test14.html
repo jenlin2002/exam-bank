@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>段考題庫｜國文第14回 - 穿越時空讀故事──古代神話與寓言選</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@500;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#faf6ec;
+    --paper-line:#e3dcc8;
+    --ink:#26332b;
+    --ink-soft:#5b6b5f;
+    --chalk-green:#2f4538;
+    --chalk-green-2:#3d5a48;
+    --pen-red:#b8433a;
+    --pen-red-soft:#f4dedb;
+    --ok-green:#3f7d52;
+    --ok-green-soft:#dfeee1;
+    --gold:#b5842a;
+    --radius:10px;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:"Noto Sans TC",sans-serif;
+    line-height:1.7;
+  }
+  header.hero{
+    background:var(--chalk-green);
+    color:#eef2ea;
+    padding:28px 20px 40px;
+    position:relative;
+  }
+  header.hero::after{
+    content:"";
+    position:absolute;
+    left:0; right:0; bottom:-1px;
+    height:14px;
+    background:repeating-linear-gradient(90deg,var(--paper) 0 18px, transparent 18px 20px);
+  }
+  .hero-inner{max-width:880px;margin:0 auto;}
+  .breadcrumb a{color:#cfe0d1;text-decoration:none;font-size:14px;}
+  .breadcrumb a:hover{text-decoration:underline;}
+  h1{
+    font-family:"Noto Serif TC",serif;
+    font-weight:700;
+    font-size:clamp(24px,4vw,34px);
+    margin:10px 0 6px;
+  }
+  .subtitle{color:#cfe0d1;font-size:15px;margin:0;}
+  main{max-width:880px;margin:0 auto;padding:28px 20px 80px;}
+
+  .controls{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:22px;
+  }
+  .mode-toggle{display:flex;border:2px solid var(--chalk-green);border-radius:999px;overflow:hidden;}
+  .mode-toggle button{
+    background:transparent;border:none;padding:8px 16px;font-size:14px;font-weight:700;
+    color:var(--chalk-green);cursor:pointer;font-family:"Noto Sans TC",sans-serif;
+  }
+  .mode-toggle button.active{background:var(--gold);color:#fff;}
+  .mode-toggle button:disabled{opacity:.4;cursor:not-allowed;}
+
+  .score-bar{
+    display:none;
+    align-items:center;
+    justify-content:space-between;
+    background:#fff;
+    border:1px solid var(--paper-line);
+    border-left:5px solid var(--gold);
+    border-radius:var(--radius);
+    padding:12px 18px;
+    margin-bottom:22px;
+    font-size:14px;
+  }
+  .score-bar.show{display:flex;}
+  .score-bar strong{font-size:18px;color:var(--gold);}
+  .score-bar button{
+    background:none;border:1px solid var(--ink-soft);color:var(--ink-soft);
+    border-radius:6px;padding:6px 12px;font-size:13px;cursor:pointer;
+  }
+
+  section.block{
+    background:#fff;
+    border:1px solid var(--paper-line);
+    border-radius:var(--radius);
+    padding:22px 22px 26px;
+    margin-bottom:20px;
+  }
+  .block h2{
+    font-family:"Noto Serif TC",serif;
+    font-size:19px;
+    margin:0 0 4px;
+    color:var(--chalk-green);
+  }
+  .block .meta{color:var(--ink-soft);font-size:13px;margin:0 0 16px;}
+
+  .q{margin-bottom:18px;padding-bottom:16px;border-bottom:1px dashed var(--paper-line);}
+  .q:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0;}
+  .q-text{font-size:15.5px;margin-bottom:8px;}
+  .q-num{color:var(--gold);font-weight:700;margin-right:4px;}
+
+  .opts{display:grid;gap:8px;}
+  .opt{
+    display:flex;gap:8px;align-items:flex-start;
+    border:1.5px solid var(--paper-line);
+    border-radius:8px;
+    padding:9px 12px;
+    cursor:pointer;
+    font-size:14.5px;
+    background:#fffdf8;
+  }
+  .opt:hover{border-color:var(--chalk-green-2);}
+  .opt.selected{border-color:var(--chalk-green-2);background:#eef3ea;}
+  .opt.correct{border-color:var(--ok-green);background:var(--ok-green-soft);}
+  .opt.wrong{border-color:var(--pen-red);background:var(--pen-red-soft);}
+  .opt .tag{font-weight:700;color:var(--ink-soft);}
+  .opt.correct .tag{color:var(--ok-green);}
+  .opt.wrong .tag{color:var(--pen-red);}
+  .opt.disabled{cursor:default;}
+
+  .passage{
+    background:#f5f2e8;border-radius:8px;padding:14px 16px;margin-bottom:14px;
+    font-size:14.5px;white-space:pre-line;
+  }
+  .passage-label{font-weight:700;color:var(--chalk-green);margin-bottom:4px;display:block;}
+
+  .sec-note{font-size:13.5px;color:var(--ink-soft);background:#f5f2e8;border-radius:8px;padding:8px 12px;margin:-6px 0 14px;}
+  .sec-pre{background:#f5f2e8;border-radius:8px;padding:10px 14px;margin:-4px 0 14px;font-size:14.5px;}
+  .fill-row{display:flex;flex-wrap:wrap;align-items:center;gap:8px;}
+  input.blank{
+    font-family:"Noto Sans TC",sans-serif;font-size:15.5px;border:none;border-bottom:2px solid var(--chalk-green-2);
+    background:#fffdf8;padding:4px 6px;width:170px;max-width:100%;
+  }
+  input.blank.wide{width:100%;}
+  textarea.explain-box{
+    width:100%;min-height:52px;font-family:"Noto Sans TC",sans-serif;font-size:15px;
+    border:1.5px solid var(--paper-line);border-radius:8px;padding:8px 10px;background:#fffdf8;resize:vertical;
+  }
+  .feedback{font-weight:700;font-size:15px;}
+  .feedback.ok{color:var(--ok-green);}
+  .feedback.no{color:var(--pen-red);}
+  .answer-reveal{display:none;margin-top:8px;font-size:14px;color:var(--ok-green);background:var(--ok-green-soft);border-radius:6px;padding:6px 12px;}
+  .answer-reveal.show{display:block;}
+  .zh-und{text-decoration:underline;text-underline-offset:3px;}
+  .footer-link{
+    display:block;text-align:center;margin-top:30px;color:var(--chalk-green);
+    text-decoration:none;font-weight:700;font-size:14px;
+  }
+  .footer-link:hover{text-decoration:underline;}
+
+  @media print{
+    header.hero, .controls, .score-bar, .mini-btn, .footer-link{display:none !important;}
+    body{background:#fff;}
+    section.block{border:none;box-shadow:none;padding:8px 0;margin-bottom:14px;}
+    .opt.correct{background:none;border:none;font-weight:700;}
+    .opt.correct::after{content:" ← 正解";color:var(--pen-red);}
+    .opt{border:none;padding:2px 0;}
+    main{max-width:100%;padding:0 24px;}
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="breadcrumb"><a href="https://jenlin2002.github.io/">🏠 回總目錄</a> ／ <a href="../hanlin-chinese-g7-1.html" style="color:#cfe0d1;">段考題庫</a></div>
+    <h1>國文・第14回</h1>
+    <p class="subtitle">自學選文一 穿越時空讀故事──古代神話與寓言選｜翰林版七年級國文（一）Ａ卷</p>
+  </div>
+</header>
+
+<main>
+  <div class="controls">
+    <div class="mode-toggle">
+      <button id="quizModeBtn" class="active">✏️ 測驗模式</button>
+      <button id="printModeBtn" disabled title="完成測驗並送出成績後才能查看">🖨️ 完整題目與解答（送出成績後解鎖）</button>
+    </div>
+  </div>
+
+  <div class="score-bar" id="scoreBar">
+    <div>目前得分：<strong id="scoreText">0 / 0</strong>（選擇題與填寫題；解釋題不計分）</div>
+    <button id="resetBtn">重新作答</button>
+  </div>
+
+  <div id="content"></div>
+
+  <a class="footer-link" href="../hanlin-chinese-g7-1.html">← 回段考題庫總覽</a>
+</main>
+
+<script>
+
+window.EXAM_META = { version: "國文A卷", examLabel: "國文第14回" };
+const DATA = {
+  sections: [
+  {
+    "type": "mc",
+    "title": "一、單題",
+    "meta": "每題3分，共75分",
+    "items": [
+      {
+        "q": "下列「　」中的形似字，何組讀音相同？",
+        "options": [
+          "「夸」父／「誇」張",
+          "吹「竽」／山「芋」",
+          "五「嶽」／地「獄」",
+          "口「渴」／「喝」采"
+        ],
+        "correct": 0
+      },
+      {
+        "q": "下列「　」中的注音寫成國字後，何組字形兩兩相同？",
+        "options": [
+          "「ㄇㄛˊ」樣／「ㄇㄛˊ」拜",
+          "混「ㄉㄨㄣˋ」／遲「ㄉㄨㄣˋ」",
+          "開「ㄔㄨㄤˋ」／「ㄔㄨㄤˋ」作",
+          "「ㄐㄧˋ」動／「ㄐㄧˋ」節"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "下列「　」中的字，何組意思相同？",
+        "options": [
+          "「奮」力一抖／「奮」不顧身",
+          "天柱「斷」了／優柔寡「斷」",
+          "受到「驚」嚇／「驚」天動地",
+          "陷於苦「難」／「難」言之隱"
+        ],
+        "correct": 0
+      },
+      {
+        "q": "「神射手更羸對魏王說：『大王，我不須用箭，只要拉響弓弦就能將鳥射下。』魏王說：『你的箭術真如此高妙？』不久，有隻大雁迎空飛來，更羸拉弓虛發，大雁應聲而落。」上述的故事所衍生出的成語為何？",
+        "options": [
+          "驚弓之鳥",
+          "飛來橫禍",
+          "風行草偃",
+          "多事之秋"
+        ],
+        "correct": 0
+      },
+      {
+        "q": "「夸父與日逐走，入日。渴，欲得飲，飲於河、渭，河、渭不足，北飲大澤。未至，道渴而死。棄其杖，化為鄧林。」關於上文的理解，下列敘述何者正確？",
+        "options": [
+          "夸父最後有追上太陽",
+          "夸父因飲過多的水而撐死",
+          "夸父的骨頭和毛髮變成樹林",
+          "展現出人類勇於挑戰的意志力"
+        ],
+        "correct": 3
+      },
+      {
+        "q": "「齊宣王使人吹竽，必三百人。南郭處士請為王吹竽，宣王說之，廩食以數百人。」關於上文的敘述，何者正確？",
+        "options": [
+          "齊宣王喜歡聽獨奏",
+          "齊宣王給南郭處士的薪水超越其他樂工",
+          "齊宣王經過縝密的考核才錄用南郭處士",
+          "齊宣王對於南郭處士的加入十分開心"
+        ],
+        "correct": 3
+      },
+      {
+        "q": "關於下列各句語氣的說明，何者正確？",
+        "options": [
+          "天涼，多加件外套──斥責語氣",
+          "你沒有老子，是多麼得意的事！好用來說嘴──讚賞語氣",
+          "你的箭術真如此高妙──疑問語氣",
+          "這計畫真是完美，完美到我們得全部重做──自負語氣"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "關於寓言和神話的敘述，下列何者<b>有誤</b>？",
+        "options": [
+          "神話是古時候人們對於世界的想像",
+          "兩者皆為後世的小說提供創作的養分",
+          "神話是把道理寄託在故事中",
+          "有些思想家會用寓言來宣揚自己的理念"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "依濫竽充數一文，下列何者是南郭先生逃跑的原因？",
+        "options": [
+          "南郭先生被秦國重金挖角",
+          "南郭先生害怕自己露出馬腳",
+          "南郭先生被齊宣王厭棄辭退",
+          "南郭先生想要雲遊四海"
+        ],
+        "correct": 1
+      },
+      {
+        "q": "下列文句，何者用字完全正確？",
+        "options": [
+          "夸父逐日是一則描述夸父追築太陽的神話",
+          "佳芬把希望寄拖在孩子身上，期許孩子能出人頭地",
+          "因為女媧捕天，於是天地又恢復原樣",
+          "欣樺有一張出水芙蓉的臉蛋，身材又玲瓏有致，可媲美為當代名模"
+        ],
+        "correct": 3
+      },
+      {
+        "q": "冗詞贅字是指在行文中重複使用意義相近的字詞，造成文句不夠通順流暢。下列何者<b>無</b>冗詞贅字？",
+        "options": [
+          "這對夫妻闊別一段時間後，感情更加甜蜜",
+          "蘇代便自告奮勇前往趙國遊說說服趙惠王",
+          "戰國時期七雄並立存在，互相征戰打仗不休",
+          "媽媽對於子女往往總是不吝惜地付出、奉獻"
+        ],
+        "correct": 0
+      },
+      {
+        "q": "奕良讀到一篇文獻，當中的記載如下：「世傳三皇五帝，多以為伏羲、神農為三皇；其一者或曰燧人，或曰祝融，或曰女媧。」（潛夫論 五德志）關於上文，下列何人理解<b>有誤</b>？",
+        "options": [
+          "尚甫：除了伏羲、神農是確定的，第三位則眾說紛紜",
+          "俊傑：所以燧人有可能是三皇人選",
+          "智鈞：以文獻資料而言，祝融、女媧都能被認為是三皇之一",
+          "蕙鈴：如果其他兩人都不在三皇的稱謂裡，那就是排進五帝中"
+        ],
+        "correct": 3
+      },
+      {
+        "q": "下列「　」中的詞語經替換後，何者意思<b>改變</b>了？",
+        "options": [
+          "他酒駕撞倒路人，在釀成大禍後，居然還「逃之夭夭」，真是罪無可赦：溜之大吉",
+          "岱容透過裙帶關係在公司中「濫竽充數」，混水摸魚：湊數其間",
+          "在沒有制度的私人公司中，上級長官很容易找各種理由剋扣下屬的「薪餉」：俸祿",
+          "你的「資質」很好，努力一定有結果：城府"
+        ],
+        "correct": 3
+      },
+      {
+        "q": "下列選項「　」中的國字和注音配對，何者正確？",
+        "options": [
+          "疑「惑」──ㄍㄢˇ",
+          "「擎」天大柱──ㄐㄧㄥ",
+          "女「媧」補天──ㄍㄨㄚ",
+          "「媲」美──ㄆㄧˋ"
+        ],
+        "correct": 3
+      },
+      {
+        "q": "濫竽充數一文中，假如你是南郭先生的朋友，你會給他什麼勸告？",
+        "options": [
+          "處事宜兢兢業業，勿偷雞摸狗",
+          "做人宜謙沖自牧，勿驕傲自大",
+          "凡事宜未雨綢繆，勿臨渴掘井",
+          "行事宜熱心助人，勿幸災樂禍"
+        ],
+        "correct": 0
+      },
+      {
+        "q": "「宋人有閔其苗之不長而揠之者，芒芒然歸，謂其人曰：『今日病矣，予助苗長矣！』其子趨而往視之，苗則槁矣。助之長者，揠苗者也，非徒無益，而又害之。」（孟子 公孫丑上）根據上文，我們可以得到什麼啟示？",
+        "options": [
+          "凡事要腳踏實地，循序漸進",
+          "遇事要能通權達變，不要墨守成規",
+          "學習要持之以恆，不要半途而廢",
+          "做事宜謹慎小心，勿粗枝大葉"
+        ],
+        "correct": 0
+      },
+      {
+        "q": "下列文句的修辭說明，何者正確？",
+        "options": [
+          "天地宛如雞蛋般一團混沌──設問",
+          "你的箭術真如此高妙──譬喻",
+          "世界是怎麼形成的──設問",
+          "天日高一丈，地日厚一丈，盤古也每天長高一丈──映襯"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "「一隻野豬在樹底下，對著樹幹磨牠的獠牙。一隻狐狸走過，問牠現在又沒有獵人或獵狗在附近，為什麼要如此磨利牠的牙齒呢？野豬回答：『我是仔細想過才這麼做的，因為當我需要用我的兵器時，才臨時去磨利，那就來不及了。』」根據上文，我們適合用下列何者形容野豬？",
+        "options": [
+          "好高騖遠，玩日愒歲",
+          "大義凜然，見義勇為",
+          "深思熟慮，防患未然",
+          "謙虛自牧，慈悲為懷"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "家沁有天在山海經讀到一篇關於夸父的文獻：「大荒之中，有山名曰成都載天。有人珥兩黃蛇，把兩黃蛇，名曰夸父。后土生信，信生夸父。夸父不量力，欲追日景，逮之於禺谷。將飲河而不足也，將走大澤，未至，死於此。」關於上文，下列何人敘述<b>錯誤</b>？",
+        "options": [
+          "凱翔：有一個耳朵掛兩條黃蛇，手裡也抓著黃蛇的人就是夸父",
+          "浴秀：夸父在禺谷趕上太陽",
+          "嘉翎：在黃河水喝不夠之後，前往大澤，卻渴死在半路",
+          "妙緞：后土生信，信生夸父，所以后土是夸父的曾祖父"
+        ],
+        "correct": 3
+      },
+      {
+        "q": "「大荒東北隅中，有山名曰凶犁土丘。應龍處南極，殺蚩尤與夸父，不得復上。故下數旱，旱而為應龍之狀，乃得大雨。」（山海經 大荒東經）關於這段文獻，下列何人說明正確？",
+        "options": [
+          "永霖：應龍在南極殺蚩尤與夸父",
+          "恩毓：在旱災時，扮成應龍的樣子求雨，就能解除旱災",
+          "思彤：文獻裡的南極跟現在的南極是同一個地方",
+          "宥霖：應龍除掉蚩尤與夸父，所以升官回天"
+        ],
+        "correct": 1
+      },
+      {
+        "q": "「一翁曰：我家有三媳婦，俱極孝順。大媳婦怕我口淡，見我進門就增鹹。次媳婦怕我寂寞，時常打竹筒鼓給我聽。第三媳婦更孝順，聞說：『夜飯少吃口，活到九十九。』故早飯就不與我吃。」根據上文，下列哪位同學的推論正確？",
+        "options": [
+          "家偉：三位媳婦都非常孝順老翁",
+          "益嘉：第三媳婦才是最孝順老翁的人",
+          "晨儒：老翁以反諷的口吻，諷刺三位媳婦皆不孝順",
+          "怡蓁：次媳婦的演奏聲十分悅耳"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "語文中的數字，有些是「實數」，有些是「虛數」。下列「　」中的數字，何者同於「齊宣王使人吹竽，必三百人」的「三」字皆是實數？",
+        "options": [
+          "「三」思而後行",
+          "舉一反「三」",
+          "士別「三」日",
+          "功蓋「三」分國"
+        ],
+        "correct": 3
+      },
+      {
+        "q": "下列有關先秦寓言的敘述，何者正確？",
+        "options": [
+          "是作者直接表達出抽象的道理或觀念",
+          "寓言可視為中國小說的先河",
+          "作者以真實的歷史故事表達抽象的道理",
+          "可達到自省的作用"
+        ],
+        "correct": 1
+      },
+      {
+        "q": "下列文句「　」中的連詞，何者使用正確？",
+        "options": [
+          "想戰勝會考，「除了」要有充沛的體力，「反而」有努力不懈的毅力",
+          "「因為」新型冠狀病毒肆虐，寒假輔導「才」會取消",
+          "「與其」請求他人的協助，「也要」自己加班處理好",
+          "宛庭上前一看，「但是」小狗闖的禍，「於是」他責罵了小狗"
+        ],
+        "correct": 1
+      },
+      {
+        "q": "「客有為齊王畫者，齊王問曰：「(1)？」曰：「(2)。」「(3)？」曰：「(4)。夫犬馬、人所知也，旦暮罄於前，不可類之，故難。鬼魅、無形者，不罄於前，故易之也。」」\n翡庭不小心把墨水翻倒了，導致上文(1)～(4)對話的內容無法辨認，判斷線索如下：(甲)犬馬最難(乙)鬼魅最易(丙)畫孰最難者(丁)孰最易者，若要協助翡庭完成這篇文章的排序，答案應為何？",
+        "options": [
+          "(甲)(乙)(丙)(丁)",
+          "(乙)(甲)(丙)(丁)",
+          "(丙)(甲)(丁)(乙)",
+          "(丁)(甲)(乙)(丙)"
+        ],
+        "correct": 2
+      }
+    ]
+  },
+  {
+    "type": "reading",
+    "title": "二、題組",
+    "meta": "每題5分，共25分",
+    "passages": [
+      {
+        "label": "（一）",
+        "text": "齊欲伐魏。淳于髡謂齊王曰：「韓子盧者，天下之疾犬也；東郭逡者，海內之狡兔也。韓子盧逐東郭逡，環山者三，騰山者五，兔極於前，犬廢於後，犬兔俱罷，各死其處。田父見之，無勞倦之苦，而擅其功。今齊、魏久相持，以頓其兵，弊其眾，臣恐強秦、大楚承其後，有田父之功。」齊王懼，謝將休士也。（戰國策 齊策三）",
+        "items": [
+          {
+            "q": "關於本文的敘述，何者正確？",
+            "options": [
+              "淳于髡建議齊王以韓子盧與東郭逡兩位將領攻打魏國",
+              "淳于髡藉韓子盧與東郭逡的故事，使齊王及時醒悟，而解除魏國被攻打的危機",
+              "齊王聽完淳于髡的勸告決定改攻打楚國",
+              "齊王因害怕秦國替魏國報仇而停止攻打魏國"
+            ],
+            "correct": 1
+          },
+          {
+            "q": "根據本文，下列比喻何者<b>錯誤</b>？",
+            "options": [
+              "韓子盧──齊國",
+              "東郭逡──魏國",
+              "田父──秦國",
+              "淳于髡──楚國"
+            ],
+            "correct": 3
+          },
+          {
+            "q": "根據本文，下列何者是齊王接納諫言的關鍵？",
+            "options": [
+              "韓子盧者，天下之疾犬也；東郭逡者，海內之狡兔也",
+              "韓子盧逐東郭逡，環山者三，騰山者五",
+              "兔極於前，犬廢於後，犬兔俱罷，各死其處",
+              "臣恐強秦、大楚承其後，有田父之功"
+            ],
+            "correct": 3
+          }
+        ]
+      },
+      {
+        "label": "（二）",
+        "text": "聯合國研究報告顯示，美國和中國的貿易戰，使今年上半年美國從中國進口、受關稅影響商品減少350億美元，並使美國物價上漲，損及消費者荷包，臺灣則是貿易轉移最大受益者。根據這份5日公布的研究報告，臺灣今年上半年對美出口較2018年同期增加42億美元，增加的部分大多是辦公室和通訊設備。\n美中這兩個世界最大經濟體的貿易戰已打了16個月，雙方於2019年11月簽署初步貿易協議的希望濃厚，如果談判再度破裂，幾乎所有中國輸美產品可能都會受到影響。\n報告指出：「整體而言，結果顯示美國對中國加徵關稅損及兩國經濟，美國的損失大多和物價上漲，損及消費者荷包有關，中國的損失則和出口大減有關。」中國受創最重的產業是辦公室機器和通訊設備，對美出口下滑150億美元，隨著美國不斷調高關稅，出口損失將越來越大。\n臺灣是貿易轉移最大受益者，其次是墨西哥。\n墨西哥今年上半年對美出口增加35億美元，增加的大多是農業、運輸以及電機設備。歐洲聯盟則增加27億美元，增加的大多是機械。（節錄自中央社網路新聞）",
+        "items": [
+          {
+            "q": "根據本文，下列敘述何者正確？",
+            "options": [
+              "在貿易戰的影響下，中國的損失是物價上漲，損及消費者荷包",
+              "美中貿易協議無望，雙方談判再度破裂",
+              "中國的損失和大量進口美國商品有關",
+              "臺灣在辦公室和通訊設備方面對美國出口增加"
+            ],
+            "correct": 3
+          },
+          {
+            "q": "關於中美貿易戰的敘述，可用下列何者詮釋？",
+            "options": [
+              "鷸蚌相爭，漁人獲利",
+              "人為刀俎，我為魚肉",
+              "螳螂捕蟬，黃雀在後",
+              "人為財死，鳥為食亡"
+            ],
+            "correct": 0
+          }
+        ]
+      }
+    ]
+  }
+]
+};
+
+let currentMode = "quiz"; // quiz | print
+
+const contentEl = document.getElementById("content");
+const scoreBar = document.getElementById("scoreBar");
+const scoreText = document.getElementById("scoreText");
+
+function render(){
+  window.examAnswersRevealed = false;
+  contentEl.innerHTML = "";
+  DATA.sections.forEach((sec, si)=> contentEl.appendChild(renderSection(sec, si)));
+  if(currentMode==="quiz"){
+    scoreBar.classList.add("show");
+    updateScore();
+  } else {
+    scoreBar.classList.remove("show");
+    contentEl.querySelectorAll(".opt").forEach(o=>o.classList.add("disabled"));
+    contentEl.querySelectorAll(".opt.is-correct").forEach(o=>o.classList.add("correct"));
+  }
+}
+
+function renderSection(sec, si){
+  const block = document.createElement("section");
+  block.className = "block";
+  block.innerHTML = `<h2>${sec.title}</h2><p class="meta">${sec.meta}</p>`
+    + (sec.note ? `<div class="sec-note">${sec.note}</div>` : "")
+    + (sec.pre ? `<div class="sec-pre">${sec.pre}</div>` : "");
+
+  if(sec.type==="fill"){
+    sec.items.forEach((it,i)=>{
+      const q = document.createElement("div");
+      q.className = "q";
+      const shown = it.answers.join(" ／ ");
+      q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q}</div>
+        <div class="fill-row"><input type="text" class="blank${sec.wide ? " wide" : ""}" autocomplete="off" placeholder="${sec.placeholder || "作答"}"><span class="feedback"></span></div>
+        <div class="answer-reveal">正解：${shown}</div>`;
+      q.querySelector("input.blank").dataset.answers = JSON.stringify(it.answers);
+      if(currentMode!=="quiz"){ q.querySelector("input.blank").disabled = true; q.querySelector(".answer-reveal").classList.add("show"); }
+      block.appendChild(q);
+    });
+  }
+
+  else if(sec.type==="explain"){
+    sec.items.forEach((it,i)=>{
+      const q = document.createElement("div");
+      q.className = "q";
+      q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q}</div>
+        <textarea class="explain-box" placeholder="寫下你的解釋（送出成績後對照參考答案）"></textarea>
+        <div class="answer-reveal">參考答案：${it.answer}</div>`;
+      if(currentMode!=="quiz"){ q.querySelector("textarea").remove(); q.querySelector(".answer-reveal").classList.add("show"); }
+      block.appendChild(q);
+    });
+  }
+
+  else if(sec.type==="mc"){
+    sec.items.forEach((it,i)=>{
+      const q = document.createElement("div");
+      q.className = "q";
+      const optsHtml = it.options.map((op,oi)=>`
+        <div class="opt" data-idx="${oi}" data-correct="${oi===it.correct}">
+          <span class="tag">(${String.fromCharCode(65+oi)})</span><span>${op}</span>
+        </div>`).join("");
+      const imgHtml = it.image ? `<img src="${it.image}" alt="題目附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">` : "";
+      const img2Html = it.image2 ? `<img src="${it.image2}" alt="題目附圖2" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">` : "";
+      q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q}</div>
+        ${imgHtml}${img2Html}
+        <div class="opts">${optsHtml}</div>`;
+      q.querySelectorAll(".opt").forEach(optEl=>{
+        if(optEl.dataset.correct==="true") optEl.classList.add("is-correct");
+        optEl.addEventListener("click", ()=>selectOption(q, optEl));
+      });
+      block.appendChild(q);
+    });
+  }
+
+  else if(sec.type==="reading"){
+    sec.passages.forEach(p=>{
+      const passageDiv = document.createElement("div");
+      passageDiv.className = "passage";
+      passageDiv.innerHTML = `${p.label ? `<span class="passage-label">${p.label}</span>`:""}${p.text}${p.image ? `<img src="${p.image}" alt="題組附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-top:10px;border:1px solid var(--paper-line);">`:""}`;
+      block.appendChild(passageDiv);
+      p.items.forEach((it,i)=>{
+        const q = document.createElement("div");
+        q.className = "q";
+        const optsHtml = it.options.map((op,oi)=>`
+          <div class="opt" data-idx="${oi}" data-correct="${oi===it.correct}">
+            <span class="tag">(${String.fromCharCode(65+oi)})</span><span>${op}</span>
+          </div>`).join("");
+        q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q}</div>
+          ${it.image ? `<img src="${it.image}" alt="題目附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">`:""}
+          <div class="opts">${optsHtml}</div>`;
+        q.querySelectorAll(".opt").forEach(optEl=>{
+          if(optEl.dataset.correct==="true") optEl.classList.add("is-correct");
+          optEl.addEventListener("click", ()=>selectOption(q, optEl));
+        });
+        block.appendChild(q);
+      });
+    });
+  }
+
+  return block;
+}
+
+function selectOption(qEl, optEl){
+  if(currentMode!=="quiz") return;
+  if(qEl.dataset.answered==="true") return;
+  qEl.dataset.answered = "true";
+  qEl.querySelectorAll(".opt").forEach(o=>o.classList.add("disabled"));
+  optEl.classList.add("selected");
+  const correctOpt = qEl.querySelector('.opt[data-correct="true"]');
+  qEl.dataset.studentAnswer = optEl.textContent.trim();
+  qEl.dataset.correctAnswer = correctOpt ? correctOpt.textContent.trim() : "";
+  qEl.dataset.isCorrect = (optEl.dataset.correct==="true") ? "true" : "false";
+  updateScore();
+}
+
+function updateScore(){
+  let total = 0, answered = 0, correct = 0;
+  contentEl.querySelectorAll(".q").forEach(q=>{
+    const gradable = q.querySelector(".opts") || q.querySelector("input.blank");
+    if(!gradable) return;
+    total++;
+    if(q.dataset.studentAnswer !== undefined){
+      answered++;
+      if(q.dataset.isCorrect === "true") correct++;
+    }
+  });
+  if(window.examAnswersRevealed){
+    scoreText.textContent = `${correct} / ${total}`;
+  } else {
+    scoreText.textContent = `已作答 ${answered} / ${total} 題`;
+  }
+}
+window.updateScore = updateScore;
+
+// 填寫題（注音／國字、改錯）：去掉空白與標點後和正解比對；注音的一聲符號「ˉ」可寫可不寫
+function normFill(s){
+  return String(s).replace(/[\sˉ　，、。．.,;；:：!！?？「」『』（）()【】→\-－—]/g, "").trim();
+}
+document.addEventListener("input", (e)=>{
+  const input = e.target;
+  if(!input.matches || !input.matches("input.blank")) return;
+  const q = input.closest(".q");
+  const answers = JSON.parse(input.dataset.answers || "[]");
+  const val = input.value.trim();
+  if(!val){ delete q.dataset.studentAnswer; delete q.dataset.isCorrect; }
+  else {
+    q.dataset.studentAnswer = val;
+    q.dataset.correctAnswer = answers.join(" ／ ");
+    q.dataset.isCorrect = answers.some(a => normFill(a) === normFill(val)) ? "true" : "false";
+  }
+  updateScore();
+});
+
+document.getElementById("resetBtn").addEventListener("click", render);
+document.getElementById("quizModeBtn").addEventListener("click", ()=>{
+  currentMode = "quiz";
+  document.getElementById("quizModeBtn").classList.add("active");
+  document.getElementById("printModeBtn").classList.remove("active");
+  render();
+});
+document.getElementById("printModeBtn").addEventListener("click", ()=>{
+  if(document.getElementById("printModeBtn").disabled) return;
+  currentMode = "print";
+  document.getElementById("printModeBtn").classList.add("active");
+  document.getElementById("quizModeBtn").classList.remove("active");
+  render();
+});
+
+window.unlockPrintMode = function(){
+  document.getElementById("printModeBtn").disabled = false;
+};
+
+render();
+</script>
+<script src="../sync.js"></script>
+</body>
+</html>
