@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>段考題庫｜自然第3回 - 二氧化碳與氧化還原</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@500;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#faf6ec;
+    --paper-line:#e3dcc8;
+    --ink:#26332b;
+    --ink-soft:#5b6b5f;
+    --chalk-green:#2f4538;
+    --chalk-green-2:#3d5a48;
+    --pen-red:#b8433a;
+    --pen-red-soft:#f4dedb;
+    --ok-green:#3f7d52;
+    --ok-green-soft:#dfeee1;
+    --gold:#b5842a;
+    --radius:10px;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:"Noto Sans TC",sans-serif;
+    line-height:1.7;
+  }
+  header.hero{
+    background:var(--chalk-green);
+    color:#eef2ea;
+    padding:28px 20px 40px;
+    position:relative;
+  }
+  header.hero::after{
+    content:"";
+    position:absolute;
+    left:0; right:0; bottom:-1px;
+    height:14px;
+    background:repeating-linear-gradient(90deg,var(--paper) 0 18px, transparent 18px 20px);
+  }
+  .hero-inner{max-width:880px;margin:0 auto;}
+  .breadcrumb a{color:#cfe0d1;text-decoration:none;font-size:14px;}
+  .breadcrumb a:hover{text-decoration:underline;}
+  h1{
+    font-family:"Noto Serif TC",serif;
+    font-weight:700;
+    font-size:clamp(24px,4vw,34px);
+    margin:10px 0 6px;
+  }
+  .subtitle{color:#cfe0d1;font-size:15px;margin:0;}
+  main{max-width:880px;margin:0 auto;padding:28px 20px 80px;}
+
+  .controls{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:22px;
+  }
+  .mode-toggle{display:flex;border:2px solid var(--chalk-green);border-radius:999px;overflow:hidden;}
+  .mode-toggle button{
+    background:transparent;border:none;padding:8px 16px;font-size:14px;font-weight:700;
+    color:var(--chalk-green);cursor:pointer;font-family:"Noto Sans TC",sans-serif;
+  }
+  .mode-toggle button.active{background:var(--gold);color:#fff;}
+  .mode-toggle button:disabled{opacity:.4;cursor:not-allowed;}
+
+  .score-bar{
+    display:none;
+    align-items:center;
+    justify-content:space-between;
+    background:#fff;
+    border:1px solid var(--paper-line);
+    border-left:5px solid var(--gold);
+    border-radius:var(--radius);
+    padding:12px 18px;
+    margin-bottom:22px;
+    font-size:14px;
+  }
+  .score-bar.show{display:flex;}
+  .score-bar strong{font-size:18px;color:var(--gold);}
+  .score-bar button{
+    background:none;border:1px solid var(--ink-soft);color:var(--ink-soft);
+    border-radius:6px;padding:6px 12px;font-size:13px;cursor:pointer;
+  }
+
+  section.block{
+    background:#fff;
+    border:1px solid var(--paper-line);
+    border-radius:var(--radius);
+    padding:22px 22px 26px;
+    margin-bottom:20px;
+  }
+  .block h2{
+    font-family:"Noto Serif TC",serif;
+    font-size:19px;
+    margin:0 0 4px;
+    color:var(--chalk-green);
+  }
+  .block .meta{color:var(--ink-soft);font-size:13px;margin:0 0 16px;}
+
+  .q{margin-bottom:18px;padding-bottom:16px;border-bottom:1px dashed var(--paper-line);}
+  .q:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0;}
+  .q-text{font-size:15.5px;margin-bottom:8px;}
+  .q-num{color:var(--gold);font-weight:700;margin-right:4px;}
+
+  .opts{display:grid;gap:8px;}
+  .opt{
+    display:flex;gap:8px;align-items:flex-start;
+    border:1.5px solid var(--paper-line);
+    border-radius:8px;
+    padding:9px 12px;
+    cursor:pointer;
+    font-size:14.5px;
+    background:#fffdf8;
+  }
+  .opt:hover{border-color:var(--chalk-green-2);}
+  .opt.selected{border-color:var(--chalk-green-2);background:#eef3ea;}
+  .opt.correct{border-color:var(--ok-green);background:var(--ok-green-soft);}
+  .opt.wrong{border-color:var(--pen-red);background:var(--pen-red-soft);}
+  .opt .tag{font-weight:700;color:var(--ink-soft);}
+  .opt.correct .tag{color:var(--ok-green);}
+  .opt.wrong .tag{color:var(--pen-red);}
+  .opt.disabled{cursor:default;}
+
+  .passage{
+    background:#f5f2e8;border-radius:8px;padding:14px 16px;margin-bottom:14px;
+    font-size:14.5px;white-space:pre-line;
+  }
+  .passage-label{font-weight:700;color:var(--chalk-green);margin-bottom:4px;display:block;}
+
+  .sec-note{font-size:13.5px;color:var(--ink-soft);background:#f5f2e8;border-radius:8px;padding:8px 12px;margin:-6px 0 14px;}
+  .sec-pre{background:#f5f2e8;border-radius:8px;padding:10px 14px;margin:-4px 0 14px;font-size:14.5px;}
+  .fill-row{display:flex;flex-wrap:wrap;align-items:center;gap:8px;}
+  input.blank{
+    font-family:"Noto Sans TC",sans-serif;font-size:15.5px;border:none;border-bottom:2px solid var(--chalk-green-2);
+    background:#fffdf8;padding:4px 6px;width:170px;max-width:100%;
+  }
+  input.blank.wide{width:100%;}
+  textarea.explain-box{
+    width:100%;min-height:52px;font-family:"Noto Sans TC",sans-serif;font-size:15px;
+    border:1.5px solid var(--paper-line);border-radius:8px;padding:8px 10px;background:#fffdf8;resize:vertical;
+  }
+  .feedback{font-weight:700;font-size:15px;}
+  .feedback.ok{color:var(--ok-green);}
+  .feedback.no{color:var(--pen-red);}
+  .answer-reveal{display:none;margin-top:8px;font-size:14px;color:var(--ok-green);background:var(--ok-green-soft);border-radius:6px;padding:6px 12px;}
+  .answer-reveal.show{display:block;}
+  .zh-und{text-decoration:underline;text-underline-offset:3px;}
+  .footer-link{
+    display:block;text-align:center;margin-top:30px;color:var(--chalk-green);
+    text-decoration:none;font-weight:700;font-size:14px;
+  }
+  .footer-link:hover{text-decoration:underline;}
+
+  @media print{
+    header.hero, .controls, .score-bar, .mini-btn, .footer-link{display:none !important;}
+    body{background:#fff;}
+    section.block{border:none;box-shadow:none;padding:8px 0;margin-bottom:14px;}
+    .opt.correct{background:none;border:none;font-weight:700;}
+    .opt.correct::after{content:" ← 正解";color:var(--pen-red);}
+    .opt{border:none;padding:2px 0;}
+    main{max-width:100%;padding:0 24px;}
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="breadcrumb"><a href="https://jenlin2002.github.io/">🏠 回總目錄</a> ／ <a href="../hanlin-nature-g8-1.html" style="color:#cfe0d1;">段考題庫</a></div>
+    <h1>自然・第3回</h1>
+    <p class="subtitle">2-2～2-3 二氧化碳與氧化還原｜翰林版八年級自然（三）Ａ卷</p>
+  </div>
+</header>
+
+<main>
+  <div class="controls">
+    <div class="mode-toggle">
+      <button id="quizModeBtn" class="active">✏️ 測驗模式</button>
+      <button id="printModeBtn" disabled title="完成測驗並送出成績後才能查看">🖨️ 完整題目與解答（送出成績後解鎖）</button>
+    </div>
+  </div>
+
+  <div class="score-bar" id="scoreBar">
+    <div>目前得分：<strong id="scoreText">0 / 0</strong>（選擇題）</div>
+    <button id="resetBtn">重新作答</button>
+  </div>
+
+  <div id="content"></div>
+
+  <a class="footer-link" href="../hanlin-nature-g8-1.html">← 回段考題庫總覽</a>
+</main>
+
+<script>
+
+window.EXAM_META = { version: "自然A卷", examLabel: "自然第3回" };
+const DATA = {
+  sections: [
+  {
+    "type": "reading",
+    "title": "A部分 基礎題　一、選擇題",
+    "meta": "每題3分，共54分",
+    "passages": [
+      {
+        "text": "",
+        "items": [
+          {
+            "q": "小明將 10 公克的糖加入 100 公克的水中，充分攪拌後完全溶解，則下列敘述何者<b>錯誤</b>？",
+            "options": [
+              "溶質的公克數為 10 公克",
+              "溶劑的公克數為 100 公克",
+              "溶液的公克數為 110 公克",
+              "此糖水的重量百分率濃度為 10%"
+            ],
+            "correct": 3,
+            "no": 1
+          },
+          {
+            "q": "重量百分率濃度 15%、280 g 蔗糖水溶液由 20°C 加熱到 30°C，若水蒸發量很小可忽略，下列何者正確？",
+            "options": [
+              "溶解度增大，濃度增大",
+              "溶解度增大，濃度不變",
+              "溶解度不變，濃度增大",
+              "溶解度不變，濃度不變"
+            ],
+            "correct": 1,
+            "no": 2
+          },
+          {
+            "q": "分離混有細砂、磁粉及食鹽的混合物，會依序使用到下列哪些方式達成分離效果？甲：溶解過濾法；乙：蒸發結晶法；丙：色層分析法；丁：磁鐵吸附法。",
+            "options": [
+              "甲→乙→丙",
+              "丁→乙→甲",
+              "丙→甲→乙",
+              "丁→甲→乙"
+            ],
+            "correct": 3,
+            "no": 3
+          },
+          {
+            "q": "在下列哪種情況下，一定量的水，可以溶解最多的二氧化碳？",
+            "options": [
+              "高溫高壓",
+              "高溫低壓",
+              "低溫低壓",
+              "低溫高壓"
+            ],
+            "correct": 3,
+            "no": 4
+          },
+          {
+            "q": "右圖為金門名產「58 度的金門高粱酒」，瓶中所標示的 58 度，所代表的意義是下列何者？",
+            "options": [
+              "100 毫升的水中含有 58 毫升的酒精",
+              "100 毫升的高粱酒中含有 58 公克的酒精",
+              "100 公克的高粱酒中含有 58 公克的酒精",
+              "100 毫升的高粱酒中含有 58 毫升的酒精"
+            ],
+            "image": "images/test3/q5.png",
+            "correct": 3,
+            "no": 5
+          },
+          {
+            "q": "過濾為分離物質的一種方法，下列敘述何者正確？",
+            "options": [
+              "過濾是一種化學方法",
+              "過濾是利用溶解度的不同",
+              "過濾後所得的物質必為純物質",
+              "常用篩子過篩麵粉，也是利用過濾法"
+            ],
+            "correct": 3,
+            "no": 6
+          },
+          {
+            "q": "衛福部對中藥材裡鉛、砷、鎘、汞的含量都有上限，鉛含量不得超過 5 ppm，汞則必須低於 0.2 ppm。根據法規，一包 100 公克的冬蟲夏草中藥材原料中，鉛含量<b>不得</b>超過多少毫克？",
+            "options": [
+              "1",
+              "0.5",
+              "0.001",
+              "0.0005"
+            ],
+            "correct": 1,
+            "no": 7
+          },
+          {
+            "q": "有一飽和食鹽水溶液如右圖。今在定溫下，再加入更多水並充分攪拌後，發現杯中仍有食鹽固體，溶液仍呈飽和狀態。關於加水後此水溶液的變化，下列敘述何者正確？",
+            "options": [
+              "溶質公克數增加，溶液公克數增加，重量百分率濃度不變",
+              "溶質公克數增加，溶液公克數增加，重量百分率濃度變小",
+              "溶質公克數不變，溶液公克數不變，重量百分率濃度不變",
+              "溶質公克數不變，溶液公克數增加，重量百分率濃度變小"
+            ],
+            "image": "images/test3/q8.png",
+            "correct": 0,
+            "no": 8
+          },
+          {
+            "q": "茶飲店所販售的珍珠奶茶有分全糖、半糖、微糖、無糖等選擇，試問這些不同選擇的差異在於何項性質？",
+            "options": [
+              "飲料的總重量不同",
+              "飲料中糖的濃度不同",
+              "飲料中糖的種類不同",
+              "使用的飲料杯容量不同"
+            ],
+            "correct": 1,
+            "no": 9
+          },
+          {
+            "q": "如右圖，某生泡了兩杯鹽水，結果發現甲杯比乙杯還鹹，於是把甲、乙兩杯加在一起，得到丙杯，但發現杯中仍有少部分未溶解的鹽。請問甲、乙、丙之濃度大小為何？",
+            "options": [
+              "甲＞丙＞乙",
+              "甲＝乙＞丙",
+              "甲＝丙＞乙",
+              "甲＝乙＝丙"
+            ],
+            "image": "images/test3/q10.png",
+            "correct": 2,
+            "no": 10
+          },
+          {
+            "q": "在 25°C 時，硝酸鉀水溶液的溶解度為 36 公克硝酸鉀/100 公克水；今在 25°C 時，10 毫升水欲溶解 4 公克的硝酸鉀，充分攪拌後的重量百分率濃度約為多少？",
+            "options": [
+              "26.5%",
+              "28.6%",
+              "30%",
+              "40%"
+            ],
+            "correct": 0,
+            "no": 11
+          },
+          {
+            "q": "在定溫下，柯南分別將不同質量的二鉻酸鉀固體加入 10 mL 水中，充分攪拌後測量剩餘未溶解的二鉻酸鉀質量，所得數據如下表；則理論上 x 之值為何？",
+            "options": [
+              "4.0",
+              "5.0",
+              "6.0",
+              "7.0"
+            ],
+            "image": "images/test3/q12.png",
+            "correct": 1,
+            "no": 12
+          },
+          {
+            "q": "已知物質 X 在 40°C、80°C 水中的溶解度分別為 60g/100g 水、90g/100g 水。有甲、乙、丙、丁四個燒杯皆含有 100g 水，其水溫及所加入物質 X 的質量如右圖所示。有關這四杯水溶液的濃度大小關係何者正確？",
+            "options": [
+              "甲＞乙",
+              "甲＜乙",
+              "乙＞丙",
+              "丙＜丁"
+            ],
+            "image": "images/test3/q13.png",
+            "correct": 3,
+            "no": 13
+          },
+          {
+            "q": "關於水溶液的敘述，下列何者正確？",
+            "options": [
+              "食鹽溶於水時，和水生成新物質，所以食鹽不見了",
+              "水雖然是很好的溶劑，但也有不少的物質難溶於水",
+              "濃度愈低的蔗糖水溶液愈甜",
+              "只有固體才能溶於水，液體和氣體則不能"
+            ],
+            "correct": 1,
+            "no": 14
+          },
+          {
+            "q": "小明欲證明植物葉片汁液中含有不同顏色的色素，下列哪一種方法是最快速便捷的？",
+            "options": [
+              "過濾法",
+              "結晶法",
+              "濾紙色層分析法",
+              "冷凍乾燥法"
+            ],
+            "correct": 2,
+            "no": 15
+          },
+          {
+            "q": "明翰在 800 克的水中加入 200 克的砂糖，均勻攪拌後，砂糖完全溶解於水中，形成糖水溶液，試求此水溶液的重量百分率濃度為多少 %？",
+            "options": [
+              "10",
+              "20",
+              "25",
+              "80"
+            ],
+            "correct": 1,
+            "no": 16
+          },
+          {
+            "q": "將 100 克、濃度為 2%的食鹽水溶液，加熱蒸發成 10%的溶液，則此時水溶液中含有多少克的食鹽？",
+            "options": [
+              "2",
+              "4",
+              "10",
+              "18"
+            ],
+            "correct": 0,
+            "no": 17
+          },
+          {
+            "q": "若食鹽水溶液未達到飽和，下列哪些方法可以使溶液達到飽和？(甲)加入水；(乙)加入食鹽；(丙)加溫；(丁)冷卻。",
+            "options": [
+              "(乙)(丁)",
+              "(甲)(丙)",
+              "僅(乙)",
+              "僅(丁)"
+            ],
+            "correct": 0,
+            "no": 18
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "type": "reading",
+    "title": "二、素養題",
+    "meta": "每題4分，共28分",
+    "passages": [
+      {
+        "text": "",
+        "items": [
+          {
+            "q": "有關濾紙色層分析法，下列敘述何者正確？",
+            "options": [
+              "利用物質密度的不同來分離物質的方法",
+              "物質與水（作為溶劑）作用力愈大，在濾紙中展開移動的距離愈遠",
+              "物質與濾紙的附著力愈大，在濾紙中移動距離愈近",
+              "利用濾紙色層分析法無法分離出色素內的各成分"
+            ],
+            "correct": 2,
+            "no": 1
+          }
+        ]
+      },
+      {
+        "text": "漢和欲將海邊帶回的粗鹽精製成可以食用的食鹽，他的實驗步驟如下：(甲)將粗鹽加水後攪拌；(乙)粗鹽的水溶液以濾紙過濾；(丙)濾液倒入蒸發皿後，在陶瓷纖維網上加熱至蒸乾。根據所提供的資料，試回答 2.、3.題：",
+        "items": [
+          {
+            "q": "步驟(乙)完成後，濾紙上殘留的物質及其原理為何？",
+            "options": [
+              "食鹽，溶解度不同",
+              "不溶於水的雜質，顆粒大小不同",
+              "食鹽，顆粒大小不同",
+              "資料不足，無法判斷"
+            ],
+            "correct": 1,
+            "no": 2
+          },
+          {
+            "q": "下列敘述何者正確？",
+            "options": [
+              "粗鹽中的鹽和雜質可以分離，主要是利用鹽溶於水形成微小顆粒，而雜質不溶於水的性質",
+              "傾倒濾液至蒸發皿中，直接且快速的傾倒較為方便",
+              "濾液加熱後，蒸發皿中的殘留物為細沙",
+              "食鹽開始結晶時，必須近距離觀察，以免錯過結晶的那一瞬間"
+            ],
+            "correct": 0,
+            "no": 3
+          }
+        ]
+      },
+      {
+        "text": "下表為硝酸鉀、氫氧化鈣和食鹽在不同溫度下的溶解度，試回答 4.～ 7.題：",
+        "items": [
+          {
+            "q": "下列哪一個圖形可以用來表示硝酸鉀在不同溫度下與溶解度的關係？",
+            "options": [
+              "圖(A)",
+              "圖(B)",
+              "圖(C)",
+              "圖(D)"
+            ],
+            "image": "images/test3/q4.png",
+            "correct": 3,
+            "no": 4
+          },
+          {
+            "q": "在 20°C、100 克的水中加入 50 克硝酸鉀，攪拌後形成甲溶液，再將甲溶液加熱至 30°C 形成乙溶液，將乙溶液的上半部倒入燒杯中冷卻至 20°C 形成丙溶液，則甲、乙、丙溶液的濃度大小關係為何？",
+            "options": [
+              "乙＞甲＝丙",
+              "乙＝丙＞甲",
+              "甲＝乙＜丙",
+              "甲＞乙＝丙"
+            ],
+            "correct": 0,
+            "no": 5
+          },
+          {
+            "q": "關於表中的結果，下列推論何者正確？",
+            "options": [
+              "溫度愈高時，硝酸鉀、氫氧化鈣、食鹽的溶解度均增加",
+              "在 20°C 時，三種物質的飽和水溶液以食鹽水溶液的濃度最大",
+              "溫度高於 10°C 時，三種物質的飽和水溶液以食鹽溶液的濃度最大",
+              "在 20°C 時，將上述三種物質各 20 克分別溶於 50 克的水中，有兩種溶液會形成飽和溶液"
+            ],
+            "correct": 1,
+            "no": 6
+          },
+          {
+            "q": "有關食鹽與氫氧化鈣溶於水的比較，下列何者正確？",
+            "options": [
+              "水溫升高，有利於兩者的溶解",
+              "水溫降低，有利於氫氧化鈣的溶解",
+              "食鹽的溶解度與水溫成正比",
+              "氫氧化鈣的溶解度不受水溫影響"
+            ],
+            "correct": 1,
+            "no": 7
+          }
+        ],
+        "image": "images/test3/g45.png"
+      }
+    ]
+  },
+  {
+    "type": "reading",
+    "title": "B部分 活用題",
+    "meta": "每題2分，共18分",
+    "passages": [
+      {
+        "text": "",
+        "items": [
+          {
+            "q": "小佳在同溫度下調配甲、乙、丙三杯二鉻酸鉀溶液，其過程如下圖所示，則三杯溶液的濃度大小關係為何？",
+            "options": [
+              "甲＝乙＝丙",
+              "甲＜乙＝丙",
+              "甲＝乙＞丙",
+              "甲＜乙＜丙"
+            ],
+            "image": "images/test3/b1.png",
+            "correct": 0,
+            "no": 1
+          },
+          {
+            "q": "右圖為純物質 X 固體的溶解度曲線，溶液溫度為 60°C 時，每 100g 水中最多可溶解 90g 的物質 X。今有一水溶液甲，其溶液溫度為 50°C，含有 40g 的物質 X 和 100g 的水，對於水溶液甲性質的描述，下列何者正確？",
+            "options": [
+              "甲為未飽和溶液，升高溶液溫度可形成飽和溶液",
+              "甲為未飽和溶液，再加入足量物質 X 可達到飽和",
+              "甲為飽和溶液，且有物質 X 尚未完全溶解",
+              "甲為飽和溶液，攪拌後會有更多 X 析出"
+            ],
+            "image": "images/test3/b2.png",
+            "correct": 1,
+            "no": 2
+          }
+        ]
+      },
+      {
+        "text": "右圖為實驗室過濾含細砂之食鹽水及加熱食鹽水的示意圖，試回答 3.、4.題：",
+        "items": [
+          {
+            "q": "請問圖中過濾後的濾液，若無細砂掉落，則下列描述何者<b>錯誤</b>？",
+            "options": [
+              "濾液是純物質",
+              "濾液蒸發後會剩下食鹽晶體，這是因食鹽沸點較高",
+              "濾液和細砂可分離是因濾液的顆粒較小",
+              "蒸發後收集到的結晶物是純物質"
+            ],
+            "correct": 0,
+            "no": 3
+          },
+          {
+            "q": "承 3.題，甲、乙過程的方式，各屬於何種變化？",
+            "options": [
+              "甲為物理變化、乙為化學變化",
+              "甲、乙均為物理變化",
+              "甲為化學變化、乙為物理變化",
+              "甲、乙均為化學變化"
+            ],
+            "correct": 1,
+            "no": 4
+          }
+        ],
+        "image": "images/test3/g34.png"
+      },
+      {
+        "text": "一座游泳池裡有多少的尿？安賽蜜是優酪乳中的甜味劑，不易被人體消化，會由尿液排出體外。研究團隊檢測加拿大游泳池的安賽蜜濃度，一座 84 萬公升游泳池的安賽蜜濃度為 2×10⁻⁷ g/L，再參考「……」，經換算後，可知該游泳池含有約多少公升的尿液。註：g/L 為濃度單位，表示每公升池水含有溶質的質量（g）。試回答 5.、6.題：",
+        "items": [
+          {
+            "q": "上述「……」所指的最可能為下列何者？",
+            "options": [
+              "該游泳池含有安賽蜜的平均密度（g/cm³）",
+              "該游泳池含有安賽蜜的總體積（L）",
+              "加拿大人尿液中安賽蜜的平均濃度（g/L）",
+              "加拿大人尿液中安賽蜜的總質量（g）"
+            ],
+            "correct": 2,
+            "no": 5
+          },
+          {
+            "q": "若「……」的數字大小為 0.002，經計算後，可知該游泳池含有約多少公升的尿液？",
+            "options": [
+              "72",
+              "75",
+              "80",
+              "84"
+            ],
+            "correct": 3,
+            "no": 6
+          }
+        ]
+      }
+    ]
+  }
+]
+};
+
+let currentMode = "quiz"; // quiz | print
+
+const contentEl = document.getElementById("content");
+const scoreBar = document.getElementById("scoreBar");
+const scoreText = document.getElementById("scoreText");
+
+function render(){
+  window.examAnswersRevealed = false;
+  contentEl.innerHTML = "";
+  DATA.sections.forEach((sec, si)=> contentEl.appendChild(renderSection(sec, si)));
+  if(currentMode==="quiz"){
+    scoreBar.classList.add("show");
+    updateScore();
+  } else {
+    scoreBar.classList.remove("show");
+    contentEl.querySelectorAll(".opt").forEach(o=>o.classList.add("disabled"));
+    contentEl.querySelectorAll(".opt.is-correct").forEach(o=>o.classList.add("correct"));
+  }
+}
+
+function renderSection(sec, si){
+  const block = document.createElement("section");
+  block.className = "block";
+  block.innerHTML = `<h2>${sec.title}</h2><p class="meta">${sec.meta}</p>`
+    + (sec.note ? `<div class="sec-note">${sec.note}</div>` : "")
+    + (sec.pre ? `<div class="sec-pre">${sec.pre}</div>` : "");
+
+  if(sec.type==="fill"){
+    sec.items.forEach((it,i)=>{
+      const q = document.createElement("div");
+      q.className = "q";
+      const shown = it.answers.join(" ／ ");
+      q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q}</div>
+        <div class="fill-row"><input type="text" class="blank${sec.wide ? " wide" : ""}" autocomplete="off" placeholder="${sec.placeholder || "作答"}"><span class="feedback"></span></div>
+        <div class="answer-reveal">正解：${shown}</div>`;
+      q.querySelector("input.blank").dataset.answers = JSON.stringify(it.answers);
+      if(currentMode!=="quiz"){ q.querySelector("input.blank").disabled = true; q.querySelector(".answer-reveal").classList.add("show"); }
+      block.appendChild(q);
+    });
+  }
+
+  else if(sec.type==="explain"){
+    sec.items.forEach((it,i)=>{
+      const q = document.createElement("div");
+      q.className = "q";
+      q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q}</div>
+        <textarea class="explain-box" placeholder="寫下你的解釋（送出成績後對照參考答案）"></textarea>
+        <div class="answer-reveal">參考答案：${it.answer}</div>`;
+      if(currentMode!=="quiz"){ q.querySelector("textarea").remove(); q.querySelector(".answer-reveal").classList.add("show"); }
+      block.appendChild(q);
+    });
+  }
+
+  else if(sec.type==="mc"){
+    sec.items.forEach((it,i)=>{
+      const q = document.createElement("div");
+      q.className = "q";
+      const optsHtml = it.options.map((op,oi)=>`
+        <div class="opt" data-idx="${oi}" data-correct="${oi===it.correct}">
+          <span class="tag">(${String.fromCharCode(65+oi)})</span><span>${op}</span>
+        </div>`).join("");
+      const imgHtml = it.image ? `<img src="${it.image}" alt="題目附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">` : "";
+      const img2Html = it.image2 ? `<img src="${it.image2}" alt="題目附圖2" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">` : "";
+      q.innerHTML = `<div class="q-text"><span class="q-num">${it.no||i+1}.</span>${it.q}</div>
+        ${imgHtml}${img2Html}
+        <div class="opts">${optsHtml}</div>`;
+      q.querySelectorAll(".opt").forEach(optEl=>{
+        if(optEl.dataset.correct==="true") optEl.classList.add("is-correct");
+        optEl.addEventListener("click", ()=>selectOption(q, optEl));
+      });
+      block.appendChild(q);
+    });
+  }
+
+  else if(sec.type==="reading"){
+    sec.passages.forEach(p=>{
+      const passageDiv = document.createElement("div");
+      passageDiv.className = "passage";
+      passageDiv.innerHTML = `${p.label ? `<span class="passage-label">${p.label}</span>`:""}${p.text}${p.image ? `<img src="${p.image}" alt="題組附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-top:10px;border:1px solid var(--paper-line);">`:""}`;
+      if(p.text || p.image) block.appendChild(passageDiv);
+      p.items.forEach((it,i)=>{
+        const q = document.createElement("div");
+        q.className = "q";
+        const optsHtml = it.options.map((op,oi)=>`
+          <div class="opt" data-idx="${oi}" data-correct="${oi===it.correct}">
+            <span class="tag">(${String.fromCharCode(65+oi)})</span><span>${op}</span>
+          </div>`).join("");
+        q.innerHTML = `<div class="q-text"><span class="q-num">${it.no||i+1}.</span>${it.q}</div>
+          ${it.image ? `<img src="${it.image}" alt="題目附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">`:""}
+          <div class="opts">${optsHtml}</div>`;
+        q.querySelectorAll(".opt").forEach(optEl=>{
+          if(optEl.dataset.correct==="true") optEl.classList.add("is-correct");
+          optEl.addEventListener("click", ()=>selectOption(q, optEl));
+        });
+        block.appendChild(q);
+      });
+    });
+  }
+
+  return block;
+}
+
+function selectOption(qEl, optEl){
+  if(currentMode!=="quiz") return;
+  if(qEl.dataset.answered==="true") return;
+  qEl.dataset.answered = "true";
+  qEl.querySelectorAll(".opt").forEach(o=>o.classList.add("disabled"));
+  optEl.classList.add("selected");
+  const correctOpt = qEl.querySelector('.opt[data-correct="true"]');
+  qEl.dataset.studentAnswer = optEl.textContent.trim();
+  qEl.dataset.correctAnswer = correctOpt ? correctOpt.textContent.trim() : "";
+  qEl.dataset.isCorrect = (optEl.dataset.correct==="true") ? "true" : "false";
+  updateScore();
+}
+
+function updateScore(){
+  let total = 0, answered = 0, correct = 0;
+  contentEl.querySelectorAll(".q").forEach(q=>{
+    const gradable = q.querySelector(".opts") || q.querySelector("input.blank");
+    if(!gradable) return;
+    total++;
+    if(q.dataset.studentAnswer !== undefined){
+      answered++;
+      if(q.dataset.isCorrect === "true") correct++;
+    }
+  });
+  if(window.examAnswersRevealed){
+    scoreText.textContent = `${correct} / ${total}`;
+  } else {
+    scoreText.textContent = `已作答 ${answered} / ${total} 題`;
+  }
+}
+window.updateScore = updateScore;
+
+// 填寫題（注音／國字、改錯）：去掉空白與標點後和正解比對；注音的一聲符號「ˉ」可寫可不寫
+function normFill(s){
+  return String(s).replace(/[\sˉ　，、。．.,;；:：!！?？「」『』（）()【】→\-－—]/g, "").trim();
+}
+document.addEventListener("input", (e)=>{
+  const input = e.target;
+  if(!input.matches || !input.matches("input.blank")) return;
+  const q = input.closest(".q");
+  const answers = JSON.parse(input.dataset.answers || "[]");
+  const val = input.value.trim();
+  if(!val){ delete q.dataset.studentAnswer; delete q.dataset.isCorrect; }
+  else {
+    q.dataset.studentAnswer = val;
+    q.dataset.correctAnswer = answers.join(" ／ ");
+    q.dataset.isCorrect = answers.some(a => normFill(a) === normFill(val)) ? "true" : "false";
+  }
+  updateScore();
+});
+
+document.getElementById("resetBtn").addEventListener("click", render);
+document.getElementById("quizModeBtn").addEventListener("click", ()=>{
+  currentMode = "quiz";
+  document.getElementById("quizModeBtn").classList.add("active");
+  document.getElementById("printModeBtn").classList.remove("active");
+  render();
+});
+document.getElementById("printModeBtn").addEventListener("click", ()=>{
+  if(document.getElementById("printModeBtn").disabled) return;
+  currentMode = "print";
+  document.getElementById("printModeBtn").classList.add("active");
+  document.getElementById("quizModeBtn").classList.remove("active");
+  render();
+});
+
+window.unlockPrintMode = function(){
+  document.getElementById("printModeBtn").disabled = false;
+};
+
+render();
+</script>
+<script src="../sync.js"></script>
+</body>
+</html>

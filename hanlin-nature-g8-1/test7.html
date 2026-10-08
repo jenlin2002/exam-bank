@@ -1,0 +1,828 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>段考題庫｜自然第7回 - 光的傳播與反射</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@500;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#faf6ec;
+    --paper-line:#e3dcc8;
+    --ink:#26332b;
+    --ink-soft:#5b6b5f;
+    --chalk-green:#2f4538;
+    --chalk-green-2:#3d5a48;
+    --pen-red:#b8433a;
+    --pen-red-soft:#f4dedb;
+    --ok-green:#3f7d52;
+    --ok-green-soft:#dfeee1;
+    --gold:#b5842a;
+    --radius:10px;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:"Noto Sans TC",sans-serif;
+    line-height:1.7;
+  }
+  header.hero{
+    background:var(--chalk-green);
+    color:#eef2ea;
+    padding:28px 20px 40px;
+    position:relative;
+  }
+  header.hero::after{
+    content:"";
+    position:absolute;
+    left:0; right:0; bottom:-1px;
+    height:14px;
+    background:repeating-linear-gradient(90deg,var(--paper) 0 18px, transparent 18px 20px);
+  }
+  .hero-inner{max-width:880px;margin:0 auto;}
+  .breadcrumb a{color:#cfe0d1;text-decoration:none;font-size:14px;}
+  .breadcrumb a:hover{text-decoration:underline;}
+  h1{
+    font-family:"Noto Serif TC",serif;
+    font-weight:700;
+    font-size:clamp(24px,4vw,34px);
+    margin:10px 0 6px;
+  }
+  .subtitle{color:#cfe0d1;font-size:15px;margin:0;}
+  main{max-width:880px;margin:0 auto;padding:28px 20px 80px;}
+
+  .controls{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:22px;
+  }
+  .mode-toggle{display:flex;border:2px solid var(--chalk-green);border-radius:999px;overflow:hidden;}
+  .mode-toggle button{
+    background:transparent;border:none;padding:8px 16px;font-size:14px;font-weight:700;
+    color:var(--chalk-green);cursor:pointer;font-family:"Noto Sans TC",sans-serif;
+  }
+  .mode-toggle button.active{background:var(--gold);color:#fff;}
+  .mode-toggle button:disabled{opacity:.4;cursor:not-allowed;}
+
+  .score-bar{
+    display:none;
+    align-items:center;
+    justify-content:space-between;
+    background:#fff;
+    border:1px solid var(--paper-line);
+    border-left:5px solid var(--gold);
+    border-radius:var(--radius);
+    padding:12px 18px;
+    margin-bottom:22px;
+    font-size:14px;
+  }
+  .score-bar.show{display:flex;}
+  .score-bar strong{font-size:18px;color:var(--gold);}
+  .score-bar button{
+    background:none;border:1px solid var(--ink-soft);color:var(--ink-soft);
+    border-radius:6px;padding:6px 12px;font-size:13px;cursor:pointer;
+  }
+
+  section.block{
+    background:#fff;
+    border:1px solid var(--paper-line);
+    border-radius:var(--radius);
+    padding:22px 22px 26px;
+    margin-bottom:20px;
+  }
+  .block h2{
+    font-family:"Noto Serif TC",serif;
+    font-size:19px;
+    margin:0 0 4px;
+    color:var(--chalk-green);
+  }
+  .block .meta{color:var(--ink-soft);font-size:13px;margin:0 0 16px;}
+
+  .q{margin-bottom:18px;padding-bottom:16px;border-bottom:1px dashed var(--paper-line);}
+  .q:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0;}
+  .q-text{font-size:15.5px;margin-bottom:8px;}
+  .q-num{color:var(--gold);font-weight:700;margin-right:4px;}
+
+  .opts{display:grid;gap:8px;}
+  .opt{
+    display:flex;gap:8px;align-items:flex-start;
+    border:1.5px solid var(--paper-line);
+    border-radius:8px;
+    padding:9px 12px;
+    cursor:pointer;
+    font-size:14.5px;
+    background:#fffdf8;
+  }
+  .opt:hover{border-color:var(--chalk-green-2);}
+  .opt.selected{border-color:var(--chalk-green-2);background:#eef3ea;}
+  .opt.correct{border-color:var(--ok-green);background:var(--ok-green-soft);}
+  .opt.wrong{border-color:var(--pen-red);background:var(--pen-red-soft);}
+  .opt .tag{font-weight:700;color:var(--ink-soft);}
+  .opt.correct .tag{color:var(--ok-green);}
+  .opt.wrong .tag{color:var(--pen-red);}
+  .opt.disabled{cursor:default;}
+
+  .passage{
+    background:#f5f2e8;border-radius:8px;padding:14px 16px;margin-bottom:14px;
+    font-size:14.5px;white-space:pre-line;
+  }
+  .passage-label{font-weight:700;color:var(--chalk-green);margin-bottom:4px;display:block;}
+
+  .sec-note{font-size:13.5px;color:var(--ink-soft);background:#f5f2e8;border-radius:8px;padding:8px 12px;margin:-6px 0 14px;}
+  .sec-pre{background:#f5f2e8;border-radius:8px;padding:10px 14px;margin:-4px 0 14px;font-size:14.5px;}
+  .fill-row{display:flex;flex-wrap:wrap;align-items:center;gap:8px;}
+  input.blank{
+    font-family:"Noto Sans TC",sans-serif;font-size:15.5px;border:none;border-bottom:2px solid var(--chalk-green-2);
+    background:#fffdf8;padding:4px 6px;width:170px;max-width:100%;
+  }
+  input.blank.wide{width:100%;}
+  textarea.explain-box{
+    width:100%;min-height:52px;font-family:"Noto Sans TC",sans-serif;font-size:15px;
+    border:1.5px solid var(--paper-line);border-radius:8px;padding:8px 10px;background:#fffdf8;resize:vertical;
+  }
+  .feedback{font-weight:700;font-size:15px;}
+  .feedback.ok{color:var(--ok-green);}
+  .feedback.no{color:var(--pen-red);}
+  .answer-reveal{display:none;margin-top:8px;font-size:14px;color:var(--ok-green);background:var(--ok-green-soft);border-radius:6px;padding:6px 12px;}
+  .answer-reveal.show{display:block;}
+  .zh-und{text-decoration:underline;text-underline-offset:3px;}
+  .footer-link{
+    display:block;text-align:center;margin-top:30px;color:var(--chalk-green);
+    text-decoration:none;font-weight:700;font-size:14px;
+  }
+  .footer-link:hover{text-decoration:underline;}
+
+  @media print{
+    header.hero, .controls, .score-bar, .mini-btn, .footer-link{display:none !important;}
+    body{background:#fff;}
+    section.block{border:none;box-shadow:none;padding:8px 0;margin-bottom:14px;}
+    .opt.correct{background:none;border:none;font-weight:700;}
+    .opt.correct::after{content:" ← 正解";color:var(--pen-red);}
+    .opt{border:none;padding:2px 0;}
+    main{max-width:100%;padding:0 24px;}
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="breadcrumb"><a href="https://jenlin2002.github.io/">🏠 回總目錄</a> ／ <a href="../hanlin-nature-g8-1.html" style="color:#cfe0d1;">段考題庫</a></div>
+    <h1>自然・第7回</h1>
+    <p class="subtitle">4-1～4-3 光的傳播與反射｜翰林版八年級自然（三）Ａ卷</p>
+  </div>
+</header>
+
+<main>
+  <div class="controls">
+    <div class="mode-toggle">
+      <button id="quizModeBtn" class="active">✏️ 測驗模式</button>
+      <button id="printModeBtn" disabled title="完成測驗並送出成績後才能查看">🖨️ 完整題目與解答（送出成績後解鎖）</button>
+    </div>
+  </div>
+
+  <div class="score-bar" id="scoreBar">
+    <div>目前得分：<strong id="scoreText">0 / 0</strong>（選擇題）</div>
+    <button id="resetBtn">重新作答</button>
+  </div>
+
+  <div id="content"></div>
+
+  <a class="footer-link" href="../hanlin-nature-g8-1.html">← 回段考題庫總覽</a>
+</main>
+
+<script>
+
+window.EXAM_META = { version: "自然A卷", examLabel: "自然第7回" };
+const DATA = {
+  sections: [
+  {
+    "type": "reading",
+    "title": "A部分 基礎題　一、選擇題",
+    "meta": "每題3分，共54分",
+    "passages": [
+      {
+        "text": "",
+        "items": [
+          {
+            "q": "下列甲、乙、丙、丁四種生活上的光學現象，哪些與光的直線前進性質有關？甲：戴蛙鏡潛入水中，看岸邊的人變高了。乙：傍晚時刻，建築物在陽光照射下形成影子。丙：日偏食的時候，看樹下的光亮區形狀，由圓形變成新月形。丁：陽光通過三稜鏡產生色散現象。",
+            "options": [
+              "甲、乙",
+              "乙、丙",
+              "丙、丁",
+              "甲、丁"
+            ],
+            "correct": 1,
+            "no": 1
+          },
+          {
+            "q": "右圖為一雷射光入射到一塊平面鏡，則其入射角和反射角應為幾度？",
+            "options": [
+              "入射角：40°；反射角：40°",
+              "入射角：50°；反射角：50°",
+              "入射角：40°；反射角：50°",
+              "入射角：50°；反射角：40°"
+            ],
+            "image": "images/test7/q2.png",
+            "correct": 1,
+            "no": 2
+          },
+          {
+            "q": "關於「光」的敘述，下列何者正確？",
+            "options": [
+              "光與聲音一樣，都不能在真空中傳播",
+              "光不能在透明的固體中傳播",
+              "光的傳播速率與聲音一樣快",
+              "當太陽太大時，手可以遮陽，證明了光的直進性"
+            ],
+            "correct": 3,
+            "no": 3
+          },
+          {
+            "q": "小林利用紙筒做成針孔成像的裝置如圖(一)，所使用的光源是紅、藍、綠三個相同強度的 LED 燈如圖(二)。打開電源後小林往描圖紙看去，看到紙上有三個亮圈，請問小林看到的圖形應該是哪一個？",
+            "options": [
+              "圖(A)",
+              "圖(B)",
+              "圖(C)",
+              "圖(D)"
+            ],
+            "image": "images/test7/q4.png",
+            "correct": 2,
+            "no": 4
+          },
+          {
+            "q": "身高相等的甲、乙、丙三人站在太陽下，如右圖所示，試問哪一個人的影子最長？",
+            "options": [
+              "甲",
+              "乙",
+              "丙",
+              "一樣長"
+            ],
+            "image": "images/test7/q5.png",
+            "correct": 3,
+            "no": 5
+          },
+          {
+            "q": "如右圖，千寧站在平面鏡前 4 公尺時，得到鏡中像高為 168 公分，若千寧往鏡子前進 1 公尺，則鏡中的像高為多少公分？",
+            "options": [
+              "168",
+              "126",
+              "84",
+              "42"
+            ],
+            "image": "images/test7/q6.png",
+            "correct": 0,
+            "no": 6
+          },
+          {
+            "q": "下列圖中，物體甲、乙置於平面鏡前，其在鏡中所成的像何者正確？（虛線代表像）",
+            "options": [
+              "圖(A)",
+              "圖(B)",
+              "圖(C)",
+              "圖(D)"
+            ],
+            "image": "images/test7/q7.png",
+            "correct": 2,
+            "no": 7
+          },
+          {
+            "q": "當白色光線打到以下四處，有哪些會遵守反射定律？(甲)平面鏡；(乙)白色牆壁；(丙)粗糙的水泥面；(丁)綠色玻璃紙。",
+            "options": [
+              "僅(甲)",
+              "僅(乙)",
+              "僅(甲)(乙)(丙)",
+              "(甲)(乙)(丙)(丁)"
+            ],
+            "correct": 3,
+            "no": 8
+          },
+          {
+            "q": "右圖中標示有英文字母的三張卡片，分別平放在一豎立於桌面上的平面鏡前面。當眼睛自 E 點向鏡內看時，能看到哪一張卡片的像？",
+            "options": [
+              "X",
+              "Y",
+              "Z",
+              "都看得到"
+            ],
+            "image": "images/test7/q9.png",
+            "correct": 2,
+            "no": 9
+          },
+          {
+            "q": "小莉使用的化妝鏡具有放大的效果，可以清楚地看清自己臉部的細微部分，請問該化妝鏡應屬下列哪一種？",
+            "options": [
+              "面積大的平面鏡",
+              "凹面鏡",
+              "凸面鏡",
+              "面積小的平面鏡"
+            ],
+            "correct": 1,
+            "no": 10
+          },
+          {
+            "q": "右圖是教室和走廊的俯瞰圖，L₁、L₂、L₃、L₄ 表示走廊兩邊牆壁，MN 表示轉角處的平面鏡，A、B 表示兩位學生，則 B 生經由平面鏡所看到的 A 生的位置為圖中的哪一點？",
+            "options": [
+              "P",
+              "Q",
+              "R",
+              "S"
+            ],
+            "image": "images/test7/q11.png",
+            "correct": 3,
+            "no": 11
+          },
+          {
+            "q": "關於平面鏡成像的敘述，下列何者<b>錯誤</b>？",
+            "options": [
+              "鏡中的像呈現對稱",
+              "鏡中的像可以在紙屏找到",
+              "屬於光的反射原理",
+              "成像的大小必定與物相同"
+            ],
+            "correct": 1,
+            "no": 12
+          },
+          {
+            "q": "右圖所示為一束光線於暗室中，由甲介質射入乙介質中，則下列敘述何者正確？",
+            "options": [
+              "反射角是 30°",
+              "OB 是折射線",
+              "折射角是 70°",
+              "光在甲介質中的傳播速率較在乙介質中慢"
+            ],
+            "image": "images/test7/q13.png",
+            "correct": 0,
+            "no": 13
+          },
+          {
+            "q": "取一雷射筆使其發出紅色光束斜向射入透明的方形容器中，並在容器底部 P 點處形成一紅色光點，右圖為上述情形的側面圖；若在容器中加水至半滿後，則紅色光點會發生何種變化？",
+            "options": [
+              "向 P 點右方移動",
+              "向 P 點左方移動",
+              "在 P 點處，維持不變",
+              "無法在容器底部看見紅色光點"
+            ],
+            "image": "images/test7/q14.png",
+            "correct": 0,
+            "no": 14
+          },
+          {
+            "q": "光以相同的入射角，從水中射出到四種不同的介質中，其折射情形如下圖所示，試問光在哪一種介質中的傳播速率最快？",
+            "options": [
+              "甲",
+              "乙",
+              "丙",
+              "丁"
+            ],
+            "image": "images/test7/q15.png",
+            "correct": 3,
+            "no": 15
+          },
+          {
+            "q": "玻璃杯內盛水，今將一根筷子斜插入杯內，一半在水中一半在空氣中，由人眼看來筷子的形狀為何？",
+            "options": [
+              "圖(A)",
+              "圖(B)",
+              "圖(C)",
+              "圖(D)"
+            ],
+            "image": "images/test7/q16.png",
+            "correct": 1,
+            "no": 16
+          },
+          {
+            "q": "有一種魚名叫水槍魚，牠常停在水草邊，當牠在水中看見昆蟲飛過時，便能由口中射出一條水柱，將昆蟲射下來吃，若不考慮昆蟲的飛行，則水槍魚想要射擊到目標，牠應該瞄準所見目標物的何方？",
+            "options": [
+              "目標物本體",
+              "目標物上方",
+              "目標物下方",
+              "目標物左方"
+            ],
+            "correct": 2,
+            "no": 17
+          },
+          {
+            "q": "固定以 45° 入射角將雷射光入射甲、乙、丙三種介質，結果折射線與界面夾角：甲為 20°、乙為 30°、丙為 55°，則雷射光在三介質中之光速大小順序為何？",
+            "options": [
+              "丙＞乙＞甲",
+              "乙＞甲＞丙",
+              "甲＞乙＞丙",
+              "丙＞甲＞乙"
+            ],
+            "correct": 2,
+            "no": 18
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "type": "reading",
+    "title": "二、素養題",
+    "meta": "每題4分，共28分",
+    "passages": [
+      {
+        "text": "",
+        "items": [
+          {
+            "q": "右圖為小明在進行視力檢查，檢查表掛在距小明後面 1 m 的牆上，小明看前方 2 m 牆上平面鏡的檢查表成像來檢查，請問小明眼睛到平面鏡中的檢查表成像相距多少 m？",
+            "options": [
+              "4",
+              "5",
+              "6",
+              "6.5"
+            ],
+            "image": "images/test7/s1.png",
+            "correct": 1,
+            "no": 1
+          },
+          {
+            "q": "如右圖，兩束平行雷射光經過三稜鏡，試問光線折射路徑應為下列何者？",
+            "options": [
+              "圖(A)",
+              "圖(B)",
+              "圖(C)",
+              "圖(D)"
+            ],
+            "image": "images/test7/s2a.png",
+            "image2": "images/test7/s2.png",
+            "correct": 0,
+            "no": 2
+          },
+          {
+            "q": "部分商店會在天花板的角落擺放如右圖的裝置，藉以提升防盜機制。請問這樣的裝置是使用哪一種光學鏡片？利用哪一種光學原理？",
+            "options": [
+              "凹面鏡，光的折射",
+              "平面鏡，光的反射",
+              "凸透鏡，光的折射",
+              "凸面鏡，光的反射"
+            ],
+            "image": "images/test7/s3.png",
+            "correct": 3,
+            "no": 3
+          },
+          {
+            "q": "太陽能發電方式是使用如右圖的拋物面碟式收集器來收集太陽能。圖中的反射器可使太陽光會聚於接收器，加熱流經接收器內部的物質，進而達到發電的目的。試問圖中的入射光線經反射器反射後照射於接收器上，則此時法線應為圖上的哪一條虛線？",
+            "options": [
+              "L₁",
+              "L₂",
+              "L₃",
+              "L₄"
+            ],
+            "image": "images/test7/s4.png",
+            "correct": 0,
+            "no": 4
+          },
+          {
+            "q": "一個半圓柱狀的透明玻璃，AB 線段為其橫截面半圓形的直徑，O 點為半圓的圓心。若有一條光線 CO 自空氣中射入此玻璃柱，入射點為 O 點，如右上圖所示，則下列何者為光的折射路徑？",
+            "options": [
+              "圖(A)",
+              "圖(B)",
+              "圖(C)",
+              "圖(D)"
+            ],
+            "image": "images/test7/s5a.png",
+            "image2": "images/test7/s5.png",
+            "correct": 1,
+            "no": 5
+          }
+        ]
+      },
+      {
+        "text": "A、B 兩平面鏡夾角為 125°，入射光線與 A 平面鏡的夾角為 30°，如右圖所示，試回答 6.、7.題：",
+        "items": [
+          {
+            "q": "對 A 平面鏡而言，入射光線的反射角是多少度？",
+            "options": [
+              "30°",
+              "40°",
+              "50°",
+              "60°"
+            ],
+            "correct": 3,
+            "no": 6
+          },
+          {
+            "q": "如果想要 A 平面鏡的反射光，不會射入 B 平面鏡，則以 A、B 平面鏡交點為轉軸，至少必須將 B 平面鏡如何轉動？",
+            "options": [
+              "逆時針旋轉 15°",
+              "逆時針旋轉 25°",
+              "順時針旋轉 15°",
+              "順時針旋轉 25°"
+            ],
+            "correct": 1,
+            "no": 7
+          }
+        ],
+        "image": "images/test7/g67.png"
+      }
+    ]
+  },
+  {
+    "type": "reading",
+    "title": "B部分 活用題",
+    "meta": "每題2分，共18分",
+    "passages": [
+      {
+        "text": "",
+        "items": [
+          {
+            "q": "一枚拾元硬幣置於一深度為 12 公分空杯底正中央處，人眼位於杯口往杯底看，同時加水入杯子，則加水高度至下列何者時，所看到的硬幣距杯口最近？",
+            "options": [
+              "3 公分",
+              "6 公分",
+              "9 公分",
+              "12 公分"
+            ],
+            "correct": 3,
+            "no": 1
+          },
+          {
+            "q": "如圖(三)，以雷射光照射在純水中無法看見雷射光束，如圖(四)，廖老師在水中滴了一滴牛奶擴散後再照射雷射光便可以清楚的見到雷射光束。則廖老師是利用光的何種特性讓光點看得見？",
+            "options": [
+              "直線傳播",
+              "反射",
+              "折射",
+              "雷射光能量集中"
+            ],
+            "image": "images/test7/b2.png",
+            "correct": 1,
+            "no": 2
+          },
+          {
+            "q": "做視力檢查時，眼睛與視力表的標準距離應為 5 公尺。某眼鏡行由於空間太小，所以使用一平面鏡反射視力表，若視力表與平面鏡的距離相隔 3 公尺，則受測試者的座位應該設在距離平面鏡多遠處？",
+            "options": [
+              "1 公尺",
+              "2 公尺",
+              "2.5 公尺",
+              "3 公尺"
+            ],
+            "correct": 1,
+            "no": 3
+          },
+          {
+            "q": "一原子筆斜放平面鏡前，如右圖，筆尖距平面鏡 12cm，成像於 P 點，筆蓋距平面鏡 16cm，成像於 Q 點，則下列何者正確？",
+            "options": [
+              "P 點距平面鏡 12cm",
+              "P 點距平面鏡 16cm",
+              "Q 點距平面鏡 12cm",
+              "Q 點距平面鏡 14cm"
+            ],
+            "image": "images/test7/b4.png",
+            "correct": 0,
+            "no": 4
+          },
+          {
+            "q": "明鈞坐在平面鏡前，從平面鏡裡看到身後牆壁所掛時鐘的成像，如右圖所示，則此時正確的時刻是幾點幾分？",
+            "options": [
+              "1 點 20 分",
+              "7 點 40 分",
+              "10 點 40 分",
+              "11 點 20 分"
+            ],
+            "image": "images/test7/b5.png",
+            "correct": 2,
+            "no": 5
+          },
+          {
+            "q": "M、N 兩平面鏡放置如右圖，M 和 N 夾角 80°，今一條光線 X 和 M 夾角 50° 射向 M，則 X 經 M、N 兩平面鏡反射後，在 N 平面鏡的反射角為何？",
+            "options": [
+              "10°",
+              "20°",
+              "30°",
+              "40°"
+            ],
+            "image": "images/test7/b6.png",
+            "correct": 3,
+            "no": 6
+          }
+        ]
+      },
+      {
+        "text": "下表是光由空氣射入甲、乙、丙、丁四種介質中，其入射角和折射角的比較，試回答 7.～ 9.題：",
+        "items": [
+          {
+            "q": "光在何種介質傳播速率可能為 3×10⁸ m/s？",
+            "options": [
+              "甲",
+              "乙",
+              "丙",
+              "丁"
+            ],
+            "correct": 2,
+            "no": 7
+          },
+          {
+            "q": "光在何種介質傳播的速率最快？",
+            "options": [
+              "甲",
+              "乙",
+              "丙",
+              "皆相同"
+            ],
+            "correct": 2,
+            "no": 8
+          },
+          {
+            "q": "假設乙介質為玻璃，則下列敘述何者正確？",
+            "options": [
+              "甲介質可能為水",
+              "丁介質可能為水",
+              "光在乙介質中傳播速率比空氣快",
+              "只要介質不同必發生折射現象"
+            ],
+            "correct": 0,
+            "no": 9
+          }
+        ],
+        "image": "images/test7/g79.png"
+      }
+    ]
+  }
+]
+};
+
+let currentMode = "quiz"; // quiz | print
+
+const contentEl = document.getElementById("content");
+const scoreBar = document.getElementById("scoreBar");
+const scoreText = document.getElementById("scoreText");
+
+function render(){
+  window.examAnswersRevealed = false;
+  contentEl.innerHTML = "";
+  DATA.sections.forEach((sec, si)=> contentEl.appendChild(renderSection(sec, si)));
+  if(currentMode==="quiz"){
+    scoreBar.classList.add("show");
+    updateScore();
+  } else {
+    scoreBar.classList.remove("show");
+    contentEl.querySelectorAll(".opt").forEach(o=>o.classList.add("disabled"));
+    contentEl.querySelectorAll(".opt.is-correct").forEach(o=>o.classList.add("correct"));
+  }
+}
+
+function renderSection(sec, si){
+  const block = document.createElement("section");
+  block.className = "block";
+  block.innerHTML = `<h2>${sec.title}</h2><p class="meta">${sec.meta}</p>`
+    + (sec.note ? `<div class="sec-note">${sec.note}</div>` : "")
+    + (sec.pre ? `<div class="sec-pre">${sec.pre}</div>` : "");
+
+  if(sec.type==="fill"){
+    sec.items.forEach((it,i)=>{
+      const q = document.createElement("div");
+      q.className = "q";
+      const shown = it.answers.join(" ／ ");
+      q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q}</div>
+        <div class="fill-row"><input type="text" class="blank${sec.wide ? " wide" : ""}" autocomplete="off" placeholder="${sec.placeholder || "作答"}"><span class="feedback"></span></div>
+        <div class="answer-reveal">正解：${shown}</div>`;
+      q.querySelector("input.blank").dataset.answers = JSON.stringify(it.answers);
+      if(currentMode!=="quiz"){ q.querySelector("input.blank").disabled = true; q.querySelector(".answer-reveal").classList.add("show"); }
+      block.appendChild(q);
+    });
+  }
+
+  else if(sec.type==="explain"){
+    sec.items.forEach((it,i)=>{
+      const q = document.createElement("div");
+      q.className = "q";
+      q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q}</div>
+        <textarea class="explain-box" placeholder="寫下你的解釋（送出成績後對照參考答案）"></textarea>
+        <div class="answer-reveal">參考答案：${it.answer}</div>`;
+      if(currentMode!=="quiz"){ q.querySelector("textarea").remove(); q.querySelector(".answer-reveal").classList.add("show"); }
+      block.appendChild(q);
+    });
+  }
+
+  else if(sec.type==="mc"){
+    sec.items.forEach((it,i)=>{
+      const q = document.createElement("div");
+      q.className = "q";
+      const optsHtml = it.options.map((op,oi)=>`
+        <div class="opt" data-idx="${oi}" data-correct="${oi===it.correct}">
+          <span class="tag">(${String.fromCharCode(65+oi)})</span><span>${op}</span>
+        </div>`).join("");
+      const imgHtml = it.image ? `<img src="${it.image}" alt="題目附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">` : "";
+      const img2Html = it.image2 ? `<img src="${it.image2}" alt="題目附圖2" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">` : "";
+      q.innerHTML = `<div class="q-text"><span class="q-num">${it.no||i+1}.</span>${it.q}</div>
+        ${imgHtml}${img2Html}
+        <div class="opts">${optsHtml}</div>`;
+      q.querySelectorAll(".opt").forEach(optEl=>{
+        if(optEl.dataset.correct==="true") optEl.classList.add("is-correct");
+        optEl.addEventListener("click", ()=>selectOption(q, optEl));
+      });
+      block.appendChild(q);
+    });
+  }
+
+  else if(sec.type==="reading"){
+    sec.passages.forEach(p=>{
+      const passageDiv = document.createElement("div");
+      passageDiv.className = "passage";
+      passageDiv.innerHTML = `${p.label ? `<span class="passage-label">${p.label}</span>`:""}${p.text}${p.image ? `<img src="${p.image}" alt="題組附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-top:10px;border:1px solid var(--paper-line);">`:""}`;
+      if(p.text || p.image) block.appendChild(passageDiv);
+      p.items.forEach((it,i)=>{
+        const q = document.createElement("div");
+        q.className = "q";
+        const optsHtml = it.options.map((op,oi)=>`
+          <div class="opt" data-idx="${oi}" data-correct="${oi===it.correct}">
+            <span class="tag">(${String.fromCharCode(65+oi)})</span><span>${op}</span>
+          </div>`).join("");
+        q.innerHTML = `<div class="q-text"><span class="q-num">${it.no||i+1}.</span>${it.q}</div>
+          ${it.image ? `<img src="${it.image}" alt="題目附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">`:""}
+          <div class="opts">${optsHtml}</div>`;
+        q.querySelectorAll(".opt").forEach(optEl=>{
+          if(optEl.dataset.correct==="true") optEl.classList.add("is-correct");
+          optEl.addEventListener("click", ()=>selectOption(q, optEl));
+        });
+        block.appendChild(q);
+      });
+    });
+  }
+
+  return block;
+}
+
+function selectOption(qEl, optEl){
+  if(currentMode!=="quiz") return;
+  if(qEl.dataset.answered==="true") return;
+  qEl.dataset.answered = "true";
+  qEl.querySelectorAll(".opt").forEach(o=>o.classList.add("disabled"));
+  optEl.classList.add("selected");
+  const correctOpt = qEl.querySelector('.opt[data-correct="true"]');
+  qEl.dataset.studentAnswer = optEl.textContent.trim();
+  qEl.dataset.correctAnswer = correctOpt ? correctOpt.textContent.trim() : "";
+  qEl.dataset.isCorrect = (optEl.dataset.correct==="true") ? "true" : "false";
+  updateScore();
+}
+
+function updateScore(){
+  let total = 0, answered = 0, correct = 0;
+  contentEl.querySelectorAll(".q").forEach(q=>{
+    const gradable = q.querySelector(".opts") || q.querySelector("input.blank");
+    if(!gradable) return;
+    total++;
+    if(q.dataset.studentAnswer !== undefined){
+      answered++;
+      if(q.dataset.isCorrect === "true") correct++;
+    }
+  });
+  if(window.examAnswersRevealed){
+    scoreText.textContent = `${correct} / ${total}`;
+  } else {
+    scoreText.textContent = `已作答 ${answered} / ${total} 題`;
+  }
+}
+window.updateScore = updateScore;
+
+// 填寫題（注音／國字、改錯）：去掉空白與標點後和正解比對；注音的一聲符號「ˉ」可寫可不寫
+function normFill(s){
+  return String(s).replace(/[\sˉ　，、。．.,;；:：!！?？「」『』（）()【】→\-－—]/g, "").trim();
+}
+document.addEventListener("input", (e)=>{
+  const input = e.target;
+  if(!input.matches || !input.matches("input.blank")) return;
+  const q = input.closest(".q");
+  const answers = JSON.parse(input.dataset.answers || "[]");
+  const val = input.value.trim();
+  if(!val){ delete q.dataset.studentAnswer; delete q.dataset.isCorrect; }
+  else {
+    q.dataset.studentAnswer = val;
+    q.dataset.correctAnswer = answers.join(" ／ ");
+    q.dataset.isCorrect = answers.some(a => normFill(a) === normFill(val)) ? "true" : "false";
+  }
+  updateScore();
+});
+
+document.getElementById("resetBtn").addEventListener("click", render);
+document.getElementById("quizModeBtn").addEventListener("click", ()=>{
+  currentMode = "quiz";
+  document.getElementById("quizModeBtn").classList.add("active");
+  document.getElementById("printModeBtn").classList.remove("active");
+  render();
+});
+document.getElementById("printModeBtn").addEventListener("click", ()=>{
+  if(document.getElementById("printModeBtn").disabled) return;
+  currentMode = "print";
+  document.getElementById("printModeBtn").classList.add("active");
+  document.getElementById("quizModeBtn").classList.remove("active");
+  render();
+});
+
+window.unlockPrintMode = function(){
+  document.getElementById("printModeBtn").disabled = false;
+};
+
+render();
+</script>
+<script src="../sync.js"></script>
+</body>
+</html>

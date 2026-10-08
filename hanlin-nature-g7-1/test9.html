@@ -1,0 +1,822 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>段考題庫｜自然第9回 - 複習</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@500;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#faf6ec;
+    --paper-line:#e3dcc8;
+    --ink:#26332b;
+    --ink-soft:#5b6b5f;
+    --chalk-green:#2f4538;
+    --chalk-green-2:#3d5a48;
+    --pen-red:#b8433a;
+    --pen-red-soft:#f4dedb;
+    --ok-green:#3f7d52;
+    --ok-green-soft:#dfeee1;
+    --gold:#b5842a;
+    --radius:10px;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:"Noto Sans TC",sans-serif;
+    line-height:1.7;
+  }
+  header.hero{
+    background:var(--chalk-green);
+    color:#eef2ea;
+    padding:28px 20px 40px;
+    position:relative;
+  }
+  header.hero::after{
+    content:"";
+    position:absolute;
+    left:0; right:0; bottom:-1px;
+    height:14px;
+    background:repeating-linear-gradient(90deg,var(--paper) 0 18px, transparent 18px 20px);
+  }
+  .hero-inner{max-width:880px;margin:0 auto;}
+  .breadcrumb a{color:#cfe0d1;text-decoration:none;font-size:14px;}
+  .breadcrumb a:hover{text-decoration:underline;}
+  h1{
+    font-family:"Noto Serif TC",serif;
+    font-weight:700;
+    font-size:clamp(24px,4vw,34px);
+    margin:10px 0 6px;
+  }
+  .subtitle{color:#cfe0d1;font-size:15px;margin:0;}
+  main{max-width:880px;margin:0 auto;padding:28px 20px 80px;}
+
+  .controls{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:22px;
+  }
+  .mode-toggle{display:flex;border:2px solid var(--chalk-green);border-radius:999px;overflow:hidden;}
+  .mode-toggle button{
+    background:transparent;border:none;padding:8px 16px;font-size:14px;font-weight:700;
+    color:var(--chalk-green);cursor:pointer;font-family:"Noto Sans TC",sans-serif;
+  }
+  .mode-toggle button.active{background:var(--gold);color:#fff;}
+  .mode-toggle button:disabled{opacity:.4;cursor:not-allowed;}
+
+  .score-bar{
+    display:none;
+    align-items:center;
+    justify-content:space-between;
+    background:#fff;
+    border:1px solid var(--paper-line);
+    border-left:5px solid var(--gold);
+    border-radius:var(--radius);
+    padding:12px 18px;
+    margin-bottom:22px;
+    font-size:14px;
+  }
+  .score-bar.show{display:flex;}
+  .score-bar strong{font-size:18px;color:var(--gold);}
+  .score-bar button{
+    background:none;border:1px solid var(--ink-soft);color:var(--ink-soft);
+    border-radius:6px;padding:6px 12px;font-size:13px;cursor:pointer;
+  }
+
+  section.block{
+    background:#fff;
+    border:1px solid var(--paper-line);
+    border-radius:var(--radius);
+    padding:22px 22px 26px;
+    margin-bottom:20px;
+  }
+  .block h2{
+    font-family:"Noto Serif TC",serif;
+    font-size:19px;
+    margin:0 0 4px;
+    color:var(--chalk-green);
+  }
+  .block .meta{color:var(--ink-soft);font-size:13px;margin:0 0 16px;}
+
+  .q{margin-bottom:18px;padding-bottom:16px;border-bottom:1px dashed var(--paper-line);}
+  .q:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0;}
+  .q-text{font-size:15.5px;margin-bottom:8px;}
+  .q-num{color:var(--gold);font-weight:700;margin-right:4px;}
+
+  .opts{display:grid;gap:8px;}
+  .opt{
+    display:flex;gap:8px;align-items:flex-start;
+    border:1.5px solid var(--paper-line);
+    border-radius:8px;
+    padding:9px 12px;
+    cursor:pointer;
+    font-size:14.5px;
+    background:#fffdf8;
+  }
+  .opt:hover{border-color:var(--chalk-green-2);}
+  .opt.selected{border-color:var(--chalk-green-2);background:#eef3ea;}
+  .opt.correct{border-color:var(--ok-green);background:var(--ok-green-soft);}
+  .opt.wrong{border-color:var(--pen-red);background:var(--pen-red-soft);}
+  .opt .tag{font-weight:700;color:var(--ink-soft);}
+  .opt.correct .tag{color:var(--ok-green);}
+  .opt.wrong .tag{color:var(--pen-red);}
+  .opt.disabled{cursor:default;}
+
+  .passage{
+    background:#f5f2e8;border-radius:8px;padding:14px 16px;margin-bottom:14px;
+    font-size:14.5px;white-space:pre-line;
+  }
+  .passage-label{font-weight:700;color:var(--chalk-green);margin-bottom:4px;display:block;}
+
+  .sec-note{font-size:13.5px;color:var(--ink-soft);background:#f5f2e8;border-radius:8px;padding:8px 12px;margin:-6px 0 14px;}
+  .sec-pre{background:#f5f2e8;border-radius:8px;padding:10px 14px;margin:-4px 0 14px;font-size:14.5px;}
+  .fill-row{display:flex;flex-wrap:wrap;align-items:center;gap:8px;}
+  input.blank{
+    font-family:"Noto Sans TC",sans-serif;font-size:15.5px;border:none;border-bottom:2px solid var(--chalk-green-2);
+    background:#fffdf8;padding:4px 6px;width:170px;max-width:100%;
+  }
+  input.blank.wide{width:100%;}
+  textarea.explain-box{
+    width:100%;min-height:52px;font-family:"Noto Sans TC",sans-serif;font-size:15px;
+    border:1.5px solid var(--paper-line);border-radius:8px;padding:8px 10px;background:#fffdf8;resize:vertical;
+  }
+  .feedback{font-weight:700;font-size:15px;}
+  .feedback.ok{color:var(--ok-green);}
+  .feedback.no{color:var(--pen-red);}
+  .answer-reveal{display:none;margin-top:8px;font-size:14px;color:var(--ok-green);background:var(--ok-green-soft);border-radius:6px;padding:6px 12px;}
+  .answer-reveal.show{display:block;}
+  .zh-und{text-decoration:underline;text-underline-offset:3px;}
+  .footer-link{
+    display:block;text-align:center;margin-top:30px;color:var(--chalk-green);
+    text-decoration:none;font-weight:700;font-size:14px;
+  }
+  .footer-link:hover{text-decoration:underline;}
+
+  @media print{
+    header.hero, .controls, .score-bar, .mini-btn, .footer-link{display:none !important;}
+    body{background:#fff;}
+    section.block{border:none;box-shadow:none;padding:8px 0;margin-bottom:14px;}
+    .opt.correct{background:none;border:none;font-weight:700;}
+    .opt.correct::after{content:" ← 正解";color:var(--pen-red);}
+    .opt{border:none;padding:2px 0;}
+    main{max-width:100%;padding:0 24px;}
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="breadcrumb"><a href="https://jenlin2002.github.io/">🏠 回總目錄</a> ／ <a href="../hanlin-nature-g7-1.html" style="color:#cfe0d1;">段考題庫</a></div>
+    <h1>自然・第9回</h1>
+    <p class="subtitle">第3～4章 複習｜翰林版七年級自然（一）Ａ卷</p>
+  </div>
+</header>
+
+<main>
+  <div class="controls">
+    <div class="mode-toggle">
+      <button id="quizModeBtn" class="active">✏️ 測驗模式</button>
+      <button id="printModeBtn" disabled title="完成測驗並送出成績後才能查看">🖨️ 完整題目與解答（送出成績後解鎖）</button>
+    </div>
+  </div>
+
+  <div class="score-bar" id="scoreBar">
+    <div>目前得分：<strong id="scoreText">0 / 0</strong>（選擇題）</div>
+    <button id="resetBtn">重新作答</button>
+  </div>
+
+  <div id="content"></div>
+
+  <a class="footer-link" href="../hanlin-nature-g7-1.html">← 回段考題庫總覽</a>
+</main>
+
+<script>
+
+window.EXAM_META = { version: "自然A卷", examLabel: "自然第9回" };
+const DATA = {
+  sections: [
+  {
+    "type": "reading",
+    "title": "A部分 基礎題　一、選擇題",
+    "meta": "每題3分，共54分",
+    "passages": [
+      {
+        "text": "",
+        "items": [
+          {
+            "q": "下列敘述何者能表達右圖資料呈現的意義？",
+            "options": [
+              "酵素的活性隨酸鹼性不同而有差異",
+              "小腸中的酵素在酸性環境中活性最高",
+              "胃中的酵素在任何酸鹼性中都有活性",
+              "在中性環境中，所有消化酵素皆達到最高活性"
+            ],
+            "image": "images/test9/q1.png",
+            "correct": 0,
+            "no": 1
+          },
+          {
+            "q": "小瑜想知道「葉子和水分蒸散作用的關係」，於是將有葉片及無葉片的芹菜枝條分別放置於甲、乙兩量筒中，並各裝水 90mL 後放置在通風處，並每隔 1 小時記錄水量。經過 5 小時後，甲量筒水量減少 12mL，乙量筒水量減少 2mL。請問如果將小瑜的紀錄繪製成圖形，應為下列何者？",
+            "options": [
+              "圖(A)",
+              "圖(B)",
+              "圖(C)",
+              "圖(D)"
+            ],
+            "image": "images/test9/q2.png",
+            "correct": 0,
+            "no": 2
+          },
+          {
+            "q": "右圖為葉橫切面的放大圖，請依圖選出下列敘述何者正確？",
+            "options": [
+              "甲、乙的細胞可行光合作用",
+              "丁是氣體及水進出之通道",
+              "丙負責水分與養分的運輸",
+              "丁只有在下表皮可發現"
+            ],
+            "image": "images/test9/q3.png",
+            "correct": 2,
+            "no": 3
+          },
+          {
+            "q": "人體體內「瓣膜」的功能是防止血液逆流，類似單向開啟的門，維持心血管系統的單向流動。有關瓣膜的敘述，下列何者正確？",
+            "options": [
+              "心臟舒張時，肺泡上微血管內的瓣膜會開啟",
+              "心臟收縮時，頸動脈內的瓣膜會關閉",
+              "靜脈與心房之間具有瓣膜",
+              "心房與心室之間具有瓣膜"
+            ],
+            "correct": 3,
+            "no": 4
+          },
+          {
+            "q": "右圖箭頭代表能量或物質在葉片中的進出方向，此植物的生理作用最可能是下列何者？",
+            "options": [
+              "呼吸作用",
+              "蒸散作用",
+              "光合作用",
+              "循環作用"
+            ],
+            "image": "images/test9/q5.png",
+            "correct": 2,
+            "no": 5
+          },
+          {
+            "q": "右圖為植物根部細胞部分構造示意圖。關於此構造的敘述，下列何者正確？",
+            "options": [
+              "功能和絨毛相似，可增加吸收表面積",
+              "此構造的內側為木質部，外側為韌皮部",
+              "可由土壤吸收植物所需的葡萄糖",
+              "加速光合作用"
+            ],
+            "image": "images/test9/q6.png",
+            "correct": 0,
+            "no": 6
+          },
+          {
+            "q": "假如你是一隻蚜蟲，你所吸食的植物汁液中的糖分，可能是從植物的哪個部位運送來的？(甲)葉，因為葉行光合作用會產生醣類；(乙)根，因為根儲存了很多糖分；(丙)根，因為根會吸收土壤中的糖分；(丁)葉，因為糖分可由氣孔進入。",
+            "options": [
+              "(丙)(丁)",
+              "(甲)(乙)",
+              "(甲)(丙)",
+              "(乙)(丙)"
+            ],
+            "correct": 1,
+            "no": 7
+          },
+          {
+            "q": "小華腳上的傷口因細菌感染而化膿，此時關於血球的變化，下列敘述何者正確？",
+            "options": [
+              "紅血球數目增加",
+              "白血球數目增加",
+              "紅血球數目減少",
+              "白血球數目減少"
+            ],
+            "correct": 1,
+            "no": 8
+          },
+          {
+            "q": "有關人體中血液肺循環的敘述，下列何者正確？",
+            "options": [
+              "肺循環的起點為左心室",
+              "肺靜脈的血液會回到右心房",
+              "肺靜脈血液的二氧化碳量較肺動脈高",
+              "氧氣和二氧化碳可在肺臟的微血管進行擴散作用"
+            ],
+            "correct": 3,
+            "no": 9
+          },
+          {
+            "q": "有關淋巴系統的敘述，下列何者<b>錯誤</b>？",
+            "options": [
+              "淋巴結具有過濾淋巴的功用",
+              "淋巴系統的組成包括淋巴管、淋巴、淋巴結等",
+              "淋巴管與微血管相連接，以回收滲出的血漿",
+              "淋巴送回靜脈後，稱為血漿"
+            ],
+            "correct": 2,
+            "no": 10
+          },
+          {
+            "q": "下列哪些器官具有分泌消化液的功能？(甲)胃；(乙)胰臟；(丙)肛門；(丁)闌尾；(戊)肝臟；(己)小腸；(庚)大腸。",
+            "options": [
+              "(甲)(乙)(丁)(戊)(己)(庚)",
+              "僅(甲)(乙)(戊)(己)(庚)",
+              "僅(甲)(乙)(戊)(己)",
+              "僅(丙)(丁)"
+            ],
+            "correct": 2,
+            "no": 11
+          },
+          {
+            "q": "旭旭在中午吃了一頓豐盛的午餐，關於食物的消化與吸收，下列敘述何者正確？",
+            "options": [
+              "消化道各處皆有消化腺可分泌消化液",
+              "胰臟屬於消化道，是分解食物的主要場所",
+              "在小腸中未消化完的養分可在大腸中繼續被消化",
+              "胰液有助於醣類、蛋白質及脂質的分解"
+            ],
+            "correct": 3,
+            "no": 12
+          },
+          {
+            "q": "右圖為獅子消化道內分解蛋白質的示意圖，請問圖中何者可以重複使用？",
+            "options": [
+              "甲",
+              "乙",
+              "丙",
+              "丁"
+            ],
+            "image": "images/test9/q13.png",
+            "correct": 1,
+            "no": 13
+          },
+          {
+            "q": "下表所列的是兩組養分，當這兩組養分通過人體的消化系統時，會有什麼情況發生？<table style=\"border-collapse:collapse;margin:8px 0;font-size:.95em\"><tr><th style=\"border:1px solid #888;padding:3px 10px;text-align:center\">甲組</th><th style=\"border:1px solid #888;padding:3px 10px;text-align:center\">乙組</th></tr><tr><td style=\"border:1px solid #888;padding:3px 10px;text-align:center\">維生素</td><td style=\"border:1px solid #888;padding:3px 10px;text-align:center\">醣類</td></tr><tr><td style=\"border:1px solid #888;padding:3px 10px;text-align:center\">礦物質</td><td style=\"border:1px solid #888;padding:3px 10px;text-align:center\">蛋白質</td></tr><tr><td style=\"border:1px solid #888;padding:3px 10px;text-align:center\">水</td><td style=\"border:1px solid #888;padding:3px 10px;text-align:center\">脂質</td></tr></table>",
+            "options": [
+              "甲組會被分解，但乙組不會",
+              "乙組會被分解，但甲組不會",
+              "甲、乙兩組皆會被分解",
+              "甲、乙兩組皆不會被分解"
+            ],
+            "correct": 1,
+            "no": 14
+          },
+          {
+            "q": "心怜因工作忙碌常常飲食不正常，因而導致胃酸分泌過多。醫生給予心怜制酸劑以中和胃酸，但仍建議她正常的飲食才是解決病痛的根本之道。請問心怜在服用此藥品後，將會影響哪一類食物的初步分解？",
+            "options": [
+              "蛋白質類",
+              "澱粉類",
+              "脂質類",
+              "纖維素類"
+            ],
+            "correct": 0,
+            "no": 15
+          },
+          {
+            "q": "下圖為某反應示意圖，則下列敘述何者正確？",
+            "options": [
+              "X 為酵素，A、B、C 均為其受質",
+              "X 與 B 之間有專一性",
+              "X 可與 A、B、C 等物質結合",
+              "X 與 A 結合，在接合區進行分解反應"
+            ],
+            "image": "images/test9/q16.png",
+            "correct": 3,
+            "no": 16
+          },
+          {
+            "q": "若「唾液澱粉酶」適合的溫度為 20°C～45°C，且在適合的溫度下作用，溫度每升高 10°C 時，反應速率會變快 2 倍，請問下列敘述何者正確？",
+            "options": [
+              "20°C 時的活性會比 80°C 時為小",
+              "40°C 時的活性會比 10°C 時為小",
+              "70°C 時的活性會比 30°C 時為大",
+              "30°C 時的活性會比 5°C 時為大"
+            ],
+            "correct": 3,
+            "no": 17
+          },
+          {
+            "q": "將兩植物的莖橫切後得到圖(一)、(二)，則下列敘述何者<b>錯誤</b>？",
+            "options": [
+              "甲與丙功能相同",
+              "圖(一)的植物可能是玉米、圖(二)的植物可能是向日葵",
+              "丁可進行細胞分裂",
+              "乙與戊均可運送水分"
+            ],
+            "image": "images/test9/q18.png",
+            "correct": 3,
+            "no": 18
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "type": "reading",
+    "title": "二、素養題",
+    "meta": "每題4分，共28分",
+    "passages": [
+      {
+        "text": "",
+        "items": [
+          {
+            "q": "新聞報導：新好企業遭查獲以「飼料用油」混充「食用豬油」，再製成精緻油品銷售到正易公司，傾銷全臺，多項「正易油品」中招。新好企業的油源很複雜，飼料用油只是其中一種，其他還包括由病死豬榨的豬油、棕櫚油及廢食用油等。關於油品的敘述，下列何者正確？",
+            "options": [
+              "油品中的脂質可以幫助熱量散失，達到保溫效果",
+              "混有病死豬豬油的油品，營養成分主要為蛋白質",
+              "若要檢查飼料用油，滴上碘液後會轉變成藍黑色",
+              "油品中的脂質是在小腸中才開始被分解與吸收"
+            ],
+            "correct": 3,
+            "no": 1
+          },
+          {
+            "q": "昀霏到八通關古道健行，在路邊看到截斷的樹木如右圖所示，請問下列有關年輪紋路的敘述，何者正確？",
+            "options": [
+              "年輪是植物木質部與韌皮部交替生長的結果",
+              "紋路較淺處為春、秋季節所生成，較深處為夏、冬季節所生成",
+              "年輪的存在是植物為了告訴人們生長的壽命而呈現出來的",
+              "若甲處為西元 2005 年所生成，則圖中乙處應在西元 2001 年的冬季生成"
+            ],
+            "image": "images/test9/s2.png",
+            "correct": 3,
+            "no": 2
+          },
+          {
+            "q": "小新為了進一步了解唾液中酵素的作用情形，設計如下表的實驗，由此實驗只能判斷出下列何種結果？（＋表示有加該種物質，－表示沒有加該種物質）",
+            "options": [
+              "高溫會破壞酵素",
+              "唾液在強酸、強鹼的環境下均會失去作用",
+              "唾液可與本氏液作用",
+              "酵素具有專一性"
+            ],
+            "image": "images/test9/s3.png",
+            "correct": 1,
+            "no": 3
+          },
+          {
+            "q": "現在公共場所大多有設置「自動體外心臟去顫器」，簡稱 AED。AED 主要是針對心室震顫的病患進行電擊，可有效降低病患的死亡率；所謂的「心室震顫」常是指病患心室異常快速的收縮及舒張，但卻無血液從心臟流出。請問心室震顫的病患，其每分鐘心跳數和脈搏數可能為何？",
+            "options": [
+              "心跳數：0 次／分鐘，脈搏數：300 次／分鐘",
+              "心跳數：0 次／分鐘，脈搏數：0 次／分鐘",
+              "心跳數：300 次／分鐘，脈搏數：300 次／分鐘",
+              "心跳數：300 次／分鐘，脈搏數：0 次／分鐘"
+            ],
+            "correct": 3,
+            "no": 4
+          },
+          {
+            "q": "茂伯喜歡泡老人茶，他有一張原木大桌子，桌面上的原木條紋清晰可見，如右圖所示。根據此圖，下列敘述何者正確？",
+            "options": [
+              "甲細胞的功能是運送水分，其運送方向由下往上",
+              "乙細胞是在秋冬季節生長出來",
+              "乙細胞的功能是運送養分，運送方向為上下雙向",
+              "具木材的植物，代表該植物的莖缺乏形成層"
+            ],
+            "image": "images/test9/s5.png",
+            "correct": 0,
+            "no": 5
+          },
+          {
+            "q": "小賢複習課程內容時，以人體血液運輸及氣體交換的概念，推估肺動脈、肺靜脈、肝動脈及肝靜脈中，氧氣含量的高低，並作成右圖。但老師認為此圖有錯誤，下列何者可能是老師的理由？",
+            "options": [
+              "氧氣含量在肺動脈與肝動脈應該相同",
+              "氧氣含量在肺靜脈與肝動脈應該相同",
+              "氧氣含量在肺動脈內應較肺靜脈內低",
+              "氧氣含量在肝動脈內應較肝靜脈內低"
+            ],
+            "image": "images/test9/s6.png",
+            "correct": 2,
+            "no": 6
+          },
+          {
+            "q": "右圖為人體心血管系統的示意圖，箭頭表示血液流動的方向，下列相關敘述何者正確？",
+            "options": [
+              "心房與動脈相接，心室與靜脈相接",
+              "體循環在肺臟以外的組織進行物質交換，路徑較肺循環長",
+              "捐血時，應抽取丁血管中的血液，再輸入他人的丙血管",
+              "肺循環由甲左心室出發，經過肺臟，最終回到乙右心房"
+            ],
+            "image": "images/test9/s7.png",
+            "correct": 1,
+            "no": 7
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "type": "reading",
+    "title": "B部分 活用題",
+    "meta": "每題2分，共18分",
+    "passages": [
+      {
+        "text": "",
+        "items": [
+          {
+            "q": "右圖是榕樹體內物質運送的情形，已知 X、Y 是植物體內的構造，甲、乙是參與光合作用的氣體，丙氣體是蒸散作用的主角，則 X、Y 兩構造功能的敘述，下列何者正確？",
+            "options": [
+              "X 的運送方向為雙向",
+              "肥料由 Y 運送",
+              "X 負責運送水分及礦物質",
+              "Y 是植物年輪的主要結構"
+            ],
+            "image": "images/test9/b1.png",
+            "correct": 2,
+            "no": 1
+          },
+          {
+            "q": "右圖是光合作用進行速率與光度、二氧化碳濃度的關係。若想使植物生長情形最好，則應將植物放在何種二氧化碳濃度及光強度下即可？",
+            "options": [
+              "二氧化碳低於 0.05%，強光",
+              "二氧化碳約為 0.10%，普通光度",
+              "二氧化碳約為 0.2%，弱光",
+              "二氧化碳約為 0.10%，強光"
+            ],
+            "image": "images/test9/b2.png",
+            "correct": 3,
+            "no": 2
+          },
+          {
+            "q": "右圖為人體消化系統圖。若早餐吃了土司夾蛋和一杯溫牛奶，關於早餐消化的敘述，下列何者正確？",
+            "options": [
+              "參與早餐的消化腺有乙戊己庚",
+              "食物通過路徑為甲→乙→戊→己→丁→庚",
+              "牛奶內的蛋白質在戊先初步分解，然後在丁中消化",
+              "丙分泌的消化液含有分解蛋黃中脂質的功能"
+            ],
+            "image": "images/test9/b3.png",
+            "correct": 2,
+            "no": 3
+          }
+        ]
+      },
+      {
+        "text": "根據右圖以及生物學的知識，試回答 4.、5.題：",
+        "items": [
+          {
+            "q": "此種酵素最適宜的作用溫度為多少 °C？",
+            "options": [
+              "0°C",
+              "37°C",
+              "55°C",
+              "60°C"
+            ],
+            "correct": 1,
+            "no": 4
+          },
+          {
+            "q": "酵素結構開始改變的點，位在圖中哪一區域？",
+            "options": [
+              "Ⅰ",
+              "Ⅱ",
+              "Ⅲ",
+              "Ⅳ"
+            ],
+            "correct": 2,
+            "no": 5
+          }
+        ],
+        "image": "images/test9/g45.png"
+      },
+      {
+        "text": "圖(一)：波波用一條塑膠管綁住左手上臂結果發現 a 血管變得不明顯，而 b 血管浮現；圖(二)：手臂血管中血液流動的示意圖，圖中的箭頭代表血液的流動方向，甲、乙、丙分別為三種不同的血管；圖(三)：不同血管的橫切面。試回答 6.～ 9.題：",
+        "items": [
+          {
+            "q": "關於圖(一)中的血管，下列敘述何者正確？",
+            "options": [
+              "a 為動脈，b 為靜脈",
+              "a 為靜脈，b 為動脈",
+              "a 和 b 皆為動脈",
+              "a 和 b 皆為靜脈"
+            ],
+            "correct": 0,
+            "no": 6
+          },
+          {
+            "q": "關於圖(二)，下列相關敘述何者正確？",
+            "options": [
+              "乙會收縮並產生脈搏",
+              "甲所含的葡萄糖量比乙、丙少",
+              "丙為物質交換的場所",
+              "丙所含的二氧化碳量比甲、乙多"
+            ],
+            "correct": 3,
+            "no": 7
+          },
+          {
+            "q": "下列配對何者正確？",
+            "options": [
+              "a ── 甲",
+              "a ── 丙",
+              "b ── 甲",
+              "b ── 乙"
+            ],
+            "correct": 0,
+            "no": 8
+          },
+          {
+            "q": "下列配對何者正確？",
+            "options": [
+              "甲 ── Ⅱ",
+              "乙 ── Ⅰ",
+              "乙 ── Ⅲ",
+              "丙 ── Ⅰ"
+            ],
+            "correct": 2,
+            "no": 9
+          }
+        ],
+        "image": "images/test9/g69.png"
+      }
+    ]
+  }
+]
+};
+
+let currentMode = "quiz"; // quiz | print
+
+const contentEl = document.getElementById("content");
+const scoreBar = document.getElementById("scoreBar");
+const scoreText = document.getElementById("scoreText");
+
+function render(){
+  window.examAnswersRevealed = false;
+  contentEl.innerHTML = "";
+  DATA.sections.forEach((sec, si)=> contentEl.appendChild(renderSection(sec, si)));
+  if(currentMode==="quiz"){
+    scoreBar.classList.add("show");
+    updateScore();
+  } else {
+    scoreBar.classList.remove("show");
+    contentEl.querySelectorAll(".opt").forEach(o=>o.classList.add("disabled"));
+    contentEl.querySelectorAll(".opt.is-correct").forEach(o=>o.classList.add("correct"));
+  }
+}
+
+function renderSection(sec, si){
+  const block = document.createElement("section");
+  block.className = "block";
+  block.innerHTML = `<h2>${sec.title}</h2><p class="meta">${sec.meta}</p>`
+    + (sec.note ? `<div class="sec-note">${sec.note}</div>` : "")
+    + (sec.pre ? `<div class="sec-pre">${sec.pre}</div>` : "");
+
+  if(sec.type==="fill"){
+    sec.items.forEach((it,i)=>{
+      const q = document.createElement("div");
+      q.className = "q";
+      const shown = it.answers.join(" ／ ");
+      q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q}</div>
+        <div class="fill-row"><input type="text" class="blank${sec.wide ? " wide" : ""}" autocomplete="off" placeholder="${sec.placeholder || "作答"}"><span class="feedback"></span></div>
+        <div class="answer-reveal">正解：${shown}</div>`;
+      q.querySelector("input.blank").dataset.answers = JSON.stringify(it.answers);
+      if(currentMode!=="quiz"){ q.querySelector("input.blank").disabled = true; q.querySelector(".answer-reveal").classList.add("show"); }
+      block.appendChild(q);
+    });
+  }
+
+  else if(sec.type==="explain"){
+    sec.items.forEach((it,i)=>{
+      const q = document.createElement("div");
+      q.className = "q";
+      q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q}</div>
+        <textarea class="explain-box" placeholder="寫下你的解釋（送出成績後對照參考答案）"></textarea>
+        <div class="answer-reveal">參考答案：${it.answer}</div>`;
+      if(currentMode!=="quiz"){ q.querySelector("textarea").remove(); q.querySelector(".answer-reveal").classList.add("show"); }
+      block.appendChild(q);
+    });
+  }
+
+  else if(sec.type==="mc"){
+    sec.items.forEach((it,i)=>{
+      const q = document.createElement("div");
+      q.className = "q";
+      const optsHtml = it.options.map((op,oi)=>`
+        <div class="opt" data-idx="${oi}" data-correct="${oi===it.correct}">
+          <span class="tag">(${String.fromCharCode(65+oi)})</span><span>${op}</span>
+        </div>`).join("");
+      const imgHtml = it.image ? `<img src="${it.image}" alt="題目附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">` : "";
+      const img2Html = it.image2 ? `<img src="${it.image2}" alt="題目附圖2" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">` : "";
+      q.innerHTML = `<div class="q-text"><span class="q-num">${it.no||i+1}.</span>${it.q}</div>
+        ${imgHtml}${img2Html}
+        <div class="opts">${optsHtml}</div>`;
+      q.querySelectorAll(".opt").forEach(optEl=>{
+        if(optEl.dataset.correct==="true") optEl.classList.add("is-correct");
+        optEl.addEventListener("click", ()=>selectOption(q, optEl));
+      });
+      block.appendChild(q);
+    });
+  }
+
+  else if(sec.type==="reading"){
+    sec.passages.forEach(p=>{
+      const passageDiv = document.createElement("div");
+      passageDiv.className = "passage";
+      passageDiv.innerHTML = `${p.label ? `<span class="passage-label">${p.label}</span>`:""}${p.text}${p.image ? `<img src="${p.image}" alt="題組附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-top:10px;border:1px solid var(--paper-line);">`:""}`;
+      if(p.text || p.image) block.appendChild(passageDiv);
+      p.items.forEach((it,i)=>{
+        const q = document.createElement("div");
+        q.className = "q";
+        const optsHtml = it.options.map((op,oi)=>`
+          <div class="opt" data-idx="${oi}" data-correct="${oi===it.correct}">
+            <span class="tag">(${String.fromCharCode(65+oi)})</span><span>${op}</span>
+          </div>`).join("");
+        q.innerHTML = `<div class="q-text"><span class="q-num">${it.no||i+1}.</span>${it.q}</div>
+          ${it.image ? `<img src="${it.image}" alt="題目附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">`:""}
+          <div class="opts">${optsHtml}</div>`;
+        q.querySelectorAll(".opt").forEach(optEl=>{
+          if(optEl.dataset.correct==="true") optEl.classList.add("is-correct");
+          optEl.addEventListener("click", ()=>selectOption(q, optEl));
+        });
+        block.appendChild(q);
+      });
+    });
+  }
+
+  return block;
+}
+
+function selectOption(qEl, optEl){
+  if(currentMode!=="quiz") return;
+  if(qEl.dataset.answered==="true") return;
+  qEl.dataset.answered = "true";
+  qEl.querySelectorAll(".opt").forEach(o=>o.classList.add("disabled"));
+  optEl.classList.add("selected");
+  const correctOpt = qEl.querySelector('.opt[data-correct="true"]');
+  qEl.dataset.studentAnswer = optEl.textContent.trim();
+  qEl.dataset.correctAnswer = correctOpt ? correctOpt.textContent.trim() : "";
+  qEl.dataset.isCorrect = (optEl.dataset.correct==="true") ? "true" : "false";
+  updateScore();
+}
+
+function updateScore(){
+  let total = 0, answered = 0, correct = 0;
+  contentEl.querySelectorAll(".q").forEach(q=>{
+    const gradable = q.querySelector(".opts") || q.querySelector("input.blank");
+    if(!gradable) return;
+    total++;
+    if(q.dataset.studentAnswer !== undefined){
+      answered++;
+      if(q.dataset.isCorrect === "true") correct++;
+    }
+  });
+  if(window.examAnswersRevealed){
+    scoreText.textContent = `${correct} / ${total}`;
+  } else {
+    scoreText.textContent = `已作答 ${answered} / ${total} 題`;
+  }
+}
+window.updateScore = updateScore;
+
+// 填寫題（注音／國字、改錯）：去掉空白與標點後和正解比對；注音的一聲符號「ˉ」可寫可不寫
+function normFill(s){
+  return String(s).replace(/[\sˉ　，、。．.,;；:：!！?？「」『』（）()【】→\-－—]/g, "").trim();
+}
+document.addEventListener("input", (e)=>{
+  const input = e.target;
+  if(!input.matches || !input.matches("input.blank")) return;
+  const q = input.closest(".q");
+  const answers = JSON.parse(input.dataset.answers || "[]");
+  const val = input.value.trim();
+  if(!val){ delete q.dataset.studentAnswer; delete q.dataset.isCorrect; }
+  else {
+    q.dataset.studentAnswer = val;
+    q.dataset.correctAnswer = answers.join(" ／ ");
+    q.dataset.isCorrect = answers.some(a => normFill(a) === normFill(val)) ? "true" : "false";
+  }
+  updateScore();
+});
+
+document.getElementById("resetBtn").addEventListener("click", render);
+document.getElementById("quizModeBtn").addEventListener("click", ()=>{
+  currentMode = "quiz";
+  document.getElementById("quizModeBtn").classList.add("active");
+  document.getElementById("printModeBtn").classList.remove("active");
+  render();
+});
+document.getElementById("printModeBtn").addEventListener("click", ()=>{
+  if(document.getElementById("printModeBtn").disabled) return;
+  currentMode = "print";
+  document.getElementById("printModeBtn").classList.add("active");
+  document.getElementById("quizModeBtn").classList.remove("active");
+  render();
+});
+
+window.unlockPrintMode = function(){
+  document.getElementById("printModeBtn").disabled = false;
+};
+
+render();
+</script>
+<script src="../sync.js"></script>
+</body>
+</html>

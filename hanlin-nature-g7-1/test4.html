@@ -1,0 +1,817 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>段考題庫｜自然第4回 - 複習</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@500;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#faf6ec;
+    --paper-line:#e3dcc8;
+    --ink:#26332b;
+    --ink-soft:#5b6b5f;
+    --chalk-green:#2f4538;
+    --chalk-green-2:#3d5a48;
+    --pen-red:#b8433a;
+    --pen-red-soft:#f4dedb;
+    --ok-green:#3f7d52;
+    --ok-green-soft:#dfeee1;
+    --gold:#b5842a;
+    --radius:10px;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:"Noto Sans TC",sans-serif;
+    line-height:1.7;
+  }
+  header.hero{
+    background:var(--chalk-green);
+    color:#eef2ea;
+    padding:28px 20px 40px;
+    position:relative;
+  }
+  header.hero::after{
+    content:"";
+    position:absolute;
+    left:0; right:0; bottom:-1px;
+    height:14px;
+    background:repeating-linear-gradient(90deg,var(--paper) 0 18px, transparent 18px 20px);
+  }
+  .hero-inner{max-width:880px;margin:0 auto;}
+  .breadcrumb a{color:#cfe0d1;text-decoration:none;font-size:14px;}
+  .breadcrumb a:hover{text-decoration:underline;}
+  h1{
+    font-family:"Noto Serif TC",serif;
+    font-weight:700;
+    font-size:clamp(24px,4vw,34px);
+    margin:10px 0 6px;
+  }
+  .subtitle{color:#cfe0d1;font-size:15px;margin:0;}
+  main{max-width:880px;margin:0 auto;padding:28px 20px 80px;}
+
+  .controls{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:22px;
+  }
+  .mode-toggle{display:flex;border:2px solid var(--chalk-green);border-radius:999px;overflow:hidden;}
+  .mode-toggle button{
+    background:transparent;border:none;padding:8px 16px;font-size:14px;font-weight:700;
+    color:var(--chalk-green);cursor:pointer;font-family:"Noto Sans TC",sans-serif;
+  }
+  .mode-toggle button.active{background:var(--gold);color:#fff;}
+  .mode-toggle button:disabled{opacity:.4;cursor:not-allowed;}
+
+  .score-bar{
+    display:none;
+    align-items:center;
+    justify-content:space-between;
+    background:#fff;
+    border:1px solid var(--paper-line);
+    border-left:5px solid var(--gold);
+    border-radius:var(--radius);
+    padding:12px 18px;
+    margin-bottom:22px;
+    font-size:14px;
+  }
+  .score-bar.show{display:flex;}
+  .score-bar strong{font-size:18px;color:var(--gold);}
+  .score-bar button{
+    background:none;border:1px solid var(--ink-soft);color:var(--ink-soft);
+    border-radius:6px;padding:6px 12px;font-size:13px;cursor:pointer;
+  }
+
+  section.block{
+    background:#fff;
+    border:1px solid var(--paper-line);
+    border-radius:var(--radius);
+    padding:22px 22px 26px;
+    margin-bottom:20px;
+  }
+  .block h2{
+    font-family:"Noto Serif TC",serif;
+    font-size:19px;
+    margin:0 0 4px;
+    color:var(--chalk-green);
+  }
+  .block .meta{color:var(--ink-soft);font-size:13px;margin:0 0 16px;}
+
+  .q{margin-bottom:18px;padding-bottom:16px;border-bottom:1px dashed var(--paper-line);}
+  .q:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0;}
+  .q-text{font-size:15.5px;margin-bottom:8px;}
+  .q-num{color:var(--gold);font-weight:700;margin-right:4px;}
+
+  .opts{display:grid;gap:8px;}
+  .opt{
+    display:flex;gap:8px;align-items:flex-start;
+    border:1.5px solid var(--paper-line);
+    border-radius:8px;
+    padding:9px 12px;
+    cursor:pointer;
+    font-size:14.5px;
+    background:#fffdf8;
+  }
+  .opt:hover{border-color:var(--chalk-green-2);}
+  .opt.selected{border-color:var(--chalk-green-2);background:#eef3ea;}
+  .opt.correct{border-color:var(--ok-green);background:var(--ok-green-soft);}
+  .opt.wrong{border-color:var(--pen-red);background:var(--pen-red-soft);}
+  .opt .tag{font-weight:700;color:var(--ink-soft);}
+  .opt.correct .tag{color:var(--ok-green);}
+  .opt.wrong .tag{color:var(--pen-red);}
+  .opt.disabled{cursor:default;}
+
+  .passage{
+    background:#f5f2e8;border-radius:8px;padding:14px 16px;margin-bottom:14px;
+    font-size:14.5px;white-space:pre-line;
+  }
+  .passage-label{font-weight:700;color:var(--chalk-green);margin-bottom:4px;display:block;}
+
+  .sec-note{font-size:13.5px;color:var(--ink-soft);background:#f5f2e8;border-radius:8px;padding:8px 12px;margin:-6px 0 14px;}
+  .sec-pre{background:#f5f2e8;border-radius:8px;padding:10px 14px;margin:-4px 0 14px;font-size:14.5px;}
+  .fill-row{display:flex;flex-wrap:wrap;align-items:center;gap:8px;}
+  input.blank{
+    font-family:"Noto Sans TC",sans-serif;font-size:15.5px;border:none;border-bottom:2px solid var(--chalk-green-2);
+    background:#fffdf8;padding:4px 6px;width:170px;max-width:100%;
+  }
+  input.blank.wide{width:100%;}
+  textarea.explain-box{
+    width:100%;min-height:52px;font-family:"Noto Sans TC",sans-serif;font-size:15px;
+    border:1.5px solid var(--paper-line);border-radius:8px;padding:8px 10px;background:#fffdf8;resize:vertical;
+  }
+  .feedback{font-weight:700;font-size:15px;}
+  .feedback.ok{color:var(--ok-green);}
+  .feedback.no{color:var(--pen-red);}
+  .answer-reveal{display:none;margin-top:8px;font-size:14px;color:var(--ok-green);background:var(--ok-green-soft);border-radius:6px;padding:6px 12px;}
+  .answer-reveal.show{display:block;}
+  .zh-und{text-decoration:underline;text-underline-offset:3px;}
+  .footer-link{
+    display:block;text-align:center;margin-top:30px;color:var(--chalk-green);
+    text-decoration:none;font-weight:700;font-size:14px;
+  }
+  .footer-link:hover{text-decoration:underline;}
+
+  @media print{
+    header.hero, .controls, .score-bar, .mini-btn, .footer-link{display:none !important;}
+    body{background:#fff;}
+    section.block{border:none;box-shadow:none;padding:8px 0;margin-bottom:14px;}
+    .opt.correct{background:none;border:none;font-weight:700;}
+    .opt.correct::after{content:" ← 正解";color:var(--pen-red);}
+    .opt{border:none;padding:2px 0;}
+    main{max-width:100%;padding:0 24px;}
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="breadcrumb"><a href="https://jenlin2002.github.io/">🏠 回總目錄</a> ／ <a href="../hanlin-nature-g7-1.html" style="color:#cfe0d1;">段考題庫</a></div>
+    <h1>自然・第4回</h1>
+    <p class="subtitle">第1～2章 複習｜翰林版七年級自然（一）Ａ卷</p>
+  </div>
+</header>
+
+<main>
+  <div class="controls">
+    <div class="mode-toggle">
+      <button id="quizModeBtn" class="active">✏️ 測驗模式</button>
+      <button id="printModeBtn" disabled title="完成測驗並送出成績後才能查看">🖨️ 完整題目與解答（送出成績後解鎖）</button>
+    </div>
+  </div>
+
+  <div class="score-bar" id="scoreBar">
+    <div>目前得分：<strong id="scoreText">0 / 0</strong>（選擇題）</div>
+    <button id="resetBtn">重新作答</button>
+  </div>
+
+  <div id="content"></div>
+
+  <a class="footer-link" href="../hanlin-nature-g7-1.html">← 回段考題庫總覽</a>
+</main>
+
+<script>
+
+window.EXAM_META = { version: "自然A卷", examLabel: "自然第4回" };
+const DATA = {
+  sections: [
+  {
+    "type": "reading",
+    "title": "A部分 基礎題　一、選擇題",
+    "meta": "每題3分，共54分",
+    "passages": [
+      {
+        "text": "",
+        "items": [
+          {
+            "q": "(甲)植物的種子萌芽；(乙)甘蔗長出新葉子；(丙)糖水蒸發成糖的結晶；(丁)家中的雞由 0.5 公斤增加到 2 公斤；(戊)鐘乳石經過千年後增加 0.5 公分。以上屬於生命現象的有哪些？",
+            "options": [
+              "(甲)(乙)(丙)(丁)(戊)",
+              "僅(甲)(乙)(丁)(戊)",
+              "僅(甲)(乙)(丙)(丁)",
+              "僅(甲)(乙)(丁)"
+            ],
+            "correct": 3,
+            "no": 1
+          },
+          {
+            "q": "(甲)礦物質；(乙)葡萄糖；(丙)胺基酸；(丁)二氧化碳；(戊)澱粉；(己)脂肪酸；(庚)氧氣。上述物質中可經由擴散作用自由進出細胞膜的有哪些？",
+            "options": [
+              "(甲)(乙)(丙)(丁)(戊)(己)(庚)",
+              "僅(甲)(乙)(丙)(丁)(己)(庚)",
+              "僅(甲)(丁)(庚)",
+              "僅(丁)(庚)"
+            ],
+            "correct": 3,
+            "no": 2
+          },
+          {
+            "q": "下表是小羽觀察某種生物細胞的結果，則此細胞最有可能存在於何種生物中？<table style=\"border-collapse:collapse;margin:8px 0;font-size:.95em\"><tr><th style=\"border:1px solid #888;padding:3px 10px;text-align:center\">細胞壁</th><th style=\"border:1px solid #888;padding:3px 10px;text-align:center\">細胞膜</th><th style=\"border:1px solid #888;padding:3px 10px;text-align:center\">細胞核</th><th style=\"border:1px solid #888;padding:3px 10px;text-align:center\">粒線體</th></tr><tr><td style=\"border:1px solid #888;padding:3px 10px;text-align:center\">有</td><td style=\"border:1px solid #888;padding:3px 10px;text-align:center\">有</td><td style=\"border:1px solid #888;padding:3px 10px;text-align:center\">有</td><td style=\"border:1px solid #888;padding:3px 10px;text-align:center\">有</td></tr></table>",
+            "options": [
+              "朝天椒",
+              "土雞",
+              "人類",
+              "草履蟲"
+            ],
+            "correct": 0,
+            "no": 3
+          },
+          {
+            "q": "某日小珊進行生物實驗課程為觀察人類紅血球在不同溶液中的變化情形，請問當小珊將紅血球置入下列何種溶液中，一段時間後，紅血球仍可維持雙凹圓盤的外形？",
+            "options": [
+              "濃鹽水",
+              "純水",
+              "濃糖水",
+              "生理食鹽水"
+            ],
+            "correct": 3,
+            "no": 4
+          },
+          {
+            "q": "關於草履蟲的敘述，下列何者<b>錯誤</b>？",
+            "options": [
+              "是單細胞生物",
+              "會運動",
+              "需與其他草履蟲共同生活，方可完成生長與發育、代謝、感應與運動、生殖等現象",
+              "其組成層次是細胞也是個體"
+            ],
+            "correct": 2,
+            "no": 5
+          },
+          {
+            "q": "進行實驗時，時常要取兩組同樣的樣品，而處理兩組的方法相同，只是求證的變因項不同，一組加以變因項操作，另一組不處理，則不處理的這組稱為什麼？",
+            "options": [
+              "對照組",
+              "固定組",
+              "變因組",
+              "實驗組"
+            ],
+            "correct": 0,
+            "no": 6
+          },
+          {
+            "q": "粒線體具有下列何種功能？",
+            "options": [
+              "含有葉綠素可進行光合作用",
+              "含遺傳物質是細胞的生命中樞",
+              "具有支持作用可防止細胞變形",
+              "為產生能量的主要場所"
+            ],
+            "correct": 3,
+            "no": 7
+          },
+          {
+            "q": "下列哪一個物體需以解剖顯微鏡觀察較為恰當？",
+            "options": [
+              "蜜蜂的腳",
+              "人體細胞內的遺傳物質",
+              "小狗的血液",
+              "毛豆豆莢裡的種子數量"
+            ],
+            "correct": 0,
+            "no": 8
+          },
+          {
+            "q": "右圖為小樂使用解剖顯微鏡觀察被麻醉的蜜蜂時，視野中所見的影像。小樂想將蜜蜂移至視野中央，應將蜜蜂往哪個方向移動？",
+            "options": [
+              "右上",
+              "右下",
+              "左上",
+              "左下"
+            ],
+            "image": "images/test4/q9.png",
+            "correct": 2,
+            "no": 9
+          },
+          {
+            "q": "有關生物體組成層次的敘述，下列何者<b>錯誤</b>？",
+            "options": [
+              "不同的組織共同合作形成器官",
+              "組織的層次較細胞簡單",
+              "功能相近的器官可形成器官系統",
+              "植物缺少了器官系統的層次"
+            ],
+            "correct": 1,
+            "no": 10
+          },
+          {
+            "q": "小華與小新一起到水塘裝水，並使用如右圖的複式顯微鏡觀察水中小生物（已靜止不動），一開始使用丙觀察，接著換成乙觀察時，生物卻不在視野內，需如何操作才能再看見它？",
+            "options": [
+              "轉動丁",
+              "換回丙",
+              "改用甲",
+              "調整戊"
+            ],
+            "image": "images/test4/q11.png",
+            "correct": 1,
+            "no": 11
+          },
+          {
+            "q": "將右圖置於複式顯微鏡下觀察，則可看到下列哪一個影像？",
+            "options": [
+              "圖(A)",
+              "圖(B)",
+              "圖(C)",
+              "圖(D)"
+            ],
+            "image": "images/test4/q12a.png",
+            "image2": "images/test4/q12.png",
+            "correct": 3,
+            "no": 12
+          },
+          {
+            "q": "若利用溶液將洋蔥表皮細胞的細胞壁去除後，再將細胞放入純水中，則表皮細胞會出現何種變化？",
+            "options": [
+              "脫水萎縮",
+              "沒有任何變化",
+              "稍微膨脹",
+              "膨脹破裂"
+            ],
+            "correct": 3,
+            "no": 13
+          },
+          {
+            "q": "我們從植物葉片撕取的透明薄片下表皮包含兩種細胞，請問這在生物體的構造階層上屬於哪一層次？",
+            "options": [
+              "細胞",
+              "組織",
+              "器官",
+              "器官系統"
+            ],
+            "correct": 1,
+            "no": 14
+          },
+          {
+            "q": "生物學家認為「細胞是生物體構造與功能的基本單位」，這句話屬於科學探究歷程方法中的哪一個步驟？",
+            "options": [
+              "觀察",
+              "提出問題",
+              "設計與進行實驗",
+              "學說"
+            ],
+            "correct": 3,
+            "no": 15
+          },
+          {
+            "q": "氣體分子如二氧化碳、氧氣等，可經由什麼方法通過細胞膜進出細胞？需不需要消耗能量？",
+            "options": [
+              "光合作用；需要",
+              "滲透作用；不需要",
+              "擴散作用；不需要",
+              "擴散作用；需要"
+            ],
+            "correct": 2,
+            "no": 16
+          },
+          {
+            "q": "右圖為動物細胞模式圖，則帶有遺傳訊息的物質在圖中的何處最容易找到？",
+            "options": [
+              "甲",
+              "乙",
+              "丙",
+              "丁"
+            ],
+            "image": "images/test4/q17.png",
+            "correct": 1,
+            "no": 17
+          },
+          {
+            "q": "植物細胞內的構造有細胞膜、細胞核、細胞質、葉綠體、細胞壁、粒線體和液胞，其中有幾項是一般動物細胞中所<b>沒有</b>的？",
+            "options": [
+              "2",
+              "3",
+              "4",
+              "5"
+            ],
+            "correct": 0,
+            "no": 18
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "type": "reading",
+    "title": "二、素養題",
+    "meta": "每題4分，共28分",
+    "passages": [
+      {
+        "text": "",
+        "items": [
+          {
+            "q": "已知有一臺顯微鏡配有兩種目鏡以及兩種物鏡，如右圖所示。關於這臺顯微鏡的敘述，下列何者<b>錯誤</b>？",
+            "options": [
+              "使用相同的目鏡，則丙物鏡中看到的影像一定會比丁物鏡大",
+              "使用相同的物鏡，則甲目鏡中看到的視野範圍一定會比乙目鏡大",
+              "使用甲和丙的組合，看到的影像大小一定會比乙和丁的組合大",
+              "使用甲和丁的組合，看到的視野範圍一定會比乙和丙的組合大"
+            ],
+            "image": "images/test4/s1.png",
+            "correct": 2,
+            "no": 1
+          },
+          {
+            "q": "下列為玉環在大賣場經常購買的食品，灰色部分何者為植物的營養器官所加工製造而成的？",
+            "options": [
+              "水蜜桃罐頭",
+              "洛神花蜜餞",
+              "鹽酥花生",
+              "蜜糖地瓜"
+            ],
+            "correct": 3,
+            "no": 2
+          },
+          {
+            "q": "小中想研究土壤溼度對豬籠草的生長有何影響。如下表的各項實驗設計中，哪一組最有助於小中的研究？",
+            "options": [
+              "甲",
+              "乙",
+              "丙",
+              "丁"
+            ],
+            "image": "images/test4/s3.png",
+            "correct": 3,
+            "no": 3
+          },
+          {
+            "q": "目前生物圈的範圍是海平面上下各約 10 公里，如下圖所示，假設科學家在平流層（海平面上 11 公里～50 公里）發現某種 X 蛋白的蹤跡，此 X 蛋白不具有遺傳物質，且不能表現生殖行為。請問生物圈的範圍該如何調整？",
+            "options": [
+              "生物圈的垂直範圍不變，維持海平面上下各約 10 公里",
+              "生物圈的垂直範圍不變，但海平面下的範圍縮小",
+              "生物圈的範圍應該擴大，垂直範圍超過 20 公里",
+              "生物圈的範圍應該縮小，垂直範圍小於 20 公里"
+            ],
+            "image": "images/test4/s4.png",
+            "correct": 0,
+            "no": 4
+          }
+        ]
+      },
+      {
+        "text": "芽菜教授在她的苗圃種了許多藥用植物（如毒蘋果）。某天哈利、榮恩、妙麗、馬份等人來上課，幾天後，卻發生了一些事件，試回答 5.～ 7.題：",
+        "items": [
+          {
+            "q": "幾天後，哈利等人再次來上課，發現苗圃內的植物全部死亡，於是妙麗認為「可能是榮恩澆錯水」。請問「　」內的描述應屬於科學方法中的哪一個步驟？",
+            "options": [
+              "觀察",
+              "提出問題",
+              "形成假說",
+              "分析實驗結果"
+            ],
+            "correct": 2,
+            "no": 5
+          },
+          {
+            "q": "妙麗將其中死亡的植物切片觀察，能觀察到「細胞壁與細胞膜分開」的現象，這應該是在下列何種器材下才能觀察到的結果？",
+            "options": [
+              "解剖顯微鏡",
+              "複式顯微鏡",
+              "放大鏡",
+              "望遠鏡"
+            ],
+            "correct": 1,
+            "no": 6
+          },
+          {
+            "q": "承 6.題，會造成以上的結果，<b>最不可能</b>為下列何種原因？",
+            "options": [
+              "誤澆了海水",
+              "誤澆了濃糖水",
+              "誤澆了純水",
+              "土壤中誤放了太多的尿素"
+            ],
+            "correct": 2,
+            "no": 7
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "type": "reading",
+    "title": "B部分 活用題",
+    "meta": "每題2分，共18分",
+    "passages": [
+      {
+        "text": "",
+        "items": [
+          {
+            "q": "關於右圖中甲、乙、丙三種細胞的比較，下列何者正確？（表中＋表示有、－表示沒有）",
+            "options": [
+              "(A) 葉綠體：甲－、乙－、丙＋",
+              "(B) 細胞膜：甲＋、乙－、丙＋",
+              "(C) 細胞核：甲＋、乙－、丙＋",
+              "(D) 細胞壁：甲－、乙＋、丙－"
+            ],
+            "image": "images/test4/b1.png",
+            "correct": 0,
+            "no": 1
+          },
+          {
+            "q": "一棵芒果樹上結滿了許多芒果，但仍有部分的花尚未結成果實，則這棵芒果樹上共包含了多少種器官？",
+            "options": [
+              "3",
+              "4",
+              "5",
+              "6"
+            ],
+            "correct": 3,
+            "no": 2
+          },
+          {
+            "q": "大雄利用同一臺複式顯微鏡觀察同一片玻片標本的同一位置，得到右圖中四次不同的結果（只有更換物鏡）。請依圖判斷下列敘述何者<b>錯誤</b>？",
+            "options": [
+              "物鏡放大倍率：甲＞丙＞丁＞乙",
+              "視野中的細胞數目：甲＞丙＞丁＞乙",
+              "視野亮度強弱：甲＞丙＞丁＞乙",
+              "物鏡的長短：乙＞丁＞丙＞甲"
+            ],
+            "image": "images/test4/b3.png",
+            "correct": 0,
+            "no": 3
+          },
+          {
+            "q": "佳慧用 10X 的物鏡，如圖(一)，觀察水中小生物時，在視野內看到一個矽藻，如圖(二)。如果她要換較高倍率的物鏡繼續觀察此矽藻，下列有六個複式顯微鏡的操作步驟：(甲)轉動旋轉盤換物鏡 a；(乙)轉動旋轉盤換物鏡 b；(丙)將載玻片向右上方移動；(丁)將載玻片向左下方移動；(戊)稍稍轉動粗調節輪；(己)稍稍轉動細調節輪。則正確的操作順序為何？",
+            "options": [
+              "(丙)(甲)(戊)",
+              "(丁)(甲)(己)",
+              "(丁)(甲)(戊)",
+              "(丙)(乙)(己)"
+            ],
+            "image": "images/test4/b4.png",
+            "correct": 1,
+            "no": 4
+          },
+          {
+            "q": "根據右圖的螞蟻圖片判斷，螞蟻是屬於單細胞生物還是多細胞生物？為什麼？",
+            "options": [
+              "單細胞生物，因為很小必須用放大鏡才能看清楚",
+              "單細胞生物，因為肉眼看不到很多個細胞",
+              "多細胞生物，因為已經有頭、胸、腹、腳等器官",
+              "多細胞生物，因為移動快速"
+            ],
+            "image": "images/test4/b5.png",
+            "correct": 2,
+            "no": 5
+          },
+          {
+            "q": "小張在複式顯微鏡下觀察鴨跖草葉下表皮細胞，如右圖。關於箭頭所指綠色顆粒構造的敘述，下列何者正確？",
+            "options": [
+              "普遍存在於所有的植物細胞中",
+              "為細胞製造養分的主要構造",
+              "和物質進出細胞有密切的關係",
+              "是細胞產生能量的構造"
+            ],
+            "image": "images/test4/b6.png",
+            "correct": 1,
+            "no": 6
+          }
+        ]
+      },
+      {
+        "text": "下表為四種細胞的比較，試回答 7.～ 9.題：<table style=\"border-collapse:collapse;margin:8px 0;font-size:.95em\"><tr><th style=\"border:1px solid #888;padding:3px 10px;text-align:center\">細胞種類</th><th style=\"border:1px solid #888;padding:3px 10px;text-align:center\">細胞膜</th><th style=\"border:1px solid #888;padding:3px 10px;text-align:center\">細胞質</th><th style=\"border:1px solid #888;padding:3px 10px;text-align:center\">細胞核</th><th style=\"border:1px solid #888;padding:3px 10px;text-align:center\">細胞壁</th><th style=\"border:1px solid #888;padding:3px 10px;text-align:center\">葉綠體</th></tr><tr><td style=\"border:1px solid #888;padding:3px 10px;text-align:center\">細胞甲</td><td style=\"border:1px solid #888;padding:3px 10px;text-align:center\">有</td><td style=\"border:1px solid #888;padding:3px 10px;text-align:center\">有</td><td style=\"border:1px solid #888;padding:3px 10px;text-align:center\">沒有</td><td style=\"border:1px solid #888;padding:3px 10px;text-align:center\">沒有</td><td style=\"border:1px solid #888;padding:3px 10px;text-align:center\">沒有</td></tr><tr><td style=\"border:1px solid #888;padding:3px 10px;text-align:center\">細胞乙</td><td style=\"border:1px solid #888;padding:3px 10px;text-align:center\">有</td><td style=\"border:1px solid #888;padding:3px 10px;text-align:center\">有</td><td style=\"border:1px solid #888;padding:3px 10px;text-align:center\">有</td><td style=\"border:1px solid #888;padding:3px 10px;text-align:center\">沒有</td><td style=\"border:1px solid #888;padding:3px 10px;text-align:center\">沒有</td></tr><tr><td style=\"border:1px solid #888;padding:3px 10px;text-align:center\">細胞丙</td><td style=\"border:1px solid #888;padding:3px 10px;text-align:center\">有</td><td style=\"border:1px solid #888;padding:3px 10px;text-align:center\">有</td><td style=\"border:1px solid #888;padding:3px 10px;text-align:center\">有</td><td style=\"border:1px solid #888;padding:3px 10px;text-align:center\">有</td><td style=\"border:1px solid #888;padding:3px 10px;text-align:center\">沒有</td></tr><tr><td style=\"border:1px solid #888;padding:3px 10px;text-align:center\">細胞丁</td><td style=\"border:1px solid #888;padding:3px 10px;text-align:center\">有</td><td style=\"border:1px solid #888;padding:3px 10px;text-align:center\">有</td><td style=\"border:1px solid #888;padding:3px 10px;text-align:center\">有</td><td style=\"border:1px solid #888;padding:3px 10px;text-align:center\">有</td><td style=\"border:1px solid #888;padding:3px 10px;text-align:center\">有</td></tr></table>",
+        "items": [
+          {
+            "q": "下列何者可能是風車草的保衛細胞？",
+            "options": [
+              "甲",
+              "乙",
+              "丙",
+              "丁"
+            ],
+            "correct": 3,
+            "no": 7
+          },
+          {
+            "q": "細胞乙<b>最不可能</b>是下列哪一種細胞？",
+            "options": [
+              "肌肉細胞",
+              "神經細胞",
+              "口腔皮膜細胞",
+              "洋蔥表皮細胞"
+            ],
+            "correct": 3,
+            "no": 8
+          },
+          {
+            "q": "下列哪幾種可能為植物細胞？",
+            "options": [
+              "僅甲、乙",
+              "僅丙、丁",
+              "僅甲、乙、丙",
+              "甲、乙、丙、丁"
+            ],
+            "correct": 1,
+            "no": 9
+          }
+        ]
+      }
+    ]
+  }
+]
+};
+
+let currentMode = "quiz"; // quiz | print
+
+const contentEl = document.getElementById("content");
+const scoreBar = document.getElementById("scoreBar");
+const scoreText = document.getElementById("scoreText");
+
+function render(){
+  window.examAnswersRevealed = false;
+  contentEl.innerHTML = "";
+  DATA.sections.forEach((sec, si)=> contentEl.appendChild(renderSection(sec, si)));
+  if(currentMode==="quiz"){
+    scoreBar.classList.add("show");
+    updateScore();
+  } else {
+    scoreBar.classList.remove("show");
+    contentEl.querySelectorAll(".opt").forEach(o=>o.classList.add("disabled"));
+    contentEl.querySelectorAll(".opt.is-correct").forEach(o=>o.classList.add("correct"));
+  }
+}
+
+function renderSection(sec, si){
+  const block = document.createElement("section");
+  block.className = "block";
+  block.innerHTML = `<h2>${sec.title}</h2><p class="meta">${sec.meta}</p>`
+    + (sec.note ? `<div class="sec-note">${sec.note}</div>` : "")
+    + (sec.pre ? `<div class="sec-pre">${sec.pre}</div>` : "");
+
+  if(sec.type==="fill"){
+    sec.items.forEach((it,i)=>{
+      const q = document.createElement("div");
+      q.className = "q";
+      const shown = it.answers.join(" ／ ");
+      q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q}</div>
+        <div class="fill-row"><input type="text" class="blank${sec.wide ? " wide" : ""}" autocomplete="off" placeholder="${sec.placeholder || "作答"}"><span class="feedback"></span></div>
+        <div class="answer-reveal">正解：${shown}</div>`;
+      q.querySelector("input.blank").dataset.answers = JSON.stringify(it.answers);
+      if(currentMode!=="quiz"){ q.querySelector("input.blank").disabled = true; q.querySelector(".answer-reveal").classList.add("show"); }
+      block.appendChild(q);
+    });
+  }
+
+  else if(sec.type==="explain"){
+    sec.items.forEach((it,i)=>{
+      const q = document.createElement("div");
+      q.className = "q";
+      q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q}</div>
+        <textarea class="explain-box" placeholder="寫下你的解釋（送出成績後對照參考答案）"></textarea>
+        <div class="answer-reveal">參考答案：${it.answer}</div>`;
+      if(currentMode!=="quiz"){ q.querySelector("textarea").remove(); q.querySelector(".answer-reveal").classList.add("show"); }
+      block.appendChild(q);
+    });
+  }
+
+  else if(sec.type==="mc"){
+    sec.items.forEach((it,i)=>{
+      const q = document.createElement("div");
+      q.className = "q";
+      const optsHtml = it.options.map((op,oi)=>`
+        <div class="opt" data-idx="${oi}" data-correct="${oi===it.correct}">
+          <span class="tag">(${String.fromCharCode(65+oi)})</span><span>${op}</span>
+        </div>`).join("");
+      const imgHtml = it.image ? `<img src="${it.image}" alt="題目附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">` : "";
+      const img2Html = it.image2 ? `<img src="${it.image2}" alt="題目附圖2" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">` : "";
+      q.innerHTML = `<div class="q-text"><span class="q-num">${it.no||i+1}.</span>${it.q}</div>
+        ${imgHtml}${img2Html}
+        <div class="opts">${optsHtml}</div>`;
+      q.querySelectorAll(".opt").forEach(optEl=>{
+        if(optEl.dataset.correct==="true") optEl.classList.add("is-correct");
+        optEl.addEventListener("click", ()=>selectOption(q, optEl));
+      });
+      block.appendChild(q);
+    });
+  }
+
+  else if(sec.type==="reading"){
+    sec.passages.forEach(p=>{
+      const passageDiv = document.createElement("div");
+      passageDiv.className = "passage";
+      passageDiv.innerHTML = `${p.label ? `<span class="passage-label">${p.label}</span>`:""}${p.text}${p.image ? `<img src="${p.image}" alt="題組附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-top:10px;border:1px solid var(--paper-line);">`:""}`;
+      if(p.text || p.image) block.appendChild(passageDiv);
+      p.items.forEach((it,i)=>{
+        const q = document.createElement("div");
+        q.className = "q";
+        const optsHtml = it.options.map((op,oi)=>`
+          <div class="opt" data-idx="${oi}" data-correct="${oi===it.correct}">
+            <span class="tag">(${String.fromCharCode(65+oi)})</span><span>${op}</span>
+          </div>`).join("");
+        q.innerHTML = `<div class="q-text"><span class="q-num">${it.no||i+1}.</span>${it.q}</div>
+          ${it.image ? `<img src="${it.image}" alt="題目附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">`:""}
+          <div class="opts">${optsHtml}</div>`;
+        q.querySelectorAll(".opt").forEach(optEl=>{
+          if(optEl.dataset.correct==="true") optEl.classList.add("is-correct");
+          optEl.addEventListener("click", ()=>selectOption(q, optEl));
+        });
+        block.appendChild(q);
+      });
+    });
+  }
+
+  return block;
+}
+
+function selectOption(qEl, optEl){
+  if(currentMode!=="quiz") return;
+  if(qEl.dataset.answered==="true") return;
+  qEl.dataset.answered = "true";
+  qEl.querySelectorAll(".opt").forEach(o=>o.classList.add("disabled"));
+  optEl.classList.add("selected");
+  const correctOpt = qEl.querySelector('.opt[data-correct="true"]');
+  qEl.dataset.studentAnswer = optEl.textContent.trim();
+  qEl.dataset.correctAnswer = correctOpt ? correctOpt.textContent.trim() : "";
+  qEl.dataset.isCorrect = (optEl.dataset.correct==="true") ? "true" : "false";
+  updateScore();
+}
+
+function updateScore(){
+  let total = 0, answered = 0, correct = 0;
+  contentEl.querySelectorAll(".q").forEach(q=>{
+    const gradable = q.querySelector(".opts") || q.querySelector("input.blank");
+    if(!gradable) return;
+    total++;
+    if(q.dataset.studentAnswer !== undefined){
+      answered++;
+      if(q.dataset.isCorrect === "true") correct++;
+    }
+  });
+  if(window.examAnswersRevealed){
+    scoreText.textContent = `${correct} / ${total}`;
+  } else {
+    scoreText.textContent = `已作答 ${answered} / ${total} 題`;
+  }
+}
+window.updateScore = updateScore;
+
+// 填寫題（注音／國字、改錯）：去掉空白與標點後和正解比對；注音的一聲符號「ˉ」可寫可不寫
+function normFill(s){
+  return String(s).replace(/[\sˉ　，、。．.,;；:：!！?？「」『』（）()【】→\-－—]/g, "").trim();
+}
+document.addEventListener("input", (e)=>{
+  const input = e.target;
+  if(!input.matches || !input.matches("input.blank")) return;
+  const q = input.closest(".q");
+  const answers = JSON.parse(input.dataset.answers || "[]");
+  const val = input.value.trim();
+  if(!val){ delete q.dataset.studentAnswer; delete q.dataset.isCorrect; }
+  else {
+    q.dataset.studentAnswer = val;
+    q.dataset.correctAnswer = answers.join(" ／ ");
+    q.dataset.isCorrect = answers.some(a => normFill(a) === normFill(val)) ? "true" : "false";
+  }
+  updateScore();
+});
+
+document.getElementById("resetBtn").addEventListener("click", render);
+document.getElementById("quizModeBtn").addEventListener("click", ()=>{
+  currentMode = "quiz";
+  document.getElementById("quizModeBtn").classList.add("active");
+  document.getElementById("printModeBtn").classList.remove("active");
+  render();
+});
+document.getElementById("printModeBtn").addEventListener("click", ()=>{
+  if(document.getElementById("printModeBtn").disabled) return;
+  currentMode = "print";
+  document.getElementById("printModeBtn").classList.add("active");
+  document.getElementById("quizModeBtn").classList.remove("active");
+  render();
+});
+
+window.unlockPrintMode = function(){
+  document.getElementById("printModeBtn").disabled = false;
+};
+
+render();
+</script>
+<script src="../sync.js"></script>
+</body>
+</html>

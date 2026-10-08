@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>段考題庫｜翰林版八年級自然（三）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@500;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#faf6ec; --ink:#26332b; --ink-soft:#5b6b5f;
+    --chalk-green:#2f4538; --gold:#b5842a; --paper-line:#e3dcc8;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:"Noto Sans TC",sans-serif;line-height:1.7;}
+  header{background:var(--chalk-green);color:#eef2ea;padding:30px 20px 42px;position:relative;}
+  header::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:14px;
+    background:repeating-linear-gradient(90deg,var(--paper) 0 18px, transparent 18px 20px);}
+  .inner{max-width:900px;margin:0 auto;}
+  .breadcrumb a{color:#cfe0d1;text-decoration:none;font-size:14px;}
+  h1{font-family:"Noto Serif TC",serif;font-size:clamp(24px,4vw,32px);margin:10px 0 6px;}
+  .sub{color:#cfe0d1;font-size:15px;margin:0;}
+  main{max-width:900px;margin:0 auto;padding:28px 20px 70px;}
+  .subject-title{
+    font-family:"Noto Serif TC",serif;font-weight:700;font-size:20px;color:var(--chalk-green);
+    margin:36px 0 14px;padding-bottom:8px;border-bottom:2px solid var(--paper-line);
+    display:flex;align-items:center;gap:8px;
+  }
+  .subject-title:first-of-type{margin-top:0;}
+  .grid{display:grid;gap:12px;}
+  .card{
+    display:flex;justify-content:space-between;align-items:center;gap:14px;
+    background:#fff;border:1px solid var(--paper-line);border-radius:10px;
+    padding:14px 18px;text-decoration:none;color:var(--ink);
+  }
+  .card .name{font-family:"Noto Serif TC",serif;font-weight:700;font-size:16px;margin:0 0 3px;}
+  .card .desc{font-size:12.5px;color:var(--ink-soft);margin:0;}
+  .versions{display:flex;gap:8px;flex-shrink:0;}
+  .ver-btn{
+    display:inline-block;font-family:"Noto Serif TC",serif;font-weight:700;font-size:13.5px;
+    padding:7px 16px;border-radius:999px;text-decoration:none;
+    background:var(--chalk-green);color:#eef2ea;border:1px solid var(--chalk-green);
+  }
+  .ver-btn:hover{background:var(--gold);border-color:var(--gold);}
+  .ver-btn.disabled{
+    background:transparent;color:var(--ink-soft);border:1px solid var(--paper-line);cursor:default;
+  }
+  .footer-link{display:block;text-align:center;margin-top:34px;color:var(--chalk-green);text-decoration:none;font-weight:700;font-size:14px;}
+  .footer-link:hover{text-decoration:underline;}
+  @media (max-width:520px){
+    .card{flex-direction:column;align-items:flex-start;}
+    .versions{width:100%;}
+    .ver-btn{flex:1;text-align:center;padding:7px 8px;}
+  }
+</style>
+</head>
+<body>
+<header>
+  <div class="inner">
+    <div class="breadcrumb"><a href="https://jenlin2002.github.io/">🏠 回總目錄</a> ／ <a href="index.html" style="color:#cfe0d1;">國中題庫</a> ／ <a href="nature.html" style="color:#cfe0d1;">自然科</a></div>
+    <h1>段考題庫</h1>
+    <p class="sub">翰林版八年級自然（三）平時考練習：每回對應一～二節課，題目全部是選擇題</p>
+  </div>
+</header>
+
+<main>
+  <div id="bookContainer"></div>
+
+  <script>
+    const SECTIONS = [
+      {icon:"🔬", subject:"自然", folder:"nat", rounds:[
+        {n:1, lesson:"實驗室常用器材・1-1～1-3", title:"實驗器材、測量與基本操作", hrefA:"hanlin-nature-g8-1/test1.html", hrefB:null, hrefC:null},
+        {n:2, lesson:"2-1", title:"氧氣與燃燒", hrefA:"hanlin-nature-g8-1/test2.html", hrefB:null, hrefC:null},
+        {n:3, lesson:"2-2～2-3", title:"二氧化碳與氧化還原", hrefA:"hanlin-nature-g8-1/test3.html", hrefB:null, hrefC:null},
+        {n:4, lesson:"第1～2章", title:"複習", hrefA:"hanlin-nature-g8-1/test4.html", hrefB:null, hrefC:null},
+        {n:5, lesson:"3-1～3-2", title:"水溶液與溶解", hrefA:"hanlin-nature-g8-1/test5.html", hrefB:null, hrefC:null},
+        {n:6, lesson:"3-3～3-4", title:"聲音的產生與傳播、音調響度", hrefA:"hanlin-nature-g8-1/test6.html", hrefB:null, hrefC:null},
+        {n:7, lesson:"4-1～4-3", title:"光的傳播與反射", hrefA:"hanlin-nature-g8-1/test7.html", hrefB:null, hrefC:null},
+        {n:8, lesson:"4-4～4-5", title:"折射與透鏡成像", hrefA:null, hrefB:null, hrefC:null},
+        {n:9, lesson:"第3～4章", title:"複習", hrefA:null, hrefB:null, hrefC:null},
+        {n:10, lesson:"5-1～5-2", title:"溫度與熱", hrefA:null, hrefB:null, hrefC:null},
+        {n:11, lesson:"5-3～5-5", title:"熱的傳播與比熱", hrefA:null, hrefB:null, hrefC:null},
+        {n:12, lesson:"6-1～6-2", title:"物質的組成與元素", hrefA:null, hrefB:null, hrefC:null},
+        {n:13, lesson:"6-3～6-5", title:"週期表與原子結構", hrefA:null, hrefB:null, hrefC:null},
+        {n:14, lesson:"第5～6章", title:"複習", hrefA:null, hrefB:null, hrefC:null}
+      ]}
+    ];
+    const container = document.getElementById("bookContainer");
+    SECTIONS.forEach(sec=>{
+      const title = document.createElement("div");
+      title.className = "subject-title";
+      title.innerHTML = `<span>${sec.icon}</span><span>${sec.subject}</span>`;
+      container.appendChild(title);
+
+      const grid = document.createElement("div");
+      grid.className = "grid";
+      sec.rounds.forEach(r=>{
+        const el = document.createElement("div");
+        el.className = "card";
+        const verBtn = (href, label) => href
+          ? `<a class="ver-btn" href="${href}">${label}</a>`
+          : `<span class="ver-btn disabled">${label}</span>`;
+        el.innerHTML = `
+          <div>
+            <p class="name">第${r.n}回・${r.lesson}</p>
+            <p class="desc">${r.title}</p>
+          </div>
+          <div class="versions">
+            ${verBtn(r.hrefA, "A卷")}
+            ${verBtn(r.hrefB, "B卷")}
+            ${verBtn(r.hrefC, "C卷")}
+          </div>`;
+        grid.appendChild(el);
+      });
+      container.appendChild(grid);
+    });
+  </script>
+
+  <a class="footer-link" href="nature.html">← 回自然科總目錄</a>
+</main>
+</body>
+</html>

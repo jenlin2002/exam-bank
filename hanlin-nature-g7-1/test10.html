@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>段考題庫｜自然第10回 - 動物的協調作用（神經）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@500;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#faf6ec;
+    --paper-line:#e3dcc8;
+    --ink:#26332b;
+    --ink-soft:#5b6b5f;
+    --chalk-green:#2f4538;
+    --chalk-green-2:#3d5a48;
+    --pen-red:#b8433a;
+    --pen-red-soft:#f4dedb;
+    --ok-green:#3f7d52;
+    --ok-green-soft:#dfeee1;
+    --gold:#b5842a;
+    --radius:10px;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:"Noto Sans TC",sans-serif;
+    line-height:1.7;
+  }
+  header.hero{
+    background:var(--chalk-green);
+    color:#eef2ea;
+    padding:28px 20px 40px;
+    position:relative;
+  }
+  header.hero::after{
+    content:"";
+    position:absolute;
+    left:0; right:0; bottom:-1px;
+    height:14px;
+    background:repeating-linear-gradient(90deg,var(--paper) 0 18px, transparent 18px 20px);
+  }
+  .hero-inner{max-width:880px;margin:0 auto;}
+  .breadcrumb a{color:#cfe0d1;text-decoration:none;font-size:14px;}
+  .breadcrumb a:hover{text-decoration:underline;}
+  h1{
+    font-family:"Noto Serif TC",serif;
+    font-weight:700;
+    font-size:clamp(24px,4vw,34px);
+    margin:10px 0 6px;
+  }
+  .subtitle{color:#cfe0d1;font-size:15px;margin:0;}
+  main{max-width:880px;margin:0 auto;padding:28px 20px 80px;}
+
+  .controls{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:22px;
+  }
+  .mode-toggle{display:flex;border:2px solid var(--chalk-green);border-radius:999px;overflow:hidden;}
+  .mode-toggle button{
+    background:transparent;border:none;padding:8px 16px;font-size:14px;font-weight:700;
+    color:var(--chalk-green);cursor:pointer;font-family:"Noto Sans TC",sans-serif;
+  }
+  .mode-toggle button.active{background:var(--gold);color:#fff;}
+  .mode-toggle button:disabled{opacity:.4;cursor:not-allowed;}
+
+  .score-bar{
+    display:none;
+    align-items:center;
+    justify-content:space-between;
+    background:#fff;
+    border:1px solid var(--paper-line);
+    border-left:5px solid var(--gold);
+    border-radius:var(--radius);
+    padding:12px 18px;
+    margin-bottom:22px;
+    font-size:14px;
+  }
+  .score-bar.show{display:flex;}
+  .score-bar strong{font-size:18px;color:var(--gold);}
+  .score-bar button{
+    background:none;border:1px solid var(--ink-soft);color:var(--ink-soft);
+    border-radius:6px;padding:6px 12px;font-size:13px;cursor:pointer;
+  }
+
+  section.block{
+    background:#fff;
+    border:1px solid var(--paper-line);
+    border-radius:var(--radius);
+    padding:22px 22px 26px;
+    margin-bottom:20px;
+  }
+  .block h2{
+    font-family:"Noto Serif TC",serif;
+    font-size:19px;
+    margin:0 0 4px;
+    color:var(--chalk-green);
+  }
+  .block .meta{color:var(--ink-soft);font-size:13px;margin:0 0 16px;}
+
+  .q{margin-bottom:18px;padding-bottom:16px;border-bottom:1px dashed var(--paper-line);}
+  .q:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0;}
+  .q-text{font-size:15.5px;margin-bottom:8px;}
+  .q-num{color:var(--gold);font-weight:700;margin-right:4px;}
+
+  .opts{display:grid;gap:8px;}
+  .opt{
+    display:flex;gap:8px;align-items:flex-start;
+    border:1.5px solid var(--paper-line);
+    border-radius:8px;
+    padding:9px 12px;
+    cursor:pointer;
+    font-size:14.5px;
+    background:#fffdf8;
+  }
+  .opt:hover{border-color:var(--chalk-green-2);}
+  .opt.selected{border-color:var(--chalk-green-2);background:#eef3ea;}
+  .opt.correct{border-color:var(--ok-green);background:var(--ok-green-soft);}
+  .opt.wrong{border-color:var(--pen-red);background:var(--pen-red-soft);}
+  .opt .tag{font-weight:700;color:var(--ink-soft);}
+  .opt.correct .tag{color:var(--ok-green);}
+  .opt.wrong .tag{color:var(--pen-red);}
+  .opt.disabled{cursor:default;}
+
+  .passage{
+    background:#f5f2e8;border-radius:8px;padding:14px 16px;margin-bottom:14px;
+    font-size:14.5px;white-space:pre-line;
+  }
+  .passage-label{font-weight:700;color:var(--chalk-green);margin-bottom:4px;display:block;}
+
+  .sec-note{font-size:13.5px;color:var(--ink-soft);background:#f5f2e8;border-radius:8px;padding:8px 12px;margin:-6px 0 14px;}
+  .sec-pre{background:#f5f2e8;border-radius:8px;padding:10px 14px;margin:-4px 0 14px;font-size:14.5px;}
+  .fill-row{display:flex;flex-wrap:wrap;align-items:center;gap:8px;}
+  input.blank{
+    font-family:"Noto Sans TC",sans-serif;font-size:15.5px;border:none;border-bottom:2px solid var(--chalk-green-2);
+    background:#fffdf8;padding:4px 6px;width:170px;max-width:100%;
+  }
+  input.blank.wide{width:100%;}
+  textarea.explain-box{
+    width:100%;min-height:52px;font-family:"Noto Sans TC",sans-serif;font-size:15px;
+    border:1.5px solid var(--paper-line);border-radius:8px;padding:8px 10px;background:#fffdf8;resize:vertical;
+  }
+  .feedback{font-weight:700;font-size:15px;}
+  .feedback.ok{color:var(--ok-green);}
+  .feedback.no{color:var(--pen-red);}
+  .answer-reveal{display:none;margin-top:8px;font-size:14px;color:var(--ok-green);background:var(--ok-green-soft);border-radius:6px;padding:6px 12px;}
+  .answer-reveal.show{display:block;}
+  .zh-und{text-decoration:underline;text-underline-offset:3px;}
+  .footer-link{
+    display:block;text-align:center;margin-top:30px;color:var(--chalk-green);
+    text-decoration:none;font-weight:700;font-size:14px;
+  }
+  .footer-link:hover{text-decoration:underline;}
+
+  @media print{
+    header.hero, .controls, .score-bar, .mini-btn, .footer-link{display:none !important;}
+    body{background:#fff;}
+    section.block{border:none;box-shadow:none;padding:8px 0;margin-bottom:14px;}
+    .opt.correct{background:none;border:none;font-weight:700;}
+    .opt.correct::after{content:" ← 正解";color:var(--pen-red);}
+    .opt{border:none;padding:2px 0;}
+    main{max-width:100%;padding:0 24px;}
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="breadcrumb"><a href="https://jenlin2002.github.io/">🏠 回總目錄</a> ／ <a href="../hanlin-nature-g7-1.html" style="color:#cfe0d1;">段考題庫</a></div>
+    <h1>自然・第10回</h1>
+    <p class="subtitle">5-1～5-2 動物的協調作用（神經）｜翰林版七年級自然（一）Ａ卷</p>
+  </div>
+</header>
+
+<main>
+  <div class="controls">
+    <div class="mode-toggle">
+      <button id="quizModeBtn" class="active">✏️ 測驗模式</button>
+      <button id="printModeBtn" disabled title="完成測驗並送出成績後才能查看">🖨️ 完整題目與解答（送出成績後解鎖）</button>
+    </div>
+  </div>
+
+  <div class="score-bar" id="scoreBar">
+    <div>目前得分：<strong id="scoreText">0 / 0</strong>（選擇題）</div>
+    <button id="resetBtn">重新作答</button>
+  </div>
+
+  <div id="content"></div>
+
+  <a class="footer-link" href="../hanlin-nature-g7-1.html">← 回段考題庫總覽</a>
+</main>
+
+<script>
+
+window.EXAM_META = { version: "自然A卷", examLabel: "自然第10回" };
+const DATA = {
+  sections: [
+  {
+    "type": "reading",
+    "title": "A部分 基礎題　一、選擇題",
+    "meta": "每題3分，共54分",
+    "passages": [
+      {
+        "text": "",
+        "items": [
+          {
+            "q": "汝瑜不小心打翻媽媽的香水，剛開始她覺得好香，漸漸的她就沒感覺了，依照生理學的觀點來說，這是什麼原因？",
+            "options": [
+              "嗅覺疲勞",
+              "香味消失了",
+              "錯覺",
+              "味覺疲勞"
+            ],
+            "correct": 0,
+            "no": 1
+          },
+          {
+            "q": "右圖為人體的某種細胞示意圖，有關該細胞的敘述，下列何者正確？",
+            "options": [
+              "是人體中最粗的細胞",
+              "此細胞多突起，主要構成人體的神經系統",
+              "甲部位屬於該細胞的細胞質，負責細胞的生長與代謝",
+              "該細胞的細胞核位於乙部位，是傳遞訊息的通道"
+            ],
+            "image": "images/test10/q2.png",
+            "correct": 1,
+            "no": 2
+          },
+          {
+            "q": "小新放學回家，看見桌上有熱騰騰的香菇雞湯，「手不小心碰到鍋子，被滾燙的鍋子燙了一下，立即縮回」。在「　」內的反射過程中，<b>不需要</b>經過下列哪一部位？",
+            "options": [
+              "感覺神經元",
+              "運動神經元",
+              "脊髓",
+              "大腦"
+            ],
+            "correct": 3,
+            "no": 3
+          },
+          {
+            "q": "人體的眼、耳、鼻、舌等感覺器官，以及皮膚內部接受刺激的構造，均可稱為下列何者？",
+            "options": [
+              "受器",
+              "動器",
+              "感覺神經元",
+              "運動神經元"
+            ],
+            "correct": 0,
+            "no": 4
+          },
+          {
+            "q": "「當腳踢到尖的東西，會立刻縮回。被強光照射到眼睛時，瞳孔會立刻縮小」。請問「尖的東西、強光」對人體而言均稱為下列何者？",
+            "options": [
+              "刺激",
+              "反射",
+              "反應",
+              "感應"
+            ],
+            "correct": 0,
+            "no": 5
+          },
+          {
+            "q": "人體受到刺激而引起反射動作的主要目的為何？",
+            "options": [
+              "使反應動器更加準確",
+              "爭取時效，降低傷害",
+              "增加大腦功能",
+              "使反應器免於受傷"
+            ],
+            "correct": 1,
+            "no": 6
+          },
+          {
+            "q": "「觸景生情」與右圖中的哪一個構造有關？",
+            "options": [
+              "甲",
+              "乙",
+              "丙",
+              "丁"
+            ],
+            "image": "images/test10/q7.png",
+            "correct": 0,
+            "no": 7
+          },
+          {
+            "q": "承 7.題，早上起床後一直打噴嚏，此種行為的神經控制中樞位於右上圖何處？",
+            "options": [
+              "甲",
+              "乙",
+              "丙",
+              "丁"
+            ],
+            "correct": 2,
+            "no": 8
+          },
+          {
+            "q": "若神經傳遞的速度一定，則通常「看到尺滑落到手接住尺」的反應時間較「看到緊急情況用腳踩煞車」的反應時間為何？",
+            "options": [
+              "短",
+              "長",
+              "一樣",
+              "不一定"
+            ],
+            "correct": 0,
+            "no": 9
+          },
+          {
+            "q": "脊髓的主要功能為何？",
+            "options": [
+              "四肢的反射中樞",
+              "協調全身的肌肉活動",
+              "控制下半身的活動",
+              "眨眼和咳嗽的反射中樞"
+            ],
+            "correct": 0,
+            "no": 10
+          },
+          {
+            "q": "(甲)吸到胡椒粉打噴嚏；(乙)愛不釋手；(丙)望洋興歎；(丁)看題目寫答案。請根據上述四種情況，下列敘述何者正確？",
+            "options": [
+              "(甲)(乙)(丙)(丁)均為反射動作",
+              "(甲)為反射動作，(乙)(丙)(丁)為意識反應",
+              "(甲)(丙)(丁)為反射動作，(乙)意識反應",
+              "(甲)(丙)為反射動作，(乙)(丁)為意識反應"
+            ],
+            "correct": 1,
+            "no": 11
+          },
+          {
+            "q": "下列何者是將命令由腦或脊髓傳到肌肉的神經？",
+            "options": [
+              "感覺神經元",
+              "運動神經元",
+              "腦神經",
+              "脊神經"
+            ],
+            "correct": 1,
+            "no": 12
+          },
+          {
+            "q": "右圖是脊髓在反射動作時的神經傳導路徑，下列敘述何者<b>錯誤</b>？",
+            "options": [
+              "甲為運動神經元，乙為感覺神經元",
+              "甲、乙均為脊神經",
+              "其神經傳導路徑為：甲→脊髓→乙",
+              "手觸電縮回的傳導路徑與此反應途徑相同"
+            ],
+            "image": "images/test10/q13.png",
+            "correct": 0,
+            "no": 13
+          },
+          {
+            "q": "關於人類大腦的敘述，下列何者正確？",
+            "options": [
+              "可以分為前後兩個半球",
+              "右腦主管右半身的活動",
+              "大腦只能指揮頭部的活動",
+              "人類的語言、感覺與記憶等功能是由大腦所主管的"
+            ],
+            "correct": 3,
+            "no": 14
+          },
+          {
+            "q": "經過腦幹或脊髓，而不經過大腦的神經反應叫做反射作用，下列何者屬於經過腦幹的反射？",
+            "options": [
+              "腳踩到鐵釘，腳立刻縮回",
+              "在感冒時，會咳嗽與打噴嚏",
+              "在阿里山上看日出時感覺很冷",
+              "讀書的時候邊聽音樂邊看書"
+            ],
+            "correct": 1,
+            "no": 15
+          },
+          {
+            "q": "關於後像的敘述，下列何者<b>錯誤</b>？",
+            "options": [
+              "後像發生的原因是一種視覺暫留的現象",
+              "日常生活中看電影，其影像為正片後像",
+              "正片後像產生的原因是視覺疲勞",
+              "負片後像結果為形狀相同，顏色和原物不同"
+            ],
+            "correct": 2,
+            "no": 16
+          },
+          {
+            "q": "小惠縫衣服時被針刺到手指尖端，立刻將手縮回，下列敘述何者正確？",
+            "options": [
+              "小惠感到痛及手縮回都是大腦反應的結果",
+              "小惠感到痛及手縮回都是脊髓反應的結果",
+              "小惠感到痛是大腦反應的結果；手縮回是脊髓反應的結果",
+              "小惠感到痛是脊髓反應的結果；手縮回是大腦反應的結果"
+            ],
+            "correct": 2,
+            "no": 17
+          },
+          {
+            "q": "將軀幹和四肢的訊息傳到中樞神經系統，或將中樞神經系統的命令傳到軀幹和四肢的是下列何者？",
+            "options": [
+              "感覺神經元",
+              "運動神經元",
+              "腦神經",
+              "脊神經"
+            ],
+            "correct": 3,
+            "no": 18
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "type": "reading",
+    "title": "二、素養題",
+    "meta": "每題4分，共28分",
+    "passages": [
+      {
+        "text": "",
+        "items": [
+          {
+            "q": "娜美「閉上眼睛一分鐘後，將雙眼張開，瞳孔會縮小」的過程中，下列敘述何者<b>錯誤</b>？",
+            "options": [
+              "控制瞳孔放大或縮小的肌肉是這個反應過程中的「動器」",
+              "感覺神經元傳送訊息到脊髓",
+              "瞳孔的擴大或縮小不受大腦意識控制",
+              "這是一種反射作用"
+            ],
+            "correct": 1,
+            "no": 1
+          },
+          {
+            "q": "小安剛滿一歲，正在學習走路，經常扶著手推車到處走。下列關於小安的行為，何者屬於「反射」的作用？",
+            "options": [
+              "摔倒時立刻放聲大哭",
+              "踢到推車時腳立刻縮回",
+              "看到媽媽時立刻微笑走向前",
+              "發現週遭有新的東西時立刻指著它"
+            ],
+            "correct": 1,
+            "no": 2
+          },
+          {
+            "q": "下列有(甲)、(乙)、(丙)三個動作：(甲)霖雨的手指被熱水燙到後立即縮回。(乙)霖雨上傳手指受傷的照片到 Facebook（臉書）。(丙)琦君看到後立刻按讚。有關三個動作的神經傳導敘述，下列何者正確？",
+            "options": [
+              "(甲)(丙)屬於反射動作",
+              "(乙)的反應時間較(甲)長",
+              "(乙)(丙)的動器為手部皮膚",
+              "(甲)(乙)的控制中樞皆為腦幹"
+            ],
+            "correct": 1,
+            "no": 3
+          },
+          {
+            "q": "棒球比賽結束後，中華隊以 10 比 2 大勝南韓隊，球迷看到結果「感動落淚」。請問下列灰色部分的敘述何者和「　」內反應的神經傳導中樞相同？",
+            "options": [
+              "打翻胡椒罐，媽媽猛打噴嚏",
+              "妹妹踢到石頭，腳立刻縮回",
+              "巷子內衝出一條狗，哥哥緊急踩煞車",
+              "體操選手有優越的平衡感"
+            ],
+            "correct": 2,
+            "no": 4
+          },
+          {
+            "q": "在日劇《一公升的眼淚》中，主角是出生於日本的池內亞也，她於中學三年級的時候，被醫生診斷出患有「脊髓小腦萎縮症」。她與疾病對抗期間所寫下的日記，經其母親池內潮香結集後出版，鼓舞了許多生命中有殘疾的人。請問關於「脊髓小腦萎縮症」，根據你所學，<b>最不可能</b>出現下列哪個症狀？",
+            "options": [
+              "不能正常地使用筷子",
+              "雙手不能再執筆書寫",
+              "無法平衡容易跌倒",
+              "漸漸失去意識"
+            ],
+            "correct": 3,
+            "no": 5
+          }
+        ]
+      },
+      {
+        "text": "在飲酒作樂之後，酒中的酒精進入人體消化後會溶於血漿中，再經由心血管系統運送到全身。現代人過量飲酒的結果導致每年有許多人死於酒精中毒，酒精甚至會癱瘓中樞神經系統而導致多起的車禍傷亡事件，目前警方依法嚴格取締酒駕，以避免家庭悲劇的發生。根據上述內容，試回答 6.、7.題：",
+        "items": [
+          {
+            "q": "當酒精由消化道吸收進入心血管系統後，有關酒精在人體內的循環途徑，下列敘述何者正確？",
+            "options": [
+              "先由消化道內的靜脈進入心血管系統",
+              "進入血管後，由紅血球負責運送酒精",
+              "進入心血管系統的酒精，會由左心房進入心臟",
+              "進入心血管系統的酒精，會先進行肺循環再進入腦部"
+            ],
+            "correct": 3,
+            "no": 6
+          },
+          {
+            "q": "當神經系統長時間受酒精影響後，中樞神經系統會因為酒精影響而產生很多不同的症狀。這些症狀的產生與圖中相對應的中樞神經系統，何者<b>錯誤</b>？",
+            "options": [
+              "脈搏加快，呼吸困難──丁",
+              "瞳孔放大，噁心想吐──丙",
+              "走路搖晃，動作不穩──乙",
+              "產生幻覺，記憶變差──甲"
+            ],
+            "image": "images/test10/s7.png",
+            "correct": 0,
+            "no": 7
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "type": "reading",
+    "title": "B部分 活用題",
+    "meta": "每題2分，共18分",
+    "passages": [
+      {
+        "text": "",
+        "items": [
+          {
+            "q": "過年期間佩瑜聽見巨大的鞭炮聲，於是用手掩耳，有關此反應動作，下列敘述何者正確？",
+            "options": [
+              "這是一種腦幹反射的作用",
+              "此神經傳導的路徑不需經過脊髓",
+              "用手掩耳的動作是由大腦控制的",
+              "此傳導路徑先經過脊髓再到大腦"
+            ],
+            "correct": 2,
+            "no": 1
+          },
+          {
+            "q": "關於協調作用的敘述，下列何者<b>錯誤</b>？",
+            "options": [
+              "環境中的改變對生物而言就是刺激",
+              "人體皮膚有所有感覺的受器",
+              "人體的動器一般是肌肉或腺體",
+              "受器接受刺激後將訊號傳遞到神經系統"
+            ],
+            "correct": 1,
+            "no": 2
+          },
+          {
+            "q": "人體神經系統中的周圍神經系統可分為腦神經和脊神經，下表為兩者的比較說明，何者<b>錯誤</b>？<table style=\"border-collapse:collapse;margin:8px 0;font-size:.95em\"><tr><th style=\"border:1px solid #888;padding:3px 10px;text-align:center\">選項</th><th style=\"border:1px solid #888;padding:3px 10px;text-align:center\">腦神經</th><th style=\"border:1px solid #888;padding:3px 10px;text-align:center\">脊神經</th></tr><tr><td style=\"border:1px solid #888;padding:3px 10px;text-align:center\">(A)</td><td style=\"border:1px solid #888;padding:3px 10px;text-align:center\">共 12 對</td><td style=\"border:1px solid #888;padding:3px 10px;text-align:center\">共 31 對</td></tr><tr><td style=\"border:1px solid #888;padding:3px 10px;text-align:center\">(B)</td><td style=\"border:1px solid #888;padding:3px 10px;text-align:center\">與腦相連</td><td style=\"border:1px solid #888;padding:3px 10px;text-align:center\">與脊髓相連</td></tr><tr><td style=\"border:1px solid #888;padding:3px 10px;text-align:center\">(C)</td><td style=\"border:1px solid #888;padding:3px 10px;text-align:center\">只分布在頭部範圍</td><td style=\"border:1px solid #888;padding:3px 10px;text-align:center\">分布在四肢、軀幹、內臟</td></tr><tr><td style=\"border:1px solid #888;padding:3px 10px;text-align:center\">(D)</td><td style=\"border:1px solid #888;padding:3px 10px;text-align:center\">由神經元構成</td><td style=\"border:1px solid #888;padding:3px 10px;text-align:center\">由神經元構成</td></tr></table>",
+            "options": [
+              "選項 (A)",
+              "選項 (B)",
+              "選項 (C)",
+              "選項 (D)"
+            ],
+            "correct": 2,
+            "no": 3
+          }
+        ]
+      },
+      {
+        "text": "右圖為小元做「反應時間的測定」實驗，表(一)為尺落下的距離與反應時間的資料，表(二)為小元連續 5 次試驗的數據。試回答 4.～ 6.題：<table style=\"border-collapse:collapse;margin:8px 0;font-size:.95em\"><tr><th style=\"border:1px solid #888;padding:3px 10px;text-align:center\">平均距離（cm）</th><th style=\"border:1px solid #888;padding:3px 10px;text-align:center\">18</th><th style=\"border:1px solid #888;padding:3px 10px;text-align:center\">20</th><th style=\"border:1px solid #888;padding:3px 10px;text-align:center\">22</th><th style=\"border:1px solid #888;padding:3px 10px;text-align:center\">24</th><th style=\"border:1px solid #888;padding:3px 10px;text-align:center\">26</th></tr><tr><td style=\"border:1px solid #888;padding:3px 10px;text-align:center\">時間（秒）</td><td style=\"border:1px solid #888;padding:3px 10px;text-align:center\">0.19</td><td style=\"border:1px solid #888;padding:3px 10px;text-align:center\">0.20</td><td style=\"border:1px solid #888;padding:3px 10px;text-align:center\">0.21</td><td style=\"border:1px solid #888;padding:3px 10px;text-align:center\">0.22</td><td style=\"border:1px solid #888;padding:3px 10px;text-align:center\">0.23</td></tr></table>（以上為表(一)）<table style=\"border-collapse:collapse;margin:8px 0;font-size:.95em\"><tr><th style=\"border:1px solid #888;padding:3px 10px;text-align:center\">第一次</th><th style=\"border:1px solid #888;padding:3px 10px;text-align:center\">第二次</th><th style=\"border:1px solid #888;padding:3px 10px;text-align:center\">第三次</th><th style=\"border:1px solid #888;padding:3px 10px;text-align:center\">第四次</th><th style=\"border:1px solid #888;padding:3px 10px;text-align:center\">第五次</th></tr><tr><td style=\"border:1px solid #888;padding:3px 10px;text-align:center\">26cm</td><td style=\"border:1px solid #888;padding:3px 10px;text-align:center\">22cm</td><td style=\"border:1px solid #888;padding:3px 10px;text-align:center\">22cm</td><td style=\"border:1px solid #888;padding:3px 10px;text-align:center\">20cm</td><td style=\"border:1px solid #888;padding:3px 10px;text-align:center\">20cm</td></tr></table>（以上為表(二)）",
+        "items": [
+          {
+            "q": "在這個實驗中，接尺者的接尺反應主要是由哪一部位控制？",
+            "options": [
+              "大腦",
+              "小腦",
+              "腦幹",
+              "脊髓"
+            ],
+            "correct": 0,
+            "no": 4
+          },
+          {
+            "q": "若接尺的練習次數增加，則所測得的反應時間可能會有何變化？",
+            "options": [
+              "反應時間增長",
+              "反應時間縮短",
+              "反應時間維持不變",
+              "反應時間忽長忽短"
+            ],
+            "correct": 1,
+            "no": 5
+          },
+          {
+            "q": "計算實驗 5 次的平均結果，可知小元的反應時間約為多久？",
+            "options": [
+              "0.19 秒",
+              "0.20 秒",
+              "0.21 秒",
+              "0.22 秒"
+            ],
+            "correct": 2,
+            "no": 6
+          }
+        ],
+        "image": "images/test10/g46.png"
+      },
+      {
+        "text": "(甲)感覺神經元；(乙)運動神經元；(丙)受器；(丁)動器；(戊)脊髓；(己)大腦；(庚)腦幹。請依照上列動作的敘述，列出正確神經傳導路徑的順序，試回答 7.～ 9.題：",
+        "items": [
+          {
+            "q": "「看到公車來，立刻招手」，下列何者為此反應的正確神經傳導路徑？",
+            "options": [
+              "(丙)(甲)(己)(乙)(丁)",
+              "(丙)(甲)(己)(戊)(乙)(丁)",
+              "(丙)(甲)(戊)(己)(戊)(乙)(丁)",
+              "(丙)(甲)(庚)(戊)(乙)(丁)"
+            ],
+            "correct": 1,
+            "no": 7
+          },
+          {
+            "q": "「感覺蚊子叮右手，用左手打蚊子」，下列何者為此反應的正確神經傳導路徑？",
+            "options": [
+              "(丙)(甲)(己)(乙)(丁)",
+              "(丙)(甲)(己)(戊)(乙)(丁)",
+              "(丙)(甲)(戊)(己)(戊)(乙)(丁)",
+              "(丙)(甲)(庚)(戊)(乙)(丁)"
+            ],
+            "correct": 2,
+            "no": 8
+          },
+          {
+            "q": "「聽到笑話，哈哈大笑」，下列何者為此反應的正確神經傳導路徑？",
+            "options": [
+              "(丙)(甲)(己)(乙)(丁)",
+              "(丙)(甲)(己)(戊)(乙)(丁)",
+              "(丙)(甲)(戊)(己)(戊)(乙)(丁)",
+              "(丙)(甲)(庚)(戊)(乙)(丁)"
+            ],
+            "correct": 0,
+            "no": 9
+          }
+        ]
+      }
+    ]
+  }
+]
+};
+
+let currentMode = "quiz"; // quiz | print
+
+const contentEl = document.getElementById("content");
+const scoreBar = document.getElementById("scoreBar");
+const scoreText = document.getElementById("scoreText");
+
+function render(){
+  window.examAnswersRevealed = false;
+  contentEl.innerHTML = "";
+  DATA.sections.forEach((sec, si)=> contentEl.appendChild(renderSection(sec, si)));
+  if(currentMode==="quiz"){
+    scoreBar.classList.add("show");
+    updateScore();
+  } else {
+    scoreBar.classList.remove("show");
+    contentEl.querySelectorAll(".opt").forEach(o=>o.classList.add("disabled"));
+    contentEl.querySelectorAll(".opt.is-correct").forEach(o=>o.classList.add("correct"));
+  }
+}
+
+function renderSection(sec, si){
+  const block = document.createElement("section");
+  block.className = "block";
+  block.innerHTML = `<h2>${sec.title}</h2><p class="meta">${sec.meta}</p>`
+    + (sec.note ? `<div class="sec-note">${sec.note}</div>` : "")
+    + (sec.pre ? `<div class="sec-pre">${sec.pre}</div>` : "");
+
+  if(sec.type==="fill"){
+    sec.items.forEach((it,i)=>{
+      const q = document.createElement("div");
+      q.className = "q";
+      const shown = it.answers.join(" ／ ");
+      q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q}</div>
+        <div class="fill-row"><input type="text" class="blank${sec.wide ? " wide" : ""}" autocomplete="off" placeholder="${sec.placeholder || "作答"}"><span class="feedback"></span></div>
+        <div class="answer-reveal">正解：${shown}</div>`;
+      q.querySelector("input.blank").dataset.answers = JSON.stringify(it.answers);
+      if(currentMode!=="quiz"){ q.querySelector("input.blank").disabled = true; q.querySelector(".answer-reveal").classList.add("show"); }
+      block.appendChild(q);
+    });
+  }
+
+  else if(sec.type==="explain"){
+    sec.items.forEach((it,i)=>{
+      const q = document.createElement("div");
+      q.className = "q";
+      q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q}</div>
+        <textarea class="explain-box" placeholder="寫下你的解釋（送出成績後對照參考答案）"></textarea>
+        <div class="answer-reveal">參考答案：${it.answer}</div>`;
+      if(currentMode!=="quiz"){ q.querySelector("textarea").remove(); q.querySelector(".answer-reveal").classList.add("show"); }
+      block.appendChild(q);
+    });
+  }
+
+  else if(sec.type==="mc"){
+    sec.items.forEach((it,i)=>{
+      const q = document.createElement("div");
+      q.className = "q";
+      const optsHtml = it.options.map((op,oi)=>`
+        <div class="opt" data-idx="${oi}" data-correct="${oi===it.correct}">
+          <span class="tag">(${String.fromCharCode(65+oi)})</span><span>${op}</span>
+        </div>`).join("");
+      const imgHtml = it.image ? `<img src="${it.image}" alt="題目附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">` : "";
+      const img2Html = it.image2 ? `<img src="${it.image2}" alt="題目附圖2" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">` : "";
+      q.innerHTML = `<div class="q-text"><span class="q-num">${it.no||i+1}.</span>${it.q}</div>
+        ${imgHtml}${img2Html}
+        <div class="opts">${optsHtml}</div>`;
+      q.querySelectorAll(".opt").forEach(optEl=>{
+        if(optEl.dataset.correct==="true") optEl.classList.add("is-correct");
+        optEl.addEventListener("click", ()=>selectOption(q, optEl));
+      });
+      block.appendChild(q);
+    });
+  }
+
+  else if(sec.type==="reading"){
+    sec.passages.forEach(p=>{
+      const passageDiv = document.createElement("div");
+      passageDiv.className = "passage";
+      passageDiv.innerHTML = `${p.label ? `<span class="passage-label">${p.label}</span>`:""}${p.text}${p.image ? `<img src="${p.image}" alt="題組附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-top:10px;border:1px solid var(--paper-line);">`:""}`;
+      if(p.text || p.image) block.appendChild(passageDiv);
+      p.items.forEach((it,i)=>{
+        const q = document.createElement("div");
+        q.className = "q";
+        const optsHtml = it.options.map((op,oi)=>`
+          <div class="opt" data-idx="${oi}" data-correct="${oi===it.correct}">
+            <span class="tag">(${String.fromCharCode(65+oi)})</span><span>${op}</span>
+          </div>`).join("");
+        q.innerHTML = `<div class="q-text"><span class="q-num">${it.no||i+1}.</span>${it.q}</div>
+          ${it.image ? `<img src="${it.image}" alt="題目附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">`:""}
+          <div class="opts">${optsHtml}</div>`;
+        q.querySelectorAll(".opt").forEach(optEl=>{
+          if(optEl.dataset.correct==="true") optEl.classList.add("is-correct");
+          optEl.addEventListener("click", ()=>selectOption(q, optEl));
+        });
+        block.appendChild(q);
+      });
+    });
+  }
+
+  return block;
+}
+
+function selectOption(qEl, optEl){
+  if(currentMode!=="quiz") return;
+  if(qEl.dataset.answered==="true") return;
+  qEl.dataset.answered = "true";
+  qEl.querySelectorAll(".opt").forEach(o=>o.classList.add("disabled"));
+  optEl.classList.add("selected");
+  const correctOpt = qEl.querySelector('.opt[data-correct="true"]');
+  qEl.dataset.studentAnswer = optEl.textContent.trim();
+  qEl.dataset.correctAnswer = correctOpt ? correctOpt.textContent.trim() : "";
+  qEl.dataset.isCorrect = (optEl.dataset.correct==="true") ? "true" : "false";
+  updateScore();
+}
+
+function updateScore(){
+  let total = 0, answered = 0, correct = 0;
+  contentEl.querySelectorAll(".q").forEach(q=>{
+    const gradable = q.querySelector(".opts") || q.querySelector("input.blank");
+    if(!gradable) return;
+    total++;
+    if(q.dataset.studentAnswer !== undefined){
+      answered++;
+      if(q.dataset.isCorrect === "true") correct++;
+    }
+  });
+  if(window.examAnswersRevealed){
+    scoreText.textContent = `${correct} / ${total}`;
+  } else {
+    scoreText.textContent = `已作答 ${answered} / ${total} 題`;
+  }
+}
+window.updateScore = updateScore;
+
+// 填寫題（注音／國字、改錯）：去掉空白與標點後和正解比對；注音的一聲符號「ˉ」可寫可不寫
+function normFill(s){
+  return String(s).replace(/[\sˉ　，、。．.,;；:：!！?？「」『』（）()【】→\-－—]/g, "").trim();
+}
+document.addEventListener("input", (e)=>{
+  const input = e.target;
+  if(!input.matches || !input.matches("input.blank")) return;
+  const q = input.closest(".q");
+  const answers = JSON.parse(input.dataset.answers || "[]");
+  const val = input.value.trim();
+  if(!val){ delete q.dataset.studentAnswer; delete q.dataset.isCorrect; }
+  else {
+    q.dataset.studentAnswer = val;
+    q.dataset.correctAnswer = answers.join(" ／ ");
+    q.dataset.isCorrect = answers.some(a => normFill(a) === normFill(val)) ? "true" : "false";
+  }
+  updateScore();
+});
+
+document.getElementById("resetBtn").addEventListener("click", render);
+document.getElementById("quizModeBtn").addEventListener("click", ()=>{
+  currentMode = "quiz";
+  document.getElementById("quizModeBtn").classList.add("active");
+  document.getElementById("printModeBtn").classList.remove("active");
+  render();
+});
+document.getElementById("printModeBtn").addEventListener("click", ()=>{
+  if(document.getElementById("printModeBtn").disabled) return;
+  currentMode = "print";
+  document.getElementById("printModeBtn").classList.add("active");
+  document.getElementById("quizModeBtn").classList.remove("active");
+  render();
+});
+
+window.unlockPrintMode = function(){
+  document.getElementById("printModeBtn").disabled = false;
+};
+
+render();
+</script>
+<script src="../sync.js"></script>
+</body>
+</html>

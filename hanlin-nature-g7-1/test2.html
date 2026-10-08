@@ -1,0 +1,817 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>段考題庫｜自然第2回 - 細胞的構造與功能</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@500;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#faf6ec;
+    --paper-line:#e3dcc8;
+    --ink:#26332b;
+    --ink-soft:#5b6b5f;
+    --chalk-green:#2f4538;
+    --chalk-green-2:#3d5a48;
+    --pen-red:#b8433a;
+    --pen-red-soft:#f4dedb;
+    --ok-green:#3f7d52;
+    --ok-green-soft:#dfeee1;
+    --gold:#b5842a;
+    --radius:10px;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:"Noto Sans TC",sans-serif;
+    line-height:1.7;
+  }
+  header.hero{
+    background:var(--chalk-green);
+    color:#eef2ea;
+    padding:28px 20px 40px;
+    position:relative;
+  }
+  header.hero::after{
+    content:"";
+    position:absolute;
+    left:0; right:0; bottom:-1px;
+    height:14px;
+    background:repeating-linear-gradient(90deg,var(--paper) 0 18px, transparent 18px 20px);
+  }
+  .hero-inner{max-width:880px;margin:0 auto;}
+  .breadcrumb a{color:#cfe0d1;text-decoration:none;font-size:14px;}
+  .breadcrumb a:hover{text-decoration:underline;}
+  h1{
+    font-family:"Noto Serif TC",serif;
+    font-weight:700;
+    font-size:clamp(24px,4vw,34px);
+    margin:10px 0 6px;
+  }
+  .subtitle{color:#cfe0d1;font-size:15px;margin:0;}
+  main{max-width:880px;margin:0 auto;padding:28px 20px 80px;}
+
+  .controls{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:22px;
+  }
+  .mode-toggle{display:flex;border:2px solid var(--chalk-green);border-radius:999px;overflow:hidden;}
+  .mode-toggle button{
+    background:transparent;border:none;padding:8px 16px;font-size:14px;font-weight:700;
+    color:var(--chalk-green);cursor:pointer;font-family:"Noto Sans TC",sans-serif;
+  }
+  .mode-toggle button.active{background:var(--gold);color:#fff;}
+  .mode-toggle button:disabled{opacity:.4;cursor:not-allowed;}
+
+  .score-bar{
+    display:none;
+    align-items:center;
+    justify-content:space-between;
+    background:#fff;
+    border:1px solid var(--paper-line);
+    border-left:5px solid var(--gold);
+    border-radius:var(--radius);
+    padding:12px 18px;
+    margin-bottom:22px;
+    font-size:14px;
+  }
+  .score-bar.show{display:flex;}
+  .score-bar strong{font-size:18px;color:var(--gold);}
+  .score-bar button{
+    background:none;border:1px solid var(--ink-soft);color:var(--ink-soft);
+    border-radius:6px;padding:6px 12px;font-size:13px;cursor:pointer;
+  }
+
+  section.block{
+    background:#fff;
+    border:1px solid var(--paper-line);
+    border-radius:var(--radius);
+    padding:22px 22px 26px;
+    margin-bottom:20px;
+  }
+  .block h2{
+    font-family:"Noto Serif TC",serif;
+    font-size:19px;
+    margin:0 0 4px;
+    color:var(--chalk-green);
+  }
+  .block .meta{color:var(--ink-soft);font-size:13px;margin:0 0 16px;}
+
+  .q{margin-bottom:18px;padding-bottom:16px;border-bottom:1px dashed var(--paper-line);}
+  .q:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0;}
+  .q-text{font-size:15.5px;margin-bottom:8px;}
+  .q-num{color:var(--gold);font-weight:700;margin-right:4px;}
+
+  .opts{display:grid;gap:8px;}
+  .opt{
+    display:flex;gap:8px;align-items:flex-start;
+    border:1.5px solid var(--paper-line);
+    border-radius:8px;
+    padding:9px 12px;
+    cursor:pointer;
+    font-size:14.5px;
+    background:#fffdf8;
+  }
+  .opt:hover{border-color:var(--chalk-green-2);}
+  .opt.selected{border-color:var(--chalk-green-2);background:#eef3ea;}
+  .opt.correct{border-color:var(--ok-green);background:var(--ok-green-soft);}
+  .opt.wrong{border-color:var(--pen-red);background:var(--pen-red-soft);}
+  .opt .tag{font-weight:700;color:var(--ink-soft);}
+  .opt.correct .tag{color:var(--ok-green);}
+  .opt.wrong .tag{color:var(--pen-red);}
+  .opt.disabled{cursor:default;}
+
+  .passage{
+    background:#f5f2e8;border-radius:8px;padding:14px 16px;margin-bottom:14px;
+    font-size:14.5px;white-space:pre-line;
+  }
+  .passage-label{font-weight:700;color:var(--chalk-green);margin-bottom:4px;display:block;}
+
+  .sec-note{font-size:13.5px;color:var(--ink-soft);background:#f5f2e8;border-radius:8px;padding:8px 12px;margin:-6px 0 14px;}
+  .sec-pre{background:#f5f2e8;border-radius:8px;padding:10px 14px;margin:-4px 0 14px;font-size:14.5px;}
+  .fill-row{display:flex;flex-wrap:wrap;align-items:center;gap:8px;}
+  input.blank{
+    font-family:"Noto Sans TC",sans-serif;font-size:15.5px;border:none;border-bottom:2px solid var(--chalk-green-2);
+    background:#fffdf8;padding:4px 6px;width:170px;max-width:100%;
+  }
+  input.blank.wide{width:100%;}
+  textarea.explain-box{
+    width:100%;min-height:52px;font-family:"Noto Sans TC",sans-serif;font-size:15px;
+    border:1.5px solid var(--paper-line);border-radius:8px;padding:8px 10px;background:#fffdf8;resize:vertical;
+  }
+  .feedback{font-weight:700;font-size:15px;}
+  .feedback.ok{color:var(--ok-green);}
+  .feedback.no{color:var(--pen-red);}
+  .answer-reveal{display:none;margin-top:8px;font-size:14px;color:var(--ok-green);background:var(--ok-green-soft);border-radius:6px;padding:6px 12px;}
+  .answer-reveal.show{display:block;}
+  .zh-und{text-decoration:underline;text-underline-offset:3px;}
+  .footer-link{
+    display:block;text-align:center;margin-top:30px;color:var(--chalk-green);
+    text-decoration:none;font-weight:700;font-size:14px;
+  }
+  .footer-link:hover{text-decoration:underline;}
+
+  @media print{
+    header.hero, .controls, .score-bar, .mini-btn, .footer-link{display:none !important;}
+    body{background:#fff;}
+    section.block{border:none;box-shadow:none;padding:8px 0;margin-bottom:14px;}
+    .opt.correct{background:none;border:none;font-weight:700;}
+    .opt.correct::after{content:" ← 正解";color:var(--pen-red);}
+    .opt{border:none;padding:2px 0;}
+    main{max-width:100%;padding:0 24px;}
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="breadcrumb"><a href="https://jenlin2002.github.io/">🏠 回總目錄</a> ／ <a href="../hanlin-nature-g7-1.html" style="color:#cfe0d1;">段考題庫</a></div>
+    <h1>自然・第2回</h1>
+    <p class="subtitle">2-1～2-2 細胞的構造與功能｜翰林版七年級自然（一）Ａ卷</p>
+  </div>
+</header>
+
+<main>
+  <div class="controls">
+    <div class="mode-toggle">
+      <button id="quizModeBtn" class="active">✏️ 測驗模式</button>
+      <button id="printModeBtn" disabled title="完成測驗並送出成績後才能查看">🖨️ 完整題目與解答（送出成績後解鎖）</button>
+    </div>
+  </div>
+
+  <div class="score-bar" id="scoreBar">
+    <div>目前得分：<strong id="scoreText">0 / 0</strong>（選擇題）</div>
+    <button id="resetBtn">重新作答</button>
+  </div>
+
+  <div id="content"></div>
+
+  <a class="footer-link" href="../hanlin-nature-g7-1.html">← 回段考題庫總覽</a>
+</main>
+
+<script>
+
+window.EXAM_META = { version: "自然A卷", examLabel: "自然第2回" };
+const DATA = {
+  sections: [
+  {
+    "type": "reading",
+    "title": "A部分 基礎題　一、選擇題",
+    "meta": "每題3分，共54分",
+    "passages": [
+      {
+        "text": "",
+        "items": [
+          {
+            "q": "小靜以顯微鏡觀察用亞甲藍液染色後的口腔皮膜細胞。下列有關此實驗的敘述，何者正確？",
+            "options": [
+              "需使用複式顯微鏡進行觀察",
+              "被染色的部位主要為細胞膜",
+              "其構造與植物表皮細胞相同",
+              "可觀察到葉綠體"
+            ],
+            "correct": 0,
+            "no": 1
+          },
+          {
+            "q": "阿豪觀察到庭院中竹子的幼芽生長快速，若他推測細胞需要分解養分產生能量以供幼芽生長，則下列哪一細胞構造的功能和他的推測最直接相關？",
+            "options": [
+              "細胞膜",
+              "細胞核",
+              "葉綠體",
+              "粒線體"
+            ],
+            "correct": 3,
+            "no": 2
+          },
+          {
+            "q": "現代科學可根據細胞組織內 DNA 的鑑定結果，來斷定親子間的親緣關係。請問遺傳物質 DNA 通常位於細胞的哪一個構造中？",
+            "options": [
+              "細胞壁",
+              "細胞核",
+              "葉綠體",
+              "細胞膜"
+            ],
+            "correct": 1,
+            "no": 3
+          },
+          {
+            "q": "甲和乙為某生物體內的兩種正常細胞，其所含的粒線體數目如下表。由表推論，下列哪一種生理作用應是甲細胞比乙細胞旺盛？<table style=\"border-collapse:collapse;margin:8px 0;font-size:.95em\"><tr><th style=\"border:1px solid #888;padding:3px 10px;text-align:center\">細胞種類</th><th style=\"border:1px solid #888;padding:3px 10px;text-align:center\">甲</th><th style=\"border:1px solid #888;padding:3px 10px;text-align:center\">乙</th></tr><tr><td style=\"border:1px solid #888;padding:3px 10px;text-align:center\">粒線體數目</td><td style=\"border:1px solid #888;padding:3px 10px;text-align:center\">約 1000 個</td><td style=\"border:1px solid #888;padding:3px 10px;text-align:center\">約 200 個</td></tr></table>",
+            "options": [
+              "吸收光能",
+              "吸收水分",
+              "產生氧氣",
+              "產生能量"
+            ],
+            "correct": 3,
+            "no": 4
+          },
+          {
+            "q": "若家華利用某種能分解纖維素的藥劑來浸泡細胞，則下列四種細胞中，何者的構造會受到影響？",
+            "options": [
+              "人類口腔皮膜細胞",
+              "洋蔥表皮細胞",
+              "袋鼠神經細胞",
+              "無尾熊肌肉細胞"
+            ],
+            "correct": 1,
+            "no": 5
+          },
+          {
+            "q": "下列各種生物的細胞中，何者兼具粒線體、葉綠體與細胞壁三種構造？",
+            "options": [
+              "葉下表皮細胞",
+              "肌肉細胞",
+              "保衛細胞",
+              "口腔皮膜細胞"
+            ],
+            "correct": 2,
+            "no": 6
+          },
+          {
+            "q": "菁芳用複式顯微鏡觀察某細胞，特徵如下表所示。則可由表中哪些特徵，將其判斷為植物細胞？<table style=\"border-collapse:collapse;margin:8px 0;font-size:.95em\"><tr><th style=\"border:1px solid #888;padding:3px 10px;text-align:center\">代號</th><th style=\"border:1px solid #888;padding:3px 10px;text-align:center\">特徵</th></tr><tr><td style=\"border:1px solid #888;padding:3px 10px;text-align:center\">①</td><td style=\"border:1px solid #888;padding:3px 10px;text-align:center\">具有葉綠體</td></tr><tr><td style=\"border:1px solid #888;padding:3px 10px;text-align:center\">②</td><td style=\"border:1px solid #888;padding:3px 10px;text-align:center\">具有細胞質</td></tr><tr><td style=\"border:1px solid #888;padding:3px 10px;text-align:center\">③</td><td style=\"border:1px solid #888;padding:3px 10px;text-align:center\">具有細胞壁</td></tr><tr><td style=\"border:1px solid #888;padding:3px 10px;text-align:center\">④</td><td style=\"border:1px solid #888;padding:3px 10px;text-align:center\">液胞大，僅有一個</td></tr></table>",
+            "options": [
+              "①②③",
+              "②③④",
+              "①③④",
+              "①②④"
+            ],
+            "correct": 2,
+            "no": 7
+          },
+          {
+            "q": "我們常吃的香菇因為<b>缺乏</b>何種構造，無法進行光合作用，必須靠分解腐木維生？",
+            "options": [
+              "細胞壁",
+              "葉綠體",
+              "細胞核",
+              "粒線體"
+            ],
+            "correct": 1,
+            "no": 8
+          },
+          {
+            "q": "關於「細胞」的敘述，下列何者正確？",
+            "options": [
+              "細胞壁位於細胞最外層，有控制物質進出的功能",
+              "細胞膜能區隔細胞與外界環境",
+              "植物細胞內的液胞通常有數個",
+              "植物細胞與動物細胞的構造都相同"
+            ],
+            "correct": 1,
+            "no": 9
+          },
+          {
+            "q": "右圖為肌肉細胞，下列敘述何者<b>錯誤</b>？",
+            "options": [
+              "人體具有此細胞",
+              "此細胞有特定功能",
+              "此細胞可表現所有的生命現象",
+              "此細胞可協助個體運動"
+            ],
+            "image": "images/test2/a10.png",
+            "correct": 2,
+            "no": 10
+          },
+          {
+            "q": "不同細胞的形狀各異，功能也不相同，為何都稱為細胞？",
+            "options": [
+              "都是虎克發現的",
+              "因為大小相似",
+              "其基本構造都相同",
+              "都是生物體內發現的"
+            ],
+            "correct": 2,
+            "no": 11
+          },
+          {
+            "q": "細胞有：(甲)細胞核；(乙)大液泡；(丙)粒線體；(丁)葉綠體；(戊)細胞壁等五種構造，則人類的口腔皮膜細胞具有上述幾種構造？",
+            "options": [
+              "2",
+              "3",
+              "4",
+              "5"
+            ],
+            "correct": 0,
+            "no": 12
+          },
+          {
+            "q": "(甲)細胞膜；(乙)細胞核；(丙)細胞質；(丁)細胞壁。上列植物細胞構造由外而內依序排列應為何？",
+            "options": [
+              "(甲)(乙)(丙)(丁)",
+              "(丁)(甲)(丙)(乙)",
+              "(乙)(甲)(丙)(丁)",
+              "(丁)(丙)(乙)(甲)"
+            ],
+            "correct": 1,
+            "no": 13
+          },
+          {
+            "q": "田博士想要研究植物細胞行光合作用產生養分的方式。他應該從細胞中取出下列哪一種構造進行研究？",
+            "options": [
+              "液泡",
+              "葉綠體",
+              "細胞核",
+              "粒線體"
+            ],
+            "correct": 1,
+            "no": 14
+          },
+          {
+            "q": "右圖是動物細胞的構造圖。下列何者含有膠狀物質，是許多化學反應進行的場所？",
+            "options": [
+              "甲",
+              "乙",
+              "丙",
+              "丁"
+            ],
+            "image": "images/test2/a15.png",
+            "correct": 0,
+            "no": 15
+          },
+          {
+            "q": "細胞核具有下列何種功能？",
+            "options": [
+              "含有葉綠素可進行光合作用",
+              "含遺傳物質是細胞的生命中樞",
+              "具有支持作用可防止細胞變形",
+              "為利用養分進行呼吸作用產生能量的主要場所"
+            ],
+            "correct": 1,
+            "no": 16
+          },
+          {
+            "q": "右圖是植物細胞的模式圖，則下列敘述何者<b>錯誤</b>？",
+            "options": [
+              "動物細胞沒有甲構造",
+              "乙可控制細胞內外物質的進出",
+              "若將丙去除，細胞將逐漸衰弱而死亡",
+              "丁內含有遺傳物質，是細胞的生命中樞"
+            ],
+            "image": "images/test2/a17.png",
+            "correct": 3,
+            "no": 17
+          },
+          {
+            "q": "右圖為神經細胞，下列敘述何者<b>錯誤</b>？",
+            "options": [
+              "人體具有此細胞",
+              "此細胞不具細胞壁",
+              "此細胞可負責收縮而產生運動",
+              "欲觀察甲構造，可用亞甲藍液染色"
+            ],
+            "image": "images/test2/a18.png",
+            "correct": 2,
+            "no": 18
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "type": "reading",
+    "title": "二、素養題",
+    "meta": "每題4分，共28分",
+    "passages": [
+      {
+        "text": "",
+        "items": [
+          {
+            "q": "蔬菜水果富含纖維素，因此多吃可預防便祕及降低大腸癌的罹患率，這是因為蔬菜水果細胞中的哪個構造富含纖維素所致？",
+            "options": [
+              "葉綠素",
+              "大液胞",
+              "細胞壁",
+              "細胞膜"
+            ],
+            "correct": 2,
+            "no": 1
+          },
+          {
+            "q": "小新請大家品嚐彰化溪湖的有機葡萄。他請大家連皮一起吃，因為葡萄皮富含紫花青素，是種對身體很好的抗氧化劑。已知花青素存放在細胞內的儲存庫，請問在上圖植物細胞內的哪一個構造能找到此成分？",
+            "options": [
+              "甲",
+              "乙",
+              "丙",
+              "丁"
+            ],
+            "image": "images/test2/s2.png",
+            "correct": 1,
+            "no": 2
+          },
+          {
+            "q": "胖虎與大雄在上生物課實驗時，使用複式顯微鏡觀察洋蔥表皮細胞的結構，請問有關洋蔥表皮細胞的敘述，下列何者正確？",
+            "options": [
+              "具有細胞壁及葉綠體",
+              "不具有細胞壁及葉綠體",
+              "具有細胞壁，但不具有葉綠體",
+              "具有葉綠體，但不具有細胞壁"
+            ],
+            "correct": 2,
+            "no": 3
+          },
+          {
+            "q": "小中參觀科學展覽作品，發現看板中細胞構造圖的說明有錯誤，如下圖所示，請找出哪一項說明是<b>錯誤</b>的？",
+            "options": [
+              "(甲)",
+              "(乙)",
+              "(丙)",
+              "(丁)"
+            ],
+            "image": "images/test2/s4.png",
+            "correct": 1,
+            "no": 4
+          },
+          {
+            "q": "小山在新聞中看到一則冰桶挑戰的報導，報導內容如下圖所示。根據報導中的敘述，導致漸凍人症的原因之一，最可能是細胞中哪一個構造有缺陷？",
+            "options": [
+              "細胞核",
+              "粒線體",
+              "細胞膜",
+              "液泡"
+            ],
+            "image": "images/test2/s5.png",
+            "correct": 1,
+            "no": 5
+          }
+        ]
+      },
+      {
+        "text": "喬巴醫師以複式顯微鏡觀察「人體口腔皮膜細胞」及「向日葵葉肉細胞」如圖(一)、圖(二)所示。根據此兩圖，試回答 6.、7.題：",
+        "items": [
+          {
+            "q": "根據此兩圖，控制物質進出細胞的構造分別為何？",
+            "options": [
+              "甲、丁",
+              "甲、戊",
+              "乙、己",
+              "乙、庚"
+            ],
+            "correct": 1,
+            "no": 6
+          },
+          {
+            "q": "關於「庚」的構造敘述，下列何者正確？",
+            "options": [
+              "圖(一)中的細胞缺少此項構造",
+              "協助光合作用、吸收光能",
+              "可儲存水分、養分及廢物的功能",
+              "圖(一)中的丙，也具有相同的功能"
+            ],
+            "correct": 2,
+            "no": 7
+          }
+        ],
+        "image": "images/test2/g67.png"
+      }
+    ]
+  },
+  {
+    "type": "reading",
+    "title": "B部分 活用題",
+    "meta": "每題2分，共18分",
+    "passages": [
+      {
+        "text": "",
+        "items": [
+          {
+            "q": "有關細胞的發現與細胞學說的主要內容，下列敘述何者正確？（附圖為虎克觀察軟木栓薄片所見）",
+            "options": [
+              "細胞學說是在描述細胞發現的過程",
+              "單細胞生物及多細胞生物均適用細胞學說",
+              "虎克利用顯微鏡觀察軟木栓薄片，將看到如上圖的小格子稱為細胞",
+              "細胞學說主要內容指出細胞的基本構造為細胞膜、細胞質和細胞核"
+            ],
+            "image": "images/test2/b1.png",
+            "correct": 1,
+            "no": 1
+          },
+          {
+            "q": "動物細胞與植物細胞中控制物質進出的門戶分別為何種構造？",
+            "options": [
+              "動物為細胞膜，植物為細胞壁",
+              "動物為細胞壁，植物為細胞膜",
+              "兩者均為細胞膜",
+              "兩者均為細胞壁"
+            ],
+            "correct": 2,
+            "no": 2
+          },
+          {
+            "q": "(甲)蓋上蓋玻片時，先使蓋玻片與載玻片呈 45 度角，再輕輕放下；(乙)蓋上蓋玻片時，先使蓋玻片與載玻片呈 90 度角，再輕輕放下；(丙)如果蓋玻片下有少許氣泡，以手指按壓趕出；(丁)如果蓋玻片下有少許氣泡，以鉛筆筆尖輕壓趕出。上述關於避免氣泡出現在視野中的方法，哪些是正確的？",
+            "options": [
+              "(甲)(丙)(丁)",
+              "(乙)(丙)",
+              "(甲)(丁)",
+              "(乙)(丙)(丁)"
+            ],
+            "correct": 2,
+            "no": 3
+          },
+          {
+            "q": "下列何者<b>不符合</b>細胞構造的敘述？",
+            "options": [
+              "細胞核多呈球狀",
+              "細胞質為膠狀的水溶液",
+              "顯微鏡觀察軟木栓的薄片，可以發現細胞的完整基本構造",
+              "細胞膜可以區隔細胞與外界環境"
+            ],
+            "correct": 2,
+            "no": 4
+          },
+          {
+            "q": "小翰欲將口腔的表皮細胞染色，下列何者是正確的染色步驟？(甲)在載玻片上滴上亞甲藍液；(乙)以牙籤鈍端刮取牙齒表面；(丙)以牙籤鈍端刮取口腔內膜；(丁)將刮取到的細胞塗抹於亞甲藍液上；(戊)用濾紙吸水。",
+            "options": [
+              "(甲)(乙)(丁)(戊)",
+              "(甲)(乙)(丁)",
+              "(甲)(丙)(丁)",
+              "(甲)(丙)(丁)(戊)"
+            ],
+            "correct": 2,
+            "no": 5
+          },
+          {
+            "q": "圖(一)、圖(二)分別代表人體的口腔皮膜細胞和洋蔥表皮細胞，則下列何者正確？",
+            "options": [
+              "甲和丁的構造相同",
+              "亞甲藍液主要用來將乙構造染色",
+              "丙可行光合作用",
+              "洋蔥表皮細胞看不到葉綠體"
+            ],
+            "image": "images/test2/b6.png",
+            "correct": 3,
+            "no": 6
+          },
+          {
+            "q": "阿翰撕下葉片的下表皮組織，置於顯微鏡下觀察，如右圖所示。甲與乙代表所觀察到的兩種不同的細胞，丙為細胞中的綠色顆粒，丁與戊為細胞中的組成結構。請問下列敘述何者<b>錯誤</b>？",
+            "options": [
+              "甲為表皮細胞，乙為保衛細胞",
+              "丙主要功能為進行光合作用，製造葡萄糖",
+              "丁為細胞膜，可控制物質的進出",
+              "戊的主要成分是脂質，可保護與維持細胞形狀"
+            ],
+            "image": "images/test2/b7.png",
+            "correct": 3,
+            "no": 7
+          }
+        ]
+      },
+      {
+        "text": "喬巴利用複式顯微鏡觀察「鴨跖草葉片下表皮」、「洋蔥表皮細胞」與「人體口腔皮膜細胞」，以下為觀察後，依序所畫出的細胞，根據此三圖，試回答 8.、9.題：",
+        "items": [
+          {
+            "q": "有關三種細胞觀察的描述，下列何者<b>錯誤</b>？",
+            "options": [
+              "人體口腔皮膜細胞經染色後，細胞核清晰可見",
+              "鴨跖草保衛細胞不需染色，就可以清楚看到葉綠體",
+              "洋蔥表皮細胞經染色後，可清楚見到液胞",
+              "鴨跖草葉片下表皮細胞，無法看見葉綠體"
+            ],
+            "correct": 2,
+            "no": 8
+          },
+          {
+            "q": "有關三種細胞構造的比較（見下表，○表示有、×表示沒有），下列何者<b>錯誤</b>？",
+            "options": [
+              "細胞核",
+              "細胞膜",
+              "葉綠體",
+              "細胞壁"
+            ],
+            "image": "images/test2/b9.png",
+            "correct": 2,
+            "no": 9
+          }
+        ],
+        "image": "images/test2/g89.png"
+      }
+    ]
+  }
+]
+};
+
+let currentMode = "quiz"; // quiz | print
+
+const contentEl = document.getElementById("content");
+const scoreBar = document.getElementById("scoreBar");
+const scoreText = document.getElementById("scoreText");
+
+function render(){
+  window.examAnswersRevealed = false;
+  contentEl.innerHTML = "";
+  DATA.sections.forEach((sec, si)=> contentEl.appendChild(renderSection(sec, si)));
+  if(currentMode==="quiz"){
+    scoreBar.classList.add("show");
+    updateScore();
+  } else {
+    scoreBar.classList.remove("show");
+    contentEl.querySelectorAll(".opt").forEach(o=>o.classList.add("disabled"));
+    contentEl.querySelectorAll(".opt.is-correct").forEach(o=>o.classList.add("correct"));
+  }
+}
+
+function renderSection(sec, si){
+  const block = document.createElement("section");
+  block.className = "block";
+  block.innerHTML = `<h2>${sec.title}</h2><p class="meta">${sec.meta}</p>`
+    + (sec.note ? `<div class="sec-note">${sec.note}</div>` : "")
+    + (sec.pre ? `<div class="sec-pre">${sec.pre}</div>` : "");
+
+  if(sec.type==="fill"){
+    sec.items.forEach((it,i)=>{
+      const q = document.createElement("div");
+      q.className = "q";
+      const shown = it.answers.join(" ／ ");
+      q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q}</div>
+        <div class="fill-row"><input type="text" class="blank${sec.wide ? " wide" : ""}" autocomplete="off" placeholder="${sec.placeholder || "作答"}"><span class="feedback"></span></div>
+        <div class="answer-reveal">正解：${shown}</div>`;
+      q.querySelector("input.blank").dataset.answers = JSON.stringify(it.answers);
+      if(currentMode!=="quiz"){ q.querySelector("input.blank").disabled = true; q.querySelector(".answer-reveal").classList.add("show"); }
+      block.appendChild(q);
+    });
+  }
+
+  else if(sec.type==="explain"){
+    sec.items.forEach((it,i)=>{
+      const q = document.createElement("div");
+      q.className = "q";
+      q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q}</div>
+        <textarea class="explain-box" placeholder="寫下你的解釋（送出成績後對照參考答案）"></textarea>
+        <div class="answer-reveal">參考答案：${it.answer}</div>`;
+      if(currentMode!=="quiz"){ q.querySelector("textarea").remove(); q.querySelector(".answer-reveal").classList.add("show"); }
+      block.appendChild(q);
+    });
+  }
+
+  else if(sec.type==="mc"){
+    sec.items.forEach((it,i)=>{
+      const q = document.createElement("div");
+      q.className = "q";
+      const optsHtml = it.options.map((op,oi)=>`
+        <div class="opt" data-idx="${oi}" data-correct="${oi===it.correct}">
+          <span class="tag">(${String.fromCharCode(65+oi)})</span><span>${op}</span>
+        </div>`).join("");
+      const imgHtml = it.image ? `<img src="${it.image}" alt="題目附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">` : "";
+      const img2Html = it.image2 ? `<img src="${it.image2}" alt="題目附圖2" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">` : "";
+      q.innerHTML = `<div class="q-text"><span class="q-num">${it.no||i+1}.</span>${it.q}</div>
+        ${imgHtml}${img2Html}
+        <div class="opts">${optsHtml}</div>`;
+      q.querySelectorAll(".opt").forEach(optEl=>{
+        if(optEl.dataset.correct==="true") optEl.classList.add("is-correct");
+        optEl.addEventListener("click", ()=>selectOption(q, optEl));
+      });
+      block.appendChild(q);
+    });
+  }
+
+  else if(sec.type==="reading"){
+    sec.passages.forEach(p=>{
+      const passageDiv = document.createElement("div");
+      passageDiv.className = "passage";
+      passageDiv.innerHTML = `${p.label ? `<span class="passage-label">${p.label}</span>`:""}${p.text}${p.image ? `<img src="${p.image}" alt="題組附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-top:10px;border:1px solid var(--paper-line);">`:""}`;
+      if(p.text || p.image) block.appendChild(passageDiv);
+      p.items.forEach((it,i)=>{
+        const q = document.createElement("div");
+        q.className = "q";
+        const optsHtml = it.options.map((op,oi)=>`
+          <div class="opt" data-idx="${oi}" data-correct="${oi===it.correct}">
+            <span class="tag">(${String.fromCharCode(65+oi)})</span><span>${op}</span>
+          </div>`).join("");
+        q.innerHTML = `<div class="q-text"><span class="q-num">${it.no||i+1}.</span>${it.q}</div>
+          ${it.image ? `<img src="${it.image}" alt="題目附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">`:""}
+          <div class="opts">${optsHtml}</div>`;
+        q.querySelectorAll(".opt").forEach(optEl=>{
+          if(optEl.dataset.correct==="true") optEl.classList.add("is-correct");
+          optEl.addEventListener("click", ()=>selectOption(q, optEl));
+        });
+        block.appendChild(q);
+      });
+    });
+  }
+
+  return block;
+}
+
+function selectOption(qEl, optEl){
+  if(currentMode!=="quiz") return;
+  if(qEl.dataset.answered==="true") return;
+  qEl.dataset.answered = "true";
+  qEl.querySelectorAll(".opt").forEach(o=>o.classList.add("disabled"));
+  optEl.classList.add("selected");
+  const correctOpt = qEl.querySelector('.opt[data-correct="true"]');
+  qEl.dataset.studentAnswer = optEl.textContent.trim();
+  qEl.dataset.correctAnswer = correctOpt ? correctOpt.textContent.trim() : "";
+  qEl.dataset.isCorrect = (optEl.dataset.correct==="true") ? "true" : "false";
+  updateScore();
+}
+
+function updateScore(){
+  let total = 0, answered = 0, correct = 0;
+  contentEl.querySelectorAll(".q").forEach(q=>{
+    const gradable = q.querySelector(".opts") || q.querySelector("input.blank");
+    if(!gradable) return;
+    total++;
+    if(q.dataset.studentAnswer !== undefined){
+      answered++;
+      if(q.dataset.isCorrect === "true") correct++;
+    }
+  });
+  if(window.examAnswersRevealed){
+    scoreText.textContent = `${correct} / ${total}`;
+  } else {
+    scoreText.textContent = `已作答 ${answered} / ${total} 題`;
+  }
+}
+window.updateScore = updateScore;
+
+// 填寫題（注音／國字、改錯）：去掉空白與標點後和正解比對；注音的一聲符號「ˉ」可寫可不寫
+function normFill(s){
+  return String(s).replace(/[\sˉ　，、。．.,;；:：!！?？「」『』（）()【】→\-－—]/g, "").trim();
+}
+document.addEventListener("input", (e)=>{
+  const input = e.target;
+  if(!input.matches || !input.matches("input.blank")) return;
+  const q = input.closest(".q");
+  const answers = JSON.parse(input.dataset.answers || "[]");
+  const val = input.value.trim();
+  if(!val){ delete q.dataset.studentAnswer; delete q.dataset.isCorrect; }
+  else {
+    q.dataset.studentAnswer = val;
+    q.dataset.correctAnswer = answers.join(" ／ ");
+    q.dataset.isCorrect = answers.some(a => normFill(a) === normFill(val)) ? "true" : "false";
+  }
+  updateScore();
+});
+
+document.getElementById("resetBtn").addEventListener("click", render);
+document.getElementById("quizModeBtn").addEventListener("click", ()=>{
+  currentMode = "quiz";
+  document.getElementById("quizModeBtn").classList.add("active");
+  document.getElementById("printModeBtn").classList.remove("active");
+  render();
+});
+document.getElementById("printModeBtn").addEventListener("click", ()=>{
+  if(document.getElementById("printModeBtn").disabled) return;
+  currentMode = "print";
+  document.getElementById("printModeBtn").classList.add("active");
+  document.getElementById("quizModeBtn").classList.remove("active");
+  render();
+});
+
+window.unlockPrintMode = function(){
+  document.getElementById("printModeBtn").disabled = false;
+};
+
+render();
+</script>
+<script src="../sync.js"></script>
+</body>
+</html>

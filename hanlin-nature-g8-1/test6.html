@@ -1,0 +1,822 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>段考題庫｜自然第6回 - 聲音的產生與傳播、音調響度</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@500;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#faf6ec;
+    --paper-line:#e3dcc8;
+    --ink:#26332b;
+    --ink-soft:#5b6b5f;
+    --chalk-green:#2f4538;
+    --chalk-green-2:#3d5a48;
+    --pen-red:#b8433a;
+    --pen-red-soft:#f4dedb;
+    --ok-green:#3f7d52;
+    --ok-green-soft:#dfeee1;
+    --gold:#b5842a;
+    --radius:10px;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:"Noto Sans TC",sans-serif;
+    line-height:1.7;
+  }
+  header.hero{
+    background:var(--chalk-green);
+    color:#eef2ea;
+    padding:28px 20px 40px;
+    position:relative;
+  }
+  header.hero::after{
+    content:"";
+    position:absolute;
+    left:0; right:0; bottom:-1px;
+    height:14px;
+    background:repeating-linear-gradient(90deg,var(--paper) 0 18px, transparent 18px 20px);
+  }
+  .hero-inner{max-width:880px;margin:0 auto;}
+  .breadcrumb a{color:#cfe0d1;text-decoration:none;font-size:14px;}
+  .breadcrumb a:hover{text-decoration:underline;}
+  h1{
+    font-family:"Noto Serif TC",serif;
+    font-weight:700;
+    font-size:clamp(24px,4vw,34px);
+    margin:10px 0 6px;
+  }
+  .subtitle{color:#cfe0d1;font-size:15px;margin:0;}
+  main{max-width:880px;margin:0 auto;padding:28px 20px 80px;}
+
+  .controls{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:22px;
+  }
+  .mode-toggle{display:flex;border:2px solid var(--chalk-green);border-radius:999px;overflow:hidden;}
+  .mode-toggle button{
+    background:transparent;border:none;padding:8px 16px;font-size:14px;font-weight:700;
+    color:var(--chalk-green);cursor:pointer;font-family:"Noto Sans TC",sans-serif;
+  }
+  .mode-toggle button.active{background:var(--gold);color:#fff;}
+  .mode-toggle button:disabled{opacity:.4;cursor:not-allowed;}
+
+  .score-bar{
+    display:none;
+    align-items:center;
+    justify-content:space-between;
+    background:#fff;
+    border:1px solid var(--paper-line);
+    border-left:5px solid var(--gold);
+    border-radius:var(--radius);
+    padding:12px 18px;
+    margin-bottom:22px;
+    font-size:14px;
+  }
+  .score-bar.show{display:flex;}
+  .score-bar strong{font-size:18px;color:var(--gold);}
+  .score-bar button{
+    background:none;border:1px solid var(--ink-soft);color:var(--ink-soft);
+    border-radius:6px;padding:6px 12px;font-size:13px;cursor:pointer;
+  }
+
+  section.block{
+    background:#fff;
+    border:1px solid var(--paper-line);
+    border-radius:var(--radius);
+    padding:22px 22px 26px;
+    margin-bottom:20px;
+  }
+  .block h2{
+    font-family:"Noto Serif TC",serif;
+    font-size:19px;
+    margin:0 0 4px;
+    color:var(--chalk-green);
+  }
+  .block .meta{color:var(--ink-soft);font-size:13px;margin:0 0 16px;}
+
+  .q{margin-bottom:18px;padding-bottom:16px;border-bottom:1px dashed var(--paper-line);}
+  .q:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0;}
+  .q-text{font-size:15.5px;margin-bottom:8px;}
+  .q-num{color:var(--gold);font-weight:700;margin-right:4px;}
+
+  .opts{display:grid;gap:8px;}
+  .opt{
+    display:flex;gap:8px;align-items:flex-start;
+    border:1.5px solid var(--paper-line);
+    border-radius:8px;
+    padding:9px 12px;
+    cursor:pointer;
+    font-size:14.5px;
+    background:#fffdf8;
+  }
+  .opt:hover{border-color:var(--chalk-green-2);}
+  .opt.selected{border-color:var(--chalk-green-2);background:#eef3ea;}
+  .opt.correct{border-color:var(--ok-green);background:var(--ok-green-soft);}
+  .opt.wrong{border-color:var(--pen-red);background:var(--pen-red-soft);}
+  .opt .tag{font-weight:700;color:var(--ink-soft);}
+  .opt.correct .tag{color:var(--ok-green);}
+  .opt.wrong .tag{color:var(--pen-red);}
+  .opt.disabled{cursor:default;}
+
+  .passage{
+    background:#f5f2e8;border-radius:8px;padding:14px 16px;margin-bottom:14px;
+    font-size:14.5px;white-space:pre-line;
+  }
+  .passage-label{font-weight:700;color:var(--chalk-green);margin-bottom:4px;display:block;}
+
+  .sec-note{font-size:13.5px;color:var(--ink-soft);background:#f5f2e8;border-radius:8px;padding:8px 12px;margin:-6px 0 14px;}
+  .sec-pre{background:#f5f2e8;border-radius:8px;padding:10px 14px;margin:-4px 0 14px;font-size:14.5px;}
+  .fill-row{display:flex;flex-wrap:wrap;align-items:center;gap:8px;}
+  input.blank{
+    font-family:"Noto Sans TC",sans-serif;font-size:15.5px;border:none;border-bottom:2px solid var(--chalk-green-2);
+    background:#fffdf8;padding:4px 6px;width:170px;max-width:100%;
+  }
+  input.blank.wide{width:100%;}
+  textarea.explain-box{
+    width:100%;min-height:52px;font-family:"Noto Sans TC",sans-serif;font-size:15px;
+    border:1.5px solid var(--paper-line);border-radius:8px;padding:8px 10px;background:#fffdf8;resize:vertical;
+  }
+  .feedback{font-weight:700;font-size:15px;}
+  .feedback.ok{color:var(--ok-green);}
+  .feedback.no{color:var(--pen-red);}
+  .answer-reveal{display:none;margin-top:8px;font-size:14px;color:var(--ok-green);background:var(--ok-green-soft);border-radius:6px;padding:6px 12px;}
+  .answer-reveal.show{display:block;}
+  .zh-und{text-decoration:underline;text-underline-offset:3px;}
+  .footer-link{
+    display:block;text-align:center;margin-top:30px;color:var(--chalk-green);
+    text-decoration:none;font-weight:700;font-size:14px;
+  }
+  .footer-link:hover{text-decoration:underline;}
+
+  @media print{
+    header.hero, .controls, .score-bar, .mini-btn, .footer-link{display:none !important;}
+    body{background:#fff;}
+    section.block{border:none;box-shadow:none;padding:8px 0;margin-bottom:14px;}
+    .opt.correct{background:none;border:none;font-weight:700;}
+    .opt.correct::after{content:" ← 正解";color:var(--pen-red);}
+    .opt{border:none;padding:2px 0;}
+    main{max-width:100%;padding:0 24px;}
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="breadcrumb"><a href="https://jenlin2002.github.io/">🏠 回總目錄</a> ／ <a href="../hanlin-nature-g8-1.html" style="color:#cfe0d1;">段考題庫</a></div>
+    <h1>自然・第6回</h1>
+    <p class="subtitle">3-3～3-4 聲音的產生與傳播、音調響度｜翰林版八年級自然（三）Ａ卷</p>
+  </div>
+</header>
+
+<main>
+  <div class="controls">
+    <div class="mode-toggle">
+      <button id="quizModeBtn" class="active">✏️ 測驗模式</button>
+      <button id="printModeBtn" disabled title="完成測驗並送出成績後才能查看">🖨️ 完整題目與解答（送出成績後解鎖）</button>
+    </div>
+  </div>
+
+  <div class="score-bar" id="scoreBar">
+    <div>目前得分：<strong id="scoreText">0 / 0</strong>（選擇題）</div>
+    <button id="resetBtn">重新作答</button>
+  </div>
+
+  <div id="content"></div>
+
+  <a class="footer-link" href="../hanlin-nature-g8-1.html">← 回段考題庫總覽</a>
+</main>
+
+<script>
+
+window.EXAM_META = { version: "自然A卷", examLabel: "自然第6回" };
+const DATA = {
+  sections: [
+  {
+    "type": "reading",
+    "title": "A部分 基礎題　一、選擇題",
+    "meta": "每題3分，共54分",
+    "passages": [
+      {
+        "text": "",
+        "items": [
+          {
+            "q": "右圖為一已知聲波的示意圖，若另一聲音的音調較此已知聲波低，但響度相同，請問下列哪一個圖最能表示此聲音？",
+            "options": [
+              "圖(A)",
+              "圖(B)",
+              "圖(C)",
+              "圖(D)"
+            ],
+            "image": "images/test6/q1a.png",
+            "image2": "images/test6/q1.png",
+            "correct": 2,
+            "no": 1
+          },
+          {
+            "q": "一位音樂家演奏出兩個聲音 X 和 Y，其聲波如右圖所示，關於 X 和 Y 的比較，下列何者正確？",
+            "options": [
+              "Y 的音色比 X 柔和",
+              "X 和 Y 有相同的頻率",
+              "X 和 Y 傳播的速率相同",
+              "Y 的音調比 X 高"
+            ],
+            "image": "images/test6/q2.png",
+            "correct": 2,
+            "no": 2
+          },
+          {
+            "q": "最傳統的隔音窗就是裝兩層普通窗戶，如右圖所示，當兩層的窗戶都關上時，窗外大卡車猛按一聲喇叭，圖中 c 處還可聽到一些聲響，則 a、b、c 三處所聽到喇叭的聲音比較，下列何者正確？（假設 a、b、c 三處均無風且空氣的溫度、溼度皆相同）",
+            "options": [
+              "波長：a＞b＞c",
+              "音調：a＜b＜c",
+              "聲速：a＞b＞c",
+              "振幅：a＞b＞c"
+            ],
+            "image": "images/test6/q3.png",
+            "correct": 3,
+            "no": 3
+          },
+          {
+            "q": "有關聲音的敘述，下列何者<b>錯誤</b>？",
+            "options": [
+              "在空曠的大禮堂說話時常會有回聲，此現象可證明聲音有反射現象",
+              "醫生使用的聽診器是利用聲音的反射",
+              "在教室中說話，沒有聽到回聲，是因為空間太小，聲音無法反射的緣故",
+              "原聲和回聲的頻率及速率相同"
+            ],
+            "correct": 2,
+            "no": 4
+          },
+          {
+            "q": "甲音叉以振動頻率 2000 赫發出聲音，響度為 80 分貝，乙音叉以振動頻率 6000 赫發出聲音，響度為 30 分貝，則哪一支音叉發出的聲音傳播較遠？",
+            "options": [
+              "甲",
+              "乙",
+              "兩者一樣遠",
+              "以上皆有可能"
+            ],
+            "correct": 0,
+            "no": 5
+          },
+          {
+            "q": "在定溫下，先後敲擊甲、乙兩音叉，分別測得兩聲波在空氣中的振幅對時間的關係如右圖，則下列敘述何者正確？",
+            "options": [
+              "響度：甲＞乙",
+              "聲速：甲＜乙",
+              "週期：甲＜乙",
+              "音調：甲＜乙"
+            ],
+            "image": "images/test6/q6.png",
+            "correct": 3,
+            "no": 6
+          },
+          {
+            "q": "四個振動源分別在同一個環境中產生聲音，它們所產生的聲音其特性如下表所示。有關它們產生的聲音在空氣中傳播的敘述，下列何者正確？",
+            "options": [
+              "甲所產生的聲音，人耳無法聽見",
+              "乙所產生的聲音傳得最快",
+              "丙所產生的聲音響度最大",
+              "丁所產生的聲音音調最高"
+            ],
+            "image": "images/test6/q7.png",
+            "correct": 3,
+            "no": 7
+          },
+          {
+            "q": "演奏吉他時，下列哪些方法可以提高音調？(甲)彈大力一些；(乙)彈較細的弦；(丙)將弦放鬆一些；(丁)將弦按短一點；(戊)彈快一些。",
+            "options": [
+              "(乙)(丁)",
+              "(甲)(丁)(戊)",
+              "(乙)(丙)(丁)",
+              "(丙)(戊)"
+            ],
+            "correct": 0,
+            "no": 8
+          },
+          {
+            "q": "朝會時我們不用看就能分辨出訓導主任與生教組長的聲音，主要是因為兩種聲音有何<b>不同</b>？",
+            "options": [
+              "分貝數不同",
+              "波形不同",
+              "頻率不同",
+              "表達方式不同"
+            ],
+            "correct": 1,
+            "no": 9
+          },
+          {
+            "q": "有關聲波的敘述，下列何者正確？",
+            "options": [
+              "聲音的高低稱為響度，以分貝為單位",
+              "使勁打鼓，響度增加，聲速也變快",
+              "女性的音調高，故談話時聲速較快",
+              "若人們長期處在超過 85 分貝以上的聲音環境中，聽力容易受損"
+            ],
+            "correct": 3,
+            "no": 10
+          },
+          {
+            "q": "下列聲音中，何者較易造成聽力的受損？",
+            "options": [
+              "65dB、300Hz",
+              "110dB、200Hz",
+              "90dB、4000Hz",
+              "50dB、5000Hz"
+            ],
+            "correct": 1,
+            "no": 11
+          },
+          {
+            "q": "右表為兩種動物所能聽見聲音的頻率範圍。在空氣溫度為 15°C，聲波波速為 34000cm/s 的環境下，若發出波長為 2cm，且音量足夠大的聲波，則參閱表中的資訊，下列有關此兩種動物是否能聽到此聲波的敘述何者最合理？",
+            "options": [
+              "兩種動物都聽得到此聲波",
+              "兩種動物都聽不到此聲波",
+              "此聲波大象聽得到，而兔子聽不到",
+              "此聲波兔子聽得到，而大象聽不到"
+            ],
+            "image": "images/test6/q12.png",
+            "correct": 3,
+            "no": 12
+          },
+          {
+            "q": "電影院重新裝潢，設計師為了防止聲音被回聲干擾，他在劇院四周的牆壁上，可以做下列哪幾項處理？(甲)不對稱的牆面；(乙)懸掛柔軟的布幔；(丙)焊上光滑的鐵板；(丁)貼上多孔的木板。",
+            "options": [
+              "僅(甲)(乙)(丁)",
+              "僅(甲)(乙)(丙)",
+              "僅(乙)(丙)(丁)",
+              "(甲)(乙)(丙)(丁)"
+            ],
+            "correct": 0,
+            "no": 13
+          },
+          {
+            "q": "潛艇一號探測船以 45000 赫的超聲波探測海洋深度時，從聲納發出聲波到接收回聲共花了 8 秒，若探測船把聲納改為 90000 赫超聲波時，則從聲納發出聲波到接收回聲，總共花了多少時間？",
+            "options": [
+              "16 秒",
+              "8 秒",
+              "4 秒",
+              "2 秒"
+            ],
+            "correct": 1,
+            "no": 14
+          },
+          {
+            "q": "關於聲音的敘述，下列何者正確？",
+            "options": [
+              "超聲波是指波速快到人類聽不到的聲音",
+              "分辨不同樂器聲音是因為音調不同",
+              "聲音愈大聲可以傳得愈遠",
+              "海面下沒有空氣，所以聲音不能傳播"
+            ],
+            "correct": 2,
+            "no": 15
+          },
+          {
+            "q": "下列是日常生活中，我們常遇到的情況：(甲)山谷裡吶喊回音連連；(乙)雷聲隆隆連續不止；(丙)將雙手圍成喇叭狀放在嘴旁，對遠處的人喊話；(丁)漁船利用聲納偵測魚群。以上與反射原理有關的有哪些？",
+            "options": [
+              "僅(甲)(乙)(丙)",
+              "僅(乙)(丙)(丁)",
+              "僅(甲)(乙)(丁)",
+              "(甲)(乙)(丙)(丁)"
+            ],
+            "correct": 3,
+            "no": 16
+          },
+          {
+            "q": "有關聲音的敘述，下列何者正確？(甲)回聲的傳播速率與原聲音的傳播速率相同；(乙)回聲的頻率與原聲音的頻率相同；(丙)回聲的響度與原聲音的響度相同；(丁)頻率較高的聲音在空氣中傳播速率較快。",
+            "options": [
+              "僅(甲)",
+              "僅(甲)(乙)",
+              "僅(甲)(乙)(丙)",
+              "(甲)(乙)(丙)(丁)"
+            ],
+            "correct": 1,
+            "no": 17
+          },
+          {
+            "q": "下列何者與超聲波<b>無關</b>？",
+            "options": [
+              "蝙蝠飛行以聲波探測距離",
+              "聲納探測魚群的位置",
+              "一般婦產科為孕婦掃描胎兒情形",
+              "使用傳聲筒將聲音集中到同一方向"
+            ],
+            "correct": 3,
+            "no": 18
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "type": "reading",
+    "title": "二、素養題",
+    "meta": "每題4分，共28分",
+    "passages": [
+      {
+        "text": "",
+        "items": [
+          {
+            "q": "甲、乙、丙、丁四支不同長度的空心管子，管子的下端皆封閉，上端皆敞開，如右圖所示。假設小明利用這四支管子可以吹出音調，且為單一頻率的聲音，每支管子「管口至封閉端的距離」皆為其所發出聲波波長的 1/4，則哪一支管子所發出聲音的頻率最大？",
+            "options": [
+              "甲管",
+              "乙管",
+              "丙管",
+              "丁管"
+            ],
+            "correct": 0,
+            "no": 1
+          },
+          {
+            "q": "下圖為三種樂器所發出的聲音，經示波器轉換後所描繪出在 0.01 秒時間長度內的波形與波數，則哪一個樂器發出的聲音音調最高？",
+            "options": [
+              "音叉",
+              "單簧管",
+              "鋼琴",
+              "三者均相同"
+            ],
+            "image": "images/test6/s2.png",
+            "correct": 1,
+            "no": 2
+          }
+        ]
+      },
+      {
+        "text": "右圖為在 0.01 秒內所產生的甲、乙、丙、丁四聲波，試回答 3.、4.題：",
+        "items": [
+          {
+            "q": "下列何者音調最高？",
+            "options": [
+              "甲",
+              "乙",
+              "丙",
+              "丁"
+            ],
+            "correct": 1,
+            "no": 3
+          },
+          {
+            "q": "響度相同而音調不同的為何者？",
+            "options": [
+              "甲、乙",
+              "乙、丙",
+              "丙、丁",
+              "甲、丁"
+            ],
+            "correct": 1,
+            "no": 4
+          }
+        ],
+        "image": "images/test6/g34.png"
+      },
+      {
+        "text": "已知聲速為 340 公尺/秒，某人在山谷中甲、乙兩峭壁間喊叫，如右圖，經過 2 秒時聽到回聲，再經 1 秒又聽到另一個回聲，試回答 5.～ 7.題：",
+        "items": [
+          {
+            "q": "第一個回聲來自下列何處的聲音反射現象？",
+            "options": [
+              "甲",
+              "乙",
+              "甲、乙同時",
+              "地面"
+            ],
+            "correct": 1,
+            "no": 5
+          },
+          {
+            "q": "聲音由甲峭壁傳到乙峭壁需要多少時間呢？",
+            "options": [
+              "5 秒",
+              "3 秒",
+              "2.5 秒",
+              "2 秒"
+            ],
+            "correct": 2,
+            "no": 6
+          },
+          {
+            "q": "甲、乙間的距離約為幾公尺？",
+            "options": [
+              "1700",
+              "1020",
+              "850",
+              "680"
+            ],
+            "correct": 2,
+            "no": 7
+          }
+        ],
+        "image": "images/test6/g57.png"
+      }
+    ]
+  },
+  {
+    "type": "reading",
+    "title": "B部分 活用題",
+    "meta": "每題2分，共18分",
+    "passages": [
+      {
+        "text": "",
+        "items": [
+          {
+            "q": "右表為不同動物的聽覺所能聽到的聲音頻率範圍，請問下列哪一個頻率的聲音是人和狗可以聽到，但貓和海豚卻聽不到？",
+            "options": [
+              "10 赫",
+              "70 赫",
+              "10000 赫",
+              "30000 赫"
+            ],
+            "image": "images/test6/b1.png",
+            "correct": 1,
+            "no": 1
+          },
+          {
+            "q": "敲擊三支不同音叉甲、乙、丙，在相同的空氣條件下，已知其波長分別為 1.2m、1.0m、0.8m，則下列何者正確？",
+            "options": [
+              "甲是傳播速率最快的",
+              "丙是頻率最大的",
+              "甲是音調最高的",
+              "丙是響度最大的"
+            ],
+            "correct": 1,
+            "no": 2
+          },
+          {
+            "q": "如下圖，有粗細材質相同的弦線，其長度及砝碼重量皆不同，當在 A 處撥動弦線使之發出聲音時，弦振動頻率大小順序，下列何者正確？",
+            "options": [
+              "甲＞乙＞丙",
+              "乙＞甲＞丙",
+              "丙＞甲＞乙",
+              "甲＞丙＞乙"
+            ],
+            "image": "images/test6/b3.png",
+            "correct": 1,
+            "no": 3
+          },
+          {
+            "q": "下列何者的音色與其他三者<b>不同</b>？",
+            "options": [
+              "圖(A)",
+              "圖(B)",
+              "圖(C)",
+              "圖(D)"
+            ],
+            "image": "images/test6/b4.png",
+            "correct": 1,
+            "no": 4
+          },
+          {
+            "q": "漁夫在海上捕魚時，常使用可接收及發射超聲波的儀器，從海面向著正下方的海底探測魚群的狀況。假設在海水中超聲波的傳播速率為 1500m/s，則下列敘述何者正確？",
+            "options": [
+              "發射超聲波 0.04 秒後傳回某魚群的訊息，該魚群約在海面下 30m 處",
+              "使用超聲波探測海中的魚群時，是運用聲音折射原理得知魚群的位置",
+              "使用超聲波探測魚群的位置，原因是只有超聲波能在海水中傳播",
+              "若超聲波從海水中傳入空氣中，其傳播速率不會改變"
+            ],
+            "correct": 0,
+            "no": 5
+          },
+          {
+            "q": "有關噪音的敘述，下列哪些是正確的？(甲)分貝（dB）是響度的單位；(乙)頻率高的聲音，分貝數也高；(丙)婚喪喜慶、民俗活動不可為了達成活動目標，而不考慮噪音問題；(丁)改善噪音問題是政府的事。",
+            "options": [
+              "(甲)(丙)",
+              "(乙)(丁)",
+              "(甲)(乙)",
+              "(甲)(乙)(丙)"
+            ],
+            "correct": 0,
+            "no": 6
+          },
+          {
+            "q": "超聲波與人耳可以聽見的聲音，何者的週期較大？",
+            "options": [
+              "超聲波",
+              "人耳可聽見的聲音",
+              "兩者一樣大",
+              "必須視傳聲介質而定"
+            ],
+            "correct": 1,
+            "no": 7
+          }
+        ]
+      },
+      {
+        "text": "大頭、小志在假日時，一同去拜訪小莉，到達小莉家時，只見大門深鎖，大頭只好敲門叫人，還好小莉聽出大頭的聲音後，就趕緊開門迎接兩人的來訪。試回答 8.、9.題：",
+        "items": [
+          {
+            "q": "小莉能知道門外的人是誰，其原因為何？",
+            "options": [
+              "每人行走的快慢不同",
+              "每人的聲音音色不同",
+              "每人的聲音音調不同",
+              "每人的聲音響度不同"
+            ],
+            "correct": 1,
+            "no": 8
+          },
+          {
+            "q": "三人中，小志說話速度最快，小莉聲音最尖銳，大頭說話最大聲，請依序排列出三人所發出的聲速快慢？",
+            "options": [
+              "大頭＞小志＞小莉",
+              "小莉＞大頭＞小志",
+              "小莉＞小志＞大頭",
+              "大頭＝小志＝小莉"
+            ],
+            "correct": 3,
+            "no": 9
+          }
+        ]
+      }
+    ]
+  }
+]
+};
+
+let currentMode = "quiz"; // quiz | print
+
+const contentEl = document.getElementById("content");
+const scoreBar = document.getElementById("scoreBar");
+const scoreText = document.getElementById("scoreText");
+
+function render(){
+  window.examAnswersRevealed = false;
+  contentEl.innerHTML = "";
+  DATA.sections.forEach((sec, si)=> contentEl.appendChild(renderSection(sec, si)));
+  if(currentMode==="quiz"){
+    scoreBar.classList.add("show");
+    updateScore();
+  } else {
+    scoreBar.classList.remove("show");
+    contentEl.querySelectorAll(".opt").forEach(o=>o.classList.add("disabled"));
+    contentEl.querySelectorAll(".opt.is-correct").forEach(o=>o.classList.add("correct"));
+  }
+}
+
+function renderSection(sec, si){
+  const block = document.createElement("section");
+  block.className = "block";
+  block.innerHTML = `<h2>${sec.title}</h2><p class="meta">${sec.meta}</p>`
+    + (sec.note ? `<div class="sec-note">${sec.note}</div>` : "")
+    + (sec.pre ? `<div class="sec-pre">${sec.pre}</div>` : "");
+
+  if(sec.type==="fill"){
+    sec.items.forEach((it,i)=>{
+      const q = document.createElement("div");
+      q.className = "q";
+      const shown = it.answers.join(" ／ ");
+      q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q}</div>
+        <div class="fill-row"><input type="text" class="blank${sec.wide ? " wide" : ""}" autocomplete="off" placeholder="${sec.placeholder || "作答"}"><span class="feedback"></span></div>
+        <div class="answer-reveal">正解：${shown}</div>`;
+      q.querySelector("input.blank").dataset.answers = JSON.stringify(it.answers);
+      if(currentMode!=="quiz"){ q.querySelector("input.blank").disabled = true; q.querySelector(".answer-reveal").classList.add("show"); }
+      block.appendChild(q);
+    });
+  }
+
+  else if(sec.type==="explain"){
+    sec.items.forEach((it,i)=>{
+      const q = document.createElement("div");
+      q.className = "q";
+      q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q}</div>
+        <textarea class="explain-box" placeholder="寫下你的解釋（送出成績後對照參考答案）"></textarea>
+        <div class="answer-reveal">參考答案：${it.answer}</div>`;
+      if(currentMode!=="quiz"){ q.querySelector("textarea").remove(); q.querySelector(".answer-reveal").classList.add("show"); }
+      block.appendChild(q);
+    });
+  }
+
+  else if(sec.type==="mc"){
+    sec.items.forEach((it,i)=>{
+      const q = document.createElement("div");
+      q.className = "q";
+      const optsHtml = it.options.map((op,oi)=>`
+        <div class="opt" data-idx="${oi}" data-correct="${oi===it.correct}">
+          <span class="tag">(${String.fromCharCode(65+oi)})</span><span>${op}</span>
+        </div>`).join("");
+      const imgHtml = it.image ? `<img src="${it.image}" alt="題目附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">` : "";
+      const img2Html = it.image2 ? `<img src="${it.image2}" alt="題目附圖2" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">` : "";
+      q.innerHTML = `<div class="q-text"><span class="q-num">${it.no||i+1}.</span>${it.q}</div>
+        ${imgHtml}${img2Html}
+        <div class="opts">${optsHtml}</div>`;
+      q.querySelectorAll(".opt").forEach(optEl=>{
+        if(optEl.dataset.correct==="true") optEl.classList.add("is-correct");
+        optEl.addEventListener("click", ()=>selectOption(q, optEl));
+      });
+      block.appendChild(q);
+    });
+  }
+
+  else if(sec.type==="reading"){
+    sec.passages.forEach(p=>{
+      const passageDiv = document.createElement("div");
+      passageDiv.className = "passage";
+      passageDiv.innerHTML = `${p.label ? `<span class="passage-label">${p.label}</span>`:""}${p.text}${p.image ? `<img src="${p.image}" alt="題組附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-top:10px;border:1px solid var(--paper-line);">`:""}`;
+      if(p.text || p.image) block.appendChild(passageDiv);
+      p.items.forEach((it,i)=>{
+        const q = document.createElement("div");
+        q.className = "q";
+        const optsHtml = it.options.map((op,oi)=>`
+          <div class="opt" data-idx="${oi}" data-correct="${oi===it.correct}">
+            <span class="tag">(${String.fromCharCode(65+oi)})</span><span>${op}</span>
+          </div>`).join("");
+        q.innerHTML = `<div class="q-text"><span class="q-num">${it.no||i+1}.</span>${it.q}</div>
+          ${it.image ? `<img src="${it.image}" alt="題目附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">`:""}
+          <div class="opts">${optsHtml}</div>`;
+        q.querySelectorAll(".opt").forEach(optEl=>{
+          if(optEl.dataset.correct==="true") optEl.classList.add("is-correct");
+          optEl.addEventListener("click", ()=>selectOption(q, optEl));
+        });
+        block.appendChild(q);
+      });
+    });
+  }
+
+  return block;
+}
+
+function selectOption(qEl, optEl){
+  if(currentMode!=="quiz") return;
+  if(qEl.dataset.answered==="true") return;
+  qEl.dataset.answered = "true";
+  qEl.querySelectorAll(".opt").forEach(o=>o.classList.add("disabled"));
+  optEl.classList.add("selected");
+  const correctOpt = qEl.querySelector('.opt[data-correct="true"]');
+  qEl.dataset.studentAnswer = optEl.textContent.trim();
+  qEl.dataset.correctAnswer = correctOpt ? correctOpt.textContent.trim() : "";
+  qEl.dataset.isCorrect = (optEl.dataset.correct==="true") ? "true" : "false";
+  updateScore();
+}
+
+function updateScore(){
+  let total = 0, answered = 0, correct = 0;
+  contentEl.querySelectorAll(".q").forEach(q=>{
+    const gradable = q.querySelector(".opts") || q.querySelector("input.blank");
+    if(!gradable) return;
+    total++;
+    if(q.dataset.studentAnswer !== undefined){
+      answered++;
+      if(q.dataset.isCorrect === "true") correct++;
+    }
+  });
+  if(window.examAnswersRevealed){
+    scoreText.textContent = `${correct} / ${total}`;
+  } else {
+    scoreText.textContent = `已作答 ${answered} / ${total} 題`;
+  }
+}
+window.updateScore = updateScore;
+
+// 填寫題（注音／國字、改錯）：去掉空白與標點後和正解比對；注音的一聲符號「ˉ」可寫可不寫
+function normFill(s){
+  return String(s).replace(/[\sˉ　，、。．.,;；:：!！?？「」『』（）()【】→\-－—]/g, "").trim();
+}
+document.addEventListener("input", (e)=>{
+  const input = e.target;
+  if(!input.matches || !input.matches("input.blank")) return;
+  const q = input.closest(".q");
+  const answers = JSON.parse(input.dataset.answers || "[]");
+  const val = input.value.trim();
+  if(!val){ delete q.dataset.studentAnswer; delete q.dataset.isCorrect; }
+  else {
+    q.dataset.studentAnswer = val;
+    q.dataset.correctAnswer = answers.join(" ／ ");
+    q.dataset.isCorrect = answers.some(a => normFill(a) === normFill(val)) ? "true" : "false";
+  }
+  updateScore();
+});
+
+document.getElementById("resetBtn").addEventListener("click", render);
+document.getElementById("quizModeBtn").addEventListener("click", ()=>{
+  currentMode = "quiz";
+  document.getElementById("quizModeBtn").classList.add("active");
+  document.getElementById("printModeBtn").classList.remove("active");
+  render();
+});
+document.getElementById("printModeBtn").addEventListener("click", ()=>{
+  if(document.getElementById("printModeBtn").disabled) return;
+  currentMode = "print";
+  document.getElementById("printModeBtn").classList.add("active");
+  document.getElementById("quizModeBtn").classList.remove("active");
+  render();
+});
+
+window.unlockPrintMode = function(){
+  document.getElementById("printModeBtn").disabled = false;
+};
+
+render();
+</script>
+<script src="../sync.js"></script>
+</body>
+</html>

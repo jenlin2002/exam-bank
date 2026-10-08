@@ -1,0 +1,821 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>段考題庫｜自然第14回 - 複習</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@500;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#faf6ec;
+    --paper-line:#e3dcc8;
+    --ink:#26332b;
+    --ink-soft:#5b6b5f;
+    --chalk-green:#2f4538;
+    --chalk-green-2:#3d5a48;
+    --pen-red:#b8433a;
+    --pen-red-soft:#f4dedb;
+    --ok-green:#3f7d52;
+    --ok-green-soft:#dfeee1;
+    --gold:#b5842a;
+    --radius:10px;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:"Noto Sans TC",sans-serif;
+    line-height:1.7;
+  }
+  header.hero{
+    background:var(--chalk-green);
+    color:#eef2ea;
+    padding:28px 20px 40px;
+    position:relative;
+  }
+  header.hero::after{
+    content:"";
+    position:absolute;
+    left:0; right:0; bottom:-1px;
+    height:14px;
+    background:repeating-linear-gradient(90deg,var(--paper) 0 18px, transparent 18px 20px);
+  }
+  .hero-inner{max-width:880px;margin:0 auto;}
+  .breadcrumb a{color:#cfe0d1;text-decoration:none;font-size:14px;}
+  .breadcrumb a:hover{text-decoration:underline;}
+  h1{
+    font-family:"Noto Serif TC",serif;
+    font-weight:700;
+    font-size:clamp(24px,4vw,34px);
+    margin:10px 0 6px;
+  }
+  .subtitle{color:#cfe0d1;font-size:15px;margin:0;}
+  main{max-width:880px;margin:0 auto;padding:28px 20px 80px;}
+
+  .controls{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:22px;
+  }
+  .mode-toggle{display:flex;border:2px solid var(--chalk-green);border-radius:999px;overflow:hidden;}
+  .mode-toggle button{
+    background:transparent;border:none;padding:8px 16px;font-size:14px;font-weight:700;
+    color:var(--chalk-green);cursor:pointer;font-family:"Noto Sans TC",sans-serif;
+  }
+  .mode-toggle button.active{background:var(--gold);color:#fff;}
+  .mode-toggle button:disabled{opacity:.4;cursor:not-allowed;}
+
+  .score-bar{
+    display:none;
+    align-items:center;
+    justify-content:space-between;
+    background:#fff;
+    border:1px solid var(--paper-line);
+    border-left:5px solid var(--gold);
+    border-radius:var(--radius);
+    padding:12px 18px;
+    margin-bottom:22px;
+    font-size:14px;
+  }
+  .score-bar.show{display:flex;}
+  .score-bar strong{font-size:18px;color:var(--gold);}
+  .score-bar button{
+    background:none;border:1px solid var(--ink-soft);color:var(--ink-soft);
+    border-radius:6px;padding:6px 12px;font-size:13px;cursor:pointer;
+  }
+
+  section.block{
+    background:#fff;
+    border:1px solid var(--paper-line);
+    border-radius:var(--radius);
+    padding:22px 22px 26px;
+    margin-bottom:20px;
+  }
+  .block h2{
+    font-family:"Noto Serif TC",serif;
+    font-size:19px;
+    margin:0 0 4px;
+    color:var(--chalk-green);
+  }
+  .block .meta{color:var(--ink-soft);font-size:13px;margin:0 0 16px;}
+
+  .q{margin-bottom:18px;padding-bottom:16px;border-bottom:1px dashed var(--paper-line);}
+  .q:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0;}
+  .q-text{font-size:15.5px;margin-bottom:8px;}
+  .q-num{color:var(--gold);font-weight:700;margin-right:4px;}
+
+  .opts{display:grid;gap:8px;}
+  .opt{
+    display:flex;gap:8px;align-items:flex-start;
+    border:1.5px solid var(--paper-line);
+    border-radius:8px;
+    padding:9px 12px;
+    cursor:pointer;
+    font-size:14.5px;
+    background:#fffdf8;
+  }
+  .opt:hover{border-color:var(--chalk-green-2);}
+  .opt.selected{border-color:var(--chalk-green-2);background:#eef3ea;}
+  .opt.correct{border-color:var(--ok-green);background:var(--ok-green-soft);}
+  .opt.wrong{border-color:var(--pen-red);background:var(--pen-red-soft);}
+  .opt .tag{font-weight:700;color:var(--ink-soft);}
+  .opt.correct .tag{color:var(--ok-green);}
+  .opt.wrong .tag{color:var(--pen-red);}
+  .opt.disabled{cursor:default;}
+
+  .passage{
+    background:#f5f2e8;border-radius:8px;padding:14px 16px;margin-bottom:14px;
+    font-size:14.5px;white-space:pre-line;
+  }
+  .passage-label{font-weight:700;color:var(--chalk-green);margin-bottom:4px;display:block;}
+
+  .sec-note{font-size:13.5px;color:var(--ink-soft);background:#f5f2e8;border-radius:8px;padding:8px 12px;margin:-6px 0 14px;}
+  .sec-pre{background:#f5f2e8;border-radius:8px;padding:10px 14px;margin:-4px 0 14px;font-size:14.5px;}
+  .fill-row{display:flex;flex-wrap:wrap;align-items:center;gap:8px;}
+  input.blank{
+    font-family:"Noto Sans TC",sans-serif;font-size:15.5px;border:none;border-bottom:2px solid var(--chalk-green-2);
+    background:#fffdf8;padding:4px 6px;width:170px;max-width:100%;
+  }
+  input.blank.wide{width:100%;}
+  textarea.explain-box{
+    width:100%;min-height:52px;font-family:"Noto Sans TC",sans-serif;font-size:15px;
+    border:1.5px solid var(--paper-line);border-radius:8px;padding:8px 10px;background:#fffdf8;resize:vertical;
+  }
+  .feedback{font-weight:700;font-size:15px;}
+  .feedback.ok{color:var(--ok-green);}
+  .feedback.no{color:var(--pen-red);}
+  .answer-reveal{display:none;margin-top:8px;font-size:14px;color:var(--ok-green);background:var(--ok-green-soft);border-radius:6px;padding:6px 12px;}
+  .answer-reveal.show{display:block;}
+  .zh-und{text-decoration:underline;text-underline-offset:3px;}
+  .footer-link{
+    display:block;text-align:center;margin-top:30px;color:var(--chalk-green);
+    text-decoration:none;font-weight:700;font-size:14px;
+  }
+  .footer-link:hover{text-decoration:underline;}
+
+  @media print{
+    header.hero, .controls, .score-bar, .mini-btn, .footer-link{display:none !important;}
+    body{background:#fff;}
+    section.block{border:none;box-shadow:none;padding:8px 0;margin-bottom:14px;}
+    .opt.correct{background:none;border:none;font-weight:700;}
+    .opt.correct::after{content:" ← 正解";color:var(--pen-red);}
+    .opt{border:none;padding:2px 0;}
+    main{max-width:100%;padding:0 24px;}
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="breadcrumb"><a href="https://jenlin2002.github.io/">🏠 回總目錄</a> ／ <a href="../hanlin-nature-g7-1.html" style="color:#cfe0d1;">段考題庫</a></div>
+    <h1>自然・第14回</h1>
+    <p class="subtitle">第5～6章 複習｜翰林版七年級自然（一）Ａ卷</p>
+  </div>
+</header>
+
+<main>
+  <div class="controls">
+    <div class="mode-toggle">
+      <button id="quizModeBtn" class="active">✏️ 測驗模式</button>
+      <button id="printModeBtn" disabled title="完成測驗並送出成績後才能查看">🖨️ 完整題目與解答（送出成績後解鎖）</button>
+    </div>
+  </div>
+
+  <div class="score-bar" id="scoreBar">
+    <div>目前得分：<strong id="scoreText">0 / 0</strong>（選擇題）</div>
+    <button id="resetBtn">重新作答</button>
+  </div>
+
+  <div id="content"></div>
+
+  <a class="footer-link" href="../hanlin-nature-g7-1.html">← 回段考題庫總覽</a>
+</main>
+
+<script>
+
+window.EXAM_META = { version: "自然A卷", examLabel: "自然第14回" };
+const DATA = {
+  sections: [
+  {
+    "type": "reading",
+    "title": "A部分 基礎題　一、選擇題",
+    "meta": "每題3分，共54分",
+    "passages": [
+      {
+        "text": "",
+        "items": [
+          {
+            "q": "下面哪一種食物組合，在重量相等的前提下，產生的含氮廢物最多？",
+            "options": [
+              "香蕉、羊肉",
+              "芹菜、豬肉",
+              "香雞排、豆腐",
+              "牛肉、沙拉油"
+            ],
+            "correct": 2,
+            "no": 1
+          },
+          {
+            "q": "有關人體內的物質運送方式，下列何者<b>錯誤</b>？",
+            "options": [
+              "氨、尿素和尿液：導管",
+              "抗體：血液",
+              "生長激素：血液",
+              "膽汁：導管"
+            ],
+            "correct": 0,
+            "no": 2
+          },
+          {
+            "q": "右圖為莫藍吃飽飯後，體內血糖濃度的變化情形，則從 B 階段開始發生作用的激素為何？",
+            "options": [
+              "胰島素",
+              "腎上腺素",
+              "甲狀腺素",
+              "升糖素"
+            ],
+            "image": "images/test14/q3.png",
+            "correct": 0,
+            "no": 3
+          },
+          {
+            "q": "有關二氧化碳在呼吸中扮演的角色，下列敘述何者<b>錯誤</b>？",
+            "options": [
+              "二氧化碳刺激腦幹，維持呼吸",
+              "二氧化碳含量上升，會使呼吸加快、加深",
+              "二氧化碳含量需維持一定，才能維持呼吸的頻率",
+              "呼吸時必須將二氧化碳全部排除乾淨，才不會傷害身體"
+            ],
+            "correct": 3,
+            "no": 4
+          },
+          {
+            "q": "下列哪一項符合人體的「恆定性」之敘述？",
+            "options": [
+              "腦神經有 12 對、脊神經有 31 對",
+              "人體的肺臟約由 7 億個肺泡組成",
+              "人體體溫無論何時測量，一定剛好 37°C",
+              "在休息狀態下，成人呼吸運動每分鐘 15～18 次"
+            ],
+            "correct": 3,
+            "no": 5
+          },
+          {
+            "q": "在大熱天裡，一個人運動完之後會有哪些現象產生，藉以降低體溫？(甲)皮膚發紅；(乙)皮脂腺分泌的油脂增加；(丙)血管收縮；(丁)汗液增加；(戊)肌肉會顫抖。",
+            "options": [
+              "僅(甲)(乙)",
+              "僅(甲)(丁)",
+              "僅(丙)(戊)",
+              "(甲)(乙)(丁)"
+            ],
+            "correct": 1,
+            "no": 6
+          },
+          {
+            "q": "(甲)乾燥；(乙)潮溼；(丙)黃色；(丁)粉紅色；(戊)藍色。有關氯化亞鈷試紙的特性，下列組合何者正確？",
+            "options": [
+              "(甲)(丙)",
+              "(乙)(戊)",
+              "(甲)(丁)",
+              "(乙)(丁)"
+            ],
+            "correct": 3,
+            "no": 7
+          },
+          {
+            "q": "在上課時，因有人不小心放臭屁，大家趕緊用手捏住鼻子閉氣，但是不久後，卻忍不住而大口呼吸起來。「忍不住而大口呼吸」是因為血液中哪一種氣體含量增高所造成？",
+            "options": [
+              "氧氣",
+              "甲烷",
+              "一氧化碳",
+              "二氧化碳"
+            ],
+            "correct": 3,
+            "no": 8
+          },
+          {
+            "q": "「教室裡感覺暗暗的，我伸手打開電燈。」在這「刺激──反應」中，下列何者正確？",
+            "options": [
+              "接受刺激的是手部肌肉",
+              "產生反應的部位是眼睛",
+              "控制整個反應的中樞是脊髓",
+              "由眼睛看見一直到打開電燈，所花的時間叫做反應時間"
+            ],
+            "correct": 3,
+            "no": 9
+          },
+          {
+            "q": "心理學有一個「煮蛙效應」；意指將一隻青蛙突然放在 100°C 沸水中，他會立刻跳出水外。但如果放在 20°C 的涼水中，再緩慢加熱，最後青蛙會舒服的死在沸水中。為什麼第二隻青蛙會有此下場？",
+            "options": [
+              "青蛙對溫度的刺激已感到疲勞",
+              "青蛙體溫下降",
+              "周圍氣溫開始降低",
+              "青蛙的感覺神經元已被破壞"
+            ],
+            "correct": 0,
+            "no": 10
+          },
+          {
+            "q": "下列哪些激素的分泌情形，會直接影響個體的生長？",
+            "options": [
+              "甲狀腺素、腎上腺素",
+              "副甲狀腺素、腎上腺素",
+              "生長素、甲狀腺素",
+              "甲狀腺素、胰島素"
+            ],
+            "correct": 2,
+            "no": 11
+          },
+          {
+            "q": "右圖水盆中的渦蟲於光照 2 小時後，大多聚集在遮蓋物的下方，則渦蟲表現出何種反應？屬於哪一種行為？",
+            "options": [
+              "趨性，經由學習的行為",
+              "向性，經由學習的行為",
+              "趨性，與生俱來的行為",
+              "向性，與生俱來的行為"
+            ],
+            "image": "images/test14/q12.png",
+            "correct": 2,
+            "no": 12
+          },
+          {
+            "q": "關於動物行為的敘述，下列何者<b>錯誤</b>？",
+            "options": [
+              "反射是行為",
+              "趨性也是屬於行為",
+              "內分泌腺可控制某些行為的產生",
+              "動物的行為是與生俱來的，永遠都不會改變"
+            ],
+            "correct": 3,
+            "no": 13
+          },
+          {
+            "q": "關於神經元的細胞本體，下列敘述何者正確？",
+            "options": [
+              "內有血液流動",
+              "負責維持神經元的生長和代謝",
+              "輸送各種激素",
+              "傳遞訊息的通道"
+            ],
+            "correct": 1,
+            "no": 14
+          },
+          {
+            "q": "靖喬將種於花盆的幼苗橫放於暗室一段時間後，其生長情形如右圖，此種現象是幼苗受到何種因素影響？產生何種反應？",
+            "options": [
+              "光線，向光性",
+              "地球引力，觸發運動",
+              "地球引力，背地性",
+              "光線，背地性"
+            ],
+            "image": "images/test14/q15.png",
+            "correct": 2,
+            "no": 15
+          },
+          {
+            "q": "阿智最近肌肉常有抽搐（抽筋）現象，到醫院檢查後，發現血液中鈣離子濃度偏低。請問阿智有可能是下列何種內分泌激素分泌異常？",
+            "options": [
+              "腎上腺素",
+              "升糖素",
+              "副甲狀腺素",
+              "甲狀腺素"
+            ],
+            "correct": 2,
+            "no": 16
+          },
+          {
+            "q": "阿霸去拔牙，牙醫師先為他打一針麻醉劑，目的是麻醉哪個部位？",
+            "options": [
+              "小腦",
+              "動器",
+              "感覺神經元",
+              "運動神經元"
+            ],
+            "correct": 2,
+            "no": 17
+          },
+          {
+            "q": "下列植物的反應，何者與光線最<b>無關</b>？",
+            "options": [
+              "芹菜的蒸散作用",
+              "菊花秋天開花",
+              "絲瓜藤的卷鬚繞支柱生長",
+              "車前草氣孔的開閉"
+            ],
+            "correct": 2,
+            "no": 18
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "type": "reading",
+    "title": "二、素養題",
+    "meta": "每題4分，共28分",
+    "passages": [
+      {
+        "text": "",
+        "items": [
+          {
+            "q": "右圖為人體腎臟和其所連接的腎動脈、腎靜脈示意圖（箭頭代表血流方向）。比較腎動脈與腎靜脈血液中二氧化碳、葡萄糖、氧氣、尿素的含量，下列何者正確？（□表示腎動脈；■表示腎靜脈）",
+            "options": [
+              "圖(A) 二氧化碳含量",
+              "圖(B) 葡萄糖含量",
+              "圖(C) 氧氣含量",
+              "圖(D) 尿素含量"
+            ],
+            "image": "images/test14/s1a.png",
+            "image2": "images/test14/s1b.png",
+            "correct": 0,
+            "no": 1
+          },
+          {
+            "q": "小睿最近迷上扯鈴，每天練習「拋鈴」、「繞腳」、「螞蟻上樹」等各種招式。關於扯鈴這項傳統技藝的敘述，下列何者正確？（拋鈴：將鈴拋向空中再接住；繞腳：一腳抬起，將鈴繞過其下方；螞蟻上樹：將繩拉直，使鈴沿繩上升）",
+            "options": [
+              "「拋鈴」動作的受器是手部的皮膚",
+              "「繞腳」動作需靠小腦協調全身肌肉以維持平衡",
+              "「螞蟻上樹」動作在多次練習後，不必經過大腦思考就能完成",
+              "練習扯鈴時間太長會覺得肌肉酸痛，屬於感覺疲勞"
+            ],
+            "correct": 1,
+            "no": 2
+          },
+          {
+            "q": "莎琳娜拍戲不慎被大火灼傷背部，造成皮膚大面積燒傷，此時需不斷補充水分，主要原因為何？",
+            "options": [
+              "燒傷過程中，水分大量蒸發而流失",
+              "消化系統受傷而無法吸收補充水分",
+              "排泄系統受傷而排出大量水分",
+              "皮膚受到破壞而無法防止水分向外流失"
+            ],
+            "correct": 3,
+            "no": 3
+          }
+        ]
+      },
+      {
+        "text": "科學家要研究激素對血液中物質濃度的影響，在大白鼠身上分次靜脈注射激素 X、Y 及 Z，並記錄注射前後血液中鈣、葡萄糖的濃度及心搏次數的變化情形。已知每次注射都有足夠的時間間隔，使激素之間不會彼此互相干擾。下表為此實驗的平均結果，試回答 4.、5.題：",
+        "items": [
+          {
+            "q": "有關注射上述不同激素前後，大白鼠血液中鈣或葡萄糖濃度變化的圖形，下列何者正確？（□表示注射前；■表示注射後）",
+            "options": [
+              "圖(A) 激素 X 血液中鈣濃度",
+              "圖(B) 激素 Y 血液中葡萄糖濃度",
+              "圖(C) 激素 Z 血液中鈣濃度",
+              "圖(D) 激素 Z 血液中葡萄糖濃度"
+            ],
+            "image": "images/test14/q4.png",
+            "correct": 3,
+            "no": 4
+          },
+          {
+            "q": "此實驗中，大白鼠所注射的激素配對，下列何者正確？",
+            "options": [
+              "X：甲狀腺素",
+              "Y：升糖素",
+              "Z：胰島素",
+              "Z：腎上腺素"
+            ],
+            "correct": 3,
+            "no": 5
+          }
+        ],
+        "image": "images/test14/g45.png"
+      },
+      {
+        "text": "在某糖尿病研究中心，喬巴醫師為了探討糖尿病形成的可能原因及相關物質的成分，利用一群條件相同的實驗用大白鼠，分成六組進行實驗，實驗中各組別的處理方式及結果如下表。根據資料，試回答 6.、7.題：（蛋白酶是分解蛋白質的酵素；澱粉酶是分解澱粉的酵素）",
+        "items": [
+          {
+            "q": "根據實驗組別二和三，針對切除胰臟的大白鼠會出現糖尿病的有無進行推測，請問下列敘述何者正確？",
+            "options": [
+              "胰臟的消化液使大白鼠產生糖尿病",
+              "胰臟中含有使血糖下降的物質",
+              "胰臟中含有使血糖升高的物質",
+              "胰臟的消化液促使血糖分解，使大白鼠無糖尿病"
+            ],
+            "correct": 1,
+            "no": 6
+          },
+          {
+            "q": "根據實驗組別各組結果分析，推測胰島素的成分，下列何者最合理？",
+            "options": [
+              "不是澱粉，也不是蛋白質",
+              "可能是澱粉，但不是蛋白質",
+              "可能是蛋白質，但不是澱粉",
+              "可能是蛋白質，也可能是澱粉"
+            ],
+            "correct": 2,
+            "no": 7
+          }
+        ],
+        "image": "images/test14/g67.png"
+      }
+    ]
+  },
+  {
+    "type": "reading",
+    "title": "B部分 活用題",
+    "meta": "每題2分，共18分",
+    "passages": [
+      {
+        "text": "",
+        "items": [
+          {
+            "q": "小亞遇到窮追狂吠的野狗時，感到害怕轉身逃跑。下列關於她生理變化的敘述，何者正確？",
+            "options": [
+              "聽見狗吠就逃跑屬於反射動作，傳導路徑不經過大腦",
+              "腎上腺素大量分泌，使血壓下降，心跳次數增加",
+              "血糖濃度上升，使組織細胞獲得足夠的養分",
+              "大腦調節使心跳頻率及呼吸頻率上升"
+            ],
+            "correct": 2,
+            "no": 1
+          },
+          {
+            "q": "右圖為小喬騎腳踏車及她的中樞神經系統示意圖。有關小喬騎腳踏車時，神經系統運作的相關敘述，下列何者正確？",
+            "options": [
+              "身體的平衡是藉由甲維持",
+              "向左或向右前進由乙判斷",
+              "騎腳踏車期間呼吸頻率的快慢，是經由丙調節",
+              "遇到緊急事故，立即拉手剎車將車子停住是經由丁控制"
+            ],
+            "image": "images/test14/b2.png",
+            "correct": 2,
+            "no": 2
+          },
+          {
+            "q": "小雪將幼苗和旋轉器放在一個具有開口的不透光盒子內，如右圖所示。經過一段時間後，關於幼苗生長情形的敘述，下列何者正確？",
+            "options": [
+              "幼苗彎向開口處生長，表現向光性",
+              "幼苗彎向地面處生長，表現向地性",
+              "幼苗彎向開口處反向生長，表現負向光性",
+              "幼苗彎向上方處生長，表現負向地性"
+            ],
+            "image": "images/test14/b3.png",
+            "correct": 3,
+            "no": 3
+          },
+          {
+            "q": "下列各種動物行為，何者屬於與生俱來的行為？",
+            "options": [
+              "日本獼猴在寒冷的季節泡溫泉",
+              "海鷗能準確地捕捉到水中的魚",
+              "導盲犬引導主人走安全的道路",
+              "雄孔雀開屏展現美麗羽毛求偶"
+            ],
+            "correct": 3,
+            "no": 4
+          },
+          {
+            "q": "右圖為魚類的呼吸構造示意圖（甲為入水、乙為出水，→表水流方向），則下列敘述何者正確？",
+            "options": [
+              "水中氧含量：甲＜乙",
+              "光合作用所需的氣體含量：甲＞乙",
+              "甲所溶解的氣體可使混濁的石灰水變澄清",
+              "乙所含的氣體可使澄清的石灰水變混濁"
+            ],
+            "image": "images/test14/b5.png",
+            "correct": 3,
+            "no": 5
+          },
+          {
+            "q": "下列何者<b>不是</b>和排泄作用有關？",
+            "options": [
+              "立唯跑完 3000 公尺流很多汗",
+              "牧杭向女生表白前大口深呼吸",
+              "育誠桌球比賽前緊張的去尿尿",
+              "梃嘉吃壞肚子在廁所蹲馬桶"
+            ],
+            "correct": 3,
+            "no": 6
+          },
+          {
+            "q": "比較人體的「呼吸作用」與「呼吸運動」，下列哪一選項<b>錯誤</b>？",
+            "options": [
+              "(A) 發生部位",
+              "(B) 氣體進出方式",
+              "(C) 能量的運用",
+              "(D) 主要釋出的氣體"
+            ],
+            "image": "images/test14/b7.png",
+            "correct": 1,
+            "no": 7
+          }
+        ]
+      },
+      {
+        "text": "喬安旅遊日記寫道：寒假第一天和同學相約動物園，因幾天的寒流來襲，讓來自熱帶雨林中的「長鼻猴」家族都擠成一團，一起躲在樹下避寒；隔壁來自加拉巴哥群島的「象龜」爺爺也縮著四肢躲在石洞中睡覺；當來到夜行性動物館中時，陣陣暖意迎面而來，貼心的館方特別為「領角鴞」、「二趾樹獺」、「白腹刺猬」開了恆溫空調，比起在外頭澳洲園區中的「扇形蜥蜴」也冷得收起兩頰旁的扇形皮褶躲在洞穴之中休息；只有企鵝館中的「國王企鵝」還相當興奮地在冰冷水池中悠游，一點也感受不到四周 10°C 以下的寒意。根據上述文章，試回答 8.、9.題：",
+        "items": [
+          {
+            "q": "文中「　」所提的動物中，有幾種屬於外溫動物？",
+            "options": [
+              "2",
+              "4",
+              "5",
+              "7"
+            ],
+            "correct": 0,
+            "no": 8
+          },
+          {
+            "q": "(甲)「長鼻猴」家族都擠成一團，一起躲在樹下避寒；(乙)「象龜」爺爺縮著四肢躲在石洞中睡覺；根據(甲)、(乙)兩段敘述，下列何者正確？",
+            "options": [
+              "(甲)天氣寒冷時以冬眠方式過冬，以減少體溫散失",
+              "(甲)家族擠成一團是因為要相互取暖，減少和外界接觸面積達到保暖效果",
+              "(乙)天氣寒冷時可利用代謝進行體溫調節",
+              "(乙)躲在石洞睡覺，可以增加體溫熱的產生"
+            ],
+            "correct": 1,
+            "no": 9
+          }
+        ]
+      }
+    ]
+  }
+]
+};
+
+let currentMode = "quiz"; // quiz | print
+
+const contentEl = document.getElementById("content");
+const scoreBar = document.getElementById("scoreBar");
+const scoreText = document.getElementById("scoreText");
+
+function render(){
+  window.examAnswersRevealed = false;
+  contentEl.innerHTML = "";
+  DATA.sections.forEach((sec, si)=> contentEl.appendChild(renderSection(sec, si)));
+  if(currentMode==="quiz"){
+    scoreBar.classList.add("show");
+    updateScore();
+  } else {
+    scoreBar.classList.remove("show");
+    contentEl.querySelectorAll(".opt").forEach(o=>o.classList.add("disabled"));
+    contentEl.querySelectorAll(".opt.is-correct").forEach(o=>o.classList.add("correct"));
+  }
+}
+
+function renderSection(sec, si){
+  const block = document.createElement("section");
+  block.className = "block";
+  block.innerHTML = `<h2>${sec.title}</h2><p class="meta">${sec.meta}</p>`
+    + (sec.note ? `<div class="sec-note">${sec.note}</div>` : "")
+    + (sec.pre ? `<div class="sec-pre">${sec.pre}</div>` : "");
+
+  if(sec.type==="fill"){
+    sec.items.forEach((it,i)=>{
+      const q = document.createElement("div");
+      q.className = "q";
+      const shown = it.answers.join(" ／ ");
+      q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q}</div>
+        <div class="fill-row"><input type="text" class="blank${sec.wide ? " wide" : ""}" autocomplete="off" placeholder="${sec.placeholder || "作答"}"><span class="feedback"></span></div>
+        <div class="answer-reveal">正解：${shown}</div>`;
+      q.querySelector("input.blank").dataset.answers = JSON.stringify(it.answers);
+      if(currentMode!=="quiz"){ q.querySelector("input.blank").disabled = true; q.querySelector(".answer-reveal").classList.add("show"); }
+      block.appendChild(q);
+    });
+  }
+
+  else if(sec.type==="explain"){
+    sec.items.forEach((it,i)=>{
+      const q = document.createElement("div");
+      q.className = "q";
+      q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q}</div>
+        <textarea class="explain-box" placeholder="寫下你的解釋（送出成績後對照參考答案）"></textarea>
+        <div class="answer-reveal">參考答案：${it.answer}</div>`;
+      if(currentMode!=="quiz"){ q.querySelector("textarea").remove(); q.querySelector(".answer-reveal").classList.add("show"); }
+      block.appendChild(q);
+    });
+  }
+
+  else if(sec.type==="mc"){
+    sec.items.forEach((it,i)=>{
+      const q = document.createElement("div");
+      q.className = "q";
+      const optsHtml = it.options.map((op,oi)=>`
+        <div class="opt" data-idx="${oi}" data-correct="${oi===it.correct}">
+          <span class="tag">(${String.fromCharCode(65+oi)})</span><span>${op}</span>
+        </div>`).join("");
+      const imgHtml = it.image ? `<img src="${it.image}" alt="題目附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">` : "";
+      const img2Html = it.image2 ? `<img src="${it.image2}" alt="題目附圖2" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">` : "";
+      q.innerHTML = `<div class="q-text"><span class="q-num">${it.no||i+1}.</span>${it.q}</div>
+        ${imgHtml}${img2Html}
+        <div class="opts">${optsHtml}</div>`;
+      q.querySelectorAll(".opt").forEach(optEl=>{
+        if(optEl.dataset.correct==="true") optEl.classList.add("is-correct");
+        optEl.addEventListener("click", ()=>selectOption(q, optEl));
+      });
+      block.appendChild(q);
+    });
+  }
+
+  else if(sec.type==="reading"){
+    sec.passages.forEach(p=>{
+      const passageDiv = document.createElement("div");
+      passageDiv.className = "passage";
+      passageDiv.innerHTML = `${p.label ? `<span class="passage-label">${p.label}</span>`:""}${p.text}${p.image ? `<img src="${p.image}" alt="題組附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-top:10px;border:1px solid var(--paper-line);">`:""}`;
+      if(p.text || p.image) block.appendChild(passageDiv);
+      p.items.forEach((it,i)=>{
+        const q = document.createElement("div");
+        q.className = "q";
+        const optsHtml = it.options.map((op,oi)=>`
+          <div class="opt" data-idx="${oi}" data-correct="${oi===it.correct}">
+            <span class="tag">(${String.fromCharCode(65+oi)})</span><span>${op}</span>
+          </div>`).join("");
+        q.innerHTML = `<div class="q-text"><span class="q-num">${it.no||i+1}.</span>${it.q}</div>
+          ${it.image ? `<img src="${it.image}" alt="題目附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">`:""}
+          <div class="opts">${optsHtml}</div>`;
+        q.querySelectorAll(".opt").forEach(optEl=>{
+          if(optEl.dataset.correct==="true") optEl.classList.add("is-correct");
+          optEl.addEventListener("click", ()=>selectOption(q, optEl));
+        });
+        block.appendChild(q);
+      });
+    });
+  }
+
+  return block;
+}
+
+function selectOption(qEl, optEl){
+  if(currentMode!=="quiz") return;
+  if(qEl.dataset.answered==="true") return;
+  qEl.dataset.answered = "true";
+  qEl.querySelectorAll(".opt").forEach(o=>o.classList.add("disabled"));
+  optEl.classList.add("selected");
+  const correctOpt = qEl.querySelector('.opt[data-correct="true"]');
+  qEl.dataset.studentAnswer = optEl.textContent.trim();
+  qEl.dataset.correctAnswer = correctOpt ? correctOpt.textContent.trim() : "";
+  qEl.dataset.isCorrect = (optEl.dataset.correct==="true") ? "true" : "false";
+  updateScore();
+}
+
+function updateScore(){
+  let total = 0, answered = 0, correct = 0;
+  contentEl.querySelectorAll(".q").forEach(q=>{
+    const gradable = q.querySelector(".opts") || q.querySelector("input.blank");
+    if(!gradable) return;
+    total++;
+    if(q.dataset.studentAnswer !== undefined){
+      answered++;
+      if(q.dataset.isCorrect === "true") correct++;
+    }
+  });
+  if(window.examAnswersRevealed){
+    scoreText.textContent = `${correct} / ${total}`;
+  } else {
+    scoreText.textContent = `已作答 ${answered} / ${total} 題`;
+  }
+}
+window.updateScore = updateScore;
+
+// 填寫題（注音／國字、改錯）：去掉空白與標點後和正解比對；注音的一聲符號「ˉ」可寫可不寫
+function normFill(s){
+  return String(s).replace(/[\sˉ　，、。．.,;；:：!！?？「」『』（）()【】→\-－—]/g, "").trim();
+}
+document.addEventListener("input", (e)=>{
+  const input = e.target;
+  if(!input.matches || !input.matches("input.blank")) return;
+  const q = input.closest(".q");
+  const answers = JSON.parse(input.dataset.answers || "[]");
+  const val = input.value.trim();
+  if(!val){ delete q.dataset.studentAnswer; delete q.dataset.isCorrect; }
+  else {
+    q.dataset.studentAnswer = val;
+    q.dataset.correctAnswer = answers.join(" ／ ");
+    q.dataset.isCorrect = answers.some(a => normFill(a) === normFill(val)) ? "true" : "false";
+  }
+  updateScore();
+});
+
+document.getElementById("resetBtn").addEventListener("click", render);
+document.getElementById("quizModeBtn").addEventListener("click", ()=>{
+  currentMode = "quiz";
+  document.getElementById("quizModeBtn").classList.add("active");
+  document.getElementById("printModeBtn").classList.remove("active");
+  render();
+});
+document.getElementById("printModeBtn").addEventListener("click", ()=>{
+  if(document.getElementById("printModeBtn").disabled) return;
+  currentMode = "print";
+  document.getElementById("printModeBtn").classList.add("active");
+  document.getElementById("quizModeBtn").classList.remove("active");
+  render();
+});
+
+window.unlockPrintMode = function(){
+  document.getElementById("printModeBtn").disabled = false;
+};
+
+render();
+</script>
+<script src="../sync.js"></script>
+</body>
+</html>

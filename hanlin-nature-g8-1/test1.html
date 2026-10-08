@@ -1,0 +1,792 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>段考題庫｜自然第1回 - 實驗器材、測量與基本操作</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@500;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#faf6ec;
+    --paper-line:#e3dcc8;
+    --ink:#26332b;
+    --ink-soft:#5b6b5f;
+    --chalk-green:#2f4538;
+    --chalk-green-2:#3d5a48;
+    --pen-red:#b8433a;
+    --pen-red-soft:#f4dedb;
+    --ok-green:#3f7d52;
+    --ok-green-soft:#dfeee1;
+    --gold:#b5842a;
+    --radius:10px;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:"Noto Sans TC",sans-serif;
+    line-height:1.7;
+  }
+  header.hero{
+    background:var(--chalk-green);
+    color:#eef2ea;
+    padding:28px 20px 40px;
+    position:relative;
+  }
+  header.hero::after{
+    content:"";
+    position:absolute;
+    left:0; right:0; bottom:-1px;
+    height:14px;
+    background:repeating-linear-gradient(90deg,var(--paper) 0 18px, transparent 18px 20px);
+  }
+  .hero-inner{max-width:880px;margin:0 auto;}
+  .breadcrumb a{color:#cfe0d1;text-decoration:none;font-size:14px;}
+  .breadcrumb a:hover{text-decoration:underline;}
+  h1{
+    font-family:"Noto Serif TC",serif;
+    font-weight:700;
+    font-size:clamp(24px,4vw,34px);
+    margin:10px 0 6px;
+  }
+  .subtitle{color:#cfe0d1;font-size:15px;margin:0;}
+  main{max-width:880px;margin:0 auto;padding:28px 20px 80px;}
+
+  .controls{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:22px;
+  }
+  .mode-toggle{display:flex;border:2px solid var(--chalk-green);border-radius:999px;overflow:hidden;}
+  .mode-toggle button{
+    background:transparent;border:none;padding:8px 16px;font-size:14px;font-weight:700;
+    color:var(--chalk-green);cursor:pointer;font-family:"Noto Sans TC",sans-serif;
+  }
+  .mode-toggle button.active{background:var(--gold);color:#fff;}
+  .mode-toggle button:disabled{opacity:.4;cursor:not-allowed;}
+
+  .score-bar{
+    display:none;
+    align-items:center;
+    justify-content:space-between;
+    background:#fff;
+    border:1px solid var(--paper-line);
+    border-left:5px solid var(--gold);
+    border-radius:var(--radius);
+    padding:12px 18px;
+    margin-bottom:22px;
+    font-size:14px;
+  }
+  .score-bar.show{display:flex;}
+  .score-bar strong{font-size:18px;color:var(--gold);}
+  .score-bar button{
+    background:none;border:1px solid var(--ink-soft);color:var(--ink-soft);
+    border-radius:6px;padding:6px 12px;font-size:13px;cursor:pointer;
+  }
+
+  section.block{
+    background:#fff;
+    border:1px solid var(--paper-line);
+    border-radius:var(--radius);
+    padding:22px 22px 26px;
+    margin-bottom:20px;
+  }
+  .block h2{
+    font-family:"Noto Serif TC",serif;
+    font-size:19px;
+    margin:0 0 4px;
+    color:var(--chalk-green);
+  }
+  .block .meta{color:var(--ink-soft);font-size:13px;margin:0 0 16px;}
+
+  .q{margin-bottom:18px;padding-bottom:16px;border-bottom:1px dashed var(--paper-line);}
+  .q:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0;}
+  .q-text{font-size:15.5px;margin-bottom:8px;}
+  .q-num{color:var(--gold);font-weight:700;margin-right:4px;}
+
+  .opts{display:grid;gap:8px;}
+  .opt{
+    display:flex;gap:8px;align-items:flex-start;
+    border:1.5px solid var(--paper-line);
+    border-radius:8px;
+    padding:9px 12px;
+    cursor:pointer;
+    font-size:14.5px;
+    background:#fffdf8;
+  }
+  .opt:hover{border-color:var(--chalk-green-2);}
+  .opt.selected{border-color:var(--chalk-green-2);background:#eef3ea;}
+  .opt.correct{border-color:var(--ok-green);background:var(--ok-green-soft);}
+  .opt.wrong{border-color:var(--pen-red);background:var(--pen-red-soft);}
+  .opt .tag{font-weight:700;color:var(--ink-soft);}
+  .opt.correct .tag{color:var(--ok-green);}
+  .opt.wrong .tag{color:var(--pen-red);}
+  .opt.disabled{cursor:default;}
+
+  .passage{
+    background:#f5f2e8;border-radius:8px;padding:14px 16px;margin-bottom:14px;
+    font-size:14.5px;white-space:pre-line;
+  }
+  .passage-label{font-weight:700;color:var(--chalk-green);margin-bottom:4px;display:block;}
+
+  .sec-note{font-size:13.5px;color:var(--ink-soft);background:#f5f2e8;border-radius:8px;padding:8px 12px;margin:-6px 0 14px;}
+  .sec-pre{background:#f5f2e8;border-radius:8px;padding:10px 14px;margin:-4px 0 14px;font-size:14.5px;}
+  .fill-row{display:flex;flex-wrap:wrap;align-items:center;gap:8px;}
+  input.blank{
+    font-family:"Noto Sans TC",sans-serif;font-size:15.5px;border:none;border-bottom:2px solid var(--chalk-green-2);
+    background:#fffdf8;padding:4px 6px;width:170px;max-width:100%;
+  }
+  input.blank.wide{width:100%;}
+  textarea.explain-box{
+    width:100%;min-height:52px;font-family:"Noto Sans TC",sans-serif;font-size:15px;
+    border:1.5px solid var(--paper-line);border-radius:8px;padding:8px 10px;background:#fffdf8;resize:vertical;
+  }
+  .feedback{font-weight:700;font-size:15px;}
+  .feedback.ok{color:var(--ok-green);}
+  .feedback.no{color:var(--pen-red);}
+  .answer-reveal{display:none;margin-top:8px;font-size:14px;color:var(--ok-green);background:var(--ok-green-soft);border-radius:6px;padding:6px 12px;}
+  .answer-reveal.show{display:block;}
+  .zh-und{text-decoration:underline;text-underline-offset:3px;}
+  .footer-link{
+    display:block;text-align:center;margin-top:30px;color:var(--chalk-green);
+    text-decoration:none;font-weight:700;font-size:14px;
+  }
+  .footer-link:hover{text-decoration:underline;}
+
+  @media print{
+    header.hero, .controls, .score-bar, .mini-btn, .footer-link{display:none !important;}
+    body{background:#fff;}
+    section.block{border:none;box-shadow:none;padding:8px 0;margin-bottom:14px;}
+    .opt.correct{background:none;border:none;font-weight:700;}
+    .opt.correct::after{content:" ← 正解";color:var(--pen-red);}
+    .opt{border:none;padding:2px 0;}
+    main{max-width:100%;padding:0 24px;}
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="breadcrumb"><a href="https://jenlin2002.github.io/">🏠 回總目錄</a> ／ <a href="../hanlin-nature-g8-1.html" style="color:#cfe0d1;">段考題庫</a></div>
+    <h1>自然・第1回</h1>
+    <p class="subtitle">實驗室常用器材・1-1～1-3 實驗器材、測量與基本操作｜翰林版八年級自然（三）Ａ卷</p>
+  </div>
+</header>
+
+<main>
+  <div class="controls">
+    <div class="mode-toggle">
+      <button id="quizModeBtn" class="active">✏️ 測驗模式</button>
+      <button id="printModeBtn" disabled title="完成測驗並送出成績後才能查看">🖨️ 完整題目與解答（送出成績後解鎖）</button>
+    </div>
+  </div>
+
+  <div class="score-bar" id="scoreBar">
+    <div>目前得分：<strong id="scoreText">0 / 0</strong>（選擇題）</div>
+    <button id="resetBtn">重新作答</button>
+  </div>
+
+  <div id="content"></div>
+
+  <a class="footer-link" href="../hanlin-nature-g8-1.html">← 回段考題庫總覽</a>
+</main>
+
+<script>
+
+window.EXAM_META = { version: "自然A卷", examLabel: "自然第1回" };
+const DATA = {
+  sections: [
+  {
+    "type": "reading",
+    "title": "A部分 基礎題　一、選擇題",
+    "meta": "每題3分，共54分",
+    "passages": [
+      {
+        "text": "",
+        "items": [
+          {
+            "q": "阿東進行「水溫與加熱時間的關係」實驗，其裝置如右圖。老師看到實驗裝置後，建議他改善測量水溫的方式，阿東進行下列哪一個改善方式最合適？",
+            "options": [
+              "將溫度計懸吊在水中，不接觸杯底",
+              "調整支架使酒精燈的火焰靠近溫度計",
+              "拿溫度計攪拌杯中的水，使水溫均勻",
+              "將酒精燈的酒精裝滿，使火焰大小固定"
+            ],
+            "image": "images/test1/q1.png",
+            "correct": 0,
+            "no": 1
+          },
+          {
+            "q": "下列何者<b>不能</b>稱為物理量？",
+            "options": [
+              "今天氣溫 29°C",
+              "水深 12.6 公尺",
+              "銀行存款 25561 元",
+              "體重 50 公斤"
+            ],
+            "correct": 2,
+            "no": 2
+          },
+          {
+            "q": "使用捲尺測量教室黑板的寬度，正確的紀錄為 6.480×10³ mm，則此捲尺的最小刻度單位為何？",
+            "options": [
+              "公寸",
+              "公分",
+              "毫米",
+              "0.1 毫米"
+            ],
+            "correct": 1,
+            "no": 3
+          },
+          {
+            "q": "佳儀用一直尺測量一桌子長，記錄為 1.320 公尺；若義智以同一直尺測量某物長恰為 2 公尺 5 公分，則應如何表示？",
+            "options": [
+              "2.05 公尺",
+              "205 公分",
+              "20.5 公分",
+              "2.050 公尺"
+            ],
+            "correct": 3,
+            "no": 4
+          },
+          {
+            "q": "一個密度為 8.9 g/cm³ 的正立方體銅塊，若將其對切成相等的兩半，則半個銅塊的密度為多少 g/cm³？",
+            "options": [
+              "4.45",
+              "8.9",
+              "17.8",
+              "26.7"
+            ],
+            "correct": 1,
+            "no": 5
+          },
+          {
+            "q": "小瑜將綠豆放入空量筒中，輕敲量筒後，綠豆堆積到量筒刻度約為 65 mL 處。之後，小瑜把 40 mL 的水，倒入盛綠豆的量筒中，而水面的刻度到達 87 mL 處。若綠豆皆沉在水面下，則此堆綠豆的體積大約為多少 cm³？",
+            "options": [
+              "22",
+              "47",
+              "65",
+              "87"
+            ],
+            "correct": 1,
+            "no": 6
+          },
+          {
+            "q": "小芳郊遊時於河床石堆中，發現一根骨頭化石鑲在石塊上，隨手抽出長 15 公分鉛筆放在旁邊照了一張照片如右上圖。根據照片，則該骨頭化石的長度約為多少公分？",
+            "options": [
+              "20",
+              "50",
+              "100",
+              "150"
+            ],
+            "image": "images/test1/q7.png",
+            "correct": 1,
+            "no": 7
+          },
+          {
+            "q": "學生 21 人同測一物長，得到如下表的結果，則此物體的平均長度約為多少公分？",
+            "options": [
+              "6.31",
+              "6.32",
+              "6.33",
+              "6.34"
+            ],
+            "image": "images/test1/q8.png",
+            "correct": 1,
+            "no": 8
+          },
+          {
+            "q": "一般常用天平來測量物體的質量，則有關天平使用的原則，下列敘述何者<b>錯誤</b>？",
+            "options": [
+              "使用天平前要先歸零",
+              "應先在秤盤上加放秤量紙，再秤量粉末狀化學藥品",
+              "不能為了快速操作，而用手直接拿取砝碼",
+              "為了使測量結果更準確，砝碼應由小至大依序放在秤盤中央"
+            ],
+            "correct": 3,
+            "no": 9
+          },
+          {
+            "q": "測量結果都需要加上一位估計值，下列敘述何者正確？（選項中的單位皆為最小刻度）",
+            "options": [
+              "阿中的體溫為 36°C",
+              "胖弟的體重為 50 公斤",
+              "曉華的身高約為 175.5 公分",
+              "和林中學的全校學生數約 3000.0 人"
+            ],
+            "correct": 2,
+            "no": 10
+          },
+          {
+            "q": "已知酒精在 20°C 時，每 100cm³ 質量有 78g，現有三杯 20°C 的酒精，甲杯 200g、乙杯 200cm³、丙杯 300g，則三者密度大小關係下列何者正確？",
+            "options": [
+              "丙＞甲＝乙",
+              "丙＞乙＞甲",
+              "甲＝丙＞乙",
+              "甲＝乙＝丙"
+            ],
+            "correct": 3,
+            "no": 11
+          },
+          {
+            "q": "家瑋用天平測量咖啡粉準備包裝，左盤放上秤量紙後再歸零，放了數匙咖啡粉於紙上後，在右盤放了 5 公克、2 公克、1 公克砝碼各 1 個及 0.1 公克砝碼 7 個時，指針指到中央刻度，則下列敘述何者正確？",
+            "options": [
+              "操作錯誤，應歸零後再放秤量紙",
+              "咖啡粉的質量為 8.70 公克",
+              "咖啡粉和秤量紙質量共 8.70 公克",
+              "咖啡粉和秤量紙質量相差 8.70 公克"
+            ],
+            "correct": 1,
+            "no": 12
+          },
+          {
+            "q": "許多清潔用品常號稱運用了「奈米科技」，關於「奈米」的敘述，下列何者正確？",
+            "options": [
+              "奈米是體積的單位",
+              "奈米為百萬分之一毫米",
+              "奈米的縮寫 mn",
+              "奈米的別稱為微米"
+            ],
+            "correct": 1,
+            "no": 13
+          },
+          {
+            "q": "甲、乙兩物體之質量比為 3：2，體積比為 2：1，則甲與乙之密度比為何？",
+            "options": [
+              "1：1",
+              "2：3",
+              "3：4",
+              "6：1"
+            ],
+            "correct": 2,
+            "no": 14
+          },
+          {
+            "q": "小翰欲量測不同長度、大小的鋁塊，以下是他經由實驗過程及結果歸納出來的結論，下列敘述何者正確？",
+            "options": [
+              "可使用量筒，利用排水法量測鋁塊質量",
+              "可使用電子天平量測鋁塊體積",
+              "不同長度的鋁塊，將其質量和體積相乘，所得的數值為反比關係",
+              "不同大小的鋁塊，將其質量和 1/體積 相乘，所得的數值接近"
+            ],
+            "correct": 3,
+            "no": 15
+          },
+          {
+            "q": "小伍要將桌上 5 個外觀看起來相似的實心物品做出分類，分別測量其體積及質量，結果如右上表所示，則可能為同一種物質所組成的有幾個？",
+            "options": [
+              "0",
+              "1",
+              "2",
+              "3"
+            ],
+            "image": "images/test1/q16.png",
+            "correct": 3,
+            "no": 16
+          },
+          {
+            "q": "一燒杯內盛 230c.c. 的水，放入冰箱冷凍庫完全結冰（D冰＝0.92 g/cm³）後，體積為多少 cm³？",
+            "options": [
+              "235",
+              "240",
+              "245",
+              "250"
+            ],
+            "correct": 3,
+            "no": 17
+          },
+          {
+            "q": "有一金屬的密度為 8900 kg/m³，若改用 g/cm³ 為單位，其數值將改成多少？",
+            "options": [
+              "0.89",
+              "8.90",
+              "89.0",
+              "890.0"
+            ],
+            "correct": 1,
+            "no": 18
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "type": "reading",
+    "title": "二、素養題",
+    "meta": "每題4分，共28分",
+    "passages": [
+      {
+        "text": "",
+        "items": [
+          {
+            "q": "小葵欲配製一杯糖水，其過程步驟如下圖所示，小葵實際配製出的溶液密度最接近下列何者？",
+            "options": [
+              "0.86 g/cm³",
+              "1.10 g/cm³",
+              "1.16 g/cm³",
+              "1.22 g/cm³"
+            ],
+            "image": "images/test1/s1.png",
+            "correct": 2,
+            "no": 1
+          },
+          {
+            "q": "小瑩想以量筒取 30.0mL 的溶液，右圖虛線箭頭所指的位置為量筒中目前已量取的溶液體積。小瑩使用下列哪一種器材裝取溶液後，再加入量筒內，最能避免體積超出 30.0mL？",
+            "options": [
+              "圖(A) 試管",
+              "圖(B) 滴管",
+              "圖(C) 錐形瓶",
+              "圖(D) 燒杯"
+            ],
+            "image": "images/test1/s2.png",
+            "correct": 1,
+            "no": 2
+          }
+        ]
+      },
+      {
+        "text": "小花測得某一物體的體積（V），再置於天平上，測出液體和量筒的總質量（m），如下表所示，試回答 3.～ 5.題：",
+        "items": [
+          {
+            "q": "液體的密度為多少 g/cm³？",
+            "options": [
+              "0.4",
+              "0.71",
+              "1.4",
+              "2.5"
+            ],
+            "correct": 2,
+            "no": 3
+          },
+          {
+            "q": "量筒的質量為多少 g？",
+            "options": [
+              "11",
+              "15",
+              "18",
+              "20"
+            ],
+            "correct": 0,
+            "no": 4
+          },
+          {
+            "q": "表中 X 應為多少 g？",
+            "options": [
+              "53",
+              "60",
+              "63",
+              "70"
+            ],
+            "correct": 1,
+            "no": 5
+          }
+        ],
+        "image": "images/test1/g35.png"
+      },
+      {
+        "text": "甲、乙兩液體其質量（m）與體積（V）的關係如右圖，試回答 6.、7.題：",
+        "items": [
+          {
+            "q": "甲、乙兩者的密度大小為何？",
+            "options": [
+              "甲＞乙",
+              "甲＝乙",
+              "甲＜乙",
+              "不一定"
+            ],
+            "correct": 0,
+            "no": 6
+          },
+          {
+            "q": "將等體積的甲、乙互相混合，設混合液體積等於兩液體體積和，則其質量與體積的關係圖應落在哪一區？",
+            "options": [
+              "Ⅰ",
+              "Ⅱ",
+              "Ⅲ",
+              "無法判斷"
+            ],
+            "correct": 1,
+            "no": 7
+          }
+        ],
+        "image": "images/test1/g67.png"
+      }
+    ]
+  },
+  {
+    "type": "reading",
+    "title": "B部分 活用題",
+    "meta": "每題2分，共18分",
+    "passages": [
+      {
+        "text": "",
+        "items": [
+          {
+            "q": "分次注入 X 液體於量筒中，測量其體積，置於天平測量量筒與液體總質量，標示於右圖中，則當量筒內液體為 150 mL 時，測得總質量為多少 g？",
+            "options": [
+              "237.5",
+              "227.5",
+              "217.5",
+              "207.5"
+            ],
+            "image": "images/test1/b1.png",
+            "correct": 0,
+            "no": 1
+          }
+        ]
+      },
+      {
+        "text": "正光利用量筒及天平測量某液體體積以及液體與量筒的總質量，記錄如下表，試回答 2.、3.題：",
+        "items": [
+          {
+            "q": "試問用來測量某液體的量筒之質量應為下列何者？",
+            "options": [
+              "100.0 g",
+              "120.0 g",
+              "130.0 g",
+              "140.0 g"
+            ],
+            "correct": 1,
+            "no": 2
+          },
+          {
+            "q": "表中的「？」應該填入多少？",
+            "options": [
+              "430.0",
+              "440.0",
+              "450.0",
+              "470.0"
+            ],
+            "correct": 3,
+            "no": 3
+          }
+        ],
+        "image": "images/test1/g23.png"
+      },
+      {
+        "text": "阿基米德是希臘非常有名的數學家、物理學家和工程師。某一天，國王拿了 2 kg 的純金交給工匠，請他打造一頂皇冠，皇冠拿回來的時候，金光閃閃，質量也剛好是 2 kg。可是國王懷疑這個工匠偷用銀和銅來取代部分金子摻在皇冠裡，於是要阿基米德幫他找出真相。試依據下表回答 4.～ 6.題：",
+        "items": [
+          {
+            "q": "如果有兩頂皇冠，一頂是純金打造，一頂是純銀打造，質量都是 2 kg，則兩頂皇冠完全沉入水中時的排水量如何？",
+            "options": [
+              "排開的水一樣多",
+              "純金皇冠排的水較多",
+              "純銀皇冠排的水較多",
+              "無法比較"
+            ],
+            "correct": 2,
+            "no": 4
+          },
+          {
+            "q": "請問質量為 2 kg 的純銅皇冠約可排開多少 cm³ 的水？",
+            "options": [
+              "105",
+              "182",
+              "222",
+              "250"
+            ],
+            "correct": 2,
+            "no": 5
+          },
+          {
+            "q": "阿基米德該如何判斷此皇冠的真假呢？",
+            "options": [
+              "相同重量時，純金皇冠排的水量較多",
+              "若皇冠是假的，則假皇冠體積較小，排開的水量較純金皇冠少",
+              "假的皇冠排開水量會比純金皇冠多，比純銅皇冠少",
+              "若皇冠是真的，排開的水量會比排開的酒精量多"
+            ],
+            "correct": 2,
+            "no": 6
+          }
+        ],
+        "image": "images/test1/g46.png"
+      }
+    ]
+  }
+]
+};
+
+let currentMode = "quiz"; // quiz | print
+
+const contentEl = document.getElementById("content");
+const scoreBar = document.getElementById("scoreBar");
+const scoreText = document.getElementById("scoreText");
+
+function render(){
+  window.examAnswersRevealed = false;
+  contentEl.innerHTML = "";
+  DATA.sections.forEach((sec, si)=> contentEl.appendChild(renderSection(sec, si)));
+  if(currentMode==="quiz"){
+    scoreBar.classList.add("show");
+    updateScore();
+  } else {
+    scoreBar.classList.remove("show");
+    contentEl.querySelectorAll(".opt").forEach(o=>o.classList.add("disabled"));
+    contentEl.querySelectorAll(".opt.is-correct").forEach(o=>o.classList.add("correct"));
+  }
+}
+
+function renderSection(sec, si){
+  const block = document.createElement("section");
+  block.className = "block";
+  block.innerHTML = `<h2>${sec.title}</h2><p class="meta">${sec.meta}</p>`
+    + (sec.note ? `<div class="sec-note">${sec.note}</div>` : "")
+    + (sec.pre ? `<div class="sec-pre">${sec.pre}</div>` : "");
+
+  if(sec.type==="fill"){
+    sec.items.forEach((it,i)=>{
+      const q = document.createElement("div");
+      q.className = "q";
+      const shown = it.answers.join(" ／ ");
+      q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q}</div>
+        <div class="fill-row"><input type="text" class="blank${sec.wide ? " wide" : ""}" autocomplete="off" placeholder="${sec.placeholder || "作答"}"><span class="feedback"></span></div>
+        <div class="answer-reveal">正解：${shown}</div>`;
+      q.querySelector("input.blank").dataset.answers = JSON.stringify(it.answers);
+      if(currentMode!=="quiz"){ q.querySelector("input.blank").disabled = true; q.querySelector(".answer-reveal").classList.add("show"); }
+      block.appendChild(q);
+    });
+  }
+
+  else if(sec.type==="explain"){
+    sec.items.forEach((it,i)=>{
+      const q = document.createElement("div");
+      q.className = "q";
+      q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q}</div>
+        <textarea class="explain-box" placeholder="寫下你的解釋（送出成績後對照參考答案）"></textarea>
+        <div class="answer-reveal">參考答案：${it.answer}</div>`;
+      if(currentMode!=="quiz"){ q.querySelector("textarea").remove(); q.querySelector(".answer-reveal").classList.add("show"); }
+      block.appendChild(q);
+    });
+  }
+
+  else if(sec.type==="mc"){
+    sec.items.forEach((it,i)=>{
+      const q = document.createElement("div");
+      q.className = "q";
+      const optsHtml = it.options.map((op,oi)=>`
+        <div class="opt" data-idx="${oi}" data-correct="${oi===it.correct}">
+          <span class="tag">(${String.fromCharCode(65+oi)})</span><span>${op}</span>
+        </div>`).join("");
+      const imgHtml = it.image ? `<img src="${it.image}" alt="題目附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">` : "";
+      const img2Html = it.image2 ? `<img src="${it.image2}" alt="題目附圖2" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">` : "";
+      q.innerHTML = `<div class="q-text"><span class="q-num">${it.no||i+1}.</span>${it.q}</div>
+        ${imgHtml}${img2Html}
+        <div class="opts">${optsHtml}</div>`;
+      q.querySelectorAll(".opt").forEach(optEl=>{
+        if(optEl.dataset.correct==="true") optEl.classList.add("is-correct");
+        optEl.addEventListener("click", ()=>selectOption(q, optEl));
+      });
+      block.appendChild(q);
+    });
+  }
+
+  else if(sec.type==="reading"){
+    sec.passages.forEach(p=>{
+      const passageDiv = document.createElement("div");
+      passageDiv.className = "passage";
+      passageDiv.innerHTML = `${p.label ? `<span class="passage-label">${p.label}</span>`:""}${p.text}${p.image ? `<img src="${p.image}" alt="題組附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-top:10px;border:1px solid var(--paper-line);">`:""}`;
+      if(p.text || p.image) block.appendChild(passageDiv);
+      p.items.forEach((it,i)=>{
+        const q = document.createElement("div");
+        q.className = "q";
+        const optsHtml = it.options.map((op,oi)=>`
+          <div class="opt" data-idx="${oi}" data-correct="${oi===it.correct}">
+            <span class="tag">(${String.fromCharCode(65+oi)})</span><span>${op}</span>
+          </div>`).join("");
+        q.innerHTML = `<div class="q-text"><span class="q-num">${it.no||i+1}.</span>${it.q}</div>
+          ${it.image ? `<img src="${it.image}" alt="題目附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">`:""}
+          <div class="opts">${optsHtml}</div>`;
+        q.querySelectorAll(".opt").forEach(optEl=>{
+          if(optEl.dataset.correct==="true") optEl.classList.add("is-correct");
+          optEl.addEventListener("click", ()=>selectOption(q, optEl));
+        });
+        block.appendChild(q);
+      });
+    });
+  }
+
+  return block;
+}
+
+function selectOption(qEl, optEl){
+  if(currentMode!=="quiz") return;
+  if(qEl.dataset.answered==="true") return;
+  qEl.dataset.answered = "true";
+  qEl.querySelectorAll(".opt").forEach(o=>o.classList.add("disabled"));
+  optEl.classList.add("selected");
+  const correctOpt = qEl.querySelector('.opt[data-correct="true"]');
+  qEl.dataset.studentAnswer = optEl.textContent.trim();
+  qEl.dataset.correctAnswer = correctOpt ? correctOpt.textContent.trim() : "";
+  qEl.dataset.isCorrect = (optEl.dataset.correct==="true") ? "true" : "false";
+  updateScore();
+}
+
+function updateScore(){
+  let total = 0, answered = 0, correct = 0;
+  contentEl.querySelectorAll(".q").forEach(q=>{
+    const gradable = q.querySelector(".opts") || q.querySelector("input.blank");
+    if(!gradable) return;
+    total++;
+    if(q.dataset.studentAnswer !== undefined){
+      answered++;
+      if(q.dataset.isCorrect === "true") correct++;
+    }
+  });
+  if(window.examAnswersRevealed){
+    scoreText.textContent = `${correct} / ${total}`;
+  } else {
+    scoreText.textContent = `已作答 ${answered} / ${total} 題`;
+  }
+}
+window.updateScore = updateScore;
+
+// 填寫題（注音／國字、改錯）：去掉空白與標點後和正解比對；注音的一聲符號「ˉ」可寫可不寫
+function normFill(s){
+  return String(s).replace(/[\sˉ　，、。．.,;；:：!！?？「」『』（）()【】→\-－—]/g, "").trim();
+}
+document.addEventListener("input", (e)=>{
+  const input = e.target;
+  if(!input.matches || !input.matches("input.blank")) return;
+  const q = input.closest(".q");
+  const answers = JSON.parse(input.dataset.answers || "[]");
+  const val = input.value.trim();
+  if(!val){ delete q.dataset.studentAnswer; delete q.dataset.isCorrect; }
+  else {
+    q.dataset.studentAnswer = val;
+    q.dataset.correctAnswer = answers.join(" ／ ");
+    q.dataset.isCorrect = answers.some(a => normFill(a) === normFill(val)) ? "true" : "false";
+  }
+  updateScore();
+});
+
+document.getElementById("resetBtn").addEventListener("click", render);
+document.getElementById("quizModeBtn").addEventListener("click", ()=>{
+  currentMode = "quiz";
+  document.getElementById("quizModeBtn").classList.add("active");
+  document.getElementById("printModeBtn").classList.remove("active");
+  render();
+});
+document.getElementById("printModeBtn").addEventListener("click", ()=>{
+  if(document.getElementById("printModeBtn").disabled) return;
+  currentMode = "print";
+  document.getElementById("printModeBtn").classList.add("active");
+  document.getElementById("quizModeBtn").classList.remove("active");
+  render();
+});
+
+window.unlockPrintMode = function(){
+  document.getElementById("printModeBtn").disabled = false;
+};
+
+render();
+</script>
+<script src="../sync.js"></script>
+</body>
+</html>
