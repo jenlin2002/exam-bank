@@ -2,24 +2,37 @@
 Data: chidata[B|C]/tNN.py with META, SECTIONS and optional CROPS=[(name, pdf_page, "L"|"R", (x0,y0,x1,y1))].
 CROPS boxes are pixel coords on a half-page column image rendered at 200 dpi
 (L = left half 0..w/2+8pt, R = right half w/2-8pt..w), same as the images used for transcription.
-Run from anywhere: python gen_chinese.py  (needs pymupdf only when CROPS are used)."""
-import os, re, json, glob, importlib.util
+Run from anywhere: python gen_chinese.py [--g7]  (needs pymupdf only when CROPS are used)."""
+import os, re, sys, json, glob, importlib.util
+sys.dont_write_bytecode = True
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 REPO = os.path.abspath(os.path.join(HERE, "..", ".."))
-SRC = os.path.join(REPO, "PDF-RAW-DATA", "Chinese", "hanlin", "hanlin-G8-1", "115上翰林國文2上{}卷_學用.pdf")
-OUT = os.path.join(REPO, "hanlin-chinese-g8-1")
-BOOK = "翰林版八年級國文（三）"
+G7 = "--g7" in sys.argv   # 加 --g7 產生一上（翰林版七年級國文（一）），不加就是二上
+if G7:
+    SLUG, PDFDIR, PDFNAME, BOOK, DATA = "hanlin-chinese-g7-1", "hanlin-G7-1", "115上翰林國文1上{}卷_學用.pdf", "翰林版七年級國文（一）", "chi7data"
+    ROUNDS = [
+        ("第一課", "夏夜"), ("第二課", "無心的錯誤"), ("第三課", "母親的教誨・語文常識（一）"),
+        ("第一～三課・語文常識（一）", "複習"), ("第四課", "論語選"), ("第五課", "背影"),
+        ("第六課", "心囚・語文常識（二）"), ("第四～六課・語文常識（二）", "複習"), ("第七課", "兒時記趣"),
+        ("第八課", "朋友相交"), ("第九課", "音樂家與職籃巨星"), ("第十課", "玫瑰淚"),
+        ("第七～十課", "複習"), ("自學選文一", "穿越時空讀故事──古代神話與寓言選"), ("自學選文二", "貪睡的長頸鹿"),
+        ("自學選文三", "行動的水滴才能匯流大河"),
+    ]
+else:
+    SLUG, PDFDIR, PDFNAME, BOOK, DATA = "hanlin-chinese-g8-1", "hanlin-G8-1", "115上翰林國文2上{}卷_學用.pdf", "翰林版八年級國文（三）", "chidata"
+    # 每回的範圍（第 N 回 = PDF 第 2N-1、2N 頁）
+    ROUNDS = [
+        ("第一課", "田園之秋選"), ("第二課", "古詩選"), ("第三課", "下雨天，真好・語文常識（一）"),
+        ("第一～三課・語文常識（一）", "複習"), ("第四課", "愛蓮說"), ("第五課", "生命中的碎珠"),
+        ("第六課", "鳥・語文常識（二）"), ("第四～六課・語文常識（二）", "複習"), ("第七課", "張釋之執法"),
+        ("第八課", "找尋失落的水源"), ("第九課", "一棵開花的樹"), ("第十課", "畫的哀傷"),
+        ("第七～十課", "複習"), ("自學選文一", "六朝名士畫廊──世說新語選"), ("自學選文二", "一團人生"),
+        ("自學選文三", "安藤忠雄：孤獨，也要讓夢想開花"),
+    ]
+SRC = os.path.join(REPO, "PDF-RAW-DATA", "Chinese", "hanlin", PDFDIR, PDFNAME)
+OUT = os.path.join(REPO, SLUG)
 FULL = {"A": "Ａ", "B": "Ｂ", "C": "Ｃ"}
-# 每回的範圍（第 N 回 = PDF 第 2N-1、2N 頁）
-ROUNDS = [
-    ("第一課", "田園之秋選"), ("第二課", "古詩選"), ("第三課", "下雨天，真好・語文常識（一）"),
-    ("第一～三課・語文常識（一）", "複習"), ("第四課", "愛蓮說"), ("第五課", "生命中的碎珠"),
-    ("第六課", "鳥・語文常識（二）"), ("第四～六課・語文常識（二）", "複習"), ("第七課", "張釋之執法"),
-    ("第八課", "找尋失落的水源"), ("第九課", "一棵開花的樹"), ("第十課", "畫的哀傷"),
-    ("第七～十課", "複習"), ("自學選文一", "六朝名士畫廊──世說新語選"), ("自學選文二", "一團人生"),
-    ("自學選文三", "安藤忠雄：孤獨，也要讓夢想開花"),
-]
 
 def rd(p): return open(p, encoding="utf-8").read()
 def wr(p, s):
@@ -27,9 +40,9 @@ def wr(p, s):
 def load(path):
     spec = importlib.util.spec_from_file_location("m", path); m = importlib.util.module_from_spec(spec); spec.loader.exec_module(m); return m
 
-T = rd(os.path.join(HERE, "tpl_chinese.html"))
+T = rd(os.path.join(HERE, "tpl_chinese.html")).replace("hanlin-chinese-g8-1.html", SLUG + ".html")
 hrefs = {}
-for ver, folder, suf in [("A", "chidata", ""), ("B", "chidataB", "b"), ("C", "chidataC", "c")]:
+for ver, folder, suf in [("A", DATA, ""), ("B", DATA + "B", "b"), ("C", DATA + "C", "c")]:
     files = sorted(glob.glob(os.path.join(HERE, folder, "t*.py")))
     if not files: continue
     doc = None
@@ -67,7 +80,7 @@ for ver, folder, suf in [("A", "chidata", ""), ("B", "chidataB", "b"), ("C", "ch
         p = p.replace("/*__DATA__*/\n", data)
         os.makedirs(OUT, exist_ok=True)
         wr(os.path.join(OUT, name + ".html"), p)
-        hrefs.setdefault(n, {})[ver] = f"hanlin-chinese-g8-1/{name}.html"
+        hrefs.setdefault(n, {})[ver] = f"{SLUG}/{name}.html"
         print("wrote", name, nq, "graded questions")
 
 def h(n, v): return json.dumps(hrefs.get(n, {}).get(v))
@@ -80,5 +93,5 @@ I = re.sub(r'<p class="sub">.*?</p>', f'<p class="sub">{BOOK}平時考練習：�
 I = re.sub(r"const SECTIONS = \[.*?\n    \];", lambda _: 'const SECTIONS = [\n      {icon:"📖", subject:"國文", folder:"chi", rounds:[\n' + rows + "\n      ]}\n    ];", I, count=1, flags=re.S)
 I = I.replace('href="social.html">← 回社會科總目錄', 'href="chinese.html">← 回國文科總目錄')
 assert "social" not in I and "社會" not in I, "index still mentions 社會"
-wr(os.path.join(REPO, "hanlin-chinese-g8-1.html"), I)
-print("wrote hanlin-chinese-g8-1.html")
+wr(os.path.join(REPO, SLUG + ".html"), I)
+print("wrote", SLUG + ".html")
