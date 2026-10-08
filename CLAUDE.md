@@ -93,8 +93,14 @@
   - 16 頁都驗證過：每題的官方答案都判為正確、沒有 JS 錯誤、圖片都有載入、可以送出。
   - 產生方式：改 `tools/hanlin-g8-1-build/chidata/tNN.py` → `python gen_chinese.py`（路徑是相對路徑，任何電腦都能跑；有附圖的回才需要 pymupdf）。B、C 卷的資料放 `chidataB/`、`chidataC/`，檔名一樣，產生 `testNb.html`、`testNc.html`。
 
+- **翰林一上國文 A 卷第 1～16 回完成**（同一天）：`hanlin-chinese-g7-1.html` 和 `hanlin-chinese-g7-1/test1~16.html`，格式和二上國文一樣；`chinese.html` 的「國中一上・翰林」已開放。
+  - 範圍：第 1～3 回＝第一～三課（夏夜、無心的錯誤、母親的教誨），第 4 回複習，第 5～7 回＝第四～六課（論語選、背影、心囚），第 8 回複習，第 9～12 回＝第七～十課（兒時記趣、朋友相交、音樂家與職籃巨星、玫瑰淚），第 13 回複習，第 14～16 回＝自學選文一～三。
+  - 產生方式：`chi7data/tNN.py` → `python gen_chinese.py --g7`（不加 `--g7` 是二上）。
+  - **簡答有一題錯**：第 16 回單題第 16 題簡答寫 D（「好逸惡勞」明顯誤用），網頁改用 B（焦頭爛額），檔案裡有註解。
+  - 16 頁都驗證過：每題正解都判為正確、沒有 JS 錯誤、可以送出。
+
 ### 待辦／注意
 - 以上變更要在 GitHub Desktop 裡 Commit + Push，換電腦後先 Pull。
 - 尚未製作：翰林二上數學網頁（原始檔已放進 `PDF-RAW-DATA/MATH/hanlin/hanlin-g8-1/`）。另外康軒數學 K 卷只在 OneDrive 裡，沒有放進專案。
-- 國文二上（翰林）B、C 卷還沒做（原始檔在 `PDF-RAW-DATA/Chinese/hanlin/hanlin-G8-1/`）。
+- 國文一上、二上（翰林）B、C 卷還沒做（原始檔在 `PDF-RAW-DATA/Chinese/hanlin/hanlin-G7-1/`、`hanlin-G8-1/`）。
 - 學生名單不再寫在 `sync.js`：改由點數存摺的登入帳號決定（家長在「帳號管理」建立）。

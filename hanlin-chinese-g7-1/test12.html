@@ -1,0 +1,954 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>段考題庫｜國文第12回 - 玫瑰淚</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@500;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#faf6ec;
+    --paper-line:#e3dcc8;
+    --ink:#26332b;
+    --ink-soft:#5b6b5f;
+    --chalk-green:#2f4538;
+    --chalk-green-2:#3d5a48;
+    --pen-red:#b8433a;
+    --pen-red-soft:#f4dedb;
+    --ok-green:#3f7d52;
+    --ok-green-soft:#dfeee1;
+    --gold:#b5842a;
+    --radius:10px;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:"Noto Sans TC",sans-serif;
+    line-height:1.7;
+  }
+  header.hero{
+    background:var(--chalk-green);
+    color:#eef2ea;
+    padding:28px 20px 40px;
+    position:relative;
+  }
+  header.hero::after{
+    content:"";
+    position:absolute;
+    left:0; right:0; bottom:-1px;
+    height:14px;
+    background:repeating-linear-gradient(90deg,var(--paper) 0 18px, transparent 18px 20px);
+  }
+  .hero-inner{max-width:880px;margin:0 auto;}
+  .breadcrumb a{color:#cfe0d1;text-decoration:none;font-size:14px;}
+  .breadcrumb a:hover{text-decoration:underline;}
+  h1{
+    font-family:"Noto Serif TC",serif;
+    font-weight:700;
+    font-size:clamp(24px,4vw,34px);
+    margin:10px 0 6px;
+  }
+  .subtitle{color:#cfe0d1;font-size:15px;margin:0;}
+  main{max-width:880px;margin:0 auto;padding:28px 20px 80px;}
+
+  .controls{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:22px;
+  }
+  .mode-toggle{display:flex;border:2px solid var(--chalk-green);border-radius:999px;overflow:hidden;}
+  .mode-toggle button{
+    background:transparent;border:none;padding:8px 16px;font-size:14px;font-weight:700;
+    color:var(--chalk-green);cursor:pointer;font-family:"Noto Sans TC",sans-serif;
+  }
+  .mode-toggle button.active{background:var(--gold);color:#fff;}
+  .mode-toggle button:disabled{opacity:.4;cursor:not-allowed;}
+
+  .score-bar{
+    display:none;
+    align-items:center;
+    justify-content:space-between;
+    background:#fff;
+    border:1px solid var(--paper-line);
+    border-left:5px solid var(--gold);
+    border-radius:var(--radius);
+    padding:12px 18px;
+    margin-bottom:22px;
+    font-size:14px;
+  }
+  .score-bar.show{display:flex;}
+  .score-bar strong{font-size:18px;color:var(--gold);}
+  .score-bar button{
+    background:none;border:1px solid var(--ink-soft);color:var(--ink-soft);
+    border-radius:6px;padding:6px 12px;font-size:13px;cursor:pointer;
+  }
+
+  section.block{
+    background:#fff;
+    border:1px solid var(--paper-line);
+    border-radius:var(--radius);
+    padding:22px 22px 26px;
+    margin-bottom:20px;
+  }
+  .block h2{
+    font-family:"Noto Serif TC",serif;
+    font-size:19px;
+    margin:0 0 4px;
+    color:var(--chalk-green);
+  }
+  .block .meta{color:var(--ink-soft);font-size:13px;margin:0 0 16px;}
+
+  .q{margin-bottom:18px;padding-bottom:16px;border-bottom:1px dashed var(--paper-line);}
+  .q:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0;}
+  .q-text{font-size:15.5px;margin-bottom:8px;}
+  .q-num{color:var(--gold);font-weight:700;margin-right:4px;}
+
+  .opts{display:grid;gap:8px;}
+  .opt{
+    display:flex;gap:8px;align-items:flex-start;
+    border:1.5px solid var(--paper-line);
+    border-radius:8px;
+    padding:9px 12px;
+    cursor:pointer;
+    font-size:14.5px;
+    background:#fffdf8;
+  }
+  .opt:hover{border-color:var(--chalk-green-2);}
+  .opt.selected{border-color:var(--chalk-green-2);background:#eef3ea;}
+  .opt.correct{border-color:var(--ok-green);background:var(--ok-green-soft);}
+  .opt.wrong{border-color:var(--pen-red);background:var(--pen-red-soft);}
+  .opt .tag{font-weight:700;color:var(--ink-soft);}
+  .opt.correct .tag{color:var(--ok-green);}
+  .opt.wrong .tag{color:var(--pen-red);}
+  .opt.disabled{cursor:default;}
+
+  .passage{
+    background:#f5f2e8;border-radius:8px;padding:14px 16px;margin-bottom:14px;
+    font-size:14.5px;white-space:pre-line;
+  }
+  .passage-label{font-weight:700;color:var(--chalk-green);margin-bottom:4px;display:block;}
+
+  .sec-note{font-size:13.5px;color:var(--ink-soft);background:#f5f2e8;border-radius:8px;padding:8px 12px;margin:-6px 0 14px;}
+  .sec-pre{background:#f5f2e8;border-radius:8px;padding:10px 14px;margin:-4px 0 14px;font-size:14.5px;}
+  .fill-row{display:flex;flex-wrap:wrap;align-items:center;gap:8px;}
+  input.blank{
+    font-family:"Noto Sans TC",sans-serif;font-size:15.5px;border:none;border-bottom:2px solid var(--chalk-green-2);
+    background:#fffdf8;padding:4px 6px;width:170px;max-width:100%;
+  }
+  input.blank.wide{width:100%;}
+  textarea.explain-box{
+    width:100%;min-height:52px;font-family:"Noto Sans TC",sans-serif;font-size:15px;
+    border:1.5px solid var(--paper-line);border-radius:8px;padding:8px 10px;background:#fffdf8;resize:vertical;
+  }
+  .feedback{font-weight:700;font-size:15px;}
+  .feedback.ok{color:var(--ok-green);}
+  .feedback.no{color:var(--pen-red);}
+  .answer-reveal{display:none;margin-top:8px;font-size:14px;color:var(--ok-green);background:var(--ok-green-soft);border-radius:6px;padding:6px 12px;}
+  .answer-reveal.show{display:block;}
+  .zh-und{text-decoration:underline;text-underline-offset:3px;}
+  .footer-link{
+    display:block;text-align:center;margin-top:30px;color:var(--chalk-green);
+    text-decoration:none;font-weight:700;font-size:14px;
+  }
+  .footer-link:hover{text-decoration:underline;}
+
+  @media print{
+    header.hero, .controls, .score-bar, .mini-btn, .footer-link{display:none !important;}
+    body{background:#fff;}
+    section.block{border:none;box-shadow:none;padding:8px 0;margin-bottom:14px;}
+    .opt.correct{background:none;border:none;font-weight:700;}
+    .opt.correct::after{content:" ← 正解";color:var(--pen-red);}
+    .opt{border:none;padding:2px 0;}
+    main{max-width:100%;padding:0 24px;}
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="breadcrumb"><a href="https://jenlin2002.github.io/">🏠 回總目錄</a> ／ <a href="../hanlin-chinese-g7-1.html" style="color:#cfe0d1;">段考題庫</a></div>
+    <h1>國文・第12回</h1>
+    <p class="subtitle">第十課 玫瑰淚｜翰林版七年級國文（一）Ａ卷</p>
+  </div>
+</header>
+
+<main>
+  <div class="controls">
+    <div class="mode-toggle">
+      <button id="quizModeBtn" class="active">✏️ 測驗模式</button>
+      <button id="printModeBtn" disabled title="完成測驗並送出成績後才能查看">🖨️ 完整題目與解答（送出成績後解鎖）</button>
+    </div>
+  </div>
+
+  <div class="score-bar" id="scoreBar">
+    <div>目前得分：<strong id="scoreText">0 / 0</strong>（選擇題與填寫題；解釋題不計分）</div>
+    <button id="resetBtn">重新作答</button>
+  </div>
+
+  <div id="content"></div>
+
+  <a class="footer-link" href="../hanlin-chinese-g7-1.html">← 回段考題庫總覽</a>
+</main>
+
+<script>
+
+window.EXAM_META = { version: "國文A卷", examLabel: "國文第12回" };
+const DATA = {
+  sections: [
+  {
+    "type": "fill",
+    "title": "A部分　一、國字注音",
+    "meta": "每字1分，共10分",
+    "note": "「」裡是國字的寫注音，是注音的寫國字。注音的一聲可以不標。",
+    "placeholder": "注音或國字",
+    "items": [
+      {
+        "q": "「ㄑㄧˊ」雨",
+        "answers": [
+          "祈"
+        ]
+      },
+      {
+        "q": "不「ㄋㄞˋ」煩",
+        "answers": [
+          "耐"
+        ]
+      },
+      {
+        "q": "「ㄆㄥˊ」頭垢面",
+        "answers": [
+          "蓬"
+        ]
+      },
+      {
+        "q": "埋兵「ㄈㄨˊ」將",
+        "answers": [
+          "伏"
+        ]
+      },
+      {
+        "q": "「ㄐㄩㄝˊ」擇",
+        "answers": [
+          "抉"
+        ]
+      },
+      {
+        "q": "「耶」誕節",
+        "answers": [
+          "ㄧㄝˊ"
+        ]
+      },
+      {
+        "q": "「埋」下伏筆",
+        "answers": [
+          "ㄇㄞˊ"
+        ]
+      },
+      {
+        "q": "「悄」無聲息",
+        "answers": [
+          "ㄑㄧㄠˇ"
+        ]
+      },
+      {
+        "q": "魚目「混」珠",
+        "answers": [
+          "ㄏㄨㄣˋ"
+        ]
+      },
+      {
+        "q": "情「竇」初開",
+        "answers": [
+          "ㄉㄡˋ"
+        ]
+      }
+    ]
+  },
+  {
+    "type": "explain",
+    "title": "二、解釋",
+    "meta": "每題2分，共4分（自己對照參考答案，不計入自動計分）",
+    "items": [
+      {
+        "q": "喃喃自語",
+        "answer": "自己不斷地輕聲說話。"
+      },
+      {
+        "q": "不治",
+        "answer": "無法挽救。"
+      }
+    ]
+  },
+  {
+    "type": "fill",
+    "title": "三、改錯",
+    "meta": "每字1分，共10分",
+    "wide": true,
+    "note": "每句有 5 個錯字。依照出現的順序，只寫出改正後的字（例如寫成「ＯＯＯＯＯ」五個字）。",
+    "placeholder": "依序寫出正確的字",
+    "items": [
+      {
+        "q": "僅管已與祖父陰陽兩格，但嫵摸著祖父昔日送給自己的項鍊，心中依然充滿儒幕之情。",
+        "answers": [
+          "儘隔撫孺慕"
+        ]
+      },
+      {
+        "q": "他多年來志力於地方息俗研究，這些包羅萬像的民俗活動都是人民生活型態的真實反應，更是民族生存不可獲缺的精神支柱。",
+        "answers": [
+          "致習象映或"
+        ]
+      }
+    ]
+  },
+  {
+    "type": "mc",
+    "title": "四、成語填空",
+    "meta": "每題2分，共16分",
+    "note": "請依句意，從參考選項中選出適當的成語填入（　）中。",
+    "items": [
+      {
+        "q": "老母親守在兒子的病榻前，（　　　）的模樣令人感動。",
+        "options": [
+          "撒手人寰",
+          "揮金如土",
+          "銀貨兩訖",
+          "菽水承歡",
+          "舐犢情深",
+          "孤注一擲",
+          "銘感五內",
+          "入木三分",
+          "樂善好施"
+        ],
+        "correct": 4
+      },
+      {
+        "q": "中彩券後的他過著（　　　）、極度浪費的生活。",
+        "options": [
+          "撒手人寰",
+          "揮金如土",
+          "銀貨兩訖",
+          "菽水承歡",
+          "舐犢情深",
+          "孤注一擲",
+          "銘感五內",
+          "入木三分",
+          "樂善好施"
+        ],
+        "correct": 1
+      },
+      {
+        "q": "對於周董的熱情贊助，我（　　　），萬分感激。",
+        "options": [
+          "撒手人寰",
+          "揮金如土",
+          "銀貨兩訖",
+          "菽水承歡",
+          "舐犢情深",
+          "孤注一擲",
+          "銘感五內",
+          "入木三分",
+          "樂善好施"
+        ],
+        "correct": 6
+      },
+      {
+        "q": "他為人（　　　），經常默默捐款幫助弱勢，深受大家尊敬。",
+        "options": [
+          "撒手人寰",
+          "揮金如土",
+          "銀貨兩訖",
+          "菽水承歡",
+          "舐犢情深",
+          "孤注一擲",
+          "銘感五內",
+          "入木三分",
+          "樂善好施"
+        ],
+        "correct": 8
+      },
+      {
+        "q": "他因癌症而（　　　），留下孤苦無依的妻兒。",
+        "options": [
+          "撒手人寰",
+          "揮金如土",
+          "銀貨兩訖",
+          "菽水承歡",
+          "舐犢情深",
+          "孤注一擲",
+          "銘感五內",
+          "入木三分",
+          "樂善好施"
+        ],
+        "correct": 0
+      },
+      {
+        "q": "佩可的書法功力，真是力透紙背、（　　　）。",
+        "options": [
+          "撒手人寰",
+          "揮金如土",
+          "銀貨兩訖",
+          "菽水承歡",
+          "舐犢情深",
+          "孤注一擲",
+          "銘感五內",
+          "入木三分",
+          "樂善好施"
+        ],
+        "correct": 7
+      },
+      {
+        "q": "孝順父母最重要的是心意，即使（　　　），也能使父母感到欣慰。",
+        "options": [
+          "撒手人寰",
+          "揮金如土",
+          "銀貨兩訖",
+          "菽水承歡",
+          "舐犢情深",
+          "孤注一擲",
+          "銘感五內",
+          "入木三分",
+          "樂善好施"
+        ],
+        "correct": 3
+      },
+      {
+        "q": "這宗買賣早已（　　　），反悔已來不及了。",
+        "options": [
+          "撒手人寰",
+          "揮金如土",
+          "銀貨兩訖",
+          "菽水承歡",
+          "舐犢情深",
+          "孤注一擲",
+          "銘感五內",
+          "入木三分",
+          "樂善好施"
+        ],
+        "correct": 2
+      }
+    ]
+  },
+  {
+    "type": "mc",
+    "title": "五、基礎題",
+    "meta": "每題2分，共30分",
+    "items": [
+      {
+        "q": "下列「　」中的注音寫成國字後，何組字形相同？",
+        "options": [
+          "步履「ㄘㄨㄥ」忙／「ㄘㄨㄥ」容自在",
+          "社會「ㄒㄧㄤˊ」和／面容安「ㄒㄧㄤˊ」",
+          "「ㄓˊ」意如此／擇善固「ㄓˊ」",
+          "餘「ㄩㄣˋ」無窮／溫和「ㄩㄣˋ」藉"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "下列「　」中的字，何組讀音相同？",
+        "options": [
+          "「揭」曉／「竭」盡",
+          "「塑」造／「朔」風",
+          "「恍」然／「幌」子",
+          "「饋」贈／「櫃」檯"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "下列「　」中的字，何組意思相同？",
+        "options": [
+          "「顧」此失彼／奮不「顧」身",
+          "平均「值」／夜間「值」勤",
+          "流水「帳」／欠「帳」不還",
+          "「熱」氣蒸騰／「熱」門商品"
+        ],
+        "correct": 0
+      },
+      {
+        "q": "玫瑰淚一文的文末提及主角含著熱淚離開教堂，並知道從此他的生活將會改變，這樣的結尾有何效果？",
+        "options": [
+          "開放式結尾，保留想像空間",
+          "暗示主角將領養小男孩",
+          "弱化主角形象，將故事聚焦在小男孩",
+          "認為主角的孫兒不如小男孩懂事"
+        ],
+        "correct": 0
+      },
+      {
+        "q": "「我把自己的錢悄悄混到他的錢裡，然後一起數了起來，現在的錢足夠買那個洋娃娃了。」根據這段敘述，下列何者<b>錯誤</b>？",
+        "options": [
+          "小男孩沒有足夠的錢買洋娃娃",
+          "主角具有悲憫的胸襟",
+          "小男孩的算數能力不佳",
+          "小男孩在主角幫助下才買到洋娃娃"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "玫瑰淚一文中，小男孩失去了妹妹，可用何者來形容？",
+        "options": [
+          "雁行失序",
+          "抱痛西河",
+          "立雪神傷",
+          "風木之思"
+        ],
+        "correct": 0
+      },
+      {
+        "q": "玫瑰淚文中提及「白玫瑰」，此物在本文中所代表的意涵<b>不包括</b>下列何者？",
+        "options": [
+          "小男孩母親喜愛的花",
+          "小男孩對母親的感情",
+          "陌生人的悲憫與慈愛",
+          "維繫母子親情的媒介"
+        ],
+        "correct": 3
+      },
+      {
+        "q": "玫瑰淚一文中，提及主角一看價錢就有點失望，他認為這些玩具太廉價、太普通，孫兒肯定看不上眼。由此可知主角選購禮物的考慮因素是什麼？",
+        "options": [
+          "禮物的價格",
+          "受贈者的愛好",
+          "送禮者的喜好",
+          "方便購買即可"
+        ],
+        "correct": 0
+      },
+      {
+        "q": "關於玫瑰淚文中提及的人物形象，何者說明正確？",
+        "options": [
+          "主角：看重金錢",
+          "小男孩：堅強體貼",
+          "結帳小姐：嫌貧愛富",
+          "小男孩的爸爸：抑鬱寡歡"
+        ],
+        "correct": 1
+      },
+      {
+        "q": "「她（妹妹）已經跟上帝在一起了，爸爸說媽媽也要去了。」可知小男孩的媽媽和妹妹當時狀況如何？",
+        "options": [
+          "兩人都在急救中",
+          "兩人都已離開人世",
+          "妹妹已離世，媽媽傷重",
+          "媽媽已離世，妹妹傷重"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "下列「　」中的疊字詞，何者具有描繪聲音的功能？",
+        "options": [
+          "「喃喃」自語",
+          "「暗暗」叫苦",
+          "「匆匆」離去",
+          "「悄悄」混入"
+        ],
+        "correct": 0
+      },
+      {
+        "q": "關於玫瑰淚一文的寫作技巧，下列敘述何者<b>有誤</b>？",
+        "options": [
+          "以第一人稱立場詳盡交代故事始末",
+          "擅長使用伏筆，使前後文互相映照",
+          "使用對比手法使人物形象更加立體",
+          "從小男孩角度仔細描繪與母親的回憶"
+        ],
+        "correct": 3
+      },
+      {
+        "q": "下列文句中的連詞，何者使用最恰當？",
+        "options": [
+          "即使你付了錢，就能拿走你想買的洋娃娃",
+          "與其衡量禮物的價值，反而重視禮物的意義",
+          "就算男孩掏空口袋，也買不起這個娃娃",
+          "雖然我沒說出口，而且他依然能明白我的心意"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "玫瑰淚一文中，下列事件的時間順序排列何者正確？(甲)小男孩的家人出車禍(乙)小男孩的母親過世(丙)百貨商店看到小男孩(丁)看到報紙上酒駕新聞",
+        "options": [
+          "(丙)(甲)(乙)(丁)",
+          "(甲)(丁)(丙)(乙)",
+          "(甲)(丙)(乙)(丁)",
+          "(丙)(乙)(甲)(丁)"
+        ],
+        "correct": 1
+      },
+      {
+        "q": "玫瑰淚一文中，小男孩的母親最喜歡白玫瑰，「白」在此實指顏色。下列詞語中的「白」字，何者意思與其相同？",
+        "options": [
+          "白開水",
+          "真相大白",
+          "白衣天使",
+          "白跑一趟"
+        ],
+        "correct": 2
+      }
+    ]
+  },
+  {
+    "type": "mc",
+    "title": "B部分　一、進階題",
+    "meta": "每題2分，共14分",
+    "items": [
+      {
+        "q": "「人生是短暫的，死亡是自然的，認清了這點，活著的時候才可以真正地投入。」此話涵義與何者最接近？",
+        "options": [
+          "擁有瀕死經驗，才能發現活著的可貴",
+          "將死亡置之度外的人才是真正的勇者",
+          "生命的價值在於追求生命的長度",
+          "了解生命的限制，就能盡情地活著"
+        ],
+        "correct": 3
+      },
+      {
+        "q": "下列各文句，何者屬於正面論述？",
+        "options": [
+          "讓歡喜代替哀愁，微笑不會再害羞",
+          "虛偽的真誠，比惡魔更可怕",
+          "生命是一頓豐富的饗宴，有人卻寧可挨餓",
+          "不費勞力得到的，唯有貧困而已"
+        ],
+        "correct": 0
+      },
+      {
+        "q": "「□□，就是記得別人的好，忘記別人的壞。」空格處宜填入下列何者最恰當？",
+        "options": [
+          "勤學",
+          "感恩",
+          "負責",
+          "立志"
+        ],
+        "correct": 1
+      },
+      {
+        "q": "「我們的情緒狀態有很大一部分是取決於我們在注意什麼，一般是聚焦於目前在做的事情上。例如想從閱讀得到快樂，必須注意到自己正在閱讀。否則，花同樣時間在閱讀，但是把閱讀和別的活動綜合在一起，閱讀的快樂就被稀釋了。」下列何者與這段文字的涵義最接近？",
+        "options": [
+          "找到自己的興趣就能獲得快樂",
+          "短暫的享樂未能讓心靈真正滿足",
+          "主觀感受與關注的事情密切相關",
+          "追求物質享受無法得到真正的快樂"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "「對自卑的人而言，軟弱和膽怯是與生俱來的，生活上某些困境又加深了這種局促感。因此，我們需要以巨大的熱情和細緻的耐心去激勵他們，幫助他們排除被放大的心理障礙。＿＿＿＿。」根據文意，畫線處填入下列何者最恰當？",
+        "options": [
+          "拒絕邏輯思辨、反對理性分析，而傾心於自己的感覺和體驗",
+          "感性的、情緒化的理由並不能迅速打動他們",
+          "簡單直接的語言和動作，都可以使他們被壓抑的靈魂甦醒過來",
+          "唯有以旁敲側擊的方法協助他們武裝起來"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "「過得好，是因為你看見周圍的好；你很好，是因為你看見自己的好。」「我們不是讓自己活得悲慘，就是讓自己活得堅強。兩者所花的力量是一樣的。」這兩段話共同傳達出的涵義，與下列何者最接近？",
+        "options": [
+          "最重要的東西往往是最簡單的事情",
+          "不要讓別人的挑釁輕易擊潰自己",
+          "人生的方向可由自己掌握",
+          "快樂與痛苦是一體兩面"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "幾米：「生活是一面鏡子，你對它笑，它就對你笑；你對它哭，它也對你哭。」其主旨近似於下列何者？",
+        "options": [
+          "成功的奧祕在於目標的堅定",
+          "誰不能主宰自己，就永遠是個奴隸",
+          "過於求速，是做事最大的危險之一",
+          "探索別人身上的美德，尋找自己身上的惡習"
+        ],
+        "correct": 1
+      }
+    ]
+  },
+  {
+    "type": "reading",
+    "title": "二、閱讀測驗",
+    "meta": "每題2分，共10分",
+    "passages": [
+      {
+        "label": "（一）",
+        "text": "當對方需要被讚美時，那麼我們一定要及時送上讚美。當人們開始努力，正在突破障礙，人們對於讚美的要求也就不可阻止。由於行動帶來的興奮感，以及收穫帶來的成就感，人們迫切需要來自外部的肯定。於是人們的讚美對他們來說猶如□□□□，讚美會使他們得到持久的信心。對那些失敗者來說，激勵非常奢侈，他們只有冷漠、嘲諷，甚至侮辱和打擊為伴。與那些獲得榮譽的人們相比，失敗者和受困者是最需要被激勵的，誇獎會使他們熱淚盈眶，安慰會使他們激動不已。當對方生命陷入低谷時，我們千萬不要吝惜我們的讚美。（節錄自董邦冠找回信心的25堂激勵課）",
+        "items": [
+          {
+            "q": "下列何者說明的道理與本文最接近？",
+            "options": [
+              "毒蛇口中吐蓮花",
+              "鸚鵡能言，不離飛鳥",
+              "贈人以言，重於珠玉",
+              "能讀無字之書，方可得驚人妙語"
+            ],
+            "correct": 2
+          },
+          {
+            "q": "根據本文，空格處填入下列哪一個詞語最恰當？",
+            "options": [
+              "雪上加霜",
+              "破釜沉舟",
+              "積非成是",
+              "雪中送炭"
+            ],
+            "correct": 3
+          },
+          {
+            "q": "有關本文的敘述，下列何者正確？",
+            "options": [
+              "渴望鼓勵的人是最缺乏自信的人",
+              "失敗者和受困者是最需要被激勵的人",
+              "讚美會使人變得狂妄自大",
+              "正在取勝的人應遠離讚美的話語"
+            ],
+            "correct": 1
+          }
+        ]
+      },
+      {
+        "label": "（二）",
+        "text": "九歲時，母親死去。父親也就更變了樣，偶然打碎了一隻杯子，他就要罵到使人發抖的程度。後來就連父親的眼睛也轉了彎，每從他的身邊經過，我就像自己的身上生了針刺一樣；他斜視著你，他那高傲的眼光從鼻梁經過嘴角而後往下流著。\n父親打了我的時候，我就在祖父的房裡，一直面向著窗子，從黃昏到深夜。窗外的白雪，好像白棉花一樣飄著；而暖爐上水壺的蓋子，則像伴奏的樂器似地振動著。\n祖父時時把多紋的兩手放在我的肩上，而後又放在我的頭上，我的耳邊便響著這樣的聲音：「快快長大吧！長大了就好了。」\n二十歲那年，我就逃出了父親的家庭。直到現在還是過著流浪的生活。「長大」是「長大」了，而沒有「好」。可是從祖父那裡，知道了人生除了冰冷和憎惡之外，還有溫暖和愛。所以我就向這「溫暖」和「愛」的方面，懷著永久的憧憬和追求。（節錄自蕭紅永久的憧憬和追求）",
+        "items": [
+          {
+            "q": "「窗外的白雪，好像白棉花一樣飄著；而暖爐上水壺的蓋子，則像伴奏的樂器似地振動著。」這段文字在本文中具有什麼意涵？",
+            "options": [
+              "作者藉以短暫脫離苦痛的現實",
+              "描繪童年生活環境美好而單純",
+              "表達出父親的愛十分隱晦難懂",
+              "強烈聲響代表作者內心的憤怒"
+            ],
+            "correct": 0
+          },
+          {
+            "q": "根據本文，下列說明何者正確？",
+            "options": [
+              "因父親家暴使作者對生活感到悲觀",
+              "祖父的溫暖是支持作者內心的力量",
+              "作者二十歲後就擺脫了童年的陰影",
+              "童年的陰影使作者選擇獨居的生活"
+            ],
+            "correct": 1
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "type": "reading",
+    "title": "三、閱讀素養題",
+    "meta": "每題3分，共6分",
+    "passages": [
+      {
+        "label": "",
+        "text": "這裡有餐盤而無食慾。／有結婚戒指，然愛情至少已三百年／未獲回報。\n這裡有一把扇子——粉紅的臉蛋哪裡去了？／這裡有幾把劍——憤怒哪裡去了？／黃昏時分魯特琴的弦音不再響起。\n因為永恆缺貨／一萬件古物在此聚合。／土裡土氣的守衛美夢正酣，／他的短髭撐靠在展示櫥窗上。\n金屬，陶器，鳥的羽毛／無聲地慶祝自己戰勝了時間。／只有古埃及黃毛丫頭的髮夾嗤嗤傻笑。\n王冠的壽命比頭長。／手輸給了手套。／右腳的鞋打敗了腳。\n至於我，你瞧，還活著。／和我的衣服的競賽正如火如荼進行著。／這傢伙戰鬥的意志超乎想像！／它多想在我離去之後繼續存活！（辛波絲卡）",
+        "items": [
+          {
+            "q": "根據本詩內容，其詩題應是下列何者？",
+            "options": [
+              "動物園",
+              "植物園",
+              "博物館",
+              "圖書館"
+            ],
+            "correct": 2
+          },
+          {
+            "q": "本詩意旨與下列何者最接近？",
+            "options": [
+              "景物依舊，人事已非",
+              "十年河東，十年河西",
+              "月暈而風，礎潤而雨",
+              "尺有所短，寸有所長"
+            ],
+            "correct": 0
+          }
+        ]
+      }
+    ]
+  }
+]
+};
+
+let currentMode = "quiz"; // quiz | print
+
+const contentEl = document.getElementById("content");
+const scoreBar = document.getElementById("scoreBar");
+const scoreText = document.getElementById("scoreText");
+
+function render(){
+  window.examAnswersRevealed = false;
+  contentEl.innerHTML = "";
+  DATA.sections.forEach((sec, si)=> contentEl.appendChild(renderSection(sec, si)));
+  if(currentMode==="quiz"){
+    scoreBar.classList.add("show");
+    updateScore();
+  } else {
+    scoreBar.classList.remove("show");
+    contentEl.querySelectorAll(".opt").forEach(o=>o.classList.add("disabled"));
+    contentEl.querySelectorAll(".opt.is-correct").forEach(o=>o.classList.add("correct"));
+  }
+}
+
+function renderSection(sec, si){
+  const block = document.createElement("section");
+  block.className = "block";
+  block.innerHTML = `<h2>${sec.title}</h2><p class="meta">${sec.meta}</p>`
+    + (sec.note ? `<div class="sec-note">${sec.note}</div>` : "")
+    + (sec.pre ? `<div class="sec-pre">${sec.pre}</div>` : "");
+
+  if(sec.type==="fill"){
+    sec.items.forEach((it,i)=>{
+      const q = document.createElement("div");
+      q.className = "q";
+      const shown = it.answers.join(" ／ ");
+      q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q}</div>
+        <div class="fill-row"><input type="text" class="blank${sec.wide ? " wide" : ""}" autocomplete="off" placeholder="${sec.placeholder || "作答"}"><span class="feedback"></span></div>
+        <div class="answer-reveal">正解：${shown}</div>`;
+      q.querySelector("input.blank").dataset.answers = JSON.stringify(it.answers);
+      if(currentMode!=="quiz"){ q.querySelector("input.blank").disabled = true; q.querySelector(".answer-reveal").classList.add("show"); }
+      block.appendChild(q);
+    });
+  }
+
+  else if(sec.type==="explain"){
+    sec.items.forEach((it,i)=>{
+      const q = document.createElement("div");
+      q.className = "q";
+      q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q}</div>
+        <textarea class="explain-box" placeholder="寫下你的解釋（送出成績後對照參考答案）"></textarea>
+        <div class="answer-reveal">參考答案：${it.answer}</div>`;
+      if(currentMode!=="quiz"){ q.querySelector("textarea").remove(); q.querySelector(".answer-reveal").classList.add("show"); }
+      block.appendChild(q);
+    });
+  }
+
+  else if(sec.type==="mc"){
+    sec.items.forEach((it,i)=>{
+      const q = document.createElement("div");
+      q.className = "q";
+      const optsHtml = it.options.map((op,oi)=>`
+        <div class="opt" data-idx="${oi}" data-correct="${oi===it.correct}">
+          <span class="tag">(${String.fromCharCode(65+oi)})</span><span>${op}</span>
+        </div>`).join("");
+      const imgHtml = it.image ? `<img src="${it.image}" alt="題目附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">` : "";
+      const img2Html = it.image2 ? `<img src="${it.image2}" alt="題目附圖2" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">` : "";
+      q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q}</div>
+        ${imgHtml}${img2Html}
+        <div class="opts">${optsHtml}</div>`;
+      q.querySelectorAll(".opt").forEach(optEl=>{
+        if(optEl.dataset.correct==="true") optEl.classList.add("is-correct");
+        optEl.addEventListener("click", ()=>selectOption(q, optEl));
+      });
+      block.appendChild(q);
+    });
+  }
+
+  else if(sec.type==="reading"){
+    sec.passages.forEach(p=>{
+      const passageDiv = document.createElement("div");
+      passageDiv.className = "passage";
+      passageDiv.innerHTML = `${p.label ? `<span class="passage-label">${p.label}</span>`:""}${p.text}${p.image ? `<img src="${p.image}" alt="題組附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-top:10px;border:1px solid var(--paper-line);">`:""}`;
+      block.appendChild(passageDiv);
+      p.items.forEach((it,i)=>{
+        const q = document.createElement("div");
+        q.className = "q";
+        const optsHtml = it.options.map((op,oi)=>`
+          <div class="opt" data-idx="${oi}" data-correct="${oi===it.correct}">
+            <span class="tag">(${String.fromCharCode(65+oi)})</span><span>${op}</span>
+          </div>`).join("");
+        q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q}</div>
+          ${it.image ? `<img src="${it.image}" alt="題目附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">`:""}
+          <div class="opts">${optsHtml}</div>`;
+        q.querySelectorAll(".opt").forEach(optEl=>{
+          if(optEl.dataset.correct==="true") optEl.classList.add("is-correct");
+          optEl.addEventListener("click", ()=>selectOption(q, optEl));
+        });
+        block.appendChild(q);
+      });
+    });
+  }
+
+  return block;
+}
+
+function selectOption(qEl, optEl){
+  if(currentMode!=="quiz") return;
+  if(qEl.dataset.answered==="true") return;
+  qEl.dataset.answered = "true";
+  qEl.querySelectorAll(".opt").forEach(o=>o.classList.add("disabled"));
+  optEl.classList.add("selected");
+  const correctOpt = qEl.querySelector('.opt[data-correct="true"]');
+  qEl.dataset.studentAnswer = optEl.textContent.trim();
+  qEl.dataset.correctAnswer = correctOpt ? correctOpt.textContent.trim() : "";
+  qEl.dataset.isCorrect = (optEl.dataset.correct==="true") ? "true" : "false";
+  updateScore();
+}
+
+function updateScore(){
+  let total = 0, answered = 0, correct = 0;
+  contentEl.querySelectorAll(".q").forEach(q=>{
+    const gradable = q.querySelector(".opts") || q.querySelector("input.blank");
+    if(!gradable) return;
+    total++;
+    if(q.dataset.studentAnswer !== undefined){
+      answered++;
+      if(q.dataset.isCorrect === "true") correct++;
+    }
+  });
+  if(window.examAnswersRevealed){
+    scoreText.textContent = `${correct} / ${total}`;
+  } else {
+    scoreText.textContent = `已作答 ${answered} / ${total} 題`;
+  }
+}
+window.updateScore = updateScore;
+
+// 填寫題（注音／國字、改錯）：去掉空白與標點後和正解比對；注音的一聲符號「ˉ」可寫可不寫
+function normFill(s){
+  return String(s).replace(/[\sˉ　，、。．.,;；:：!！?？「」『』（）()【】→\-－—]/g, "").trim();
+}
+document.addEventListener("input", (e)=>{
+  const input = e.target;
+  if(!input.matches || !input.matches("input.blank")) return;
+  const q = input.closest(".q");
+  const answers = JSON.parse(input.dataset.answers || "[]");
+  const val = input.value.trim();
+  if(!val){ delete q.dataset.studentAnswer; delete q.dataset.isCorrect; }
+  else {
+    q.dataset.studentAnswer = val;
+    q.dataset.correctAnswer = answers.join(" ／ ");
+    q.dataset.isCorrect = answers.some(a => normFill(a) === normFill(val)) ? "true" : "false";
+  }
+  updateScore();
+});
+
+document.getElementById("resetBtn").addEventListener("click", render);
+document.getElementById("quizModeBtn").addEventListener("click", ()=>{
+  currentMode = "quiz";
+  document.getElementById("quizModeBtn").classList.add("active");
+  document.getElementById("printModeBtn").classList.remove("active");
+  render();
+});
+document.getElementById("printModeBtn").addEventListener("click", ()=>{
+  if(document.getElementById("printModeBtn").disabled) return;
+  currentMode = "print";
+  document.getElementById("printModeBtn").classList.add("active");
+  document.getElementById("quizModeBtn").classList.remove("active");
+  render();
+});
+
+window.unlockPrintMode = function(){
+  document.getElementById("printModeBtn").disabled = false;
+};
+
+render();
+</script>
+<script src="../sync.js"></script>
+</body>
+</html>
