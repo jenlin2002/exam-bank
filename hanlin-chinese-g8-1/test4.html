@@ -1,0 +1,907 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>段考題庫｜國文第4回 - 複習</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@500;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#faf6ec;
+    --paper-line:#e3dcc8;
+    --ink:#26332b;
+    --ink-soft:#5b6b5f;
+    --chalk-green:#2f4538;
+    --chalk-green-2:#3d5a48;
+    --pen-red:#b8433a;
+    --pen-red-soft:#f4dedb;
+    --ok-green:#3f7d52;
+    --ok-green-soft:#dfeee1;
+    --gold:#b5842a;
+    --radius:10px;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:"Noto Sans TC",sans-serif;
+    line-height:1.7;
+  }
+  header.hero{
+    background:var(--chalk-green);
+    color:#eef2ea;
+    padding:28px 20px 40px;
+    position:relative;
+  }
+  header.hero::after{
+    content:"";
+    position:absolute;
+    left:0; right:0; bottom:-1px;
+    height:14px;
+    background:repeating-linear-gradient(90deg,var(--paper) 0 18px, transparent 18px 20px);
+  }
+  .hero-inner{max-width:880px;margin:0 auto;}
+  .breadcrumb a{color:#cfe0d1;text-decoration:none;font-size:14px;}
+  .breadcrumb a:hover{text-decoration:underline;}
+  h1{
+    font-family:"Noto Serif TC",serif;
+    font-weight:700;
+    font-size:clamp(24px,4vw,34px);
+    margin:10px 0 6px;
+  }
+  .subtitle{color:#cfe0d1;font-size:15px;margin:0;}
+  main{max-width:880px;margin:0 auto;padding:28px 20px 80px;}
+
+  .controls{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:22px;
+  }
+  .mode-toggle{display:flex;border:2px solid var(--chalk-green);border-radius:999px;overflow:hidden;}
+  .mode-toggle button{
+    background:transparent;border:none;padding:8px 16px;font-size:14px;font-weight:700;
+    color:var(--chalk-green);cursor:pointer;font-family:"Noto Sans TC",sans-serif;
+  }
+  .mode-toggle button.active{background:var(--gold);color:#fff;}
+  .mode-toggle button:disabled{opacity:.4;cursor:not-allowed;}
+
+  .score-bar{
+    display:none;
+    align-items:center;
+    justify-content:space-between;
+    background:#fff;
+    border:1px solid var(--paper-line);
+    border-left:5px solid var(--gold);
+    border-radius:var(--radius);
+    padding:12px 18px;
+    margin-bottom:22px;
+    font-size:14px;
+  }
+  .score-bar.show{display:flex;}
+  .score-bar strong{font-size:18px;color:var(--gold);}
+  .score-bar button{
+    background:none;border:1px solid var(--ink-soft);color:var(--ink-soft);
+    border-radius:6px;padding:6px 12px;font-size:13px;cursor:pointer;
+  }
+
+  section.block{
+    background:#fff;
+    border:1px solid var(--paper-line);
+    border-radius:var(--radius);
+    padding:22px 22px 26px;
+    margin-bottom:20px;
+  }
+  .block h2{
+    font-family:"Noto Serif TC",serif;
+    font-size:19px;
+    margin:0 0 4px;
+    color:var(--chalk-green);
+  }
+  .block .meta{color:var(--ink-soft);font-size:13px;margin:0 0 16px;}
+
+  .q{margin-bottom:18px;padding-bottom:16px;border-bottom:1px dashed var(--paper-line);}
+  .q:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0;}
+  .q-text{font-size:15.5px;margin-bottom:8px;}
+  .q-num{color:var(--gold);font-weight:700;margin-right:4px;}
+
+  .opts{display:grid;gap:8px;}
+  .opt{
+    display:flex;gap:8px;align-items:flex-start;
+    border:1.5px solid var(--paper-line);
+    border-radius:8px;
+    padding:9px 12px;
+    cursor:pointer;
+    font-size:14.5px;
+    background:#fffdf8;
+  }
+  .opt:hover{border-color:var(--chalk-green-2);}
+  .opt.selected{border-color:var(--chalk-green-2);background:#eef3ea;}
+  .opt.correct{border-color:var(--ok-green);background:var(--ok-green-soft);}
+  .opt.wrong{border-color:var(--pen-red);background:var(--pen-red-soft);}
+  .opt .tag{font-weight:700;color:var(--ink-soft);}
+  .opt.correct .tag{color:var(--ok-green);}
+  .opt.wrong .tag{color:var(--pen-red);}
+  .opt.disabled{cursor:default;}
+
+  .passage{
+    background:#f5f2e8;border-radius:8px;padding:14px 16px;margin-bottom:14px;
+    font-size:14.5px;white-space:pre-line;
+  }
+  .passage-label{font-weight:700;color:var(--chalk-green);margin-bottom:4px;display:block;}
+
+  .sec-note{font-size:13.5px;color:var(--ink-soft);background:#f5f2e8;border-radius:8px;padding:8px 12px;margin:-6px 0 14px;}
+  .sec-pre{background:#f5f2e8;border-radius:8px;padding:10px 14px;margin:-4px 0 14px;font-size:14.5px;}
+  .fill-row{display:flex;flex-wrap:wrap;align-items:center;gap:8px;}
+  input.blank{
+    font-family:"Noto Sans TC",sans-serif;font-size:15.5px;border:none;border-bottom:2px solid var(--chalk-green-2);
+    background:#fffdf8;padding:4px 6px;width:170px;max-width:100%;
+  }
+  input.blank.wide{width:100%;}
+  textarea.explain-box{
+    width:100%;min-height:52px;font-family:"Noto Sans TC",sans-serif;font-size:15px;
+    border:1.5px solid var(--paper-line);border-radius:8px;padding:8px 10px;background:#fffdf8;resize:vertical;
+  }
+  .feedback{font-weight:700;font-size:15px;}
+  .feedback.ok{color:var(--ok-green);}
+  .feedback.no{color:var(--pen-red);}
+  .answer-reveal{display:none;margin-top:8px;font-size:14px;color:var(--ok-green);background:var(--ok-green-soft);border-radius:6px;padding:6px 12px;}
+  .answer-reveal.show{display:block;}
+  .zh-und{text-decoration:underline;text-underline-offset:3px;}
+  .footer-link{
+    display:block;text-align:center;margin-top:30px;color:var(--chalk-green);
+    text-decoration:none;font-weight:700;font-size:14px;
+  }
+  .footer-link:hover{text-decoration:underline;}
+
+  @media print{
+    header.hero, .controls, .score-bar, .mini-btn, .footer-link{display:none !important;}
+    body{background:#fff;}
+    section.block{border:none;box-shadow:none;padding:8px 0;margin-bottom:14px;}
+    .opt.correct{background:none;border:none;font-weight:700;}
+    .opt.correct::after{content:" ← 正解";color:var(--pen-red);}
+    .opt{border:none;padding:2px 0;}
+    main{max-width:100%;padding:0 24px;}
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="breadcrumb"><a href="https://jenlin2002.github.io/">🏠 回總目錄</a> ／ <a href="../hanlin-chinese-g8-1.html" style="color:#cfe0d1;">段考題庫</a></div>
+    <h1>國文・第4回</h1>
+    <p class="subtitle">第一～三課・語文常識（一） 複習｜翰林版八年級國文（三）Ａ卷</p>
+  </div>
+</header>
+
+<main>
+  <div class="controls">
+    <div class="mode-toggle">
+      <button id="quizModeBtn" class="active">✏️ 測驗模式</button>
+      <button id="printModeBtn" disabled title="完成測驗並送出成績後才能查看">🖨️ 完整題目與解答（送出成績後解鎖）</button>
+    </div>
+  </div>
+
+  <div class="score-bar" id="scoreBar">
+    <div>目前得分：<strong id="scoreText">0 / 0</strong>（選擇題與填寫題；解釋題不計分）</div>
+    <button id="resetBtn">重新作答</button>
+  </div>
+
+  <div id="content"></div>
+
+  <a class="footer-link" href="../hanlin-chinese-g8-1.html">← 回段考題庫總覽</a>
+</main>
+
+<script>
+
+window.EXAM_META = { version: "國文A卷", examLabel: "國文第4回" };
+const DATA = {
+  sections: [
+  {
+    "type": "fill",
+    "title": "A部分　一、注音國字",
+    "meta": "每字1分，共10分",
+    "note": "「」裡是國字的寫注音，是注音的寫國字。注音的一聲可以不標。",
+    "placeholder": "注音或國字",
+    "items": [
+      {
+        "q": "千里「迢迢」",
+        "answers": [
+          "ㄊㄧㄠˊ"
+        ]
+      },
+      {
+        "q": "「擷」取",
+        "answers": [
+          "ㄐㄧㄝˊ"
+        ]
+      },
+      {
+        "q": "心力交「瘁」",
+        "answers": [
+          "ㄘㄨㄟˋ"
+        ]
+      },
+      {
+        "q": "「纖」細",
+        "answers": [
+          "ㄒㄧㄢ"
+        ]
+      },
+      {
+        "q": "溫和慈「藹」",
+        "answers": [
+          "ㄞˇ"
+        ]
+      },
+      {
+        "q": "「ㄐㄩㄝˊ」取",
+        "answers": [
+          "攫"
+        ]
+      },
+      {
+        "q": "拔「ㄓㄨㄛˊ」",
+        "answers": [
+          "擢"
+        ]
+      },
+      {
+        "q": "含情「ㄇㄛˋ　ㄇㄛˋ」",
+        "answers": [
+          "脈",
+          "脈脈"
+        ]
+      },
+      {
+        "q": "「ㄕㄚˋ」時間",
+        "answers": [
+          "霎"
+        ]
+      },
+      {
+        "q": "霹「ㄌㄧˋ」",
+        "answers": [
+          "靂"
+        ]
+      }
+    ]
+  },
+  {
+    "type": "explain",
+    "title": "二、解釋",
+    "meta": "每題2分，共10分（自己對照參考答案，不計入自動計分）",
+    "items": [
+      {
+        "q": "肆虐",
+        "answer": "任意作惡為害。"
+      },
+      {
+        "q": "泣涕零如雨",
+        "answer": "眼淚如雨般地落下。"
+      },
+      {
+        "q": "滂沱",
+        "answer": "雨勢盛大的樣子。"
+      },
+      {
+        "q": "擢素手",
+        "answer": "舉起白嫩的手。"
+      },
+      {
+        "q": "啟蒙",
+        "answer": "開導、啟發。"
+      }
+    ]
+  },
+  {
+    "type": "fill",
+    "title": "三、改錯",
+    "meta": "每字1分，共10分",
+    "wide": true,
+    "note": "每句有 5 個錯字。依照出現的順序，只寫出改正後的字（例如寫成「ＯＯＯＯＯ」五個字）。",
+    "placeholder": "依序寫出正確的字",
+    "items": [
+      {
+        "q": "大自然嶄開無情的反撲，山洪爆發大地慘遭催慘，滿目盡是蒼痍的景相。",
+        "answers": [
+          "展摧殘瘡象"
+        ]
+      },
+      {
+        "q": "遷牛、織女二星被銀河閣絕的船說，可用來比擬男女間的離別情仇，說明相愛的鍊人，卻得忍受長時間離別的痛苦。",
+        "answers": [
+          "牽隔傳愁戀"
+        ]
+      }
+    ]
+  },
+  {
+    "type": "mc",
+    "title": "四、成語填空",
+    "meta": "每題2分，共10分",
+    "note": "請依句意，從參考選項中選填適當的成語於（　）中。",
+    "items": [
+      {
+        "q": "父親每天（　　　），辛勤地工作，就是為了讓家人過更好的生活。",
+        "options": [
+          "急如星火",
+          "星羅棋布",
+          "物換星移",
+          "披星戴月",
+          "星火燎原",
+          "眾星拱月"
+        ],
+        "correct": 3
+      },
+      {
+        "q": "人事已非，（　　　），不免令人感慨萬千。",
+        "options": [
+          "急如星火",
+          "星羅棋布",
+          "物換星移",
+          "披星戴月",
+          "星火燎原",
+          "眾星拱月"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "原以為只是隨口一說，沒想到竟（　　　），惹來眾怒。",
+        "options": [
+          "急如星火",
+          "星羅棋布",
+          "物換星移",
+          "披星戴月",
+          "星火燎原",
+          "眾星拱月"
+        ],
+        "correct": 4
+      },
+      {
+        "q": "這條溪旁，許多石塊（　　　），數也數不清。",
+        "options": [
+          "急如星火",
+          "星羅棋布",
+          "物換星移",
+          "披星戴月",
+          "星火燎原",
+          "眾星拱月"
+        ],
+        "correct": 1
+      },
+      {
+        "q": "為了搶救大出血的病人，醫生們（　　　）地尋找與患者血型相同的血液。",
+        "options": [
+          "急如星火",
+          "星羅棋布",
+          "物換星移",
+          "披星戴月",
+          "星火燎原",
+          "眾星拱月"
+        ],
+        "correct": 0
+      }
+    ]
+  },
+  {
+    "type": "mc",
+    "title": "五、基礎題",
+    "meta": "每題2分，共30分",
+    "items": [
+      {
+        "q": "下列「　」中的字，何組讀音相同？",
+        "options": [
+          "慈烏反「哺」／江「浦」漁帆",
+          "大雨滂「沱」／蹉「跎」歲月",
+          "餘音「繞」梁／不屈不「撓」",
+          "個人「癖」好／開天「闢」地。"
+        ],
+        "correct": 1
+      },
+      {
+        "q": "下列「　」中的注音寫成國字後，何組字形相同？",
+        "options": [
+          "香「ㄘㄨㄟˋ」可口／山色青「ㄘㄨㄟˋ」",
+          "助紂為「ㄋㄩㄝˋ」／戲「ㄋㄩㄝˋ」語氣",
+          "自出機「ㄓㄨˋ」／「ㄓㄨˋ」冊商標",
+          "持「ㄧㄥˊ」保泰／惡貫滿「ㄧㄥˊ」。"
+        ],
+        "correct": 3
+      },
+      {
+        "q": "下列「　」中的字，何組意思相同？",
+        "options": [
+          "「鼓」舞士氣／正面「鼓」勵",
+          "「擢」髮難數／拔「擢」人才",
+          "「如」花似玉／生不「如」死",
+          "茅塞「頓」開／旅途困「頓」。"
+        ],
+        "correct": 0
+      },
+      {
+        "q": "田園之秋選一文中，對天候的描寫，下列何者正確？（對象：譬喻）",
+        "options": [
+          "烏雲：無敵的大主宰",
+          "閃電霹靂：惡魔妖巫出世",
+          "大雨：大西北雨前奏",
+          "放晴：牧羊人之歌"
+        ],
+        "correct": 3
+      },
+      {
+        "q": "下列何者描寫織女終日勤勞不輟的身影？",
+        "options": [
+          "纖纖擢素手，札札弄機杼",
+          "終日不成章，泣涕零如雨",
+          "河漢清且淺，相去復幾許",
+          "盈盈一水間，脈脈不得語。"
+        ],
+        "correct": 0
+      },
+      {
+        "q": "田園之秋選描述的是秋天，下列何者也是描述秋天？",
+        "options": [
+          "獨寫菖蒲竹葉杯，蓬城芳草踏初回。情知不向甌江死，舟楫何勞吊屈來",
+          "苦等經年渡鵲橋，喜看牛女會今宵，離多聚少心何忍，墨客唏噓恨不消",
+          "玉漏銀壺且莫催，鐵關金鎖徹明開。誰家見月能閒坐，何處聞燈不看來",
+          "滿衣血淚與塵埃，亂後還鄉亦可哀。風雨梨花寒食過，幾家墳上子孫來。"
+        ],
+        "correct": 1
+      },
+      {
+        "q": "「那些有趣的好時光啊，我要用雨珠的鍊子把它串起來，繞在手腕上。」根據下雨天，真好一文推測，作者寫這段話時的心情為何？",
+        "options": [
+          "急於要向眾人展示童年回憶",
+          "感慨童年往事已然消逝無蹤",
+          "期望能將童年回憶永遠珍藏",
+          "調侃童年充滿不切實際的想像。"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "「沾泥帶水」是「動詞＋名詞＋動詞＋名詞」的詞語結構，下列何者也是同樣的結構？",
+        "options": [
+          "身敗名裂",
+          "足智多謀",
+          "望洋興嘆",
+          "千錘百鍊。"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "田園之秋選一文對於人的表現多所描繪，如：「膽已破、魂已奪」、「匍匐不能起」，其用意為何？",
+        "options": [
+          "顯現人類的無知怯懦",
+          "襯托大自然驚人的氣勢",
+          "凸顯作者的寫作技巧",
+          "增強文章的節奏感。"
+        ],
+        "correct": 1
+      },
+      {
+        "q": "「大野中，孤伶伶的一個人，不由膽破魂奪。」句中的「膽破魂奪」使用了「誇飾」修辭法，下列哪一個選項也使用了相同的修辭？",
+        "options": [
+          "一手遮天",
+          "改朝換代",
+          "屈指可數",
+          "懲惡獎善。"
+        ],
+        "correct": 0
+      },
+      {
+        "q": "慈烏夜啼一詩中以吳起的不孝與「鳥中之曾參」對比出慈烏的孝順，下列何者也是使用對比手法？",
+        "options": [
+          "夜長春夢短，人遠天涯近",
+          "明月松間照，清泉石上流",
+          "蓮子心中苦，梨兒腹內酸",
+          "大漠孤煙直，長河落日圓。"
+        ],
+        "correct": 0
+      },
+      {
+        "q": "下列選項「　」中的詞語，何者詞性前後相同？",
+        "options": [
+          "我的「理想」是希望能擁有一個「理想」的環境",
+          "只要以「寬闊」的心胸看待世界，必可發現世界原來很「寬闊」",
+          "「寫作」已成他的最愛，因為他能從「寫作」的世界中獲得成就感",
+          "「傳說」這則「傳說」產生的年代很久遠，至少已有一千年。"
+        ],
+        "correct": 1
+      },
+      {
+        "q": "「聯綿詞」指的是有一些詞必須由兩個具聲音關係的字結合起來才能表達意義，將字詞拆開後，各自沒有意義，如「匍匐」。下列何者<b>不是</b>「聯綿詞」？",
+        "options": [
+          "西瓜",
+          "蜻蜓",
+          "徘徊",
+          "躊躇。"
+        ],
+        "correct": 0
+      },
+      {
+        "q": "下列關於「古詩」的資料，何者正確？",
+        "options": [
+          "發展較近體詩早，又稱「今體詩」",
+          "字、句數不拘，平仄規定不嚴",
+          "每兩句為一聯，其中二、三聯必須對仗",
+          "偶數句多押韻，一韻到底。"
+        ],
+        "correct": 1
+      },
+      {
+        "q": "關於下雨天，真好一文的寫作方式，下列何者正確？",
+        "options": [
+          "採順敘法，從童年書寫至成年",
+          "善於引經據典，傳達舊時情景",
+          "採寫實筆法，文字樸實而真摯",
+          "藉雨天才能休息描述農家之苦。"
+        ],
+        "correct": 2
+      }
+    ]
+  },
+  {
+    "type": "mc",
+    "title": "B部分　一、進階題",
+    "meta": "每題2分，共14分",
+    "items": [
+      {
+        "q": "呂杰老師在準備課程時看到一首詩：「暮雲收盡溢清寒，銀漢無聲轉玉盤。此生此夜不長好，明月明年何處看？」根據本詩，可推知是哪一節慶的相關內容？",
+        "options": [
+          "春節",
+          "中秋",
+          "七夕",
+          "重陽。"
+        ],
+        "correct": 1
+      },
+      {
+        "q": "問劉十九：「綠蟻新醅酒，紅泥小火爐。晚來天欲雪，能飲一杯無？」作者藉這篇作品展現出何種意涵？",
+        "options": [
+          "待客真摯",
+          "生活貧困",
+          "仕途不順",
+          "愛情美好。"
+        ],
+        "correct": 0
+      },
+      {
+        "q": "宋儒陸九淵說：「讀書固不可不曉文義，然只以曉文義為是，只是兒童之學，須看旨意所在。」這段話在提醒世人讀書要注意什麼？",
+        "options": [
+          "須廣泛吸收各方不同見解",
+          "應該避讀淺顯易懂的書籍",
+          "勿只求理解文字表面意思",
+          "鑽研書中深奧的義理是讀書的主要目的。"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "「應是母慈重，使爾悲不任。」此二句詩所展現的心情，與下列何者最相近？",
+        "options": [
+          "身體髮膚受之父母，不敢毀傷",
+          "父在觀其志，父沒觀其行",
+          "誰言寸草心，報得三春暉",
+          "有酒食，先生饌。"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "「看似寧靜祥和的小鎮裡，近日出現了一名不速之客。他身形魁梧又孔武有力，總是仗著體格上的優勢欺壓百姓，□□□□，種種罪行令人髮指！」根據文意，空格處填入下列何者最恰當？",
+        "options": [
+          "魚雁不絕",
+          "窮鄉僻壤",
+          "衣錦還鄉",
+          "魚肉鄉民。"
+        ],
+        "correct": 3
+      },
+      {
+        "q": "下列「　」中的疊字詞，何者是描摹聲音的狀聲詞？",
+        "options": [
+          "五月黃梅天，到處「黏答答」的",
+          "大廳正中央燃起了「亮晃晃」的煤氣燈",
+          "入夜後，雨「嘩啦啦」地越下越大",
+          "她的眼淚「撲簌簌」流下來了。"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "沈約：「高臺不可望，望遠使人愁。」揭示了因登高而興起思人的愁緒。下列何者的情懷與此相同？",
+        "options": [
+          "望夫處，江悠悠，化為石，不回頭。山頭日日風復雨，行人歸來石應語",
+          "春秋多佳日，登高賦新詩。過門更相呼，有酒斟酌之",
+          "欲窮千里目，更上一層樓",
+          "登高必自卑，行遠必自邇。"
+        ],
+        "correct": 0
+      }
+    ]
+  },
+  {
+    "type": "reading",
+    "title": "二、閱讀測驗",
+    "meta": "每題2分，共10分",
+    "passages": [
+      {
+        "label": "（一）",
+        "text": "我不和你談論社會／不和你談論那些痛徹心肺的爭奪／請離開書房／我帶你去廣袤的田野走走／去探望一群一群的農人／如何沉默地揮汗耕作\n你久居鬧熱滾滾的都城／詩藝呀！人生呀！社會呀／已爭辯了很多／這是急於播種的春日／而你難得來鄉間／我帶你去廣袤的田野走走／去領略領略春風／如何溫柔地吹拂著大地（節錄自吳晟 我不和你談論）",
+        "items": [
+          {
+            "q": "下列有關本詩的說明，何者正確？",
+            "options": [
+              "詩中「你」代表腳踏實地而常來鄉間的知識分子",
+              "「廣袤的田野」比「書房」更能使人真切體會生命意義",
+              "藉「沉默揮汗耕作的農人」凸顯田園生活的苦悶",
+              "使用自問自答的方式，反覆歌詠自然之美。"
+            ],
+            "correct": 1
+          },
+          {
+            "q": "下列何者<b>不是</b>作者「不和你談論詩藝、人生、社會」的原因？",
+            "options": [
+              "因「你」久居都市之中，習慣爭奪",
+              "要讀者身體力行走向自然",
+              "作者不關心人事的紛擾，不願有所回應",
+              "期待「你」認識人如何生活在天地四時的自然之中。"
+            ],
+            "correct": 2
+          }
+        ]
+      },
+      {
+        "label": "（二）",
+        "text": "道喪向千載，人人惜其情。\n有酒不肯飲，但顧世間名。\n所以貴我身，豈不在一生。\n一生復能幾？倏如流電驚。\n鼎鼎百年內，持此欲何成？（陶淵明 飲酒）\n注：①惜其情：無情。②貴：珍惜。③復能幾：又能有多久。④鼎鼎：紛擾的樣子。⑤此：指世俗浮名。",
+        "items": [
+          {
+            "q": "關於本詩的說明，下列何者正確？",
+            "options": [
+              "是一首五言律詩",
+              "敘述世人的想法多於自己的看法",
+              "共有二組對仗",
+              "以反詰法收尾。"
+            ],
+            "correct": 3
+          },
+          {
+            "q": "本詩中，何者敘述當代的世態？",
+            "options": [
+              "道喪向千載，人人惜其情",
+              "所以貴我身，豈不在一生",
+              "一生復能幾？倏如流電驚",
+              "鼎鼎百年內，持此欲何成。"
+            ],
+            "correct": 0
+          },
+          {
+            "q": "本詩的主旨為何？",
+            "options": [
+              "心境曠達才可成功",
+              "小人當道，期待政治清明",
+              "追求功名不如追求財富",
+              "固窮守道，及時行樂。"
+            ],
+            "correct": 3
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "type": "reading",
+    "title": "三、閱讀素養題",
+    "meta": "每題3分，共6分",
+    "passages": [
+      {
+        "label": "",
+        "text": "過了三十足歲生日以後，我的心境有了很大的改變，變得喜歡回顧，喜歡檢視，反省曾經走過的生命足跡，因而開始接觸到我的童年。——童年的記憶寫在故鄉潔淨的天空裡，童年的記憶寫在故鄉悠悠的河水上，寫滿碧綠鮮嫩的草樹，寫滿低矮老舊的建築……\n(甲)故鄉名叫東勢，不是秀美的山城東勢。它沒有山，卻靠近海。坐落在臺灣西部沿海平原的雲林縣境內，不知道幾百年前，一支姓黃的福建人開始在那裡落腳，搭蓋房子、開墾土地、繁衍子孫。\n(乙)多少先人苦苦經營、多少先人日日踩踏的那條街，那時頂多只有兩百公尺長，幾家布店、幾家雜貨店、一個郵政代辦所、一家戲院、一個菜市場，以及一家小吃店。\n(丙)不知道過了多少時候，屋子多了起來，頑皮的小孩在屋簷和庭院之間跑跳穿梭；故鄉成了一個村落。不知道又過了幾十度花開花落，一條道路過村落，東面通往山，西面連接海；道路的兩旁慢慢蓋起商店，一形成一條街，一條故鄉最熱鬧的街。\n小吃店永遠以獨特的姿態存留在我腦海裡，甚至除了姿態而外，還同時存在一縷令人垂涎的香味。小吃店的老闆很胖，如果還有人比他胖，大概是他的太太。在冒著白煙的麵攤前，兩個挺著肚子的胖人忙著抓麵下麵，鍋蓋一掀，香氣就無情地溢滿街道——真是無情！（林雙不 故鄉素描）",
+        "items": [
+          {
+            "q": "根據文意，下列段落排序何者最恰當？",
+            "options": [
+              "(甲)→(乙)→(丙)",
+              "(乙)→(丙)→(甲)",
+              "(甲)→(丙)→(乙)",
+              "(丙)→(甲)→(乙)。"
+            ],
+            "correct": 2
+          },
+          {
+            "q": "根據本文，下列推斷何者正確？",
+            "options": [
+              "作者年過而立後，再次回到故鄉尋找童年的記憶",
+              "作者的故鄉是座山裡的小城，已有數百年的歷史",
+              "作者童年記憶中的村落，已隨著人口外移而消失",
+              "作者故鄉小吃店的食物令人垂涎，老闆體態豐滿。"
+            ],
+            "correct": 3
+          }
+        ]
+      }
+    ]
+  }
+]
+};
+
+let currentMode = "quiz"; // quiz | print
+
+const contentEl = document.getElementById("content");
+const scoreBar = document.getElementById("scoreBar");
+const scoreText = document.getElementById("scoreText");
+
+function render(){
+  window.examAnswersRevealed = false;
+  contentEl.innerHTML = "";
+  DATA.sections.forEach((sec, si)=> contentEl.appendChild(renderSection(sec, si)));
+  if(currentMode==="quiz"){
+    scoreBar.classList.add("show");
+    updateScore();
+  } else {
+    scoreBar.classList.remove("show");
+    contentEl.querySelectorAll(".opt").forEach(o=>o.classList.add("disabled"));
+    contentEl.querySelectorAll(".opt.is-correct").forEach(o=>o.classList.add("correct"));
+  }
+}
+
+function renderSection(sec, si){
+  const block = document.createElement("section");
+  block.className = "block";
+  block.innerHTML = `<h2>${sec.title}</h2><p class="meta">${sec.meta}</p>`
+    + (sec.note ? `<div class="sec-note">${sec.note}</div>` : "")
+    + (sec.pre ? `<div class="sec-pre">${sec.pre}</div>` : "");
+
+  if(sec.type==="fill"){
+    sec.items.forEach((it,i)=>{
+      const q = document.createElement("div");
+      q.className = "q";
+      const shown = it.answers.join(" ／ ");
+      q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q}</div>
+        <div class="fill-row"><input type="text" class="blank${sec.wide ? " wide" : ""}" autocomplete="off" placeholder="${sec.placeholder || "作答"}"><span class="feedback"></span></div>
+        <div class="answer-reveal">正解：${shown}</div>`;
+      q.querySelector("input.blank").dataset.answers = JSON.stringify(it.answers);
+      if(currentMode!=="quiz"){ q.querySelector("input.blank").disabled = true; q.querySelector(".answer-reveal").classList.add("show"); }
+      block.appendChild(q);
+    });
+  }
+
+  else if(sec.type==="explain"){
+    sec.items.forEach((it,i)=>{
+      const q = document.createElement("div");
+      q.className = "q";
+      q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q}</div>
+        <textarea class="explain-box" placeholder="寫下你的解釋（送出成績後對照參考答案）"></textarea>
+        <div class="answer-reveal">參考答案：${it.answer}</div>`;
+      if(currentMode!=="quiz"){ q.querySelector("textarea").remove(); q.querySelector(".answer-reveal").classList.add("show"); }
+      block.appendChild(q);
+    });
+  }
+
+  else if(sec.type==="mc"){
+    sec.items.forEach((it,i)=>{
+      const q = document.createElement("div");
+      q.className = "q";
+      const optsHtml = it.options.map((op,oi)=>`
+        <div class="opt" data-idx="${oi}" data-correct="${oi===it.correct}">
+          <span class="tag">(${String.fromCharCode(65+oi)})</span><span>${op}</span>
+        </div>`).join("");
+      const imgHtml = it.image ? `<img src="${it.image}" alt="題目附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">` : "";
+      const img2Html = it.image2 ? `<img src="${it.image2}" alt="題目附圖2" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">` : "";
+      q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q}</div>
+        ${imgHtml}${img2Html}
+        <div class="opts">${optsHtml}</div>`;
+      q.querySelectorAll(".opt").forEach(optEl=>{
+        if(optEl.dataset.correct==="true") optEl.classList.add("is-correct");
+        optEl.addEventListener("click", ()=>selectOption(q, optEl));
+      });
+      block.appendChild(q);
+    });
+  }
+
+  else if(sec.type==="reading"){
+    sec.passages.forEach(p=>{
+      const passageDiv = document.createElement("div");
+      passageDiv.className = "passage";
+      passageDiv.innerHTML = `${p.label ? `<span class="passage-label">${p.label}</span>`:""}${p.text}${p.image ? `<img src="${p.image}" alt="題組附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-top:10px;border:1px solid var(--paper-line);">`:""}`;
+      block.appendChild(passageDiv);
+      p.items.forEach((it,i)=>{
+        const q = document.createElement("div");
+        q.className = "q";
+        const optsHtml = it.options.map((op,oi)=>`
+          <div class="opt" data-idx="${oi}" data-correct="${oi===it.correct}">
+            <span class="tag">(${String.fromCharCode(65+oi)})</span><span>${op}</span>
+          </div>`).join("");
+        q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q}</div>
+          ${it.image ? `<img src="${it.image}" alt="題目附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">`:""}
+          <div class="opts">${optsHtml}</div>`;
+        q.querySelectorAll(".opt").forEach(optEl=>{
+          if(optEl.dataset.correct==="true") optEl.classList.add("is-correct");
+          optEl.addEventListener("click", ()=>selectOption(q, optEl));
+        });
+        block.appendChild(q);
+      });
+    });
+  }
+
+  return block;
+}
+
+function selectOption(qEl, optEl){
+  if(currentMode!=="quiz") return;
+  if(qEl.dataset.answered==="true") return;
+  qEl.dataset.answered = "true";
+  qEl.querySelectorAll(".opt").forEach(o=>o.classList.add("disabled"));
+  optEl.classList.add("selected");
+  const correctOpt = qEl.querySelector('.opt[data-correct="true"]');
+  qEl.dataset.studentAnswer = optEl.textContent.trim();
+  qEl.dataset.correctAnswer = correctOpt ? correctOpt.textContent.trim() : "";
+  qEl.dataset.isCorrect = (optEl.dataset.correct==="true") ? "true" : "false";
+  updateScore();
+}
+
+function updateScore(){
+  let total = 0, answered = 0, correct = 0;
+  contentEl.querySelectorAll(".q").forEach(q=>{
+    const gradable = q.querySelector(".opts") || q.querySelector("input.blank");
+    if(!gradable) return;
+    total++;
+    if(q.dataset.studentAnswer !== undefined){
+      answered++;
+      if(q.dataset.isCorrect === "true") correct++;
+    }
+  });
+  if(window.examAnswersRevealed){
+    scoreText.textContent = `${correct} / ${total}`;
+  } else {
+    scoreText.textContent = `已作答 ${answered} / ${total} 題`;
+  }
+}
+window.updateScore = updateScore;
+
+// 填寫題（注音／國字、改錯）：去掉空白與標點後和正解比對；注音的一聲符號「ˉ」可寫可不寫
+function normFill(s){
+  return String(s).replace(/[\sˉ　，、。．.,;；:：!！?？「」『』（）()【】→\-－—]/g, "").trim();
+}
+document.addEventListener("input", (e)=>{
+  const input = e.target;
+  if(!input.matches || !input.matches("input.blank")) return;
+  const q = input.closest(".q");
+  const answers = JSON.parse(input.dataset.answers || "[]");
+  const val = input.value.trim();
+  if(!val){ delete q.dataset.studentAnswer; delete q.dataset.isCorrect; }
+  else {
+    q.dataset.studentAnswer = val;
+    q.dataset.correctAnswer = answers.join(" ／ ");
+    q.dataset.isCorrect = answers.some(a => normFill(a) === normFill(val)) ? "true" : "false";
+  }
+  updateScore();
+});
+
+document.getElementById("resetBtn").addEventListener("click", render);
+document.getElementById("quizModeBtn").addEventListener("click", ()=>{
+  currentMode = "quiz";
+  document.getElementById("quizModeBtn").classList.add("active");
+  document.getElementById("printModeBtn").classList.remove("active");
+  render();
+});
+document.getElementById("printModeBtn").addEventListener("click", ()=>{
+  if(document.getElementById("printModeBtn").disabled) return;
+  currentMode = "print";
+  document.getElementById("printModeBtn").classList.add("active");
+  document.getElementById("quizModeBtn").classList.remove("active");
+  render();
+});
+
+window.unlockPrintMode = function(){
+  document.getElementById("printModeBtn").disabled = false;
+};
+
+render();
+</script>
+<script src="../sync.js"></script>
+</body>
+</html>

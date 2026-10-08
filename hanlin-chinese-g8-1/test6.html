@@ -1,0 +1,903 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>段考題庫｜國文第6回 - 生命中的碎珠</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@500;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#faf6ec;
+    --paper-line:#e3dcc8;
+    --ink:#26332b;
+    --ink-soft:#5b6b5f;
+    --chalk-green:#2f4538;
+    --chalk-green-2:#3d5a48;
+    --pen-red:#b8433a;
+    --pen-red-soft:#f4dedb;
+    --ok-green:#3f7d52;
+    --ok-green-soft:#dfeee1;
+    --gold:#b5842a;
+    --radius:10px;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:"Noto Sans TC",sans-serif;
+    line-height:1.7;
+  }
+  header.hero{
+    background:var(--chalk-green);
+    color:#eef2ea;
+    padding:28px 20px 40px;
+    position:relative;
+  }
+  header.hero::after{
+    content:"";
+    position:absolute;
+    left:0; right:0; bottom:-1px;
+    height:14px;
+    background:repeating-linear-gradient(90deg,var(--paper) 0 18px, transparent 18px 20px);
+  }
+  .hero-inner{max-width:880px;margin:0 auto;}
+  .breadcrumb a{color:#cfe0d1;text-decoration:none;font-size:14px;}
+  .breadcrumb a:hover{text-decoration:underline;}
+  h1{
+    font-family:"Noto Serif TC",serif;
+    font-weight:700;
+    font-size:clamp(24px,4vw,34px);
+    margin:10px 0 6px;
+  }
+  .subtitle{color:#cfe0d1;font-size:15px;margin:0;}
+  main{max-width:880px;margin:0 auto;padding:28px 20px 80px;}
+
+  .controls{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:22px;
+  }
+  .mode-toggle{display:flex;border:2px solid var(--chalk-green);border-radius:999px;overflow:hidden;}
+  .mode-toggle button{
+    background:transparent;border:none;padding:8px 16px;font-size:14px;font-weight:700;
+    color:var(--chalk-green);cursor:pointer;font-family:"Noto Sans TC",sans-serif;
+  }
+  .mode-toggle button.active{background:var(--gold);color:#fff;}
+  .mode-toggle button:disabled{opacity:.4;cursor:not-allowed;}
+
+  .score-bar{
+    display:none;
+    align-items:center;
+    justify-content:space-between;
+    background:#fff;
+    border:1px solid var(--paper-line);
+    border-left:5px solid var(--gold);
+    border-radius:var(--radius);
+    padding:12px 18px;
+    margin-bottom:22px;
+    font-size:14px;
+  }
+  .score-bar.show{display:flex;}
+  .score-bar strong{font-size:18px;color:var(--gold);}
+  .score-bar button{
+    background:none;border:1px solid var(--ink-soft);color:var(--ink-soft);
+    border-radius:6px;padding:6px 12px;font-size:13px;cursor:pointer;
+  }
+
+  section.block{
+    background:#fff;
+    border:1px solid var(--paper-line);
+    border-radius:var(--radius);
+    padding:22px 22px 26px;
+    margin-bottom:20px;
+  }
+  .block h2{
+    font-family:"Noto Serif TC",serif;
+    font-size:19px;
+    margin:0 0 4px;
+    color:var(--chalk-green);
+  }
+  .block .meta{color:var(--ink-soft);font-size:13px;margin:0 0 16px;}
+
+  .q{margin-bottom:18px;padding-bottom:16px;border-bottom:1px dashed var(--paper-line);}
+  .q:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0;}
+  .q-text{font-size:15.5px;margin-bottom:8px;}
+  .q-num{color:var(--gold);font-weight:700;margin-right:4px;}
+
+  .opts{display:grid;gap:8px;}
+  .opt{
+    display:flex;gap:8px;align-items:flex-start;
+    border:1.5px solid var(--paper-line);
+    border-radius:8px;
+    padding:9px 12px;
+    cursor:pointer;
+    font-size:14.5px;
+    background:#fffdf8;
+  }
+  .opt:hover{border-color:var(--chalk-green-2);}
+  .opt.selected{border-color:var(--chalk-green-2);background:#eef3ea;}
+  .opt.correct{border-color:var(--ok-green);background:var(--ok-green-soft);}
+  .opt.wrong{border-color:var(--pen-red);background:var(--pen-red-soft);}
+  .opt .tag{font-weight:700;color:var(--ink-soft);}
+  .opt.correct .tag{color:var(--ok-green);}
+  .opt.wrong .tag{color:var(--pen-red);}
+  .opt.disabled{cursor:default;}
+
+  .passage{
+    background:#f5f2e8;border-radius:8px;padding:14px 16px;margin-bottom:14px;
+    font-size:14.5px;white-space:pre-line;
+  }
+  .passage-label{font-weight:700;color:var(--chalk-green);margin-bottom:4px;display:block;}
+
+  .sec-note{font-size:13.5px;color:var(--ink-soft);background:#f5f2e8;border-radius:8px;padding:8px 12px;margin:-6px 0 14px;}
+  .sec-pre{background:#f5f2e8;border-radius:8px;padding:10px 14px;margin:-4px 0 14px;font-size:14.5px;}
+  .fill-row{display:flex;flex-wrap:wrap;align-items:center;gap:8px;}
+  input.blank{
+    font-family:"Noto Sans TC",sans-serif;font-size:15.5px;border:none;border-bottom:2px solid var(--chalk-green-2);
+    background:#fffdf8;padding:4px 6px;width:170px;max-width:100%;
+  }
+  input.blank.wide{width:100%;}
+  textarea.explain-box{
+    width:100%;min-height:52px;font-family:"Noto Sans TC",sans-serif;font-size:15px;
+    border:1.5px solid var(--paper-line);border-radius:8px;padding:8px 10px;background:#fffdf8;resize:vertical;
+  }
+  .feedback{font-weight:700;font-size:15px;}
+  .feedback.ok{color:var(--ok-green);}
+  .feedback.no{color:var(--pen-red);}
+  .answer-reveal{display:none;margin-top:8px;font-size:14px;color:var(--ok-green);background:var(--ok-green-soft);border-radius:6px;padding:6px 12px;}
+  .answer-reveal.show{display:block;}
+  .zh-und{text-decoration:underline;text-underline-offset:3px;}
+  .footer-link{
+    display:block;text-align:center;margin-top:30px;color:var(--chalk-green);
+    text-decoration:none;font-weight:700;font-size:14px;
+  }
+  .footer-link:hover{text-decoration:underline;}
+
+  @media print{
+    header.hero, .controls, .score-bar, .mini-btn, .footer-link{display:none !important;}
+    body{background:#fff;}
+    section.block{border:none;box-shadow:none;padding:8px 0;margin-bottom:14px;}
+    .opt.correct{background:none;border:none;font-weight:700;}
+    .opt.correct::after{content:" ← 正解";color:var(--pen-red);}
+    .opt{border:none;padding:2px 0;}
+    main{max-width:100%;padding:0 24px;}
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="breadcrumb"><a href="https://jenlin2002.github.io/">🏠 回總目錄</a> ／ <a href="../hanlin-chinese-g8-1.html" style="color:#cfe0d1;">段考題庫</a></div>
+    <h1>國文・第6回</h1>
+    <p class="subtitle">第五課 生命中的碎珠｜翰林版八年級國文（三）Ａ卷</p>
+  </div>
+</header>
+
+<main>
+  <div class="controls">
+    <div class="mode-toggle">
+      <button id="quizModeBtn" class="active">✏️ 測驗模式</button>
+      <button id="printModeBtn" disabled title="完成測驗並送出成績後才能查看">🖨️ 完整題目與解答（送出成績後解鎖）</button>
+    </div>
+  </div>
+
+  <div class="score-bar" id="scoreBar">
+    <div>目前得分：<strong id="scoreText">0 / 0</strong>（選擇題與填寫題；解釋題不計分）</div>
+    <button id="resetBtn">重新作答</button>
+  </div>
+
+  <div id="content"></div>
+
+  <a class="footer-link" href="../hanlin-chinese-g8-1.html">← 回段考題庫總覽</a>
+</main>
+
+<script>
+
+window.EXAM_META = { version: "國文A卷", examLabel: "國文第6回" };
+const DATA = {
+  sections: [
+  {
+    "type": "fill",
+    "title": "A部分　一、注音國字",
+    "meta": "每字1分，共10分",
+    "note": "「」裡是國字的寫注音，是注音的寫國字。注音的一聲可以不標。",
+    "placeholder": "注音或國字",
+    "items": [
+      {
+        "q": "細「膩」",
+        "answers": [
+          "ㄋㄧˋ"
+        ]
+      },
+      {
+        "q": "顯「著」差別",
+        "answers": [
+          "ㄓㄨˋ"
+        ]
+      },
+      {
+        "q": "「挾」帶風雨",
+        "answers": [
+          "ㄒㄧㄚˊ"
+        ]
+      },
+      {
+        "q": "白「璧」無瑕",
+        "answers": [
+          "ㄅㄧˋ"
+        ]
+      },
+      {
+        "q": "「鍵」盤樂器",
+        "answers": [
+          "ㄐㄧㄢˋ"
+        ]
+      },
+      {
+        "q": "劍及「ㄌㄩˇ」及",
+        "answers": [
+          "履"
+        ]
+      },
+      {
+        "q": "入不「ㄈㄨ」出",
+        "answers": [
+          "敷"
+        ]
+      },
+      {
+        "q": "白駒過「ㄒㄧˋ」",
+        "answers": [
+          "隙"
+        ]
+      },
+      {
+        "q": "「ㄕㄨㄣˋ」息萬變",
+        "answers": [
+          "瞬"
+        ]
+      },
+      {
+        "q": "集「ㄧㄝˋ」成裘",
+        "answers": [
+          "腋"
+        ]
+      }
+    ]
+  },
+  {
+    "type": "explain",
+    "title": "二、解釋",
+    "meta": "每題2分，共10分（自己對照參考答案，不計入自動計分）",
+    "items": [
+      {
+        "q": "不「敷」",
+        "answer": "足夠。"
+      },
+      {
+        "q": "「盛年」不重來",
+        "answer": "壯年。"
+      },
+      {
+        "q": "撇開",
+        "answer": "丟開不管。"
+      },
+      {
+        "q": "從容自如",
+        "answer": "不慌不忙，自由自在。"
+      },
+      {
+        "q": "著書立說",
+        "answer": "透過寫作以表述自己的學說理論。"
+      }
+    ]
+  },
+  {
+    "type": "fill",
+    "title": "三、改錯",
+    "meta": "每字1分，共10分",
+    "wide": true,
+    "note": "每句有 5 個錯字。依照出現的順序，只寫出改正後的字（例如寫成「ＯＯＯＯＯ」五個字）。",
+    "placeholder": "依序寫出正確的字",
+    "items": [
+      {
+        "q": "小陳做起事來沉隱踏時，難怪不到一年的時間就受到上司賞視，升上業物主管的寶坐。",
+        "answers": [
+          "穩實識務座"
+        ]
+      },
+      {
+        "q": "他因為精商失敗，整天過著型屍走肉的生活，僅管用尖睿的話語刺激他，也無法改變他自抱自棄的生活，讓家人非常擔心。",
+        "answers": [
+          "經行儘銳暴"
+        ]
+      }
+    ]
+  },
+  {
+    "type": "mc",
+    "title": "四、成語填空",
+    "meta": "每題2分，共10分",
+    "note": "請依句意，從參考選項中選填適當的成語於（　）中。",
+    "items": [
+      {
+        "q": "他自幼飽讀詩書，下筆時總能（　　　），散文篇篇意境深遠。",
+        "options": [
+          "夢筆生花",
+          "滄海遺珠",
+          "米珠薪桂",
+          "不假辭色",
+          "春秋鼎盛",
+          "金枝玉葉"
+        ],
+        "correct": 0
+      },
+      {
+        "q": "留學生嚮往美國的高品質生活，但是（　　　），想要長久居留並不容易。",
+        "options": [
+          "夢筆生花",
+          "滄海遺珠",
+          "米珠薪桂",
+          "不假辭色",
+          "春秋鼎盛",
+          "金枝玉葉"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "君王如果缺乏識人的眼光，在舉用賢才時，難免會有（　　　）之憾。",
+        "options": [
+          "夢筆生花",
+          "滄海遺珠",
+          "米珠薪桂",
+          "不假辭色",
+          "春秋鼎盛",
+          "金枝玉葉"
+        ],
+        "correct": 1
+      },
+      {
+        "q": "董事長雖年過五十，依然（　　　），持續帶領團隊奮力向前。",
+        "options": [
+          "夢筆生花",
+          "滄海遺珠",
+          "米珠薪桂",
+          "不假辭色",
+          "春秋鼎盛",
+          "金枝玉葉"
+        ],
+        "correct": 4
+      },
+      {
+        "q": "面對企業開發所引起的生態浩劫，環保人士（　　　）地給予強烈譴責。",
+        "options": [
+          "夢筆生花",
+          "滄海遺珠",
+          "米珠薪桂",
+          "不假辭色",
+          "春秋鼎盛",
+          "金枝玉葉"
+        ],
+        "correct": 3
+      }
+    ]
+  },
+  {
+    "type": "mc",
+    "title": "五、基礎題",
+    "meta": "每題2分，共30分",
+    "items": [
+      {
+        "q": "下列「　」中的字詞，何組讀音相同？",
+        "options": [
+          "「勉」為其難／冠「冕」堂皇",
+          "支離破「碎」／鞠躬盡「瘁」",
+          "和「藹」可親／「謁」見總統",
+          "「琅琅」上口／豁然開「朗」。"
+        ],
+        "correct": 0
+      },
+      {
+        "q": "下列「　」中的注音寫成國字後，何組字形相同？",
+        "options": [
+          "勝券在「ㄨㄛˋ」／「ㄨㄛˋ」虎藏龍",
+          "典「ㄈㄢˋ」長存／立論空「ㄈㄢˋ」",
+          "枉「ㄈㄟˋ」心機／「ㄈㄟˋ」寢忘食",
+          "克敵制「ㄕㄥˋ」／聊「ㄕㄥˋ」於無。"
+        ],
+        "correct": 3
+      },
+      {
+        "q": "下列文句「　」中的詞語，何者<b>不是</b>指時間短暫？",
+        "options": [
+          "捕捉「剎那」美景，變成永恆的回憶",
+          "我只求「些須」憐憫，不奢望其他",
+          "魔術師讓這座雕像「瞬間」消失",
+          "天空在「須臾」之間烏雲密布，下起大雨了。"
+        ],
+        "correct": 1
+      },
+      {
+        "q": "「從容自如」中的「如」是放在形容詞或副詞之後。相當於「然」，表示某種情形或狀況。下列各「如」字，何者也是相同用法？",
+        "options": [
+          "嫉惡如仇",
+          "豬狗不如",
+          "突如其來",
+          "稱心如意。"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "「聖人不貴尺之璧而重寸之陰，時難得而易失也。」（淮南子）這段話宜用來戒勉下列哪一種人？",
+        "options": [
+          "不重然諾之人",
+          "蹉跎歲月之人",
+          "沽名釣譽之人",
+          "忘恩負義之人。"
+        ],
+        "correct": 1
+      },
+      {
+        "q": "下列文句，何者用字完全正確？",
+        "options": [
+          "透過射影，我們得以保存片刻的美景，把它化成永恆的回憶",
+          "一聽到親人逝世的惡耗，他的惱袋一片空白，不知如何是好",
+          "搭機往返，既節省時間，又可免舟車勞頓之苦",
+          "一道閃電哄然劃過天際，讓人聞之喪膽，街上行人紛紛走避。"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "在生命中的碎珠一文中提到：「沒有一樣事物，比現在的按鍵電話更能具體地說明這是一個分秒必爭的世界了。」可知現代社會的特色為何？",
+        "options": [
+          "好逸惡勞",
+          "隨遇而安",
+          "善於溝通",
+          "節奏快速。"
+        ],
+        "correct": 3
+      },
+      {
+        "q": "在生命中的碎珠一文中，「碎珠」的涵義為下列何者？",
+        "options": [
+          "零碎的時間",
+          "消逝的時光",
+          "遇到的挑戰",
+          "人生的貴人。"
+        ],
+        "correct": 0
+      },
+      {
+        "q": "下列文句，何者<b>沒有</b>語病？",
+        "options": [
+          "這晚良久的一瞥，竟讓他找到人生最重要的伴侶",
+          "旅行未必要尋山明水秀之處，即便是荒村陋巷，也自有它的情趣",
+          "一道流星冗長劃過天際，引起一陣驚呼",
+          "妻子經年的照顧，令他片晌難忘。"
+        ],
+        "correct": 1
+      },
+      {
+        "q": "胡適先生曾以「不做無益事，一日當三日，人活五十歲，我活百五十」的生活哲學自勉。他所強調的觀念為何？",
+        "options": [
+          "做人應該樂觀積極，凡事往好處想",
+          "人在年輕時不可害怕勞苦",
+          "專注作一件事情才有成功的可能",
+          "充分利用時間，就能讓時間發揮最大的效益。"
+        ],
+        "correct": 3
+      },
+      {
+        "q": "甘迺迪總統：「我相信治國的本領，不在頭皮上面，而在頭皮下面。」作者引用此段話是要藉以勉勵我們何種道理？",
+        "options": [
+          "大家應該善用時間充實自我，而非注重外表的打扮",
+          "失掉外表的信心便失掉一切",
+          "沒有自尊心的人與自卑無異",
+          "把握機會才能成就大事。"
+        ],
+        "correct": 0
+      },
+      {
+        "q": "陶淵明：「盛年不重來，一日難再晨，及時當勉勵，歲月不待人。」此詩勉人珍惜光陰，及時努力。下列何者與此意涵<b>無關</b>？",
+        "options": [
+          "逝者如斯夫，不舍晝夜",
+          "莫等閒，白了少年頭，空悲切",
+          "學而不思則罔，思而不學則殆",
+          "勸君莫惜金縷衣，勸君惜取少年時。"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "下列「　」中與時間相關的成語，何者運用<b>錯誤</b>？",
+        "options": [
+          "「兔走烏飛」，不知不覺中，我們已共處十載了",
+          "人生在世，名利富貴就如「鏡花水月」，不該汲汲營營",
+          "「寸陰尺璧」，我們應該要善用時間，以免自己後悔",
+          "他「焚膏繼晷」地玩樂，無心學習，最後被學校退學。"
+        ],
+        "correct": 3
+      },
+      {
+        "q": "「寸陰是競」為「競寸陰」的倒裝句，「是」做為賓語提前的助詞用法。下列各選項中的「是」字，何者用法與此相同？",
+        "options": [
+          "馬首「是」瞻",
+          "不辨「是」非",
+          "自以為「是」",
+          "深「是」其言。"
+        ],
+        "correct": 0
+      },
+      {
+        "q": "關於生命中的碎珠一文的寫作手法，下列何者敘述<b>錯誤</b>？",
+        "options": [
+          "文字樸實，記敘夾雜議論",
+          "文章以電話為例，表達出使用科技能省下零碎時間",
+          "首先提出論點，再舉例印證",
+          "文末設喻說理，以鼓勵讀者。"
+        ],
+        "correct": 1
+      }
+    ]
+  },
+  {
+    "type": "mc",
+    "title": "B部分　一、進階題",
+    "meta": "每題2分，共20分",
+    "items": [
+      {
+        "q": "「當我們離開了學校，讓我們不要離開書香。」（陳幸蕙永不凋謝的習慣）作者所強調的是何種教育的重要？",
+        "options": [
+          "才藝",
+          "義務",
+          "終身",
+          "道德。"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "錢思公：「平生惟好讀書。坐則讀經史，臥則讀小說，上廁則閱小辭，蓋未嘗頃刻釋卷也。」根據上文，下列何者說明正確？",
+        "options": [
+          "錢思公善於利用零碎時間",
+          "錢思公認為經書、史書要坐著讀，強調禮儀",
+          "錢思公認為讀小說要躺在床上，強調享樂",
+          "錢思公最喜歡拿著書走來走去。"
+        ],
+        "correct": 0
+      },
+      {
+        "q": "陳幸蕙曾經在陽光、風雨、明信片一文中提到：「生活的藝術不是做你喜歡的事，而是喜歡你做的事。」關於此段所強調的重點，下列何者正確？",
+        "options": [
+          "做喜歡的事才是真正的幸福",
+          "改變態度能使人生更有美感",
+          "真正的藝術價值是做喜歡的事",
+          "人能夠選擇喜歡的工作是很難得的。"
+        ],
+        "correct": 1
+      },
+      {
+        "q": "下列文句的文意說明，何者正確？",
+        "options": [
+          "天不再與，時不久留：提醒人要時時挑戰自我",
+          "日力不足，繼之以夜：強調人要有足夠的休息",
+          "人生一世，草生一秋：人的生命如草一般短暫",
+          "歲月不居，時節如流：時間像流水般源源不絕。"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "「時間的腳步，不會因為我們有許多事情要做，而稍作停留。」（莎士比亞）這句話適合用來勸告誰？",
+        "options": [
+          "利用通勤時間背單字的潤娥",
+          "善用下課時間寫作業的茉紫",
+          "運用課後時間學舞蹈的亭勻",
+          "放學後沉浸電玩世界的梓皓。"
+        ],
+        "correct": 3
+      },
+      {
+        "q": "淮南子：「謂學不暇給者，雖暇亦不能學。」由這句話可以得知何種道理？",
+        "options": [
+          "時間忙碌常讓我們趕不上學習",
+          "溫故知新才能進步",
+          "學習如果沒有進步就是退步",
+          "只要有心向學，仍可找出許多空暇時間充實自己。"
+        ],
+        "correct": 3
+      },
+      {
+        "q": "「時間是由分秒積成的，善於利用零星時間的人，才會做出更好的成績來。」（華羅庚）這段話的意涵與下列何者最接近？",
+        "options": [
+          "時間是一個偉大的作者，它會給每個人寫出完美的結局來",
+          "從不浪費時間的人，沒有功夫抱怨時間不夠",
+          "把活著的每一天看作生命的最後一天",
+          "善於利用時間的人，永遠找得到充裕的時間。"
+        ],
+        "correct": 3
+      },
+      {
+        "q": "朱熹曾說：「勿謂今日不學而有來日，勿謂今年不學而有來年。日月逝矣，歲不我延。嗚呼老矣，是誰之愆？」上述這段名言最可能被歸類於哪一個主題？",
+        "options": [
+          "學貴有恆",
+          "為學當及時",
+          "為學應專心致志",
+          "為學應循序漸進。"
+        ],
+        "correct": 1
+      },
+      {
+        "q": "「時間管理本身是一種矛盾，我們無法控制時間，不管怎麼過活，時鐘仍滴答作響。要讓時間發揮最大價值，就是做好優先順序。」這段文字的寓意與下列何者最接近？",
+        "options": [
+          "時間管理的原則，就是「要事為先，緊急不急」",
+          "做很多事的捷徑是每次只做一件事",
+          "敢浪費一小時的人，說明他不懂得珍惜生命的價值",
+          "生命的價值不在於能活多少天，而在於我們如何善用它。"
+        ],
+        "correct": 0
+      },
+      {
+        "q": "下列有關時間的名言佳句，何者屬於反面論述？",
+        "options": [
+          "時間是最好的老師",
+          "我荒廢了時間，時間便把我荒廢了",
+          "勤勞者能叫時間留下串串的果實",
+          "時間是人類消費得起的最有價值東西。"
+        ],
+        "correct": 1
+      }
+    ]
+  },
+  {
+    "type": "reading",
+    "title": "二、閱讀測驗",
+    "meta": "每題2分，共10分",
+    "passages": [
+      {
+        "label": "（一）",
+        "text": "生命需要經過嚴格的淬鍊，才能展現它耀眼的光華，與純美的質地。平靜的海面，永遠只是一幅單調的風景，只有當轟然大浪，撞擊在聳立不屈的巨岩上，千萬潔白似雪、動人心魄的浪花，才會在晴空麗日下，激射開來、迸散開來。\n　　如果，你們願意讓自己是一柄等待出鞘的寶劍，青鋒三尺，耀芒亮眼；如果，你們寧可選擇一條較多考驗的人生行路，而非取巧偷懶的捷徑，那麼，請在這分手的一刻，接受我心底由衷的讚美與禮敬吧！\n　　並不是風平浪靜的人生，不值得追求；並不是平坦易行、較少冒險的道路，便應刻意迴避！哦，不是的，只因為那樣的生命歷程，太少挫折、太少挑戰、太少艱辛……換言之，太少磨鍊──在你們還如此年輕的時刻，在你們還如此充滿陽剛氣息的年齡，那實在完全不適合你們；更何況現實人生，本就需要我們不斷去奮鬥，去為自己的信念、目標和堅持，熱烈的活出光彩來。（節錄自陳幸蕙我不祝你們一帆風順）\n註：迸散：猛烈的散開。迸，音ㄅㄥˋ。",
+        "items": [
+          {
+            "q": "下列哪一句可以說明作者對生命的看法？",
+            "options": [
+              "平靜的湖面，訓練不出精悍的水手",
+              "淡泊名利無所爭，才能無愧於人",
+              "只有當人們心中有愛的時候，世界才能真正進步",
+              "人生如戲，表演得好就能獲得掌聲。"
+            ],
+            "correct": 0
+          },
+          {
+            "q": "作者運用不少比喻來描摹人生。下列何者代表的是人生中的挑戰？",
+            "options": [
+              "平靜的海面",
+              "等待出鞘的寶劍",
+              "取巧偷懶的捷徑",
+              "聳立不屈的巨岩。"
+            ],
+            "correct": 3
+          },
+          {
+            "q": "下列哪一選項<b>沒有</b>辦法說明本文的意涵？",
+            "options": [
+              "殷憂啟聖，多難興邦",
+              "沒有暗礁，哪能激起美麗的浪花",
+              "一失足成千古恨，再回首已百年身",
+              "不經一番寒徹骨，焉得梅花撲鼻香。"
+            ],
+            "correct": 2
+          }
+        ]
+      },
+      {
+        "label": "（二）",
+        "text": "宋季雅罷南康郡，市宅，居僧珍宅側。僧珍問宅價，曰：「一千一百萬。」怪其貴，季雅曰：「一百萬買宅，千萬買鄰。」（節錄自南史呂僧珍傳）",
+        "items": [
+          {
+            "q": "下列關於本文的敘述，何者正確？",
+            "options": [
+              "宋季雅被貶官為南康郡守",
+              "宋季雅在僧珍家隔壁買了一間房子",
+              "僧珍責怪宋季雅房子買貴了",
+              "宋季雅說房子一百萬，隔壁的地一千萬。"
+            ],
+            "correct": 1
+          },
+          {
+            "q": "請問孔子的哪一個觀念可以與本文相呼應？",
+            "options": [
+              "里仁為美",
+              "君子不器",
+              "克己復禮",
+              "成人之美。"
+            ],
+            "correct": 0
+          }
+        ]
+      }
+    ]
+  }
+]
+};
+
+let currentMode = "quiz"; // quiz | print
+
+const contentEl = document.getElementById("content");
+const scoreBar = document.getElementById("scoreBar");
+const scoreText = document.getElementById("scoreText");
+
+function render(){
+  window.examAnswersRevealed = false;
+  contentEl.innerHTML = "";
+  DATA.sections.forEach((sec, si)=> contentEl.appendChild(renderSection(sec, si)));
+  if(currentMode==="quiz"){
+    scoreBar.classList.add("show");
+    updateScore();
+  } else {
+    scoreBar.classList.remove("show");
+    contentEl.querySelectorAll(".opt").forEach(o=>o.classList.add("disabled"));
+    contentEl.querySelectorAll(".opt.is-correct").forEach(o=>o.classList.add("correct"));
+  }
+}
+
+function renderSection(sec, si){
+  const block = document.createElement("section");
+  block.className = "block";
+  block.innerHTML = `<h2>${sec.title}</h2><p class="meta">${sec.meta}</p>`
+    + (sec.note ? `<div class="sec-note">${sec.note}</div>` : "")
+    + (sec.pre ? `<div class="sec-pre">${sec.pre}</div>` : "");
+
+  if(sec.type==="fill"){
+    sec.items.forEach((it,i)=>{
+      const q = document.createElement("div");
+      q.className = "q";
+      const shown = it.answers.join(" ／ ");
+      q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q}</div>
+        <div class="fill-row"><input type="text" class="blank${sec.wide ? " wide" : ""}" autocomplete="off" placeholder="${sec.placeholder || "作答"}"><span class="feedback"></span></div>
+        <div class="answer-reveal">正解：${shown}</div>`;
+      q.querySelector("input.blank").dataset.answers = JSON.stringify(it.answers);
+      if(currentMode!=="quiz"){ q.querySelector("input.blank").disabled = true; q.querySelector(".answer-reveal").classList.add("show"); }
+      block.appendChild(q);
+    });
+  }
+
+  else if(sec.type==="explain"){
+    sec.items.forEach((it,i)=>{
+      const q = document.createElement("div");
+      q.className = "q";
+      q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q}</div>
+        <textarea class="explain-box" placeholder="寫下你的解釋（送出成績後對照參考答案）"></textarea>
+        <div class="answer-reveal">參考答案：${it.answer}</div>`;
+      if(currentMode!=="quiz"){ q.querySelector("textarea").remove(); q.querySelector(".answer-reveal").classList.add("show"); }
+      block.appendChild(q);
+    });
+  }
+
+  else if(sec.type==="mc"){
+    sec.items.forEach((it,i)=>{
+      const q = document.createElement("div");
+      q.className = "q";
+      const optsHtml = it.options.map((op,oi)=>`
+        <div class="opt" data-idx="${oi}" data-correct="${oi===it.correct}">
+          <span class="tag">(${String.fromCharCode(65+oi)})</span><span>${op}</span>
+        </div>`).join("");
+      const imgHtml = it.image ? `<img src="${it.image}" alt="題目附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">` : "";
+      const img2Html = it.image2 ? `<img src="${it.image2}" alt="題目附圖2" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">` : "";
+      q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q}</div>
+        ${imgHtml}${img2Html}
+        <div class="opts">${optsHtml}</div>`;
+      q.querySelectorAll(".opt").forEach(optEl=>{
+        if(optEl.dataset.correct==="true") optEl.classList.add("is-correct");
+        optEl.addEventListener("click", ()=>selectOption(q, optEl));
+      });
+      block.appendChild(q);
+    });
+  }
+
+  else if(sec.type==="reading"){
+    sec.passages.forEach(p=>{
+      const passageDiv = document.createElement("div");
+      passageDiv.className = "passage";
+      passageDiv.innerHTML = `${p.label ? `<span class="passage-label">${p.label}</span>`:""}${p.text}${p.image ? `<img src="${p.image}" alt="題組附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-top:10px;border:1px solid var(--paper-line);">`:""}`;
+      block.appendChild(passageDiv);
+      p.items.forEach((it,i)=>{
+        const q = document.createElement("div");
+        q.className = "q";
+        const optsHtml = it.options.map((op,oi)=>`
+          <div class="opt" data-idx="${oi}" data-correct="${oi===it.correct}">
+            <span class="tag">(${String.fromCharCode(65+oi)})</span><span>${op}</span>
+          </div>`).join("");
+        q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q}</div>
+          ${it.image ? `<img src="${it.image}" alt="題目附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">`:""}
+          <div class="opts">${optsHtml}</div>`;
+        q.querySelectorAll(".opt").forEach(optEl=>{
+          if(optEl.dataset.correct==="true") optEl.classList.add("is-correct");
+          optEl.addEventListener("click", ()=>selectOption(q, optEl));
+        });
+        block.appendChild(q);
+      });
+    });
+  }
+
+  return block;
+}
+
+function selectOption(qEl, optEl){
+  if(currentMode!=="quiz") return;
+  if(qEl.dataset.answered==="true") return;
+  qEl.dataset.answered = "true";
+  qEl.querySelectorAll(".opt").forEach(o=>o.classList.add("disabled"));
+  optEl.classList.add("selected");
+  const correctOpt = qEl.querySelector('.opt[data-correct="true"]');
+  qEl.dataset.studentAnswer = optEl.textContent.trim();
+  qEl.dataset.correctAnswer = correctOpt ? correctOpt.textContent.trim() : "";
+  qEl.dataset.isCorrect = (optEl.dataset.correct==="true") ? "true" : "false";
+  updateScore();
+}
+
+function updateScore(){
+  let total = 0, answered = 0, correct = 0;
+  contentEl.querySelectorAll(".q").forEach(q=>{
+    const gradable = q.querySelector(".opts") || q.querySelector("input.blank");
+    if(!gradable) return;
+    total++;
+    if(q.dataset.studentAnswer !== undefined){
+      answered++;
+      if(q.dataset.isCorrect === "true") correct++;
+    }
+  });
+  if(window.examAnswersRevealed){
+    scoreText.textContent = `${correct} / ${total}`;
+  } else {
+    scoreText.textContent = `已作答 ${answered} / ${total} 題`;
+  }
+}
+window.updateScore = updateScore;
+
+// 填寫題（注音／國字、改錯）：去掉空白與標點後和正解比對；注音的一聲符號「ˉ」可寫可不寫
+function normFill(s){
+  return String(s).replace(/[\sˉ　，、。．.,;；:：!！?？「」『』（）()【】→\-－—]/g, "").trim();
+}
+document.addEventListener("input", (e)=>{
+  const input = e.target;
+  if(!input.matches || !input.matches("input.blank")) return;
+  const q = input.closest(".q");
+  const answers = JSON.parse(input.dataset.answers || "[]");
+  const val = input.value.trim();
+  if(!val){ delete q.dataset.studentAnswer; delete q.dataset.isCorrect; }
+  else {
+    q.dataset.studentAnswer = val;
+    q.dataset.correctAnswer = answers.join(" ／ ");
+    q.dataset.isCorrect = answers.some(a => normFill(a) === normFill(val)) ? "true" : "false";
+  }
+  updateScore();
+});
+
+document.getElementById("resetBtn").addEventListener("click", render);
+document.getElementById("quizModeBtn").addEventListener("click", ()=>{
+  currentMode = "quiz";
+  document.getElementById("quizModeBtn").classList.add("active");
+  document.getElementById("printModeBtn").classList.remove("active");
+  render();
+});
+document.getElementById("printModeBtn").addEventListener("click", ()=>{
+  if(document.getElementById("printModeBtn").disabled) return;
+  currentMode = "print";
+  document.getElementById("printModeBtn").classList.add("active");
+  document.getElementById("quizModeBtn").classList.remove("active");
+  render();
+});
+
+window.unlockPrintMode = function(){
+  document.getElementById("printModeBtn").disabled = false;
+};
+
+render();
+</script>
+<script src="../sync.js"></script>
+</body>
+</html>
