@@ -1,0 +1,818 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>段考題庫｜自然第13回 - 原子結構、週期表與化學式</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@500;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#faf6ec;
+    --paper-line:#e3dcc8;
+    --ink:#26332b;
+    --ink-soft:#5b6b5f;
+    --chalk-green:#2f4538;
+    --chalk-green-2:#3d5a48;
+    --pen-red:#b8433a;
+    --pen-red-soft:#f4dedb;
+    --ok-green:#3f7d52;
+    --ok-green-soft:#dfeee1;
+    --gold:#b5842a;
+    --radius:10px;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:"Noto Sans TC",sans-serif;
+    line-height:1.7;
+  }
+  header.hero{
+    background:var(--chalk-green);
+    color:#eef2ea;
+    padding:28px 20px 40px;
+    position:relative;
+  }
+  header.hero::after{
+    content:"";
+    position:absolute;
+    left:0; right:0; bottom:-1px;
+    height:14px;
+    background:repeating-linear-gradient(90deg,var(--paper) 0 18px, transparent 18px 20px);
+  }
+  .hero-inner{max-width:880px;margin:0 auto;}
+  .breadcrumb a{color:#cfe0d1;text-decoration:none;font-size:14px;}
+  .breadcrumb a:hover{text-decoration:underline;}
+  h1{
+    font-family:"Noto Serif TC",serif;
+    font-weight:700;
+    font-size:clamp(24px,4vw,34px);
+    margin:10px 0 6px;
+  }
+  .subtitle{color:#cfe0d1;font-size:15px;margin:0;}
+  main{max-width:880px;margin:0 auto;padding:28px 20px 80px;}
+
+  .controls{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:22px;
+  }
+  .mode-toggle{display:flex;border:2px solid var(--chalk-green);border-radius:999px;overflow:hidden;}
+  .mode-toggle button{
+    background:transparent;border:none;padding:8px 16px;font-size:14px;font-weight:700;
+    color:var(--chalk-green);cursor:pointer;font-family:"Noto Sans TC",sans-serif;
+  }
+  .mode-toggle button.active{background:var(--gold);color:#fff;}
+  .mode-toggle button:disabled{opacity:.4;cursor:not-allowed;}
+
+  .score-bar{
+    display:none;
+    align-items:center;
+    justify-content:space-between;
+    background:#fff;
+    border:1px solid var(--paper-line);
+    border-left:5px solid var(--gold);
+    border-radius:var(--radius);
+    padding:12px 18px;
+    margin-bottom:22px;
+    font-size:14px;
+  }
+  .score-bar.show{display:flex;}
+  .score-bar strong{font-size:18px;color:var(--gold);}
+  .score-bar button{
+    background:none;border:1px solid var(--ink-soft);color:var(--ink-soft);
+    border-radius:6px;padding:6px 12px;font-size:13px;cursor:pointer;
+  }
+
+  section.block{
+    background:#fff;
+    border:1px solid var(--paper-line);
+    border-radius:var(--radius);
+    padding:22px 22px 26px;
+    margin-bottom:20px;
+  }
+  .block h2{
+    font-family:"Noto Serif TC",serif;
+    font-size:19px;
+    margin:0 0 4px;
+    color:var(--chalk-green);
+  }
+  .block .meta{color:var(--ink-soft);font-size:13px;margin:0 0 16px;}
+
+  .q{margin-bottom:18px;padding-bottom:16px;border-bottom:1px dashed var(--paper-line);}
+  .q:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0;}
+  .q-text{font-size:15.5px;margin-bottom:8px;}
+  .q-num{color:var(--gold);font-weight:700;margin-right:4px;}
+
+  .opts{display:grid;gap:8px;}
+  .opt{
+    display:flex;gap:8px;align-items:flex-start;
+    border:1.5px solid var(--paper-line);
+    border-radius:8px;
+    padding:9px 12px;
+    cursor:pointer;
+    font-size:14.5px;
+    background:#fffdf8;
+  }
+  .opt:hover{border-color:var(--chalk-green-2);}
+  .opt.selected{border-color:var(--chalk-green-2);background:#eef3ea;}
+  .opt.correct{border-color:var(--ok-green);background:var(--ok-green-soft);}
+  .opt.wrong{border-color:var(--pen-red);background:var(--pen-red-soft);}
+  .opt .tag{font-weight:700;color:var(--ink-soft);}
+  .opt.correct .tag{color:var(--ok-green);}
+  .opt.wrong .tag{color:var(--pen-red);}
+  .opt.disabled{cursor:default;}
+
+  .passage{
+    background:#f5f2e8;border-radius:8px;padding:14px 16px;margin-bottom:14px;
+    font-size:14.5px;white-space:pre-line;
+  }
+  .passage-label{font-weight:700;color:var(--chalk-green);margin-bottom:4px;display:block;}
+
+  .sec-note{font-size:13.5px;color:var(--ink-soft);background:#f5f2e8;border-radius:8px;padding:8px 12px;margin:-6px 0 14px;}
+  .sec-pre{background:#f5f2e8;border-radius:8px;padding:10px 14px;margin:-4px 0 14px;font-size:14.5px;}
+  .fill-row{display:flex;flex-wrap:wrap;align-items:center;gap:8px;}
+  input.blank{
+    font-family:"Noto Sans TC",sans-serif;font-size:15.5px;border:none;border-bottom:2px solid var(--chalk-green-2);
+    background:#fffdf8;padding:4px 6px;width:170px;max-width:100%;
+  }
+  input.blank.wide{width:100%;}
+  textarea.explain-box{
+    width:100%;min-height:52px;font-family:"Noto Sans TC",sans-serif;font-size:15px;
+    border:1.5px solid var(--paper-line);border-radius:8px;padding:8px 10px;background:#fffdf8;resize:vertical;
+  }
+  .feedback{font-weight:700;font-size:15px;}
+  .feedback.ok{color:var(--ok-green);}
+  .feedback.no{color:var(--pen-red);}
+  .answer-reveal{display:none;margin-top:8px;font-size:14px;color:var(--ok-green);background:var(--ok-green-soft);border-radius:6px;padding:6px 12px;}
+  .answer-reveal.show{display:block;}
+  .zh-und{text-decoration:underline;text-underline-offset:3px;}
+  .footer-link{
+    display:block;text-align:center;margin-top:30px;color:var(--chalk-green);
+    text-decoration:none;font-weight:700;font-size:14px;
+  }
+  .footer-link:hover{text-decoration:underline;}
+
+  @media print{
+    header.hero, .controls, .score-bar, .mini-btn, .footer-link{display:none !important;}
+    body{background:#fff;}
+    section.block{border:none;box-shadow:none;padding:8px 0;margin-bottom:14px;}
+    .opt.correct{background:none;border:none;font-weight:700;}
+    .opt.correct::after{content:" ← 正解";color:var(--pen-red);}
+    .opt{border:none;padding:2px 0;}
+    main{max-width:100%;padding:0 24px;}
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="breadcrumb"><a href="https://jenlin2002.github.io/">🏠 回總目錄</a> ／ <a href="../hanlin-nature-g8-1.html" style="color:#cfe0d1;">段考題庫</a></div>
+    <h1>自然・第13回</h1>
+    <p class="subtitle">6-3～6-5 原子結構、週期表與化學式｜翰林版八年級自然（三）Ａ卷</p>
+  </div>
+</header>
+
+<main>
+  <div class="controls">
+    <div class="mode-toggle">
+      <button id="quizModeBtn" class="active">✏️ 測驗模式</button>
+      <button id="printModeBtn" disabled title="完成測驗並送出成績後才能查看">🖨️ 完整題目與解答（送出成績後解鎖）</button>
+    </div>
+  </div>
+
+  <div class="score-bar" id="scoreBar">
+    <div>目前得分：<strong id="scoreText">0 / 0</strong>（選擇題）</div>
+    <button id="resetBtn">重新作答</button>
+  </div>
+
+  <div id="content"></div>
+
+  <a class="footer-link" href="../hanlin-nature-g8-1.html">← 回段考題庫總覽</a>
+</main>
+
+<script>
+
+window.EXAM_META = { version: "自然A卷", examLabel: "自然第13回" };
+const DATA = {
+  sections: [
+  {
+    "type": "reading",
+    "title": "A部分 基礎題　一、選擇題",
+    "meta": "每題3分，共54分",
+    "passages": [
+      {
+        "text": "",
+        "items": [
+          {
+            "q": "若以 ○ 代表甲原子，● 代表乙原子，請問下列哪一個容器中的物質<b>沒有</b>固定沸點？",
+            "options": [
+              "如圖 (A) 所示",
+              "如圖 (B) 所示",
+              "如圖 (C) 所示",
+              "如圖 (D) 所示"
+            ],
+            "image": "images/test13/q1.png",
+            "correct": 3,
+            "no": 1
+          },
+          {
+            "q": "有關 5N<sub>2</sub> 與 5N 的敘述，下列何者<b>錯誤</b>？",
+            "options": [
+              "5N<sub>2</sub> 表示 5 個氮分子",
+              "5N 表示 5 個氮原子",
+              "具有物質特性的最小粒子為 N",
+              "5N<sub>2</sub> 的原子總數為 5N 的 2 倍"
+            ],
+            "correct": 2,
+            "no": 2
+          },
+          {
+            "q": "右圖為電中性原子構造的示意圖，分原子核及核外粒子兩大部分，則下列敘述何者正確？",
+            "options": [
+              "核外粒子數的運動範圍與原子核體積大小約相同",
+              "核外粒子的電性與原子核電性一定相反",
+              "核外粒子可能有兩種，而核內可能只有一種粒子",
+              "核外粒子的質量與原子核的質量略約相等"
+            ],
+            "image": "images/test13/q3.png",
+            "correct": 1,
+            "no": 3
+          },
+          {
+            "q": "已知硫（S）、氯（Cl）、氬（Ar）、鉀（K）四元素之原子序分別為 16、17、18、19，則下列選項中，哪一組粒子是「質子數不同，電子數相同」？",
+            "options": [
+              "S<sup>2−</sup>、S、Cl",
+              "Cl<sup>−</sup>、K、K<sup>+</sup>",
+              "S<sup>2−</sup>、Ar、K",
+              "Cl<sup>−</sup>、Ar、K<sup>+</sup>"
+            ],
+            "correct": 3,
+            "no": 4
+          },
+          {
+            "q": "科學探究成果是由無數科學家累積而成，試問在粒子領域，下列四位科學家：道耳頓、湯姆森、拉塞福、查兌克依序提出什麼理論或發現？",
+            "options": [
+              "原子、電子、質子、中子",
+              "原子、質子、電子、中子",
+              "原子、中子、電子、質子",
+              "中子、質子、電子、原子"
+            ],
+            "correct": 0,
+            "no": 5
+          },
+          {
+            "q": "下列何者<b>不是</b>道耳頓原子說的理論？",
+            "options": [
+              "一切物質都是由分子組成",
+              "相同元素的質量、大小都一樣",
+              "化合物是不同種類的原子依固定比例組成",
+              "化學反應前後原子質量、大小不會改變"
+            ],
+            "correct": 0,
+            "no": 6
+          },
+          {
+            "q": "下列各組氣體，何者皆是單一個原子構成的氣體？",
+            "options": [
+              "氫、氦",
+              "氯、氧",
+              "氦、氬",
+              "氮、氦"
+            ],
+            "correct": 2,
+            "no": 7
+          },
+          {
+            "q": "有關原子的敘述，下列何者正確？",
+            "options": [
+              "原子都含有質子、中子、電子三種基本粒子",
+              "原子核內的質子數必等於中子數",
+              "鉀原子核帶正電",
+              "鎂原子核內 1 個質子的質量大於氦原子核內 1 個質子的質量"
+            ],
+            "correct": 2,
+            "no": 8
+          },
+          {
+            "q": "鐵元素的原子序為 26，下列敘述何者<b>錯誤</b>？",
+            "options": [
+              "鐵的元素符號為 Fe",
+              "鐵原子的電子數為 26",
+              "鐵原子的質子數為 13",
+              "鐵原子是電中性"
+            ],
+            "correct": 2,
+            "no": 9
+          },
+          {
+            "q": "現在的週期表是依據下列何者，將各元素由小而大排列？",
+            "options": [
+              "原子體積",
+              "原子量",
+              "原子序",
+              "中子數"
+            ],
+            "correct": 2,
+            "no": 10
+          },
+          {
+            "q": "有關週期表的敘述，下列何者<b>錯誤</b>？",
+            "options": [
+              "週期表的順序是按照質子數量的大小排列的",
+              "週期表的縱行稱為「族」",
+              "週期表的橫列稱為「週期」",
+              "同一週期的元素，化學反應的性質相似"
+            ],
+            "correct": 3,
+            "no": 11
+          },
+          {
+            "q": "樂蒂實驗三種同一族的元素，發現其性質為「常溫下呈現銀灰色固態，質軟可以與水反應，反應後其水溶液為鹼性」，下列推論何者<b>錯誤</b>？",
+            "options": [
+              "此族能與水反應，故不屬於鈍氣",
+              "外觀呈現銀灰色固體，故不屬於鹵素",
+              "質軟，故不屬於金屬",
+              "反應後水溶液呈鹼性，故可能為鹼金屬"
+            ],
+            "correct": 2,
+            "no": 12
+          },
+          {
+            "q": "元素週期表中以「族」的方式分類，是依據各元素的何種特性相似而加以分類？",
+            "options": [
+              "物理性質",
+              "化學性質",
+              "原子量的大小",
+              "質量數的多寡"
+            ],
+            "correct": 1,
+            "no": 13
+          },
+          {
+            "q": "關於金屬鈉和鉀，由於容易與空氣中的氧反應而失去光澤，所以通常將其儲存於下列何者中？",
+            "options": [
+              "冰水",
+              "液態氮",
+              "礦物油",
+              "鹽酸"
+            ],
+            "correct": 2,
+            "no": 14
+          },
+          {
+            "q": "小蔡在實驗室內將標示 1 號和 2 號廣口瓶中的兩種溶液混合後，產生白色沉澱，如右圖所示，已知 1 號瓶內盛裝溶液是 CaCl<sub>2</sub> 的水溶液，但 2 號廣口瓶因標籤脫落無從查證，則下列有關 2 號瓶內的溶液種類及其判斷理由，何者正確？",
+            "options": [
+              "2 號瓶內可能是碳酸鈉水溶液，因為產生氯化鈉的白色沉澱物",
+              "2 號瓶內可能是碳酸鈉水溶液，因為產生鈉金屬的白色沉澱物",
+              "2 號瓶內可能是碳酸鈉水溶液，因為產生碳酸鈣的白色沉澱物",
+              "2 號瓶內可能是碳酸鈉水溶液，因為食鹽晶體是白色的"
+            ],
+            "image": "images/test13/q15.png",
+            "correct": 2,
+            "no": 15
+          },
+          {
+            "q": "葡萄糖的分子式為 C<sub>6</sub>H<sub>12</sub>O<sub>6</sub>，則下列敘述何者<b>錯誤</b>？",
+            "options": [
+              "一個葡萄糖分子中含有 24 個原子",
+              "一個葡萄糖分子中含有 3 種原子",
+              "一個葡萄糖分子中含有 6 個氧原子",
+              "葡萄糖是混合物"
+            ],
+            "correct": 3,
+            "no": 16
+          },
+          {
+            "q": "如果以 ○ 和 ● 表示不同的原子，則下列何者屬於化合物？",
+            "options": [
+              "如圖 (A) 所示",
+              "如圖 (B) 所示",
+              "如圖 (C) 所示",
+              "如圖 (D) 所示"
+            ],
+            "image": "images/test13/q17.png",
+            "correct": 2,
+            "no": 17
+          },
+          {
+            "q": "已知氧和鋁化合時的原子個數比為 3：2，則氧化鋁的化學式為下列何者？",
+            "options": [
+              "O<sub>2</sub>Al<sub>3</sub>",
+              "Al<sub>3</sub>O<sub>2</sub>",
+              "O<sub>3</sub>Al<sub>2</sub>",
+              "Al<sub>2</sub>O<sub>3</sub>"
+            ],
+            "correct": 3,
+            "no": 18
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "type": "reading",
+    "title": "二、素養題",
+    "meta": "每題4分，共28分",
+    "passages": [
+      {
+        "text": "",
+        "items": [
+          {
+            "q": "有關組成原子的三種基本粒子的敘述如下表，哪兩欄有<b>錯誤</b>？<table style=\"border-collapse:collapse;margin:8px 0;font-size:.95em\"><tr><th style=\"border:1px solid #888;padding:3px 10px;text-align:center\">名稱</th><th style=\"border:1px solid #888;padding:3px 10px;text-align:center\">(甲) 發現順序</th><th style=\"border:1px solid #888;padding:3px 10px;text-align:center\">(乙) 電性</th><th style=\"border:1px solid #888;padding:3px 10px;text-align:center\">(丙) 質量</th><th style=\"border:1px solid #888;padding:3px 10px;text-align:center\">(丁) 位置</th></tr><tr><td style=\"border:1px solid #888;padding:3px 10px;text-align:center\">電子</td><td style=\"border:1px solid #888;padding:3px 10px;text-align:center\">最早被發現</td><td style=\"border:1px solid #888;padding:3px 10px;text-align:center\">帶負電</td><td style=\"border:1px solid #888;padding:3px 10px;text-align:center\">很小</td><td style=\"border:1px solid #888;padding:3px 10px;text-align:center\">原子核內</td></tr><tr><td style=\"border:1px solid #888;padding:3px 10px;text-align:center\">質子</td><td style=\"border:1px solid #888;padding:3px 10px;text-align:center\">次被發現</td><td style=\"border:1px solid #888;padding:3px 10px;text-align:center\">不帶電</td><td style=\"border:1px solid #888;padding:3px 10px;text-align:center\">較大</td><td style=\"border:1px solid #888;padding:3px 10px;text-align:center\">原子核外</td></tr><tr><td style=\"border:1px solid #888;padding:3px 10px;text-align:center\">中子</td><td style=\"border:1px solid #888;padding:3px 10px;text-align:center\">最晚被發現</td><td style=\"border:1px solid #888;padding:3px 10px;text-align:center\">帶正電</td><td style=\"border:1px solid #888;padding:3px 10px;text-align:center\">較大</td><td style=\"border:1px solid #888;padding:3px 10px;text-align:center\">原子核內</td></tr></table>",
+            "options": [
+              "(甲)(乙)",
+              "(甲)(丙)",
+              "(乙)(丁)",
+              "(丙)(丁)"
+            ],
+            "correct": 2,
+            "no": 1
+          },
+          {
+            "q": "甲、乙、丙、丁為四種粒子，其原子序、中子數與電子數如下表所示。某帶電離子為 <sup>23</sup><sub>11</sub>X<sup>+</sup>，請問該離子為表中哪個粒子？<table style=\"border-collapse:collapse;margin:8px 0;font-size:.95em\"><tr><th style=\"border:1px solid #888;padding:3px 10px;text-align:center\">粒子</th><th style=\"border:1px solid #888;padding:3px 10px;text-align:center\">原子序</th><th style=\"border:1px solid #888;padding:3px 10px;text-align:center\">中子數</th><th style=\"border:1px solid #888;padding:3px 10px;text-align:center\">電子數</th></tr><tr><td style=\"border:1px solid #888;padding:3px 10px;text-align:center\">甲</td><td style=\"border:1px solid #888;padding:3px 10px;text-align:center\">12</td><td style=\"border:1px solid #888;padding:3px 10px;text-align:center\">11</td><td style=\"border:1px solid #888;padding:3px 10px;text-align:center\">11</td></tr><tr><td style=\"border:1px solid #888;padding:3px 10px;text-align:center\">乙</td><td style=\"border:1px solid #888;padding:3px 10px;text-align:center\">12</td><td style=\"border:1px solid #888;padding:3px 10px;text-align:center\">23</td><td style=\"border:1px solid #888;padding:3px 10px;text-align:center\">11</td></tr><tr><td style=\"border:1px solid #888;padding:3px 10px;text-align:center\">丙</td><td style=\"border:1px solid #888;padding:3px 10px;text-align:center\">11</td><td style=\"border:1px solid #888;padding:3px 10px;text-align:center\">12</td><td style=\"border:1px solid #888;padding:3px 10px;text-align:center\">10</td></tr><tr><td style=\"border:1px solid #888;padding:3px 10px;text-align:center\">丁</td><td style=\"border:1px solid #888;padding:3px 10px;text-align:center\">11</td><td style=\"border:1px solid #888;padding:3px 10px;text-align:center\">23</td><td style=\"border:1px solid #888;padding:3px 10px;text-align:center\">12</td></tr></table>",
+            "options": [
+              "甲",
+              "乙",
+              "丙",
+              "丁"
+            ],
+            "correct": 2,
+            "no": 2
+          },
+          {
+            "q": "自然界的碳有兩種原子：<sup>12</sup><sub>6</sub>C、<sup>13</sup><sub>6</sub>C，下列有關此兩種原子的敘述何者正確？",
+            "options": [
+              "兩者之質量數相等",
+              "兩者之中子數，以 <sup>12</sup><sub>6</sub>C 較多",
+              "兩者之質子數相等",
+              "電中性時，兩者之電子數不同"
+            ],
+            "correct": 2,
+            "no": 3
+          },
+          {
+            "q": "□ 代表一單位體積的氣體，○、⊗ 和 ⊘ 分別代表氦原子、氧原子、氮原子，則下列圖示何者正確？",
+            "options": [
+              "(甲)(乙)",
+              "(乙)(丙)",
+              "(丙)(丁)",
+              "(甲)(丁)"
+            ],
+            "image": "images/test13/s4.png",
+            "correct": 2,
+            "no": 4
+          }
+        ]
+      },
+      {
+        "text": "十九世紀初，道耳頓提出原子說，認為原子是最基本的粒子，不可再分割；後來，湯姆森發現原子裡有帶負電的電子；因此，拉塞福則根據各項實驗結果提出「原子模型」。試回答 5.～7.題：",
+        "items": [
+          {
+            "q": "下列哪一個圖形比較接近拉塞福所提出的原子模型？",
+            "options": [
+              "如圖 (A) 所示",
+              "如圖 (B) 所示",
+              "如圖 (C) 所示",
+              "如圖 (D) 所示"
+            ],
+            "image": "images/test13/s5.png",
+            "correct": 2,
+            "no": 5
+          },
+          {
+            "q": "組成原子的三種基本粒子在原子內的分布情形，下列哪一項正確？",
+            "options": [
+              "中子與電子組成原子核",
+              "中子在核外繞核運轉",
+              "質子與中子結合成原子核",
+              "三種基本粒子均勻分布在原子內"
+            ],
+            "correct": 2,
+            "no": 6
+          },
+          {
+            "q": "下列有關原子結構的敘述，何種組合完全正確？(甲) 原子質量均勻分布於整個原子之中；(乙) 中性原子其質子數和電子數相等；(丙) 電子質量非常輕，約為質子質量的 1836 分之一；(丁) 原子核中所含質子數一定和中子數目相同。",
+            "options": [
+              "(甲)(乙)",
+              "(乙)(丙)",
+              "(丙)(丁)",
+              "(甲)(丙)"
+            ],
+            "correct": 1,
+            "no": 7
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "type": "reading",
+    "title": "B部分 活用題",
+    "meta": "每題2分，共18分",
+    "passages": [
+      {
+        "text": "",
+        "items": [
+          {
+            "q": "有甲、乙兩元素，其原子模型如右圖所示，則下列敘述何者<b>錯誤</b>？",
+            "options": [
+              "甲、乙元素符號為 He",
+              "原子質量：乙＞甲",
+              "甲、乙兩者稱為同位素",
+              "甲、乙兩者的化學性質相近"
+            ],
+            "image": "images/test13/b1.png",
+            "correct": 0,
+            "no": 1
+          },
+          {
+            "q": "已知一個蔗糖的顆粒是一個晶體，而蔗糖的分子式為 C<sub>12</sub>H<sub>22</sub>O<sub>11</sub>，則當蔗糖溶於水中時，下列敘述何者正確？",
+            "options": [
+              "維持晶體的形式，但晶體變小",
+              "晶體破壞了，但每一個分子仍是 C<sub>12</sub>H<sub>22</sub>O<sub>11</sub> 的形式",
+              "分子破壞了，變成許多 C<sub>12</sub>H<sub>22</sub> 與 O<sub>11</sub> 的分子",
+              "分子破壞了，任兩個原子間的距離都變大"
+            ],
+            "correct": 1,
+            "no": 2
+          },
+          {
+            "q": "有甲、乙、丙、丁四種原子，其質子數、中子數如下表所示，則下列敘述何者正確？<table style=\"border-collapse:collapse;margin:8px 0;font-size:.95em\"><tr><th style=\"border:1px solid #888;padding:3px 10px;text-align:center\">原子種類</th><th style=\"border:1px solid #888;padding:3px 10px;text-align:center\">甲</th><th style=\"border:1px solid #888;padding:3px 10px;text-align:center\">乙</th><th style=\"border:1px solid #888;padding:3px 10px;text-align:center\">丙</th><th style=\"border:1px solid #888;padding:3px 10px;text-align:center\">丁</th></tr><tr><td style=\"border:1px solid #888;padding:3px 10px;text-align:center\">質子數</td><td style=\"border:1px solid #888;padding:3px 10px;text-align:center\">16</td><td style=\"border:1px solid #888;padding:3px 10px;text-align:center\">16</td><td style=\"border:1px solid #888;padding:3px 10px;text-align:center\">17</td><td style=\"border:1px solid #888;padding:3px 10px;text-align:center\">18</td></tr><tr><td style=\"border:1px solid #888;padding:3px 10px;text-align:center\">中子數</td><td style=\"border:1px solid #888;padding:3px 10px;text-align:center\">18</td><td style=\"border:1px solid #888;padding:3px 10px;text-align:center\">20</td><td style=\"border:1px solid #888;padding:3px 10px;text-align:center\">18</td><td style=\"border:1px solid #888;padding:3px 10px;text-align:center\">22</td></tr></table>",
+            "options": [
+              "質量最輕的是甲",
+              "甲和丙是相同的原子",
+              "電中性時，丙和丁的電子數相等",
+              "原子序由大而小排列順序為丁＞丙＞乙＞甲"
+            ],
+            "correct": 0,
+            "no": 3
+          },
+          {
+            "q": "已知甲、乙、丙、丁四種粒子為原子或帶電的粒子，其單一粒子的原子序與電子數如下表所示。關於此四種粒子的敘述，下列何者正確？<table style=\"border-collapse:collapse;margin:8px 0;font-size:.95em\"><tr><th style=\"border:1px solid #888;padding:3px 10px;text-align:center\">粒子</th><th style=\"border:1px solid #888;padding:3px 10px;text-align:center\">原子序</th><th style=\"border:1px solid #888;padding:3px 10px;text-align:center\">電子數</th></tr><tr><td style=\"border:1px solid #888;padding:3px 10px;text-align:center\">甲</td><td style=\"border:1px solid #888;padding:3px 10px;text-align:center\">8</td><td style=\"border:1px solid #888;padding:3px 10px;text-align:center\">8</td></tr><tr><td style=\"border:1px solid #888;padding:3px 10px;text-align:center\">乙</td><td style=\"border:1px solid #888;padding:3px 10px;text-align:center\">9</td><td style=\"border:1px solid #888;padding:3px 10px;text-align:center\">10</td></tr><tr><td style=\"border:1px solid #888;padding:3px 10px;text-align:center\">丙</td><td style=\"border:1px solid #888;padding:3px 10px;text-align:center\">10</td><td style=\"border:1px solid #888;padding:3px 10px;text-align:center\">10</td></tr><tr><td style=\"border:1px solid #888;padding:3px 10px;text-align:center\">丁</td><td style=\"border:1px solid #888;padding:3px 10px;text-align:center\">12</td><td style=\"border:1px solid #888;padding:3px 10px;text-align:center\">10</td></tr></table>",
+            "options": [
+              "丙、丁是相同的原子",
+              "甲、丙均呈電中性",
+              "乙、丁的帶電量相同",
+              "甲、丁的質子數均大於電子數"
+            ],
+            "correct": 1,
+            "no": 4
+          }
+        ]
+      },
+      {
+        "text": "根據下圖甲、乙、丙、丁、戊五種物質的粒子模型圖，試回答 5.、6.題：",
+        "items": [
+          {
+            "q": "哪一個粒子模型最能夠表示空氣的特性？",
+            "options": [
+              "乙",
+              "丙",
+              "丁",
+              "戊"
+            ],
+            "correct": 3,
+            "no": 5
+          },
+          {
+            "q": "乙物質與某一種純物質反應可以得到丁物質，請問此純物質可能為下列何者？",
+            "options": [
+              "甲物質",
+              "丙物質",
+              "戊物質",
+              "乙物質與乙物質自身反應"
+            ],
+            "correct": 1,
+            "no": 6
+          }
+        ],
+        "image": "images/test13/g56.png"
+      },
+      {
+        "text": "下圖是週期表的簡圖，試回答 7.～9.題：",
+        "items": [
+          {
+            "q": "甲、乙、丙、丁四種元素中，各 1 個原子的質子數目由多而少的排列依序為何？",
+            "options": [
+              "甲＞乙＞丙＞丁",
+              "丁＞乙＞丙＞甲",
+              "甲＞丙＞丁＞乙",
+              "丙＞丁＞乙＞甲"
+            ],
+            "correct": 3,
+            "no": 7
+          },
+          {
+            "q": "下列哪一組元素具有相似的化學性質？",
+            "options": [
+              "甲、乙",
+              "甲、丙",
+              "丁、戊",
+              "丙、己"
+            ],
+            "correct": 1,
+            "no": 8
+          },
+          {
+            "q": "下列哪一組元素都屬於金屬元素？",
+            "options": [
+              "甲、乙、丙",
+              "甲、丁、戊",
+              "乙、丁、戊",
+              "丁、戊、己"
+            ],
+            "correct": 0,
+            "no": 9
+          }
+        ],
+        "image": "images/test13/g79.png"
+      }
+    ]
+  }
+]
+};
+
+let currentMode = "quiz"; // quiz | print
+
+const contentEl = document.getElementById("content");
+const scoreBar = document.getElementById("scoreBar");
+const scoreText = document.getElementById("scoreText");
+
+function render(){
+  window.examAnswersRevealed = false;
+  contentEl.innerHTML = "";
+  DATA.sections.forEach((sec, si)=> contentEl.appendChild(renderSection(sec, si)));
+  if(currentMode==="quiz"){
+    scoreBar.classList.add("show");
+    updateScore();
+  } else {
+    scoreBar.classList.remove("show");
+    contentEl.querySelectorAll(".opt").forEach(o=>o.classList.add("disabled"));
+    contentEl.querySelectorAll(".opt.is-correct").forEach(o=>o.classList.add("correct"));
+  }
+}
+
+function renderSection(sec, si){
+  const block = document.createElement("section");
+  block.className = "block";
+  block.innerHTML = `<h2>${sec.title}</h2><p class="meta">${sec.meta}</p>`
+    + (sec.note ? `<div class="sec-note">${sec.note}</div>` : "")
+    + (sec.pre ? `<div class="sec-pre">${sec.pre}</div>` : "");
+
+  if(sec.type==="fill"){
+    sec.items.forEach((it,i)=>{
+      const q = document.createElement("div");
+      q.className = "q";
+      const shown = it.answers.join(" ／ ");
+      q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q}</div>
+        <div class="fill-row"><input type="text" class="blank${sec.wide ? " wide" : ""}" autocomplete="off" placeholder="${sec.placeholder || "作答"}"><span class="feedback"></span></div>
+        <div class="answer-reveal">正解：${shown}</div>`;
+      q.querySelector("input.blank").dataset.answers = JSON.stringify(it.answers);
+      if(currentMode!=="quiz"){ q.querySelector("input.blank").disabled = true; q.querySelector(".answer-reveal").classList.add("show"); }
+      block.appendChild(q);
+    });
+  }
+
+  else if(sec.type==="explain"){
+    sec.items.forEach((it,i)=>{
+      const q = document.createElement("div");
+      q.className = "q";
+      q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q}</div>
+        <textarea class="explain-box" placeholder="寫下你的解釋（送出成績後對照參考答案）"></textarea>
+        <div class="answer-reveal">參考答案：${it.answer}</div>`;
+      if(currentMode!=="quiz"){ q.querySelector("textarea").remove(); q.querySelector(".answer-reveal").classList.add("show"); }
+      block.appendChild(q);
+    });
+  }
+
+  else if(sec.type==="mc"){
+    sec.items.forEach((it,i)=>{
+      const q = document.createElement("div");
+      q.className = "q";
+      const optsHtml = it.options.map((op,oi)=>`
+        <div class="opt" data-idx="${oi}" data-correct="${oi===it.correct}">
+          <span class="tag">(${String.fromCharCode(65+oi)})</span><span>${op}</span>
+        </div>`).join("");
+      const imgHtml = it.image ? `<img src="${it.image}" alt="題目附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">` : "";
+      const img2Html = it.image2 ? `<img src="${it.image2}" alt="題目附圖2" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">` : "";
+      q.innerHTML = `<div class="q-text"><span class="q-num">${it.no||i+1}.</span>${it.q}</div>
+        ${imgHtml}${img2Html}
+        <div class="opts">${optsHtml}</div>`;
+      q.querySelectorAll(".opt").forEach(optEl=>{
+        if(optEl.dataset.correct==="true") optEl.classList.add("is-correct");
+        optEl.addEventListener("click", ()=>selectOption(q, optEl));
+      });
+      block.appendChild(q);
+    });
+  }
+
+  else if(sec.type==="reading"){
+    sec.passages.forEach(p=>{
+      const passageDiv = document.createElement("div");
+      passageDiv.className = "passage";
+      passageDiv.innerHTML = `${p.label ? `<span class="passage-label">${p.label}</span>`:""}${p.text}${p.image ? `<img src="${p.image}" alt="題組附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-top:10px;border:1px solid var(--paper-line);">`:""}`;
+      if(p.text || p.image) block.appendChild(passageDiv);
+      p.items.forEach((it,i)=>{
+        const q = document.createElement("div");
+        q.className = "q";
+        const optsHtml = it.options.map((op,oi)=>`
+          <div class="opt" data-idx="${oi}" data-correct="${oi===it.correct}">
+            <span class="tag">(${String.fromCharCode(65+oi)})</span><span>${op}</span>
+          </div>`).join("");
+        q.innerHTML = `<div class="q-text"><span class="q-num">${it.no||i+1}.</span>${it.q}</div>
+          ${it.image ? `<img src="${it.image}" alt="題目附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">`:""}
+          <div class="opts">${optsHtml}</div>`;
+        q.querySelectorAll(".opt").forEach(optEl=>{
+          if(optEl.dataset.correct==="true") optEl.classList.add("is-correct");
+          optEl.addEventListener("click", ()=>selectOption(q, optEl));
+        });
+        block.appendChild(q);
+      });
+    });
+  }
+
+  return block;
+}
+
+function selectOption(qEl, optEl){
+  if(currentMode!=="quiz") return;
+  if(qEl.dataset.answered==="true") return;
+  qEl.dataset.answered = "true";
+  qEl.querySelectorAll(".opt").forEach(o=>o.classList.add("disabled"));
+  optEl.classList.add("selected");
+  const correctOpt = qEl.querySelector('.opt[data-correct="true"]');
+  qEl.dataset.studentAnswer = optEl.textContent.trim();
+  qEl.dataset.correctAnswer = correctOpt ? correctOpt.textContent.trim() : "";
+  qEl.dataset.isCorrect = (optEl.dataset.correct==="true") ? "true" : "false";
+  updateScore();
+}
+
+function updateScore(){
+  let total = 0, answered = 0, correct = 0;
+  contentEl.querySelectorAll(".q").forEach(q=>{
+    const gradable = q.querySelector(".opts") || q.querySelector("input.blank");
+    if(!gradable) return;
+    total++;
+    if(q.dataset.studentAnswer !== undefined){
+      answered++;
+      if(q.dataset.isCorrect === "true") correct++;
+    }
+  });
+  if(window.examAnswersRevealed){
+    scoreText.textContent = `${correct} / ${total}`;
+  } else {
+    scoreText.textContent = `已作答 ${answered} / ${total} 題`;
+  }
+}
+window.updateScore = updateScore;
+
+// 填寫題（注音／國字、改錯）：去掉空白與標點後和正解比對；注音的一聲符號「ˉ」可寫可不寫
+function normFill(s){
+  return String(s).replace(/[\sˉ　，、。．.,;；:：!！?？「」『』（）()【】→\-－—]/g, "").trim();
+}
+document.addEventListener("input", (e)=>{
+  const input = e.target;
+  if(!input.matches || !input.matches("input.blank")) return;
+  const q = input.closest(".q");
+  const answers = JSON.parse(input.dataset.answers || "[]");
+  const val = input.value.trim();
+  if(!val){ delete q.dataset.studentAnswer; delete q.dataset.isCorrect; }
+  else {
+    q.dataset.studentAnswer = val;
+    q.dataset.correctAnswer = answers.join(" ／ ");
+    q.dataset.isCorrect = answers.some(a => normFill(a) === normFill(val)) ? "true" : "false";
+  }
+  updateScore();
+});
+
+document.getElementById("resetBtn").addEventListener("click", render);
+document.getElementById("quizModeBtn").addEventListener("click", ()=>{
+  currentMode = "quiz";
+  document.getElementById("quizModeBtn").classList.add("active");
+  document.getElementById("printModeBtn").classList.remove("active");
+  render();
+});
+document.getElementById("printModeBtn").addEventListener("click", ()=>{
+  if(document.getElementById("printModeBtn").disabled) return;
+  currentMode = "print";
+  document.getElementById("printModeBtn").classList.add("active");
+  document.getElementById("quizModeBtn").classList.remove("active");
+  render();
+});
+
+window.unlockPrintMode = function(){
+  document.getElementById("printModeBtn").disabled = false;
+};
+
+render();
+</script>
+<script src="../sync.js"></script>
+</body>
+</html>

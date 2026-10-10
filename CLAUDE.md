@@ -99,6 +99,14 @@
   - **簡答有一題錯**：第 16 回單題第 16 題簡答寫 D（「好逸惡勞」明顯誤用），網頁改用 B（焦頭爛額），檔案裡有註解。
   - 16 頁都驗證過：每題正解都判為正確、沒有 JS 錯誤、可以送出。
 
+### 2026-10-09（家裡電腦）
+- **翰林一上、二上自然 A 卷各 14 回完成**：`nature.html`（自然科總目錄）、`hanlin-nature-g7-1.html` + `hanlin-nature-g7-1/test1~14.html`、`hanlin-nature-g8-1.html` + `hanlin-nature-g8-1/test1~14.html`（圖在各自的 `images/testN/`）；首頁 `index.html` 的「自然」入口已開放。
+  - 原始檔是掃描 PDF（`PDF-RAW-DATA/Nature/hanlin/hanlin-G7-1`、`hanlin-G8-1`），題目是看圖逐題打字，答案抄自各卷簡答。每回題型全是選擇題：一、選擇題 18 題、二、素養題 6～7 題（含題組）、B 部分 6～9 題（含題組），每回 31～34 題。
+  - 簡答與題目不符時用 `Q(..., fix="C")` 強制改字母（檔案旁有註解）。
+  - 產生方式：`tools/hanlin-g8-1-build/nat7data/tNN.py`（一上）、`natdata/tNN.py`（二上）→ `python gen_nature.py --g7`（不加 `--g7` 是二上）；`nat_view.py` 轉圖看題、`nat_sheet.py` 檢查附圖。每回的範圍與主題名在 `gen_nature.py` 的 `ROUNDS`。
+  - 二上第 11～14 回：驗證過每題簡答與實際計算相符（熱傳播與比熱、元素與化合物、原子結構、複習），附圖都有載入。
+  - 待辦：自然 B、C 卷。
+
 ### 待辦／注意
 - 以上變更要在 GitHub Desktop 裡 Commit + Push，換電腦後先 Pull。
 - 尚未製作：翰林二上數學網頁（原始檔已放進 `PDF-RAW-DATA/MATH/hanlin/hanlin-g8-1/`）。另外康軒數學 K 卷只在 OneDrive 裡，沒有放進專案。

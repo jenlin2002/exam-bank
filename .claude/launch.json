@@ -6,6 +6,18 @@
       "runtimeExecutable": "python",
       "runtimeArgs": ["-m", "http.server", "8532"],
       "port": 8532
+    },
+    {
+      "name": "stock-dashboard",
+      "runtimeExecutable": "python",
+      "runtimeArgs": ["-m", "http.server", "8540", "--directory", "H:/githubdata/stock-dashboard"],
+      "port": 8540
+    },
+    {
+      "name": "stock-dashboard-functions",
+      "runtimeExecutable": "cmd",
+      "runtimeArgs": ["/c", "cd /d H:\\githubdata\\stock-dashboard && npx --yes wrangler@4 pages dev . --port 8542"],
+      "port": 8542
     }
   ]
 }
