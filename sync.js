@@ -103,7 +103,16 @@
   // 改成由這裡接手、不重畫：還沒送出成績不能看解答；送出後「完整題目與解答」直接在原本的作答上顯示所有正解與詳解，
   // 「測驗模式」切回來，作答、對錯、小計都還在。
   const viewStyle = document.createElement("style");
-  viewStyle.textContent = "body.answer-view .explain, body.answer-view .answer-reveal{display:block !important}";
+  viewStyle.textContent = "body.answer-view .explain, body.answer-view .answer-reveal{display:block !important}"
+    // 送出成績後自動顯示解答（使用者 2026-10-18：「送出成績→不須按鈕，就給出解答」），所以上方的模式切換鈕不再需要
+    + ".mode-toggle{display:none !important}"
+    // 做錯的題目呈現紅色：題號、選錯的選項、打錯的填空／句子；答對的選項標「✓ 正解」
+    + "body.exam-locked .q[data-is-correct=\"false\"] .q-num{color:#c0392b !important}"
+    + "body.exam-locked .q[data-is-correct=\"false\"] input{color:#c0392b !important;border-color:#c0392b !important;font-weight:700;background:#fdecea}"
+    + "body.exam-locked .opt.wrong{border-color:#c0392b !important;background:#fdecea !important;color:#c0392b}"
+    + "body.exam-locked .opt.wrong::after{content:'  ✗ 你的答案';color:#c0392b;font-weight:800;margin-left:auto;padding-left:10px}"
+    + "body.exam-locked .opt.correct::after{content:'  ✓ 正解';color:#2e7d4f;font-weight:800;margin-left:auto;padding-left:10px}"
+    + "@media print{body.exam-locked .opt.wrong::after,body.exam-locked .opt.correct::after{content:none}}";
   document.head.appendChild(viewStyle);
   document.addEventListener("click", (e)=>{
     const pb = e.target.closest && e.target.closest("#printModeBtn");
@@ -121,11 +130,14 @@
       alert("完整題目與解答要先「送出成績」才能查看喔！");
       return;
     }
+    showAllAnswers();
+    if(P) P.classList.add("active"); if(Q) Q.classList.remove("active");
+  }, true);
+  function showAllAnswers(){
     document.body.classList.add("answer-view");
     document.querySelectorAll(".opt").forEach(o=>{ o.classList.add("disabled"); if(o.dataset.correct === "true") o.classList.add("correct"); });
     document.querySelectorAll(".explain, .answer-reveal").forEach(el=>el.classList.add("show"));
-    if(P) P.classList.add("active"); if(Q) Q.classList.remove("active");
-  }, true);
+  }
 
   // 送出成績後：每個大題標題下面列出小計（答對幾題／共幾題、得幾分／滿分），答對的題目後面標「+N 分」。
   // 每題幾分從大題說明（例如「20分，每題2分」「每格2分」）讀出來；讀不到就只列題數。
@@ -341,6 +353,7 @@
         window.unlockPrintMode();
       }
       window.revealExamAnswers();
+      showAllAnswers();   // 不用再按「完整題目與解答」：所有正解、詳解直接顯示
       document.querySelectorAll(".script-toggle button").forEach(b=>{
         b.disabled = false;
         b.textContent = "顯示逐字稿";
