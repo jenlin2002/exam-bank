@@ -125,6 +125,8 @@
     + ".q.fixing .answer-reveal,.q.fixing .explain{display:none !important}"
     + "#fixBar{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:0 0 14px;padding:10px 14px;border-radius:12px;background:#fff4dc;border:2px solid #e7c98a;font-family:'Noto Sans TC',sans-serif}"
     + "#fixBar button{background:#c0392b;color:#fff;border:0;border-radius:999px;padding:9px 18px;font-size:15px;font-weight:800;cursor:pointer;font-family:inherit}"
+    + "#fixBar button.exit{background:#fff;color:#5a4a2a;border:1.5px solid #c9b88f}"
+    + "#fixBar a.exit-link{display:inline-block;padding:7px 14px;border-radius:999px;background:#2f6fb5;color:#fff;font-weight:800;text-decoration:none;font-size:14px}"
     + "#fixBar button[disabled]{background:#d8cdb4;color:#7a6a48;cursor:default}"
     + "#fixBar .note{font-size:14px;color:#6b4a12;font-weight:600}#fixBar .note b{color:#c0392b}#fixBar.done{background:#e8f5ec;border-color:#9ccfab}#fixBar.done .note{color:#1f6b3a}"
     + "#draftBar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:0 0 12px;padding:8px 12px;border-radius:12px;background:#eef4fb;border:1.5px solid #b9cde6;font-family:'Noto Sans TC',sans-serif;font-size:14px;color:#2c4a6e}"
@@ -294,9 +296,28 @@
       if(ctl) ctl.insertAdjacentElement("afterend", bar);
       else if(first) first.insertAdjacentElement("beforebegin", bar);
       else document.body.prepend(bar);
-      bar.addEventListener("click", (e)=>{ if(e.target.closest("button[data-fix]")) startFix(); });
+      bar.addEventListener("click", (e)=>{
+        if(e.target.closest("button[data-exit]")) skipFix();
+        else if(e.target.closest("button[data-fix]")) startFix();
+      });
     }
     return bar;
+  }
+  // 測試帳號 TEST、家長 PARENT：訂正鍵旁多「🚪 立即離開」，按了解除「訂正完才能離開」，可以回單元目錄或主頁面（使用者 2026-10-18）
+  function canSkipFix(){ const n = loggedInStudent(); return n === "TEST" || n === "PARENT"; }
+  function exitHtml(){ return canSkipFix() ? '<button type="button" data-exit class="exit">🚪 立即離開</button>' : ""; }
+  function unitHref(){
+    const a = document.querySelector("a.footer-link[href]") || Array.from(document.querySelectorAll("a[href]")).find(x=>/段考題庫/.test(x.textContent) && !/^https?:/.test(x.getAttribute("href")));
+    return a ? a.getAttribute("href") : "";
+  }
+  function skipFix(){
+    pendingFix = false;
+    const reset = document.getElementById("resetBtn"); if(reset) reset.style.display = "";
+    const bar = fixBar(), u = unitHref();
+    bar.className = "done";
+    bar.innerHTML = '<span class="note">🚪 已解除訂正限制（測試／家長帳號），可以離開：</span>'
+      + (u ? '<a class="exit-link" href="' + u + '">↩ 回單元目錄</a>' : '')
+      + '<a class="exit-link" href="https://jenlin2002.github.io/">🏠 回主頁面</a>';
   }
   function lockCorrect(q){
     q.classList.remove("fixing"); q.classList.add("fix-locked");
@@ -321,7 +342,7 @@
     btn.disabled = false; btn.style.opacity = ""; btn.style.cursor = ""; btn.textContent = "送出訂正";
     const st = document.getElementById("examSyncStatus"); if(st) st.textContent = "";
     const bar = fixBar(); bar.className = "";
-    bar.innerHTML = '<button type="button" data-fix disabled>✏️ 第 ' + fixRound + ' 次訂正中</button><span class="note">把 <b>' + wrong.length + ' 題</b>黃色框的題目重新作答，完成後按右下角「送出訂正」。錯題全部訂正完畢再另加補送 <b>1 點</b>。</span>';
+    bar.innerHTML = '<button type="button" data-fix disabled>✏️ 第 ' + fixRound + ' 次訂正中</button><span class="note">把 <b>' + wrong.length + ' 題</b>黃色框的題目重新作答，完成後按右下角「送出訂正」。錯題全部訂正完畢再另加補送 <b>1 點</b>。</span>' + exitHtml();
     wrong[0].scrollIntoView({ behavior: "smooth", block: "center" });
     if(typeof window.updateScore === "function") window.updateScore();
   }
@@ -334,7 +355,7 @@
       pendingFix = true;
       if(reset) reset.style.display = "none";   // 訂正完才能重新作答
       bar.className = "";
-      bar.innerHTML = '<button type="button" data-fix>✏️ 訂正錯誤</button><span class="note">還有 <b>' + wrong.length + ' 題</b>錯誤（紅色）。按「訂正錯誤」重新作答，<b>錯誤全部訂正完畢再另加補送 1 點</b>；訂正完才能離開這一頁。</span>';
+      bar.innerHTML = '<button type="button" data-fix>✏️ 訂正錯誤</button><span class="note">還有 <b>' + wrong.length + ' 題</b>錯誤（紅色）。按「訂正錯誤」重新作答，<b>錯誤全部訂正完畢再另加補送 1 點</b>；訂正完才能離開這一頁。</span>' + exitHtml();
       return;
     }
     pendingFix = false;
