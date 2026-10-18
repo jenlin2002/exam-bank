@@ -91,17 +91,40 @@
   function lockPrintMode(){
     const pb = document.getElementById("printModeBtn");
     if(!pb) return;
-    if(pb.classList.contains("active")){ const qb = document.getElementById("quizModeBtn"); if(qb) qb.click(); }
+    document.body.classList.remove("answer-view");
+    const qb = document.getElementById("quizModeBtn");
+    if(qb) qb.classList.add("active");
+    pb.classList.remove("active");
     pb.disabled = true;
     pb.title = "完成測驗並送出成績後才能查看";
   }
-  // 保險：還沒送出成績時，就算按鈕被解鎖也不讓它切到解答模式
+  // 「測驗模式／完整題目與解答」切換（使用者 2026-10-18 反映：送出後切去看解答再切回來，作答全部不見、選項鎖住、
+  // 再按送出變成「還有 25 題尚未作答」）。原因是各頁面的切換程式會把整份考卷重畫一次。
+  // 改成由這裡接手、不重畫：還沒送出成績不能看解答；送出後「完整題目與解答」直接在原本的作答上顯示所有正解與詳解，
+  // 「測驗模式」切回來，作答、對錯、小計都還在。
+  const viewStyle = document.createElement("style");
+  viewStyle.textContent = "body.answer-view .explain, body.answer-view .answer-reveal{display:block !important}";
+  document.head.appendChild(viewStyle);
   document.addEventListener("click", (e)=>{
     const pb = e.target.closest && e.target.closest("#printModeBtn");
-    if(!pb || document.body.classList.contains("exam-locked")) return;
+    const qb = e.target.closest && e.target.closest("#quizModeBtn");
+    if(!pb && !qb) return;
     e.preventDefault(); e.stopImmediatePropagation();
-    pb.disabled = true;
-    alert("完整題目與解答要先「送出成績」才能查看喔！");
+    const P = document.getElementById("printModeBtn"), Q = document.getElementById("quizModeBtn");
+    if(qb){   // 回到測驗模式：只換按鈕樣子，不重畫（重畫會清掉作答）
+      document.body.classList.remove("answer-view");
+      if(Q) Q.classList.add("active"); if(P) P.classList.remove("active");
+      return;
+    }
+    if(!document.body.classList.contains("exam-locked")){
+      if(P) P.disabled = true;
+      alert("完整題目與解答要先「送出成績」才能查看喔！");
+      return;
+    }
+    document.body.classList.add("answer-view");
+    document.querySelectorAll(".opt").forEach(o=>{ o.classList.add("disabled"); if(o.dataset.correct === "true") o.classList.add("correct"); });
+    document.querySelectorAll(".explain, .answer-reveal").forEach(el=>el.classList.add("show"));
+    if(P) P.classList.add("active"); if(Q) Q.classList.remove("active");
   }, true);
 
   // 送出成績後：每個大題標題下面列出小計（答對幾題／共幾題、得幾分／滿分），答對的題目後面標「+N 分」。
