@@ -80,8 +80,64 @@
         document.body.classList.remove("exam-locked");
         btn.textContent = "送出成績";
         if(status) status.textContent = "";
+        clearSectionScores();
+        lockPrintMode();
       });
     }
+  }
+
+  // 「完整題目與解答」只有送出成績後才能看（使用者 2026-10-18 發現：送出過一次後按「重新作答」，
+  // 這顆沒有重新鎖住，還沒送出就能點開看到正解）。重新作答時鎖回去；正在看解答就切回測驗模式。
+  function lockPrintMode(){
+    const pb = document.getElementById("printModeBtn");
+    if(!pb) return;
+    if(pb.classList.contains("active")){ const qb = document.getElementById("quizModeBtn"); if(qb) qb.click(); }
+    pb.disabled = true;
+    pb.title = "完成測驗並送出成績後才能查看";
+  }
+  // 保險：還沒送出成績時，就算按鈕被解鎖也不讓它切到解答模式
+  document.addEventListener("click", (e)=>{
+    const pb = e.target.closest && e.target.closest("#printModeBtn");
+    if(!pb || document.body.classList.contains("exam-locked")) return;
+    e.preventDefault(); e.stopImmediatePropagation();
+    pb.disabled = true;
+    alert("完整題目與解答要先「送出成績」才能查看喔！");
+  }, true);
+
+  // 送出成績後：每個大題標題下面列出小計（答對幾題／共幾題、得幾分／滿分），答對的題目後面標「+N 分」。
+  // 每題幾分從大題說明（例如「20分，每題2分」「每格2分」）讀出來；讀不到就只列題數。
+  const scoreStyle = document.createElement("style");
+  scoreStyle.textContent = ".sec-score{margin:4px 0 10px;padding:8px 12px;border-radius:8px;background:#fff4dc;border:1px solid #e7c98a;color:#6b4a12;font-weight:700;font-size:14.5px}"
+    + ".sec-score b{color:#b5561c;font-size:16px}.q-pts{display:inline-block;margin-left:8px;padding:1px 8px;border-radius:999px;background:#e3f2e6;color:#2e7d4f;font-weight:800;font-size:13px;white-space:nowrap}";
+  document.head.appendChild(scoreStyle);
+  function gradableQ(q){ return q.querySelector(".opts") || q.querySelector("input.blank") || q.querySelector("input.line-answer") || q.querySelector("input.micro-blank"); }
+  function fmtPts(x){ return Math.round(x * 100) / 100; }
+  function clearSectionScores(){ document.querySelectorAll(".sec-score, .q-pts").forEach(el=>el.remove()); }
+  function showSectionScores(){
+    clearSectionScores();
+    document.querySelectorAll("section.block").forEach(block=>{
+      const qs = Array.from(block.querySelectorAll(".q")).filter(q=>gradableQ(q) && q.dataset.studentAnswer !== undefined);
+      if(!qs.length) return;
+      const meta = block.querySelector(".meta");
+      const m = meta && /每[題格]\s*(\d+(?:\.\d+)?)\s*分/.exec(meta.textContent);
+      const per = m ? parseFloat(m[1]) : null;
+      let ok = 0;
+      qs.forEach(q=>{
+        if(q.dataset.isCorrect !== "true") return;
+        ok++;
+        if(per != null){
+          const tag = document.createElement("span");
+          tag.className = "q-pts"; tag.textContent = "+" + fmtPts(per) + " 分";
+          (q.querySelector(".q-text") || q).appendChild(tag);
+        }
+      });
+      const box = document.createElement("div");
+      box.className = "sec-score";
+      box.innerHTML = "📊 本大題：答對 <b>" + ok + "</b> / " + qs.length + " 題" +
+        (per != null ? "　得 <b>" + fmtPts(ok * per) + "</b> / " + fmtPts(qs.length * per) + " 分" : "");
+      const anchor = meta || block.querySelector("h2");
+      if(anchor) anchor.insertAdjacentElement("afterend", box); else block.prepend(box);
+    });
   }
 
   // 選擇題在「送出成績」之前都還在考試中，可以改選答案。
@@ -162,6 +218,7 @@
     document.querySelectorAll(".reveal-btn").forEach(btn=>{
       btn.style.display = "none";
     });
+    showSectionScores();
     if(typeof window.updateScore === "function") window.updateScore();
   };
 
