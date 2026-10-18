@@ -124,3 +124,10 @@
 - 尚未製作：翰林二上數學網頁（原始檔已放進 `PDF-RAW-DATA/MATH/hanlin/hanlin-g8-1/`）。另外康軒數學 K 卷只在 OneDrive 裡，沒有放進專案。
 - 國文一上、二上（翰林）B、C 卷還沒做（原始檔在 `PDF-RAW-DATA/Chinese/hanlin/hanlin-G7-1/`、`hanlin-G8-1/`）。
 - 學生名單不再寫在 `sync.js`：改由點數存摺的登入帳號決定（家長在「帳號管理」建立）。
+
+## 連續學習紅利＋稱讚畫面（2026-10-18）
+
+- 送出測驗後跳出稱讚卡（得幾點、連續第幾天、還差幾點到 100 點）；每跨過 100 點跳出大的恭喜兌換畫面。
+- 連續學習紅利：第 2 天 +2、第 3、4 天 +5、第 5 天起每天 +10，中斷就重算；不算在每天 50 點上限內；存摺分頁記成類型「紅利」。
+- 程式在 `points.js`（7 份副本內容一致，主檔在 english-quiz-plan `points/points.js`）與後端 `Code.gs`（`CONFIG.STREAK_BONUS`）。
+- **要先更新 Apps Script 後端（貼新版 Code.gs → 部署新版本）紅利才會開始算**，步驟在 english-quiz-plan `points/README-點數存摺.md` 最後一節。
