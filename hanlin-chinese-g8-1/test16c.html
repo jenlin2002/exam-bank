@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>段考題庫｜國文第16回 - 安藤忠雄：孤獨，也要讓夢想開花</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@500;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#faf6ec;
+    --paper-line:#e3dcc8;
+    --ink:#26332b;
+    --ink-soft:#5b6b5f;
+    --chalk-green:#2f4538;
+    --chalk-green-2:#3d5a48;
+    --pen-red:#b8433a;
+    --pen-red-soft:#f4dedb;
+    --ok-green:#3f7d52;
+    --ok-green-soft:#dfeee1;
+    --gold:#b5842a;
+    --radius:10px;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:"Noto Sans TC",sans-serif;
+    line-height:1.7;
+  }
+  header.hero{
+    background:var(--chalk-green);
+    color:#eef2ea;
+    padding:28px 20px 40px;
+    position:relative;
+  }
+  header.hero::after{
+    content:"";
+    position:absolute;
+    left:0; right:0; bottom:-1px;
+    height:14px;
+    background:repeating-linear-gradient(90deg,var(--paper) 0 18px, transparent 18px 20px);
+  }
+  .hero-inner{max-width:880px;margin:0 auto;}
+  .breadcrumb a{color:#cfe0d1;text-decoration:none;font-size:14px;}
+  .breadcrumb a:hover{text-decoration:underline;}
+  h1{
+    font-family:"Noto Serif TC",serif;
+    font-weight:700;
+    font-size:clamp(24px,4vw,34px);
+    margin:10px 0 6px;
+  }
+  .subtitle{color:#cfe0d1;font-size:15px;margin:0;}
+  main{max-width:880px;margin:0 auto;padding:28px 20px 80px;}
+
+  .controls{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:22px;
+  }
+  .mode-toggle{display:flex;border:2px solid var(--chalk-green);border-radius:999px;overflow:hidden;}
+  .mode-toggle button{
+    background:transparent;border:none;padding:8px 16px;font-size:14px;font-weight:700;
+    color:var(--chalk-green);cursor:pointer;font-family:"Noto Sans TC",sans-serif;
+  }
+  .mode-toggle button.active{background:var(--gold);color:#fff;}
+  .mode-toggle button:disabled{opacity:.4;cursor:not-allowed;}
+
+  .score-bar{
+    display:none;
+    align-items:center;
+    justify-content:space-between;
+    background:#fff;
+    border:1px solid var(--paper-line);
+    border-left:5px solid var(--gold);
+    border-radius:var(--radius);
+    padding:12px 18px;
+    margin-bottom:22px;
+    font-size:14px;
+  }
+  .score-bar.show{display:flex;}
+  .score-bar strong{font-size:18px;color:var(--gold);}
+  .score-bar button{
+    background:none;border:1px solid var(--ink-soft);color:var(--ink-soft);
+    border-radius:6px;padding:6px 12px;font-size:13px;cursor:pointer;
+  }
+
+  section.block{
+    background:#fff;
+    border:1px solid var(--paper-line);
+    border-radius:var(--radius);
+    padding:22px 22px 26px;
+    margin-bottom:20px;
+  }
+  .block h2{
+    font-family:"Noto Serif TC",serif;
+    font-size:19px;
+    margin:0 0 4px;
+    color:var(--chalk-green);
+  }
+  .block .meta{color:var(--ink-soft);font-size:13px;margin:0 0 16px;}
+
+  .q{margin-bottom:18px;padding-bottom:16px;border-bottom:1px dashed var(--paper-line);}
+  .q:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0;}
+  .q-text{font-size:15.5px;margin-bottom:8px;}
+  .q-num{color:var(--gold);font-weight:700;margin-right:4px;}
+
+  .opts{display:grid;gap:8px;}
+  .opt{
+    display:flex;gap:8px;align-items:flex-start;
+    border:1.5px solid var(--paper-line);
+    border-radius:8px;
+    padding:9px 12px;
+    cursor:pointer;
+    font-size:14.5px;
+    background:#fffdf8;
+  }
+  .opt:hover{border-color:var(--chalk-green-2);}
+  .opt.selected{border-color:var(--chalk-green-2);background:#eef3ea;}
+  .opt.correct{border-color:var(--ok-green);background:var(--ok-green-soft);}
+  .opt.wrong{border-color:var(--pen-red);background:var(--pen-red-soft);}
+  .opt .tag{font-weight:700;color:var(--ink-soft);}
+  .opt.correct .tag{color:var(--ok-green);}
+  .opt.wrong .tag{color:var(--pen-red);}
+  .opt.disabled{cursor:default;}
+
+  .passage{
+    background:#f5f2e8;border-radius:8px;padding:14px 16px;margin-bottom:14px;
+    font-size:14.5px;white-space:pre-line;
+  }
+  .passage-label{font-weight:700;color:var(--chalk-green);margin-bottom:4px;display:block;}
+
+  .sec-note{font-size:13.5px;color:var(--ink-soft);background:#f5f2e8;border-radius:8px;padding:8px 12px;margin:-6px 0 14px;}
+  .sec-pre{background:#f5f2e8;border-radius:8px;padding:10px 14px;margin:-4px 0 14px;font-size:14.5px;}
+  .fill-row{display:flex;flex-wrap:wrap;align-items:center;gap:8px;}
+  input.blank{
+    font-family:"Noto Sans TC",sans-serif;font-size:15.5px;border:none;border-bottom:2px solid var(--chalk-green-2);
+    background:#fffdf8;padding:4px 6px;width:170px;max-width:100%;
+  }
+  input.blank.wide{width:100%;}
+  textarea.explain-box{
+    width:100%;min-height:52px;font-family:"Noto Sans TC",sans-serif;font-size:15px;
+    border:1.5px solid var(--paper-line);border-radius:8px;padding:8px 10px;background:#fffdf8;resize:vertical;
+  }
+  .feedback{font-weight:700;font-size:15px;}
+  .feedback.ok{color:var(--ok-green);}
+  .feedback.no{color:var(--pen-red);}
+  .answer-reveal{display:none;margin-top:8px;font-size:14px;color:var(--ok-green);background:var(--ok-green-soft);border-radius:6px;padding:6px 12px;}
+  .answer-reveal.show{display:block;}
+  .zh-und{text-decoration:underline;text-underline-offset:3px;}
+  .footer-link{
+    display:block;text-align:center;margin-top:30px;color:var(--chalk-green);
+    text-decoration:none;font-weight:700;font-size:14px;
+  }
+  .footer-link:hover{text-decoration:underline;}
+
+  @media print{
+    header.hero, .controls, .score-bar, .mini-btn, .footer-link{display:none !important;}
+    body{background:#fff;}
+    section.block{border:none;box-shadow:none;padding:8px 0;margin-bottom:14px;}
+    .opt.correct{background:none;border:none;font-weight:700;}
+    .opt.correct::after{content:" ← 正解";color:var(--pen-red);}
+    .opt{border:none;padding:2px 0;}
+    main{max-width:100%;padding:0 24px;}
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="breadcrumb"><a href="https://jenlin2002.github.io/">🏠 回總目錄</a> ／ <a href="../hanlin-chinese-g8-1.html" style="color:#cfe0d1;">段考題庫</a></div>
+    <h1>國文・第16回</h1>
+    <p class="subtitle">自學選文三 安藤忠雄：孤獨，也要讓夢想開花｜翰林版八年級國文（三）Ｃ卷</p>
+  </div>
+</header>
+
+<main>
+  <div class="controls">
+    <div class="mode-toggle">
+      <button id="quizModeBtn" class="active">✏️ 測驗模式</button>
+      <button id="printModeBtn" disabled title="完成測驗並送出成績後才能查看">🖨️ 完整題目與解答（送出成績後解鎖）</button>
+    </div>
+  </div>
+
+  <div class="score-bar" id="scoreBar">
+    <div>目前得分：<strong id="scoreText">0 / 0</strong>（選擇題與填寫題；解釋題不計分）</div>
+    <button id="resetBtn">重新作答</button>
+  </div>
+
+  <div id="content"></div>
+
+  <a class="footer-link" href="../hanlin-chinese-g8-1.html">← 回段考題庫總覽</a>
+</main>
+
+<script>
+
+window.EXAM_META = { version: "國文C卷", examLabel: "國文第16回" };
+const DATA = {
+  sections: [
+  {
+    "type": "mc",
+    "title": "一、單題",
+    "meta": "每題3分，共75分",
+    "items": [
+      {
+        "q": "下列「　」中的字，何者讀音正確？",
+        "options": [
+          "「懵」懂：ㄇㄥ",
+          "失「怙」：ㄏㄨˋ",
+          "順「遂」：ㄓㄨˊ",
+          "「綻」放：ㄉㄧㄢˋ"
+        ],
+        "correct": 1
+      },
+      {
+        "q": "下列「　」中的注音寫成國字後，何組字形相同？",
+        "options": [
+          "聲名大「ㄗㄠˋ」／聒「ㄗㄠˋ」不休",
+          "獨自摸「ㄙㄨㄛˇ」／事情繁「ㄙㄨㄛˇ」",
+          "「ㄇㄟˋ」力四射／千嬌百「ㄇㄟˋ」",
+          "閒「ㄒㄧㄚˊ」時間／名聞「ㄒㄧㄚˊ」邇"
+        ],
+        "correct": 0
+      },
+      {
+        "q": "下列詞語，何者字形完全正確？",
+        "options": [
+          "阻檔夢想",
+          "震憾不已",
+          "激發淺力",
+          "壓力龐大"
+        ],
+        "correct": 3
+      },
+      {
+        "q": "下列「　」中的字，何組讀音前後相同？",
+        "options": [
+          "國際「競」圖／戰戰「兢」兢",
+          "花朵枯「萎」／受人「委」託",
+          "絡「繹」不絕／翻「譯」作品",
+          "「拳」打腳踢／公益彩「券」"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "下列「　」中的詞語經替換後，何者意思不變？",
+        "options": [
+          "現在的安藤忠雄，儘管早已晉升國際大師，仍然「秉持」著熱情與意志力，追尋著他的建築夢：保持",
+          "他雖然年少「失怙」，仍然力學不倦，努力開創自己的未來：喪母",
+          "大學畢業後，他「隻身」前往國外留學：動身",
+          "回國之後，他「毅然」開設自己的建築師事務所：龐然"
+        ],
+        "correct": 0
+      },
+      {
+        "q": "依據安藤忠雄：孤獨，也要讓夢想開花一文，下列敘述何者正確？",
+        "options": [
+          "安藤忠雄憑藉著高學歷，躋身世界一流的建築大師",
+          "安藤忠雄得獎之後，仍不停參與國際競圖，不曾懈怠",
+          "安藤忠雄為了賺取學費，曾經至曼谷擔任拳擊教練",
+          "安藤忠雄因為受到舊書攤老闆的鼓勵，所以踏上自學之路"
+        ],
+        "correct": 1
+      },
+      {
+        "q": "下列詞語的關係，何組為近義詞？",
+        "options": [
+          "鍥而不捨／半途而廢",
+          "康莊大道／羊腸小徑",
+          "不屈不撓／百折不撓",
+          "焚膏繼晷／遊手好閒"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "根據安藤忠雄：孤獨，也要讓夢想開花一文，安藤忠雄年輕時為了出國看建築，曾經做過什麼事情？",
+        "options": [
+          "到室內設計公司擔任助手，賺取出國旅費",
+          "央求書店老闆贊助旅費，回國後打工償還",
+          "擔任大學助教，陪同教授出國演講",
+          "花了兩個多月練習，就拿到職業拳擊賽執照"
+        ],
+        "correct": 3
+      },
+      {
+        "q": "「當他目睹廣大的海平面，與在西伯利亞鐵路上連續五天看著窗外一望無際的溼地草原，他比建築系學生更直接體驗何謂『水平』；當他在希臘仰望巴特農神殿時，他親身體會何謂『垂直』。」這段文字是運用何種感官摹寫來感受空間？",
+        "options": [
+          "聽覺",
+          "觸覺",
+          "視覺",
+          "嗅覺"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "下列文句「　」中的詞語，何者當副詞使用？",
+        "options": [
+          "他把每一次競圖當作拳擊場，終於「陸續」贏得法國等地的重要國際競圖",
+          "當初那條沒人看見的孤獨路，已經「綻放」出滿徑的繽紛花朵",
+          "國中畢業後，安藤忠雄遇到第一個夢想的「阻礙」",
+          "如果我不做建築家，我的人生就很「失敗」"
+        ],
+        "correct": 0
+      },
+      {
+        "q": "下列文句，何者用字完全正確？",
+        "options": [
+          "依法納稅是每個公民則無旁貸的義務",
+          "盤中食物粒粒皆辛苦，千萬不可糟塌糧食",
+          "在無可耐何之下，他只好默默把眼淚擦乾將事情完成",
+          "為澈底解決公司的財務問題，精簡人事倒是個釜底抽薪的辦法"
+        ],
+        "correct": 3
+      },
+      {
+        "q": "根據安藤忠雄：孤獨，也要讓夢想開花一文，安藤忠雄因為什麼事件，讓他興起從事建築業的夢想？",
+        "options": [
+          "高工轉念建築科，從此走上建築之路",
+          "外公教他畫設計圖與削木頭",
+          "搭電車參觀京都、奈良等地的傳統建築",
+          "為鄰家失怙少年蓋了七坪大的加蓋小屋"
+        ],
+        "correct": 3
+      },
+      {
+        "q": "安藤忠雄深信一句日本諺語：「只要有一，就會有十。」這句諺語的涵義為何？",
+        "options": [
+          "挑戰自我，追求卓越",
+          "精誠所至，金石為開",
+          "人要衣裝，佛要金裝",
+          "滿招損，謙受益"
+        ],
+        "correct": 1
+      },
+      {
+        "q": "下列文句，何者使用第一人稱寫作？",
+        "options": [
+          "在這條建築路上，我常常一個人不安的摸索著",
+          "他依然贏得日本社會的敬重……與絡繹不絕的工作合約",
+          "你沒受過正規的教育，怎麼能成為一個建築家",
+          "一個人要成功有兩個條件：意志力和熱情"
+        ],
+        "correct": 0
+      },
+      {
+        "q": "「一個人要成功有兩個條件：意志力和熱情。」下列何者的涵義與此相近？",
+        "options": [
+          "上天自有安排，你只負責精彩",
+          "人生有多殘酷，你就有多堅強",
+          "每天叫醒你的不是鬧鐘，而是心中的夢想",
+          "聰明是一種天賦，善良是一種選擇"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "「為了將想法實踐，他的提案儘管屢戰屢敗，他就是從不放棄。」此精神可以用下列哪一成語來形容？",
+        "options": [
+          "嶄露頭角",
+          "舉一反三",
+          "絡繹不絕",
+          "鍥而不捨"
+        ],
+        "correct": 3
+      },
+      {
+        "q": "「孤獨，也要讓夢想開花。」這句話的涵義<b>不適合</b>用下列何者來詮釋？",
+        "options": [
+          "天分，只不過是努力的另一個名字",
+          "沒有人不辛苦，只是有人不喊疼",
+          "即使世界不斷讓你失望，也要繼續相信愛",
+          "所謂天才，只不過把喝咖啡的時間都拿來用功罷了"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "「透過旅行，全世界的建築鉅作都跳出教科書，成為他的老師。」下列何者與這句話的涵義最接近？",
+        "options": [
+          "讀萬卷書，行萬里路",
+          "四海之內，皆我兄弟",
+          "一日為師，終身為父",
+          "書讀百遍，其義自見"
+        ],
+        "correct": 0
+      },
+      {
+        "q": "「好萊塢電影製作人布萊恩・葛瑟認為，娛樂圈裡的人不能只跟圈內人交談，應將觸角向外延伸，這樣才能製作出不平凡的電影。因此他嘗試每週邀約一位影劇圈外的人士見面，對象包含服裝設計師、科學家，甚至美國總統，只為了問問題。他將這些訪談整理成一本名為好奇心：生命不在於□□□，而是□□□的書。」根據文意，缺空處應填入何者最恰當？",
+        "options": [
+          "爬多高／善播愛",
+          "多偉大／做自己",
+          "找答案／問問題",
+          "求名聲／立大功"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "「當我真心在追求我的夢想時，每一天都是繽紛的。因為我知道每一個小時都是在實現夢想的一部分。」上述強調應該以何種態度面對人生？",
+        "options": [
+          "浮生若夢，及時行樂",
+          "人生有夢，築夢踏實",
+          "日有所思，夜有所夢",
+          "黃粱一夢，富貴如幻"
+        ],
+        "correct": 1
+      },
+      {
+        "q": "「遊戲橘子關懷基金會針對16～24歲的青少年，進行『後e世代青少年逐夢勇氣面面觀大調查』，發現七成九的青少年懷有夢想，九成二還沒實踐。四成五青少年認為夢想要有金錢援助，三成六要有人陪伴，顯示青少年對金錢與家庭依賴過高。逐夢過程中，七成青少年認同勇氣是影響夢想前進主因，其次是金錢和家庭束縛。調查還反映家長不願放手讓孩子飛，五成六父母擔心孩子受傷，不願意放手讓孩子挑戰夢想。臺灣超級馬拉松好手陳彥博分享自己經驗，小時候他怕黑、怕孤單，要出國比賽時辦簽證不會填，到了國外不會點漢堡，但不斷磨鍊後，現在一個人可以背起裝備跑步。他認為，不管成功與否，都要有勇氣踏出第一步。」根據這段文字，影響我國青少年逐夢的最主要原因為何？",
+        "options": [
+          "沒有家人的金錢援助",
+          "沒有勇氣朝夢想前進",
+          "始終沒有築夢的機會",
+          "家長對孩子保護過多"
+        ],
+        "correct": 1
+      },
+      {
+        "q": "蔣勳：「每到春分，河谷間雲霧繚亂湧動，彷彿紫黑石硯上一層滲水散開的松煙。有時河口落日明滅變換，無端使我想起柴山 西子灣看過的一個夏至，也是這樣如火綻放的鳳凰花，紅花與落日燦爛鮮豔到讓人心痛。夏日最後山林間突然響起整山晚蟬的聲音，高亢激昂，會讓人停了工作，聆聽那肺腑深處一聲一聲的嘶叫，在歲月盡頭，仍然毫不疲軟萎弱。」下列對於本文的說明，何者最正確？",
+        "options": [
+          "以時間為主軸，從春分鋪寫到夏至",
+          "先以時間引出空間，再寫空間的壯闊",
+          "善於運用視覺摹寫技巧，抒發悲涼心境",
+          "因景生情，抒發對美好事物的眷戀"
+        ],
+        "correct": 3
+      },
+      {
+        "q": "「在歷史建築的保存過程中，什麼樣的建築應該被保存？什麼樣的建築可以拆除？經常引起不同人士的爭辯。官方的重要建築，因為有政治代表性，或因為建築較為華麗精緻，比較容易被保存下來；但是一般公共建築，則常常面臨拆除的命運。官方建築固然值得保存，但是我認為攸關人民生活的公共建築，例如火車站、戲院或菜市場等更值得保存，因為這些公共建築是都市居民集體記憶的儲存所，失去了這些建築，等於失去了許多市民的珍貴記憶，城市居民將有如患了失憶症的遊魂一樣，不再對這座城市產生認同感。」（李清志）由上文可知，作者認為判斷一座歷史建築是否值得保存的原則為何？",
+        "options": [
+          "建築存在的時間長短",
+          "投入建築經費的多寡",
+          "與人民生活密切相關程度",
+          "建築精巧華麗的程度"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "「歲月睡過的床／是一張無法燙平的五線譜／在額頭上／吹奏光陰神祕的音符／年齡和智慧／爭相為了聆聽／採取／激烈的輪流方式／在我可愛的臉蛋／隨便／塗鴉刻畫。」（寒帶魚）下列何者是本詩作者所描寫的對象？",
+        "options": [
+          "皺紋",
+          "鋼琴",
+          "裝扮",
+          "微笑"
+        ],
+        "correct": 0
+      },
+      {
+        "q": "禮記：「是故，學然後知不足；教然後知困。知不足，然後能自反也；知困，然後能自強也。故曰：『教學相長』也。兌命曰：『學學半。』其此之謂乎！」根據文意，「學學半」意思接近下列何者？",
+        "options": [
+          "透過教導別人可以增益自己的學識",
+          "做學問必須持之以恆",
+          "教學後方知學習之苦",
+          "學習可以達到事半功倍之效"
+        ],
+        "correct": 0
+      }
+    ]
+  },
+  {
+    "type": "reading",
+    "title": "二、題組",
+    "meta": "1.～3.每題6分，第4題7分，共25分",
+    "passages": [
+      {
+        "label": "（一）",
+        "text": "匈牙利鋼琴名家兼指揮家瓦薩里聊到聽音樂，他不但不像我總是強調「古典音樂其實沒有那麼困難」，反而認為欣賞音樂一點都不容易──欣賞音樂當然困難，因為你必須運用記憶。如果你聽到第二小節就忘了第一小節，那你根本不可能欣賞這首樂曲。音樂不像繪畫、雕塑或建築，看一眼就能盡收眼底，接下來只是品味細節。換句話說，你可以立刻知道自己喜不喜歡眼前這幅畫，但聽音樂就像讀小說，沒聽到最後，其實無法知道整部作品在說什麼。\n如此想法，另一位小說大家納博科夫也說過。他談的是閱讀，另一種沒有辦法「看一眼就盡收眼底」的學問。我們第一次讀一本書的時候，兩眼左右移動，一行接一行，一頁接一頁，又複雜又費勁，還要跟著小說情節轉，出入於不同的時間空間──這一切使我們同藝術欣賞不無隔閡。但是我們在看一幅畫的時候，並不需要按照特別方式來移動眼光，即使這幅畫像一本書一樣有內涵也不必這樣。納博科夫並沒有低估繪畫、雕塑或建築的藝術與深度，只是強調「我們第一次接觸到一幅畫的時候，時間因素並沒有介入；然而看書就必須要有時間去熟悉書裡的內容。沒有一種生理器官（像看畫時用眼睛）可以讓我們先把全書一覽無遺，然後再來細細品味其間的細節。」（焦元溥 樂之本事）",
+        "items": [
+          {
+            "q": "根據本文，下列何者<b>不是</b>「看一眼就盡收眼底」的學問？",
+            "options": [
+              "繪畫",
+              "建築",
+              "閱讀",
+              "雕塑"
+            ],
+            "correct": 2
+          },
+          {
+            "q": "根據本文，下列何者符合這段文字的觀點？",
+            "options": [
+              "聆聽古典音樂十分容易，因為樂曲具有重複性與節奏感",
+              "培養繪畫與閱讀的品味，都能增進欣賞古典音樂的能力",
+              "藝術欣賞的能力仰賴時間的累積，與多元化的解讀方式",
+              "必須反覆咀嚼推敲，是欣賞古典音樂與閱讀的共通點"
+            ],
+            "correct": 3
+          }
+        ]
+      },
+      {
+        "label": "（二）",
+        "text": "安藤忠雄以早期作品「住吉的長屋」獲獎後，開創他不停奪下國際獎的盛世，但其實這件作品評價很差，原因是住戶其實無法「舒適生活」，也引發「好設計其實並非好建築」的兩面論述。\n先簡單介紹「住吉的長屋」，它是一棟私人住宅，以清水模打造外觀，沒有對外窗，住在裡面的人彷彿被隔絕一般，而且這棟長方形的建築有1／3是沒有屋頂的，整體建築平均分成3塊，中間的區塊就是無遮蓋的天井，安藤原意是要住戶從中感受自然。\n想要在這幾個空間來去，唯一的方法就是透過中庭的透天走廊與樓梯，天氣好時很浪漫，天氣差可不然：下雨要撐傘，下雪要受嚴寒。而極簡的內部設計，讓屋主也無法加裝冷暖氣，無怪乎日本知名建築師村野藤吾曾經在這作品得獎時，告訴安藤忠雄：「先不論建築好壞，我對於有人能住在這裡深感佩服，應該領獎的是住戶！」（改寫自網路新聞）",
+        "items": [
+          {
+            "q": "根據本文，關於「住吉的長屋」，下列敘述何者正確？",
+            "options": [
+              "擁有多扇窗便於通風，不須加裝冷氣",
+              "中庭巧妙的天井設計能避免風吹雨淋",
+              "喜愛自然體驗的人最適合住進該建築",
+              "建築物的外觀採用多樣化的材質呈現"
+            ],
+            "correct": 2
+          },
+          {
+            "q": "對於「住吉的長屋」，村野藤吾的看法最接近下列何者？",
+            "options": [
+              "住戶的忍耐力值得嘉許",
+              "建築設計相當創新突破",
+              "得獎作品實至名歸",
+              "空間運用環保節能"
+            ],
+            "correct": 0
+          }
+        ]
+      }
+    ]
+  }
+]
+};
+
+let currentMode = "quiz"; // quiz | print
+
+const contentEl = document.getElementById("content");
+const scoreBar = document.getElementById("scoreBar");
+const scoreText = document.getElementById("scoreText");
+
+function render(){
+  window.examAnswersRevealed = false;
+  contentEl.innerHTML = "";
+  DATA.sections.forEach((sec, si)=> contentEl.appendChild(renderSection(sec, si)));
+  if(currentMode==="quiz"){
+    scoreBar.classList.add("show");
+    updateScore();
+  } else {
+    scoreBar.classList.remove("show");
+    contentEl.querySelectorAll(".opt").forEach(o=>o.classList.add("disabled"));
+    contentEl.querySelectorAll(".opt.is-correct").forEach(o=>o.classList.add("correct"));
+  }
+}
+
+function renderSection(sec, si){
+  const block = document.createElement("section");
+  block.className = "block";
+  block.innerHTML = `<h2>${sec.title}</h2><p class="meta">${sec.meta}</p>`
+    + (sec.note ? `<div class="sec-note">${sec.note}</div>` : "")
+    + (sec.pre ? `<div class="sec-pre">${sec.pre}</div>` : "");
+
+  if(sec.type==="fill"){
+    sec.items.forEach((it,i)=>{
+      const q = document.createElement("div");
+      q.className = "q";
+      const shown = it.answers.join(" ／ ");
+      q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q}</div>
+        <div class="fill-row"><input type="text" class="blank${sec.wide ? " wide" : ""}" autocomplete="off" placeholder="${sec.placeholder || "作答"}"><span class="feedback"></span></div>
+        <div class="answer-reveal">正解：${shown}</div>`;
+      q.querySelector("input.blank").dataset.answers = JSON.stringify(it.answers);
+      if(currentMode!=="quiz"){ q.querySelector("input.blank").disabled = true; q.querySelector(".answer-reveal").classList.add("show"); }
+      block.appendChild(q);
+    });
+  }
+
+  else if(sec.type==="explain"){
+    sec.items.forEach((it,i)=>{
+      const q = document.createElement("div");
+      q.className = "q";
+      q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q}</div>
+        <textarea class="explain-box" placeholder="寫下你的解釋（送出成績後對照參考答案）"></textarea>
+        <div class="answer-reveal">參考答案：${it.answer}</div>`;
+      if(currentMode!=="quiz"){ q.querySelector("textarea").remove(); q.querySelector(".answer-reveal").classList.add("show"); }
+      block.appendChild(q);
+    });
+  }
+
+  else if(sec.type==="mc"){
+    sec.items.forEach((it,i)=>{
+      const q = document.createElement("div");
+      q.className = "q";
+      const optsHtml = it.options.map((op,oi)=>`
+        <div class="opt" data-idx="${oi}" data-correct="${oi===it.correct}">
+          <span class="tag">(${String.fromCharCode(65+oi)})</span><span>${op}</span>
+        </div>`).join("");
+      const imgHtml = it.image ? `<img src="${it.image}" alt="題目附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">` : "";
+      const img2Html = it.image2 ? `<img src="${it.image2}" alt="題目附圖2" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">` : "";
+      q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q}</div>
+        ${imgHtml}${img2Html}
+        <div class="opts">${optsHtml}</div>`;
+      q.querySelectorAll(".opt").forEach(optEl=>{
+        if(optEl.dataset.correct==="true") optEl.classList.add("is-correct");
+        optEl.addEventListener("click", ()=>selectOption(q, optEl));
+      });
+      block.appendChild(q);
+    });
+  }
+
+  else if(sec.type==="reading"){
+    sec.passages.forEach(p=>{
+      const passageDiv = document.createElement("div");
+      passageDiv.className = "passage";
+      passageDiv.innerHTML = `${p.label ? `<span class="passage-label">${p.label}</span>`:""}${p.text}${p.image ? `<img src="${p.image}" alt="題組附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-top:10px;border:1px solid var(--paper-line);">`:""}`;
+      block.appendChild(passageDiv);
+      p.items.forEach((it,i)=>{
+        const q = document.createElement("div");
+        q.className = "q";
+        const optsHtml = it.options.map((op,oi)=>`
+          <div class="opt" data-idx="${oi}" data-correct="${oi===it.correct}">
+            <span class="tag">(${String.fromCharCode(65+oi)})</span><span>${op}</span>
+          </div>`).join("");
+        q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q}</div>
+          ${it.image ? `<img src="${it.image}" alt="題目附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">`:""}
+          <div class="opts">${optsHtml}</div>`;
+        q.querySelectorAll(".opt").forEach(optEl=>{
+          if(optEl.dataset.correct==="true") optEl.classList.add("is-correct");
+          optEl.addEventListener("click", ()=>selectOption(q, optEl));
+        });
+        block.appendChild(q);
+      });
+    });
+  }
+
+  return block;
+}
+
+function selectOption(qEl, optEl){
+  if(currentMode!=="quiz") return;
+  if(qEl.dataset.answered==="true") return;
+  qEl.dataset.answered = "true";
+  qEl.querySelectorAll(".opt").forEach(o=>o.classList.add("disabled"));
+  optEl.classList.add("selected");
+  const correctOpt = qEl.querySelector('.opt[data-correct="true"]');
+  qEl.dataset.studentAnswer = optEl.textContent.trim();
+  qEl.dataset.correctAnswer = correctOpt ? correctOpt.textContent.trim() : "";
+  qEl.dataset.isCorrect = (optEl.dataset.correct==="true") ? "true" : "false";
+  updateScore();
+}
+
+function updateScore(){
+  let total = 0, answered = 0, correct = 0;
+  contentEl.querySelectorAll(".q").forEach(q=>{
+    const gradable = q.querySelector(".opts") || q.querySelector("input.blank");
+    if(!gradable) return;
+    total++;
+    if(q.dataset.studentAnswer !== undefined){
+      answered++;
+      if(q.dataset.isCorrect === "true") correct++;
+    }
+  });
+  if(window.examAnswersRevealed){
+    scoreText.textContent = `${correct} / ${total}`;
+  } else {
+    scoreText.textContent = `已作答 ${answered} / ${total} 題`;
+  }
+}
+window.updateScore = updateScore;
+
+// 填寫題（注音／國字、改錯）：去掉空白與標點後和正解比對；注音的一聲符號「ˉ」可寫可不寫
+function normFill(s){
+  return String(s).replace(/[\sˉ　，、。．.,;；:：!！?？「」『』（）()【】→\-－—]/g, "").trim();
+}
+document.addEventListener("input", (e)=>{
+  const input = e.target;
+  if(!input.matches || !input.matches("input.blank")) return;
+  const q = input.closest(".q");
+  const answers = JSON.parse(input.dataset.answers || "[]");
+  const val = input.value.trim();
+  if(!val){ delete q.dataset.studentAnswer; delete q.dataset.isCorrect; }
+  else {
+    q.dataset.studentAnswer = val;
+    q.dataset.correctAnswer = answers.join(" ／ ");
+    q.dataset.isCorrect = answers.some(a => normFill(a) === normFill(val)) ? "true" : "false";
+  }
+  updateScore();
+});
+
+document.getElementById("resetBtn").addEventListener("click", render);
+document.getElementById("quizModeBtn").addEventListener("click", ()=>{
+  currentMode = "quiz";
+  document.getElementById("quizModeBtn").classList.add("active");
+  document.getElementById("printModeBtn").classList.remove("active");
+  render();
+});
+document.getElementById("printModeBtn").addEventListener("click", ()=>{
+  if(document.getElementById("printModeBtn").disabled) return;
+  currentMode = "print";
+  document.getElementById("printModeBtn").classList.add("active");
+  document.getElementById("quizModeBtn").classList.remove("active");
+  render();
+});
+
+window.unlockPrintMode = function(){
+  document.getElementById("printModeBtn").disabled = false;
+};
+
+render();
+</script>
+<script src="../sync.js?v=20261018b"></script>
+</body>
+</html>

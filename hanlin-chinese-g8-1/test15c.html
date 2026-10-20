@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>段考題庫｜國文第15回 - 一團人生</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@500;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#faf6ec;
+    --paper-line:#e3dcc8;
+    --ink:#26332b;
+    --ink-soft:#5b6b5f;
+    --chalk-green:#2f4538;
+    --chalk-green-2:#3d5a48;
+    --pen-red:#b8433a;
+    --pen-red-soft:#f4dedb;
+    --ok-green:#3f7d52;
+    --ok-green-soft:#dfeee1;
+    --gold:#b5842a;
+    --radius:10px;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:"Noto Sans TC",sans-serif;
+    line-height:1.7;
+  }
+  header.hero{
+    background:var(--chalk-green);
+    color:#eef2ea;
+    padding:28px 20px 40px;
+    position:relative;
+  }
+  header.hero::after{
+    content:"";
+    position:absolute;
+    left:0; right:0; bottom:-1px;
+    height:14px;
+    background:repeating-linear-gradient(90deg,var(--paper) 0 18px, transparent 18px 20px);
+  }
+  .hero-inner{max-width:880px;margin:0 auto;}
+  .breadcrumb a{color:#cfe0d1;text-decoration:none;font-size:14px;}
+  .breadcrumb a:hover{text-decoration:underline;}
+  h1{
+    font-family:"Noto Serif TC",serif;
+    font-weight:700;
+    font-size:clamp(24px,4vw,34px);
+    margin:10px 0 6px;
+  }
+  .subtitle{color:#cfe0d1;font-size:15px;margin:0;}
+  main{max-width:880px;margin:0 auto;padding:28px 20px 80px;}
+
+  .controls{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:22px;
+  }
+  .mode-toggle{display:flex;border:2px solid var(--chalk-green);border-radius:999px;overflow:hidden;}
+  .mode-toggle button{
+    background:transparent;border:none;padding:8px 16px;font-size:14px;font-weight:700;
+    color:var(--chalk-green);cursor:pointer;font-family:"Noto Sans TC",sans-serif;
+  }
+  .mode-toggle button.active{background:var(--gold);color:#fff;}
+  .mode-toggle button:disabled{opacity:.4;cursor:not-allowed;}
+
+  .score-bar{
+    display:none;
+    align-items:center;
+    justify-content:space-between;
+    background:#fff;
+    border:1px solid var(--paper-line);
+    border-left:5px solid var(--gold);
+    border-radius:var(--radius);
+    padding:12px 18px;
+    margin-bottom:22px;
+    font-size:14px;
+  }
+  .score-bar.show{display:flex;}
+  .score-bar strong{font-size:18px;color:var(--gold);}
+  .score-bar button{
+    background:none;border:1px solid var(--ink-soft);color:var(--ink-soft);
+    border-radius:6px;padding:6px 12px;font-size:13px;cursor:pointer;
+  }
+
+  section.block{
+    background:#fff;
+    border:1px solid var(--paper-line);
+    border-radius:var(--radius);
+    padding:22px 22px 26px;
+    margin-bottom:20px;
+  }
+  .block h2{
+    font-family:"Noto Serif TC",serif;
+    font-size:19px;
+    margin:0 0 4px;
+    color:var(--chalk-green);
+  }
+  .block .meta{color:var(--ink-soft);font-size:13px;margin:0 0 16px;}
+
+  .q{margin-bottom:18px;padding-bottom:16px;border-bottom:1px dashed var(--paper-line);}
+  .q:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0;}
+  .q-text{font-size:15.5px;margin-bottom:8px;}
+  .q-num{color:var(--gold);font-weight:700;margin-right:4px;}
+
+  .opts{display:grid;gap:8px;}
+  .opt{
+    display:flex;gap:8px;align-items:flex-start;
+    border:1.5px solid var(--paper-line);
+    border-radius:8px;
+    padding:9px 12px;
+    cursor:pointer;
+    font-size:14.5px;
+    background:#fffdf8;
+  }
+  .opt:hover{border-color:var(--chalk-green-2);}
+  .opt.selected{border-color:var(--chalk-green-2);background:#eef3ea;}
+  .opt.correct{border-color:var(--ok-green);background:var(--ok-green-soft);}
+  .opt.wrong{border-color:var(--pen-red);background:var(--pen-red-soft);}
+  .opt .tag{font-weight:700;color:var(--ink-soft);}
+  .opt.correct .tag{color:var(--ok-green);}
+  .opt.wrong .tag{color:var(--pen-red);}
+  .opt.disabled{cursor:default;}
+
+  .passage{
+    background:#f5f2e8;border-radius:8px;padding:14px 16px;margin-bottom:14px;
+    font-size:14.5px;white-space:pre-line;
+  }
+  .passage-label{font-weight:700;color:var(--chalk-green);margin-bottom:4px;display:block;}
+
+  .sec-note{font-size:13.5px;color:var(--ink-soft);background:#f5f2e8;border-radius:8px;padding:8px 12px;margin:-6px 0 14px;}
+  .sec-pre{background:#f5f2e8;border-radius:8px;padding:10px 14px;margin:-4px 0 14px;font-size:14.5px;}
+  .fill-row{display:flex;flex-wrap:wrap;align-items:center;gap:8px;}
+  input.blank{
+    font-family:"Noto Sans TC",sans-serif;font-size:15.5px;border:none;border-bottom:2px solid var(--chalk-green-2);
+    background:#fffdf8;padding:4px 6px;width:170px;max-width:100%;
+  }
+  input.blank.wide{width:100%;}
+  textarea.explain-box{
+    width:100%;min-height:52px;font-family:"Noto Sans TC",sans-serif;font-size:15px;
+    border:1.5px solid var(--paper-line);border-radius:8px;padding:8px 10px;background:#fffdf8;resize:vertical;
+  }
+  .feedback{font-weight:700;font-size:15px;}
+  .feedback.ok{color:var(--ok-green);}
+  .feedback.no{color:var(--pen-red);}
+  .answer-reveal{display:none;margin-top:8px;font-size:14px;color:var(--ok-green);background:var(--ok-green-soft);border-radius:6px;padding:6px 12px;}
+  .answer-reveal.show{display:block;}
+  .zh-und{text-decoration:underline;text-underline-offset:3px;}
+  .footer-link{
+    display:block;text-align:center;margin-top:30px;color:var(--chalk-green);
+    text-decoration:none;font-weight:700;font-size:14px;
+  }
+  .footer-link:hover{text-decoration:underline;}
+
+  @media print{
+    header.hero, .controls, .score-bar, .mini-btn, .footer-link{display:none !important;}
+    body{background:#fff;}
+    section.block{border:none;box-shadow:none;padding:8px 0;margin-bottom:14px;}
+    .opt.correct{background:none;border:none;font-weight:700;}
+    .opt.correct::after{content:" ← 正解";color:var(--pen-red);}
+    .opt{border:none;padding:2px 0;}
+    main{max-width:100%;padding:0 24px;}
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="breadcrumb"><a href="https://jenlin2002.github.io/">🏠 回總目錄</a> ／ <a href="../hanlin-chinese-g8-1.html" style="color:#cfe0d1;">段考題庫</a></div>
+    <h1>國文・第15回</h1>
+    <p class="subtitle">自學選文二 一團人生｜翰林版八年級國文（三）Ｃ卷</p>
+  </div>
+</header>
+
+<main>
+  <div class="controls">
+    <div class="mode-toggle">
+      <button id="quizModeBtn" class="active">✏️ 測驗模式</button>
+      <button id="printModeBtn" disabled title="完成測驗並送出成績後才能查看">🖨️ 完整題目與解答（送出成績後解鎖）</button>
+    </div>
+  </div>
+
+  <div class="score-bar" id="scoreBar">
+    <div>目前得分：<strong id="scoreText">0 / 0</strong>（選擇題與填寫題；解釋題不計分）</div>
+    <button id="resetBtn">重新作答</button>
+  </div>
+
+  <div id="content"></div>
+
+  <a class="footer-link" href="../hanlin-chinese-g8-1.html">← 回段考題庫總覽</a>
+</main>
+
+<script>
+
+window.EXAM_META = { version: "國文C卷", examLabel: "國文第15回" };
+const DATA = {
+  sections: [
+  {
+    "type": "mc",
+    "title": "一、單題",
+    "meta": "每題3分，共75分",
+    "items": [
+      {
+        "q": "下列「　」中的字，何組讀音相同？",
+        "options": [
+          "盤「桓」許久／斷「垣」殘壁",
+          "模糊梗「概」／「慨」然而嘆",
+          "「箇」中滋味／鞏「固」國防",
+          "窮鄉「僻」壤／開天「闢」地"
+        ],
+        "correct": 3
+      },
+      {
+        "q": "下列「　」中的注音寫成國字後，何組字形兩兩相同？",
+        "options": [
+          "不「ㄕㄢˋ」言談／季節遞「ㄕㄢˋ」",
+          "削足適「ㄌㄩˇ」／「ㄌㄩˇ」試不爽",
+          "舉手「ㄊㄡˊ」足／走「ㄊㄡˊ」無路",
+          "耳「ㄊㄧˊ」面命／金榜「ㄊㄧˊ」名"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "下列成語，何組前後意思<b>不同</b>？",
+        "options": [
+          "捉襟見肘／斷垣殘壁",
+          "歷歷在目／昭昭在目",
+          "立錐之地／彈丸之地",
+          "心心念念／魂牽夢縈"
+        ],
+        "correct": 0
+      },
+      {
+        "q": "下列「宿」字，何者音義皆正確？",
+        "options": [
+          "天上星「宿」：音ㄙㄨˋ，星座",
+          "一「宿」無話：音ㄒㄧㄡˋ，夜晚",
+          "餐風露「宿」：音ㄙㄨˋ，住",
+          "雙「宿」雙飛：音ㄒㄧㄡˋ，棲息"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "下列「　」中的字，何組字義兩兩相同？",
+        "options": [
+          "西裝革「履」／「履」行義務",
+          "偏鄉「僻」壤／冷「僻」生字",
+          "始「料」未及／不出所「料」",
+          "因「緣」際會／「緣」木求魚"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "下列「　」中字的詞性，何者與其他三者<b>不同</b>？",
+        "options": [
+          "「虛」擲光陰",
+          "「立」錐之地",
+          "使命「必」達",
+          "「先」來後到"
+        ],
+        "correct": 1
+      },
+      {
+        "q": "下列文句，何者用字最為精簡？",
+        "options": [
+          "人生總是充斥滿了偶然與巧合",
+          "後來因緣際會踏入媒體圈，都是始料未及出乎意料的人生轉變",
+          "我很慶幸陪伴了這一趟旅程，見證家族圓夢的時刻",
+          "或許自己的人生，有一部分就是為了要創造塑造他人的回憶與幸福"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "一團人生一文中，提及作者第一次出團時，主管給了他重要的指導與叮嚀，<b>不包括</b>下列何者？",
+        "options": [
+          "工作上，最重要的就是人",
+          "旅客並非全都追求高級享受",
+          "創造旅客的美好回憶",
+          "願意付高價的旅客，才能提供其米其林等級料理"
+        ],
+        "correct": 3
+      },
+      {
+        "q": "一團人生一文中，主管在作者第一次出團前的指導，對他的工作態度產生什麼影響？",
+        "options": [
+          "意識到細節以及將心比心的重要",
+          "了解預算透明以及一次性支付的重要",
+          "大量閱讀，充實解說的專業度",
+          "熟知安全信息，降低在異地可能遇到的突發狀況及風險"
+        ],
+        "correct": 0
+      },
+      {
+        "q": "一團人生一文中，作者初次帶團忽略了某些細節而導致挫敗，下列何者<b>並非</b>是作者當時忽略的細節？",
+        "options": [
+          "旅客情緒",
+          "行程銜接",
+          "上菜溫度",
+          "外幣兌換"
+        ],
+        "correct": 3
+      },
+      {
+        "q": "映辰報名比賽卻因填錯一欄而失格，由這件事說明了下列何種道理？",
+        "options": [
+          "所有的小事，都是最小的大事",
+          "保有快樂思想，美好自然來到",
+          "做大事的人，不拘泥枝微末節",
+          "把握當下，生命才會迸出火花"
+        ],
+        "correct": 0
+      },
+      {
+        "q": "「他們需要的是美好回憶，更甚於食宿的硬體享受。」其中「於」的字義與下列哪個「於」字相同？",
+        "options": [
+          "苛政猛「於」虎",
+          "己所不欲，勿施「於」人",
+          "千里之行，始「於」足下",
+          "「於」事無補"
+        ],
+        "correct": 0
+      },
+      {
+        "q": "一團人生一文中，屏東家族的團客旅行後，致電給作者表達感謝，其理由為何？",
+        "options": [
+          "高齡的爺爺旅程中身體不適，領隊陪同迅速就醫，保住一命",
+          "為高齡的爺爺圓了一個懷抱已久的夢想",
+          "透過旅行，重新連結原本疏離的家族關係",
+          "迅速找回遺失的行李，使旅行順利進行"
+        ],
+        "correct": 1
+      },
+      {
+        "q": "一團人生文末，提到了「旅遊業的核心價值」為何？",
+        "options": [
+          "創造珍貴回憶的工作",
+          "促進正向的人際交流",
+          "讓旅客帶著滿滿的能量和靈感回到現實生活",
+          "讓旅客暫時抽離外在環境的束縛"
+        ],
+        "correct": 0
+      },
+      {
+        "q": "一團人生：「領隊的工作就是為他們（旅客）一生一世的回憶負責。」這句話的涵義為何？",
+        "options": [
+          "藉由旅遊，拓寬旅客的視野、激發創造力和靈感",
+          "體驗文化差異性，有助於旅客增強適應力和包容力",
+          "領隊的任務就是為旅客創造美好的回憶",
+          "推廣永續旅遊，選擇保護環境的旅行方式，減少對自然和文化遺產的破壞"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "一團人生一文中，作者第一次帶團出國，團員反應平平的最主要原因為何？",
+        "options": [
+          "低價散拼團，品質無法保證",
+          "人生地不熟加上語言不通，產生種種阻礙",
+          "沒有實務經驗，未考量種種細節",
+          "與主管溝通不良、與公司理念不合"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "一團人生一文中，作者藉由屏東的大家族旅遊一事，寄託什麼道理？",
+        "options": [
+          "旅遊業就是要創造他人的回憶與幸福",
+          "有些事現在不做，一輩子都不會做了",
+          "每天都要用正面能量，盡力地不讓自己後悔",
+          "為了已經發生的事情感嘆也沒辦法改變什麼"
+        ],
+        "correct": 0
+      },
+      {
+        "q": "下列「　」中的成語，何者使用<b>不正確</b>？",
+        "options": [
+          "他在都市打拚多年，終於買下這間公寓，總算擁有了「立錐之地」",
+          "成功背後的甘苦，「箇中滋味」只有當事人才能體會",
+          "他平常很少運動，才爬幾層樓梯就「語重心長」地說不出話來",
+          "他「因緣際會」認識了這位導師，才踏上藝術創作這條路"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "「但我很慶幸陪伴了這一趟旅程，見證家族圓夢的時刻──爺爺實現了到攀牙灣的夢想。」句中的破折號用來表示下列何者？",
+        "options": [
+          "聲音延續",
+          "語意轉變",
+          "補充說明",
+          "加重語氣"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "關於謝哲青 一團人生一文中的寫作手法，下列何者敘述正確？",
+        "options": [
+          "以第二人稱「你」為敘述者，像跟讀者閒話家常，拉近和讀者的距離",
+          "以「紀實手法」寫成，為維持公正的立場，未加入作者的主觀意見與情懷",
+          "以大量「對話」形式呈現主管與部屬溝通不良，造成部屬疲於奔命",
+          "舉自己帶團的經驗，說明「魔鬼藏在細節裡」的道理"
+        ],
+        "correct": 3
+      },
+      {
+        "q": "針對本文篇名「一團人生」，下列解讀何者<b>不正確</b>？",
+        "options": [
+          "每一次出團，都可能造就團員一生的回憶",
+          "作者自己的人生，透過帶團創造他人的回憶與幸福",
+          "每個領隊出團手上捧的，腳下踩的，都是別人一生的夢",
+          "疫情過後旅遊業競爭激烈，難免一團混亂"
+        ],
+        "correct": 3
+      },
+      {
+        "q": "股神巴菲特曾說：「做你沒做過的事叫成長；做你不願意做的事叫□□；做你不敢做的事叫□□。」依據文意，缺空處依序應填入下列何者？",
+        "options": [
+          "改變、突破",
+          "守舊、勇敢",
+          "蛻變、軟弱",
+          "倔強、超越"
+        ],
+        "correct": 0
+      },
+      {
+        "q": "一團人生一文，作者從不同背景旅客組成的「團」，領悟什麼道理？",
+        "options": [
+          "換位思考，培養傾聽的軟技能，減少誤會與爭執",
+          "透過豐富話題，拓展人脈，進行有價值的交流",
+          "每個人都是一本書，透過相遇相識，有了閱讀的機會，進而豐富我們的人生",
+          "強調人與人之間彼此連結的重要性，並從服務中找到幸福感"
+        ],
+        "correct": 3
+      },
+      {
+        "q": "阿誠是一位木工師傅，每天堅持手工打造家具，即使是看不見的細節，也會一絲不苟地完成。他常說：「做一張椅子，不只是給人坐，更要讓人安心。」下列何者最能體現這種「職人精神」？",
+        "options": [
+          "追求速度與產量，快速完成工作",
+          "只做顧客看得到的部分，節省成本",
+          "堅持品質、專注細節，展現專業態度",
+          "隨時更換工作，不受任何限制與約束"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "「小敏出國旅行中，她不僅欣賞美景也嘗試與當地人交流、了解不同文化。有一次，她在小鎮的一家咖啡館裡，與一位店主談起生活與夢想，讓她重新思考自己的人生方向。」上述的這次經驗最能展現旅行帶來的哪一種收穫？",
+        "options": [
+          "買了許多特色紀念品，滿足物質享受",
+          "拍攝漂亮照片，獲得社群網站的關注",
+          "增進不同文化理解與自我成長的機會",
+          "證明自己有能力規畫行程與控制預算"
+        ],
+        "correct": 2
+      }
+    ]
+  },
+  {
+    "type": "reading",
+    "title": "二、題組",
+    "meta": "每題5分，共25分",
+    "passages": [
+      {
+        "label": "（一）",
+        "text": "湖上之盛，在六橋及斷橋兩堤。斷橋舊有堤甚狹，為今侍中所增飾，工緻遂在六橋之上。夾道種緋桃、垂楊、玉蘭、山茶之屬二十餘種。白石砌其邊如玉，布地皆軟沙。旁附小堤，益以雜花。每步其上，即樂而忘歸，不十餘往還不止。聞往年堤上花開，不數日，多被人折去。（袁宏道 西湖雜記 斷橋）",
+        "items": [
+          {
+            "q": "根據本文，下列敘述何者正確？",
+            "options": [
+              "斷橋曾經過修整，原先極其狹窄，如今橋面遠比六橋還要寬闊",
+              "斷橋兩側栽種了許多種類的花卉，至少有二十種以上",
+              "斷橋兩邊以白玉砌成，地面布滿柔軟的細沙",
+              "斷橋因整修失去原有風貌，令人感到可惜"
+            ],
+            "correct": 1
+          },
+          {
+            "q": "由文中「每步其上，即樂而忘歸，不十餘往還不止」一句，可推論出下列何者？",
+            "options": [
+              "路途遙遠，來回需要很長時間",
+              "遊人流連忘返，因景色優美而反覆漫步",
+              "遊客太多，無法順利通行",
+              "遊人迷路，找不到回家的路"
+            ],
+            "correct": 1
+          }
+        ]
+      },
+      {
+        "label": "（二）",
+        "text": "【出境程序】辦理報到→託運行李→安全檢查→證照查驗→登機\n（一）辦理報到\n出境旅客請持護照與機票，於航班起飛前二至三小時內完成報到手續，最遲完成報到時間之規範，請依各航空公司之規定為準。\n報到手續完成後，請領取各項證件、登機證及行李託運證明。可多利用自助報到櫃臺或航空公司網路、手機報到服務，以節省排隊等候時間。\n（二）託運行李\n於櫃臺辦理報到及託運行李手續後，請確定行李已通過X光機檢查，方可離開櫃臺。\n※注意事項\n1. 各航空公司所規定可託運的行李重量、件數各不相同，相關詳細資訊，出發前請逕洽航空公司。\n2. 請勿置放危險物品（例如：打火機、備用鋰電池、行動電源、易燃液體等）於託運行李中。\n（三）安全檢查\n旅客通過金屬偵測門的時候，請將身上的金屬物品取下，並與隨身行李一同置入X光檢查儀，進行安全檢查。\n※注意事項\n1. 旅客身上或隨身行李內所攜帶之液體、膠狀及噴霧類物品容器，其容量不可超過一百毫升，並須裝於不超過一公升且可重複密封之透明塑膠袋內。\n2. 每名旅客僅能攜帶一個前項所述之塑膠袋，並於通過安檢線時自隨身行李中取出，以便於檢查人員目視及X光檢查儀檢查。\n（四）證照查驗\n旅客通過安全檢查後辦理出境證照查驗，請出示護照、登機證。（桃園國際機場網站）",
+        "items": [
+          {
+            "q": "要從桃園國際機場搭乘晚間七點往日本的航班，根據本文，最晚應在幾點前報到？",
+            "options": [
+              "中午十二點半",
+              "下午三點",
+              "傍晚五點",
+              "晚上六點半"
+            ],
+            "correct": 2
+          },
+          {
+            "q": "根據規定，下列何者可順利通過安全檢查？",
+            "options": [
+              "在隨身背包內放置兩百毫升的刮鬍膏",
+              "將金屬皮帶取下，放入X光檢查儀",
+              "手提筆記型電腦，直接走過金屬偵測門",
+              "攜帶五十毫升的止汗噴霧罐，將其裝在黑色塑膠袋裡"
+            ],
+            "correct": 1
+          },
+          {
+            "q": "這段文字的寫作意旨，最接近下列何者？",
+            "options": [
+              "宣導機場最新的安全管理措施",
+              "說明出境程序的步驟與注意事項",
+              "比較自助報到與櫃檯報到的優缺點",
+              "介紹機場自動化設備的使用方式"
+            ],
+            "correct": 1
+          }
+        ]
+      }
+    ]
+  }
+]
+};
+
+let currentMode = "quiz"; // quiz | print
+
+const contentEl = document.getElementById("content");
+const scoreBar = document.getElementById("scoreBar");
+const scoreText = document.getElementById("scoreText");
+
+function render(){
+  window.examAnswersRevealed = false;
+  contentEl.innerHTML = "";
+  DATA.sections.forEach((sec, si)=> contentEl.appendChild(renderSection(sec, si)));
+  if(currentMode==="quiz"){
+    scoreBar.classList.add("show");
+    updateScore();
+  } else {
+    scoreBar.classList.remove("show");
+    contentEl.querySelectorAll(".opt").forEach(o=>o.classList.add("disabled"));
+    contentEl.querySelectorAll(".opt.is-correct").forEach(o=>o.classList.add("correct"));
+  }
+}
+
+function renderSection(sec, si){
+  const block = document.createElement("section");
+  block.className = "block";
+  block.innerHTML = `<h2>${sec.title}</h2><p class="meta">${sec.meta}</p>`
+    + (sec.note ? `<div class="sec-note">${sec.note}</div>` : "")
+    + (sec.pre ? `<div class="sec-pre">${sec.pre}</div>` : "");
+
+  if(sec.type==="fill"){
+    sec.items.forEach((it,i)=>{
+      const q = document.createElement("div");
+      q.className = "q";
+      const shown = it.answers.join(" ／ ");
+      q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q}</div>
+        <div class="fill-row"><input type="text" class="blank${sec.wide ? " wide" : ""}" autocomplete="off" placeholder="${sec.placeholder || "作答"}"><span class="feedback"></span></div>
+        <div class="answer-reveal">正解：${shown}</div>`;
+      q.querySelector("input.blank").dataset.answers = JSON.stringify(it.answers);
+      if(currentMode!=="quiz"){ q.querySelector("input.blank").disabled = true; q.querySelector(".answer-reveal").classList.add("show"); }
+      block.appendChild(q);
+    });
+  }
+
+  else if(sec.type==="explain"){
+    sec.items.forEach((it,i)=>{
+      const q = document.createElement("div");
+      q.className = "q";
+      q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q}</div>
+        <textarea class="explain-box" placeholder="寫下你的解釋（送出成績後對照參考答案）"></textarea>
+        <div class="answer-reveal">參考答案：${it.answer}</div>`;
+      if(currentMode!=="quiz"){ q.querySelector("textarea").remove(); q.querySelector(".answer-reveal").classList.add("show"); }
+      block.appendChild(q);
+    });
+  }
+
+  else if(sec.type==="mc"){
+    sec.items.forEach((it,i)=>{
+      const q = document.createElement("div");
+      q.className = "q";
+      const optsHtml = it.options.map((op,oi)=>`
+        <div class="opt" data-idx="${oi}" data-correct="${oi===it.correct}">
+          <span class="tag">(${String.fromCharCode(65+oi)})</span><span>${op}</span>
+        </div>`).join("");
+      const imgHtml = it.image ? `<img src="${it.image}" alt="題目附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">` : "";
+      const img2Html = it.image2 ? `<img src="${it.image2}" alt="題目附圖2" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">` : "";
+      q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q}</div>
+        ${imgHtml}${img2Html}
+        <div class="opts">${optsHtml}</div>`;
+      q.querySelectorAll(".opt").forEach(optEl=>{
+        if(optEl.dataset.correct==="true") optEl.classList.add("is-correct");
+        optEl.addEventListener("click", ()=>selectOption(q, optEl));
+      });
+      block.appendChild(q);
+    });
+  }
+
+  else if(sec.type==="reading"){
+    sec.passages.forEach(p=>{
+      const passageDiv = document.createElement("div");
+      passageDiv.className = "passage";
+      passageDiv.innerHTML = `${p.label ? `<span class="passage-label">${p.label}</span>`:""}${p.text}${p.image ? `<img src="${p.image}" alt="題組附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-top:10px;border:1px solid var(--paper-line);">`:""}`;
+      block.appendChild(passageDiv);
+      p.items.forEach((it,i)=>{
+        const q = document.createElement("div");
+        q.className = "q";
+        const optsHtml = it.options.map((op,oi)=>`
+          <div class="opt" data-idx="${oi}" data-correct="${oi===it.correct}">
+            <span class="tag">(${String.fromCharCode(65+oi)})</span><span>${op}</span>
+          </div>`).join("");
+        q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q}</div>
+          ${it.image ? `<img src="${it.image}" alt="題目附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">`:""}
+          <div class="opts">${optsHtml}</div>`;
+        q.querySelectorAll(".opt").forEach(optEl=>{
+          if(optEl.dataset.correct==="true") optEl.classList.add("is-correct");
+          optEl.addEventListener("click", ()=>selectOption(q, optEl));
+        });
+        block.appendChild(q);
+      });
+    });
+  }
+
+  return block;
+}
+
+function selectOption(qEl, optEl){
+  if(currentMode!=="quiz") return;
+  if(qEl.dataset.answered==="true") return;
+  qEl.dataset.answered = "true";
+  qEl.querySelectorAll(".opt").forEach(o=>o.classList.add("disabled"));
+  optEl.classList.add("selected");
+  const correctOpt = qEl.querySelector('.opt[data-correct="true"]');
+  qEl.dataset.studentAnswer = optEl.textContent.trim();
+  qEl.dataset.correctAnswer = correctOpt ? correctOpt.textContent.trim() : "";
+  qEl.dataset.isCorrect = (optEl.dataset.correct==="true") ? "true" : "false";
+  updateScore();
+}
+
+function updateScore(){
+  let total = 0, answered = 0, correct = 0;
+  contentEl.querySelectorAll(".q").forEach(q=>{
+    const gradable = q.querySelector(".opts") || q.querySelector("input.blank");
+    if(!gradable) return;
+    total++;
+    if(q.dataset.studentAnswer !== undefined){
+      answered++;
+      if(q.dataset.isCorrect === "true") correct++;
+    }
+  });
+  if(window.examAnswersRevealed){
+    scoreText.textContent = `${correct} / ${total}`;
+  } else {
+    scoreText.textContent = `已作答 ${answered} / ${total} 題`;
+  }
+}
+window.updateScore = updateScore;
+
+// 填寫題（注音／國字、改錯）：去掉空白與標點後和正解比對；注音的一聲符號「ˉ」可寫可不寫
+function normFill(s){
+  return String(s).replace(/[\sˉ　，、。．.,;；:：!！?？「」『』（）()【】→\-－—]/g, "").trim();
+}
+document.addEventListener("input", (e)=>{
+  const input = e.target;
+  if(!input.matches || !input.matches("input.blank")) return;
+  const q = input.closest(".q");
+  const answers = JSON.parse(input.dataset.answers || "[]");
+  const val = input.value.trim();
+  if(!val){ delete q.dataset.studentAnswer; delete q.dataset.isCorrect; }
+  else {
+    q.dataset.studentAnswer = val;
+    q.dataset.correctAnswer = answers.join(" ／ ");
+    q.dataset.isCorrect = answers.some(a => normFill(a) === normFill(val)) ? "true" : "false";
+  }
+  updateScore();
+});
+
+document.getElementById("resetBtn").addEventListener("click", render);
+document.getElementById("quizModeBtn").addEventListener("click", ()=>{
+  currentMode = "quiz";
+  document.getElementById("quizModeBtn").classList.add("active");
+  document.getElementById("printModeBtn").classList.remove("active");
+  render();
+});
+document.getElementById("printModeBtn").addEventListener("click", ()=>{
+  if(document.getElementById("printModeBtn").disabled) return;
+  currentMode = "print";
+  document.getElementById("printModeBtn").classList.add("active");
+  document.getElementById("quizModeBtn").classList.remove("active");
+  render();
+});
+
+window.unlockPrintMode = function(){
+  document.getElementById("printModeBtn").disabled = false;
+};
+
+render();
+</script>
+<script src="../sync.js?v=20261018b"></script>
+</body>
+</html>

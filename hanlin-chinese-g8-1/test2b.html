@@ -1,0 +1,903 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>段考題庫｜國文第2回 - 古詩選</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@500;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#faf6ec;
+    --paper-line:#e3dcc8;
+    --ink:#26332b;
+    --ink-soft:#5b6b5f;
+    --chalk-green:#2f4538;
+    --chalk-green-2:#3d5a48;
+    --pen-red:#b8433a;
+    --pen-red-soft:#f4dedb;
+    --ok-green:#3f7d52;
+    --ok-green-soft:#dfeee1;
+    --gold:#b5842a;
+    --radius:10px;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:"Noto Sans TC",sans-serif;
+    line-height:1.7;
+  }
+  header.hero{
+    background:var(--chalk-green);
+    color:#eef2ea;
+    padding:28px 20px 40px;
+    position:relative;
+  }
+  header.hero::after{
+    content:"";
+    position:absolute;
+    left:0; right:0; bottom:-1px;
+    height:14px;
+    background:repeating-linear-gradient(90deg,var(--paper) 0 18px, transparent 18px 20px);
+  }
+  .hero-inner{max-width:880px;margin:0 auto;}
+  .breadcrumb a{color:#cfe0d1;text-decoration:none;font-size:14px;}
+  .breadcrumb a:hover{text-decoration:underline;}
+  h1{
+    font-family:"Noto Serif TC",serif;
+    font-weight:700;
+    font-size:clamp(24px,4vw,34px);
+    margin:10px 0 6px;
+  }
+  .subtitle{color:#cfe0d1;font-size:15px;margin:0;}
+  main{max-width:880px;margin:0 auto;padding:28px 20px 80px;}
+
+  .controls{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:22px;
+  }
+  .mode-toggle{display:flex;border:2px solid var(--chalk-green);border-radius:999px;overflow:hidden;}
+  .mode-toggle button{
+    background:transparent;border:none;padding:8px 16px;font-size:14px;font-weight:700;
+    color:var(--chalk-green);cursor:pointer;font-family:"Noto Sans TC",sans-serif;
+  }
+  .mode-toggle button.active{background:var(--gold);color:#fff;}
+  .mode-toggle button:disabled{opacity:.4;cursor:not-allowed;}
+
+  .score-bar{
+    display:none;
+    align-items:center;
+    justify-content:space-between;
+    background:#fff;
+    border:1px solid var(--paper-line);
+    border-left:5px solid var(--gold);
+    border-radius:var(--radius);
+    padding:12px 18px;
+    margin-bottom:22px;
+    font-size:14px;
+  }
+  .score-bar.show{display:flex;}
+  .score-bar strong{font-size:18px;color:var(--gold);}
+  .score-bar button{
+    background:none;border:1px solid var(--ink-soft);color:var(--ink-soft);
+    border-radius:6px;padding:6px 12px;font-size:13px;cursor:pointer;
+  }
+
+  section.block{
+    background:#fff;
+    border:1px solid var(--paper-line);
+    border-radius:var(--radius);
+    padding:22px 22px 26px;
+    margin-bottom:20px;
+  }
+  .block h2{
+    font-family:"Noto Serif TC",serif;
+    font-size:19px;
+    margin:0 0 4px;
+    color:var(--chalk-green);
+  }
+  .block .meta{color:var(--ink-soft);font-size:13px;margin:0 0 16px;}
+
+  .q{margin-bottom:18px;padding-bottom:16px;border-bottom:1px dashed var(--paper-line);}
+  .q:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0;}
+  .q-text{font-size:15.5px;margin-bottom:8px;}
+  .q-num{color:var(--gold);font-weight:700;margin-right:4px;}
+
+  .opts{display:grid;gap:8px;}
+  .opt{
+    display:flex;gap:8px;align-items:flex-start;
+    border:1.5px solid var(--paper-line);
+    border-radius:8px;
+    padding:9px 12px;
+    cursor:pointer;
+    font-size:14.5px;
+    background:#fffdf8;
+  }
+  .opt:hover{border-color:var(--chalk-green-2);}
+  .opt.selected{border-color:var(--chalk-green-2);background:#eef3ea;}
+  .opt.correct{border-color:var(--ok-green);background:var(--ok-green-soft);}
+  .opt.wrong{border-color:var(--pen-red);background:var(--pen-red-soft);}
+  .opt .tag{font-weight:700;color:var(--ink-soft);}
+  .opt.correct .tag{color:var(--ok-green);}
+  .opt.wrong .tag{color:var(--pen-red);}
+  .opt.disabled{cursor:default;}
+
+  .passage{
+    background:#f5f2e8;border-radius:8px;padding:14px 16px;margin-bottom:14px;
+    font-size:14.5px;white-space:pre-line;
+  }
+  .passage-label{font-weight:700;color:var(--chalk-green);margin-bottom:4px;display:block;}
+
+  .sec-note{font-size:13.5px;color:var(--ink-soft);background:#f5f2e8;border-radius:8px;padding:8px 12px;margin:-6px 0 14px;}
+  .sec-pre{background:#f5f2e8;border-radius:8px;padding:10px 14px;margin:-4px 0 14px;font-size:14.5px;}
+  .fill-row{display:flex;flex-wrap:wrap;align-items:center;gap:8px;}
+  input.blank{
+    font-family:"Noto Sans TC",sans-serif;font-size:15.5px;border:none;border-bottom:2px solid var(--chalk-green-2);
+    background:#fffdf8;padding:4px 6px;width:170px;max-width:100%;
+  }
+  input.blank.wide{width:100%;}
+  textarea.explain-box{
+    width:100%;min-height:52px;font-family:"Noto Sans TC",sans-serif;font-size:15px;
+    border:1.5px solid var(--paper-line);border-radius:8px;padding:8px 10px;background:#fffdf8;resize:vertical;
+  }
+  .feedback{font-weight:700;font-size:15px;}
+  .feedback.ok{color:var(--ok-green);}
+  .feedback.no{color:var(--pen-red);}
+  .answer-reveal{display:none;margin-top:8px;font-size:14px;color:var(--ok-green);background:var(--ok-green-soft);border-radius:6px;padding:6px 12px;}
+  .answer-reveal.show{display:block;}
+  .zh-und{text-decoration:underline;text-underline-offset:3px;}
+  .footer-link{
+    display:block;text-align:center;margin-top:30px;color:var(--chalk-green);
+    text-decoration:none;font-weight:700;font-size:14px;
+  }
+  .footer-link:hover{text-decoration:underline;}
+
+  @media print{
+    header.hero, .controls, .score-bar, .mini-btn, .footer-link{display:none !important;}
+    body{background:#fff;}
+    section.block{border:none;box-shadow:none;padding:8px 0;margin-bottom:14px;}
+    .opt.correct{background:none;border:none;font-weight:700;}
+    .opt.correct::after{content:" ← 正解";color:var(--pen-red);}
+    .opt{border:none;padding:2px 0;}
+    main{max-width:100%;padding:0 24px;}
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="breadcrumb"><a href="https://jenlin2002.github.io/">🏠 回總目錄</a> ／ <a href="../hanlin-chinese-g8-1.html" style="color:#cfe0d1;">段考題庫</a></div>
+    <h1>國文・第2回</h1>
+    <p class="subtitle">第二課 古詩選｜翰林版八年級國文（三）Ｂ卷</p>
+  </div>
+</header>
+
+<main>
+  <div class="controls">
+    <div class="mode-toggle">
+      <button id="quizModeBtn" class="active">✏️ 測驗模式</button>
+      <button id="printModeBtn" disabled title="完成測驗並送出成績後才能查看">🖨️ 完整題目與解答（送出成績後解鎖）</button>
+    </div>
+  </div>
+
+  <div class="score-bar" id="scoreBar">
+    <div>目前得分：<strong id="scoreText">0 / 0</strong>（選擇題與填寫題；解釋題不計分）</div>
+    <button id="resetBtn">重新作答</button>
+  </div>
+
+  <div id="content"></div>
+
+  <a class="footer-link" href="../hanlin-chinese-g8-1.html">← 回段考題庫總覽</a>
+</main>
+
+<script>
+
+window.EXAM_META = { version: "國文B卷", examLabel: "國文第2回" };
+const DATA = {
+  sections: [
+  {
+    "type": "fill",
+    "title": "一、國字注音",
+    "meta": "每字1分，共10分",
+    "note": "「」裡是注音的寫國字，是國字的寫注音。注音的一聲可以不標。",
+    "placeholder": "國字或注音",
+    "items": [
+      {
+        "q": "含蓄內「ㄌㄧㄢˋ」",
+        "answers": [
+          "斂"
+        ]
+      },
+      {
+        "q": "眾說紛「ㄩㄣˊ」",
+        "answers": [
+          "紜"
+        ]
+      },
+      {
+        "q": "「ㄓㄨㄟ」心蝕骨",
+        "answers": [
+          "椎"
+        ]
+      },
+      {
+        "q": "吐「ㄅㄨˇ」握髮",
+        "answers": [
+          "哺"
+        ]
+      },
+      {
+        "q": "日月如「ㄙㄨㄛ」",
+        "answers": [
+          "梭"
+        ]
+      },
+      {
+        "q": "撲「簌」",
+        "answers": [
+          "ㄙㄨˋ"
+        ]
+      },
+      {
+        "q": "「涕」泗縱橫",
+        "answers": [
+          "ㄊㄧˋ"
+        ]
+      },
+      {
+        "q": "二十八星「宿」",
+        "answers": [
+          "ㄒㄧㄡˋ"
+        ]
+      },
+      {
+        "q": "母「歿」喪不臨",
+        "answers": [
+          "ㄇㄛˋ"
+        ]
+      },
+      {
+        "q": "元「稹」",
+        "answers": [
+          "ㄓㄣˇ"
+        ]
+      }
+    ]
+  },
+  {
+    "type": "explain",
+    "title": "二、解釋",
+    "meta": "每題2分，共10分（自己對照參考答案，不計入自動計分）",
+    "items": [
+      {
+        "q": "脈脈",
+        "answer": "含情凝視的樣子。"
+      },
+      {
+        "q": "皎皎",
+        "answer": "明亮的樣子。"
+      },
+      {
+        "q": "纖纖",
+        "answer": "細長柔美的樣子。"
+      },
+      {
+        "q": "斯徒輩",
+        "answer": "這一類的人。"
+      },
+      {
+        "q": "經年",
+        "answer": "形容時間長久。"
+      }
+    ]
+  },
+  {
+    "type": "fill",
+    "title": "三、改錯",
+    "meta": "每字1分，共10分",
+    "wide": true,
+    "note": "每句有 5 個錯字。依照出現的順序，只寫出改正後的字（例如寫成「ＯＯＯＯＯ」五個字）。",
+    "placeholder": "依序寫出正確的字",
+    "items": [
+      {
+        "q": "這首詩反硬出當時社會動亂不安，朋友擴別後從逢的喜悅，卻也流漏出未來又將分離的無耐。",
+        "answers": [
+          "映闊重露奈"
+        ]
+      },
+      {
+        "q": "慈烏夜啼一詩赤責不孝的人，歌訟懂得反哺的慈烏，藉此俸勸人們要及時行孝，才不會撼恨不己。",
+        "answers": [
+          "斥頌奉憾已"
+        ]
+      }
+    ]
+  },
+  {
+    "type": "mc",
+    "title": "四、成語活用題",
+    "meta": "每題2分，共10分",
+    "note": "請根據句意，從參考選項中選出適當的成語填入【　】中。",
+    "items": [
+      {
+        "q": "多年來分隔兩地，以及財務狀況不佳，使得原本感情融洽的夫妻落得【　　　】的下場，令人不勝唏噓。",
+        "options": [
+          "情竇初開",
+          "舉案齊眉",
+          "琵琶別抱",
+          "勞燕分飛",
+          "破鏡重圓",
+          "如膠似漆"
+        ],
+        "correct": 3
+      },
+      {
+        "q": "【　　　】的青少年，對愛情懷抱憧憬，一不小心便陷入情網，因此荒廢課業。",
+        "options": [
+          "情竇初開",
+          "舉案齊眉",
+          "琵琶別抱",
+          "勞燕分飛",
+          "破鏡重圓",
+          "如膠似漆"
+        ],
+        "correct": 0
+      },
+      {
+        "q": "家樺和夫婿甜蜜享受新婚生活，整日【　　　】、形影不離。",
+        "options": [
+          "情竇初開",
+          "舉案齊眉",
+          "琵琶別抱",
+          "勞燕分飛",
+          "破鏡重圓",
+          "如膠似漆"
+        ],
+        "correct": 5
+      },
+      {
+        "q": "這對銀髮夫妻說明婚姻維繫之道在於【　　　】，彼此互敬互愛，才能和諧共處。",
+        "options": [
+          "情竇初開",
+          "舉案齊眉",
+          "琵琶別抱",
+          "勞燕分飛",
+          "破鏡重圓",
+          "如膠似漆"
+        ],
+        "correct": 1
+      },
+      {
+        "q": "戰亂後，歷經數年顛沛流離，她終於與失散多年的丈夫【　　　】，不禁激動地流下熱淚。",
+        "options": [
+          "情竇初開",
+          "舉案齊眉",
+          "琵琶別抱",
+          "勞燕分飛",
+          "破鏡重圓",
+          "如膠似漆"
+        ],
+        "correct": 4
+      }
+    ]
+  },
+  {
+    "type": "mc",
+    "title": "五、基礎題",
+    "meta": "每題2分，共30分",
+    "items": [
+      {
+        "q": "下列「　」中的字，何組讀音相同？",
+        "options": [
+          "「應」是母慈重／「應」有盡有",
+          "含情「脈脈」／中醫把「脈」",
+          "前往弔「喪」／垂頭「喪」氣",
+          "鳥中之曾「參」／「參」差不齊"
+        ],
+        "correct": 0
+      },
+      {
+        "q": "下列「　」中的注音寫成國字後，何組字形相同？",
+        "options": [
+          "「ㄒㄧㄢ」塵不染／湯「ㄒㄧㄢ」味美",
+          "「ㄓㄨㄛˊ」升經理／拔「ㄓㄨㄛˊ」人才",
+          "七「ㄌㄧㄥˊ」八落／小巧「ㄌㄧㄥˊ」瓏",
+          "生活「ㄓㄚˊ」記／垂死掙「ㄓㄚˊ」"
+        ],
+        "correct": 1
+      },
+      {
+        "q": "「鳥中之曾參」中的「曾參」借代為「孝子」。下列「　」中詞語的借代對象，何者使用正確？",
+        "options": [
+          "王老師作育英才無數，可說是「杏林」之光",
+          "杜甫以一介「布衣」，寫下家國動盪的景況",
+          "好身材又極具工作能力的志玲是個能展現出職場套裝美感的「花瓶」",
+          "言談溫文有禮的蕭先生，不愧其「梁上君子」的封號"
+        ],
+        "correct": 1
+      },
+      {
+        "q": "下列「　」中的字經替換後，何者意思<b>改變</b>了？",
+        "options": [
+          "「爾」獨哀怨深：耳",
+          "「脈脈」不得語：眽",
+          "聞者為沾「襟」：衿",
+          "泣「涕」零如雨：淚"
+        ],
+        "correct": 0
+      },
+      {
+        "q": "有關古詩十九首的敘述，下列何者說明正確？",
+        "options": [
+          "內容記載東漢到東晉間的名人軼事",
+          "作者是南朝梁昭明太子蕭統",
+          "是五言古詩的代表作",
+          "收錄的詩以該詩末句作為詩題"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "下列「　」中的疊字詞，何者具有聽覺摹寫功能？",
+        "options": [
+          "「迢迢」牽牛星",
+          "「脈脈」不得語",
+          "「盈盈」一水間",
+          "「札札」弄機杼"
+        ],
+        "correct": 3
+      },
+      {
+        "q": "迢迢牽牛星：「河漢清且淺，相去復幾許？盈盈一水間，脈脈不得語。」這四句詩與下列何者相呼應？",
+        "options": [
+          "泣涕零如雨",
+          "札札弄機杼",
+          "皎皎河漢女",
+          "纖纖擢素手"
+        ],
+        "correct": 0
+      },
+      {
+        "q": "對於古詩的說明，下列何者正確？",
+        "options": [
+          "流行於漢魏六朝，又稱為今體詩",
+          "每句字數不固定，句數多寡也不限",
+          "古詩格律較寬，不需要押韻",
+          "古詩可配樂歌唱，是當時的流行歌曲"
+        ],
+        "correct": 1
+      },
+      {
+        "q": "關於慈烏夜啼一詩的文意說明，下列何者正確？",
+        "options": [
+          "由「晝夜不飛去，經年守故林」可知慈烏思念從小生長的故鄉",
+          "由「應是母慈重，使爾悲不任」凸顯親恩浩大，無以為報",
+          "由「嗟哉斯徒輩，其心不如禽」可知作者痛斥吳起不知愛護禽鳥",
+          "由「慈烏復慈烏，鳥中之曾參」表達對孝子曾參的正面讚揚"
+        ],
+        "correct": 1
+      },
+      {
+        "q": "下列「　」中的疊字詞，何者使用<b>錯誤</b>？",
+        "options": [
+          "您的分析精闢極了，於我心有「戚戚」焉",
+          "「簌簌」長江東逝水，英雄也都隨時間流逝而殞落了",
+          "看著場上激烈的籃球比賽，我也有股「躍躍」欲試的衝動",
+          "湖邊的楊柳「依依」，隨風款擺時的模樣十分美麗"
+        ],
+        "correct": 1
+      },
+      {
+        "q": "迢迢牽牛星一詩抒發戀人長別離的椎心之痛，與下列何者最接近？",
+        "options": [
+          "兩情若是久長時，又豈在朝朝暮暮",
+          "孤帆遠影碧山盡，唯見長江天際流",
+          "忽見陌頭楊柳色，悔教夫婿覓封侯",
+          "正是江南好風景，落花時節又逢君"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "明明讀完慈烏夜啼後，做了一份整理資料，其中哪一項完全正確？",
+        "options": [
+          "詩體：五言古詩",
+          "特色：用典得宜，辭溢於情",
+          "主旨：稱揚曾參的孝心",
+          "格律：偶數句押韻，有換韻"
+        ],
+        "correct": 0
+      },
+      {
+        "q": "關於迢迢牽牛星的寫作方法，下列何者說明正確？",
+        "options": [
+          "作者藉事論說當時社會動亂不安的原因",
+          "以牛郎的口吻敘說人間男女兩地相思不得相見的悲情",
+          "善用疊字來描寫情態，增添節奏感和音韻之美",
+          "此詩為押韻較寬的古詩，有換韻"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "關於迢迢牽牛星和慈烏夜啼這二首詩，下列何者敘述正確？",
+        "options": [
+          "迢迢牽牛星從作者自身經驗出發，描繪人間男女離別情愁",
+          "慈烏夜啼表面上雖在詠鳥，實則藉此抒發失母的悲痛",
+          "二詩皆為諷諭詩",
+          "二首詩皆運用對偶修辭，偶數句皆押韻"
+        ],
+        "correct": 1
+      },
+      {
+        "q": "慈烏夜啼一詩中的語氣說明，下列何者正確？",
+        "options": [
+          "百鳥豈無母，爾獨哀怨深：讚嘆語氣",
+          "應是母慈重，使爾悲不任：叮嚀語氣",
+          "嗟哉斯徒輩，其心不如禽：斥責語氣",
+          "慈烏復慈烏，鳥中之曾參：貶責語氣"
+        ],
+        "correct": 2
+      }
+    ]
+  },
+  {
+    "type": "mc",
+    "title": "六、進階題",
+    "meta": "每題2分，共20分",
+    "items": [
+      {
+        "q": "「如果兩個人能夠牽著手／像在糖果店面前停留／各自輕聲數著不一樣的甜蜜／突然拖吊車拉著車子走過／寫下粉筆的表情在地上／熟悉的街道／妳的心依然禁止停車」小志引用這首臺北公車詩文作品向小珍表達心意，由此可知小志和小珍之間的關係處於下列何種狀況？",
+        "options": [
+          "小志一直單戀著小珍",
+          "小志和小珍情投意合",
+          "小志和小珍曾經熱戀過",
+          "小志拒絕小珍的情意"
+        ],
+        "correct": 0
+      },
+      {
+        "q": "下列「　」中有關親情的成語，何者運用最恰當？",
+        "options": [
+          "我們要懂得孝順父母，每天「襁抱提攜」、無微不至地照顧",
+          "就像「寸草春暉」般，我們怎麼報答得了父母對我們的恩情",
+          "王老先生在兒子病榻前默默守候，「孺慕之情」令人動容",
+          "即使只是「風木含悲」，能隨時承歡膝下就是盡到為人子女的孝心了"
+        ],
+        "correct": 1
+      },
+      {
+        "q": "「小小的生命／尚未嘗到飛翔的滋味／便被端上了餐桌／這樣的一盤和平／被食客們饕餮乎吞掉了／那個叫做戰爭的傢伙／便擺好架勢／蠢蠢欲動」這首新詩最可能在描寫下列何種動物？",
+        "options": [
+          "烏鴉",
+          "老鷹",
+          "乳鴿",
+          "喜鵲"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "「白樂天每作詩，令一老嫗解之。問曰：『解否？』嫗曰：『解。』則錄之；不解，則易之，故唐末之詩，近於鄙俚。」（釋惠洪）以上這段敘述，概說了白居易的作品風格。下列何者最適合用來說明白居易的作品風格？",
+        "options": [
+          "陽春白雪",
+          "高深莫測",
+          "詰屈聱牙",
+          "淺白易懂"
+        ],
+        "correct": 3
+      },
+      {
+        "q": "下列「　」中的詞語，何者<b>不是</b>指「銀河」？",
+        "options": [
+          "奕奕「天河」光不斷，有人正在長生殿",
+          "月殿影開聞夜漏，水晶簾捲近「秋河」",
+          "「瀚海」闌干百丈冰，愁雲黲淡萬里凝",
+          "天河夜轉漂回星，「銀浦」流雲學水聲"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "「白居易剛到京城長安，還未出名，他帶著詩作去拜訪顧況。顧況開玩笑地說：『長安百物貴，居大不易。』但當他讀到『野火燒不盡，春風吹又生』這詩句時，驚嘆地說：『有句如此，居亦何難？老夫前言戲之耳！』」根據上文，顧況對白居易的態度為下列何者？",
+        "options": [
+          "先尊敬後輕視",
+          "先輕視後欣賞",
+          "先推崇後否定",
+          "先讚賞後挑剔"
+        ],
+        "correct": 1
+      },
+      {
+        "q": "以下是小臻在國文課所做的筆記，一時大意寫錯一處。筆記中的錯處應是下列何者？<br>【古詩】多五、七言；句數不固定①；不要求對仗；可換韻②<br>【律詩】五、七言；八句；二、三聯對仗；可換韻③<br>【絕句】五、七言；四句；不要求對仗④；不可換韻",
+        "options": [
+          "①",
+          "②",
+          "③",
+          "④"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "禮記 曲禮上：「凡為人子之禮，冬溫而夏凊，昏定而晨省。」這段文字提及為人子女孝親的行為，何者<b>不包括</b>在內？",
+        "options": [
+          "反省自己是否忤逆雙親",
+          "盛夏中為父母搧涼床蓆",
+          "早晨向父母請安",
+          "寒冬裡為父母溫暖被褥"
+        ],
+        "correct": 0
+      },
+      {
+        "q": "「(甲)未到中秋開月桂／且看嘉會集盂蘭(乙)晴空一鏡懸明月／夜市千燈照碧雲(丙)中興氣象隨春至／積善人家納福多(丁)話舊他鄉曾作客／登高佳節倍思親」若將(甲)(乙)(丙)(丁)依照日期先後順序排列，應為下列何者？",
+        "options": [
+          "(甲)(乙)(丙)(丁)",
+          "(乙)(丙)(甲)(丁)",
+          "(丁)(乙)(甲)(丙)",
+          "(丙)(乙)(甲)(丁)"
+        ],
+        "correct": 3
+      },
+      {
+        "q": "七夕始終和牛郎織女的傳說相連。下列詩句，何者與此節慶<b>無關</b>？",
+        "options": [
+          "年年乞與人間巧，不道人間巧幾多",
+          "今日雲駢渡鵲橋，應非脈脈與迢迢",
+          "暮雲收盡溢清寒，銀漢無聲轉玉盤",
+          "一道鵲橋橫渺渺，千聲玉佩過玲玲"
+        ],
+        "correct": 2
+      }
+    ]
+  },
+  {
+    "type": "reading",
+    "title": "七、閱讀測驗",
+    "meta": "每題2分，共10分",
+    "passages": [
+      {
+        "label": "（一）",
+        "text": "梁上有雙燕，翩翩雄與雌。銜泥兩椽間，一巢生四兒。\n四兒日夜長，索食聲孜孜。青蟲不易捕，黃口無飽期。\n嘴爪雖欲敝，心力不知疲。須臾十來往，猶恐巢中飢。\n辛勤三十日，母瘦雛漸肥。喃喃教言語，一一刷毛衣。\n一旦羽翼成，引上庭樹枝。舉翅不回顧，隨風四散飛。\n雌雄空中鳴，聲盡呼不歸。卻入空巢裡，啁啾終夜悲。\n燕燕爾勿悲，爾當返自思。思爾為雛日，高飛背母時。\n當時父母念，今日爾應知。（白居易 燕詩示劉叟）\n註：椽，音ㄔㄨㄢˊ，承架屋瓦的圓木。",
+        "items": [
+          {
+            "q": "本詩的主旨為何？",
+            "options": [
+              "勸為人父母要仔細照顧孩兒",
+              "說明父母子女間的親情可貴",
+              "說明為人子女者要反哺報恩",
+              "勸為人子女者要能志向遠大"
+            ],
+            "correct": 2
+          },
+          {
+            "q": "關於本詩的寫作手法，下列何者說明正確？",
+            "options": [
+              "先議論，後敘述",
+              "依內容推測，劉叟應是一位孝子",
+              "詩中用寫實的筆法，描述燕子的成長過程",
+              "詩中極力鋪排父母養育子女的辛勞"
+            ],
+            "correct": 3
+          },
+          {
+            "q": "下列何者最能呈現父母對子女無怨無悔的付出？",
+            "options": [
+              "四兒日夜長，索食聲孜孜",
+              "嘴爪雖欲敝，心力不知疲",
+              "一旦羽翼成，引上庭樹枝",
+              "雌雄空中鳴，聲盡呼不歸"
+            ],
+            "correct": 1
+          }
+        ]
+      },
+      {
+        "label": "（二）",
+        "text": "青青河畔草，鬱鬱園中柳。盈盈樓上女，皎皎當窗牖。\n娥娥紅粉妝，纖纖出素手。昔為倡家女，今為蕩子婦。\n蕩子行不歸，空床難獨守。（古詩十九首之二）",
+        "items": [
+          {
+            "q": "關於這首詩的說明，何者<b>有誤</b>？",
+            "options": [
+              "表達寂寞而煩擾的心情",
+              "運用六個疊字詞，增加節奏感，是本詩特色之一",
+              "押「ㄡ」韻",
+              "是論說的詩句"
+            ],
+            "correct": 3
+          },
+          {
+            "q": "古詩十九首反映當時的社會現象，這首詩抒發的苦悶應屬下列何者？",
+            "options": [
+              "逐臣棄婦",
+              "遊子他鄉",
+              "朋友闊絕",
+              "生命無常"
+            ],
+            "correct": 0
+          }
+        ]
+      }
+    ]
+  }
+]
+};
+
+let currentMode = "quiz"; // quiz | print
+
+const contentEl = document.getElementById("content");
+const scoreBar = document.getElementById("scoreBar");
+const scoreText = document.getElementById("scoreText");
+
+function render(){
+  window.examAnswersRevealed = false;
+  contentEl.innerHTML = "";
+  DATA.sections.forEach((sec, si)=> contentEl.appendChild(renderSection(sec, si)));
+  if(currentMode==="quiz"){
+    scoreBar.classList.add("show");
+    updateScore();
+  } else {
+    scoreBar.classList.remove("show");
+    contentEl.querySelectorAll(".opt").forEach(o=>o.classList.add("disabled"));
+    contentEl.querySelectorAll(".opt.is-correct").forEach(o=>o.classList.add("correct"));
+  }
+}
+
+function renderSection(sec, si){
+  const block = document.createElement("section");
+  block.className = "block";
+  block.innerHTML = `<h2>${sec.title}</h2><p class="meta">${sec.meta}</p>`
+    + (sec.note ? `<div class="sec-note">${sec.note}</div>` : "")
+    + (sec.pre ? `<div class="sec-pre">${sec.pre}</div>` : "");
+
+  if(sec.type==="fill"){
+    sec.items.forEach((it,i)=>{
+      const q = document.createElement("div");
+      q.className = "q";
+      const shown = it.answers.join(" ／ ");
+      q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q}</div>
+        <div class="fill-row"><input type="text" class="blank${sec.wide ? " wide" : ""}" autocomplete="off" placeholder="${sec.placeholder || "作答"}"><span class="feedback"></span></div>
+        <div class="answer-reveal">正解：${shown}</div>`;
+      q.querySelector("input.blank").dataset.answers = JSON.stringify(it.answers);
+      if(currentMode!=="quiz"){ q.querySelector("input.blank").disabled = true; q.querySelector(".answer-reveal").classList.add("show"); }
+      block.appendChild(q);
+    });
+  }
+
+  else if(sec.type==="explain"){
+    sec.items.forEach((it,i)=>{
+      const q = document.createElement("div");
+      q.className = "q";
+      q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q}</div>
+        <textarea class="explain-box" placeholder="寫下你的解釋（送出成績後對照參考答案）"></textarea>
+        <div class="answer-reveal">參考答案：${it.answer}</div>`;
+      if(currentMode!=="quiz"){ q.querySelector("textarea").remove(); q.querySelector(".answer-reveal").classList.add("show"); }
+      block.appendChild(q);
+    });
+  }
+
+  else if(sec.type==="mc"){
+    sec.items.forEach((it,i)=>{
+      const q = document.createElement("div");
+      q.className = "q";
+      const optsHtml = it.options.map((op,oi)=>`
+        <div class="opt" data-idx="${oi}" data-correct="${oi===it.correct}">
+          <span class="tag">(${String.fromCharCode(65+oi)})</span><span>${op}</span>
+        </div>`).join("");
+      const imgHtml = it.image ? `<img src="${it.image}" alt="題目附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">` : "";
+      const img2Html = it.image2 ? `<img src="${it.image2}" alt="題目附圖2" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">` : "";
+      q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q}</div>
+        ${imgHtml}${img2Html}
+        <div class="opts">${optsHtml}</div>`;
+      q.querySelectorAll(".opt").forEach(optEl=>{
+        if(optEl.dataset.correct==="true") optEl.classList.add("is-correct");
+        optEl.addEventListener("click", ()=>selectOption(q, optEl));
+      });
+      block.appendChild(q);
+    });
+  }
+
+  else if(sec.type==="reading"){
+    sec.passages.forEach(p=>{
+      const passageDiv = document.createElement("div");
+      passageDiv.className = "passage";
+      passageDiv.innerHTML = `${p.label ? `<span class="passage-label">${p.label}</span>`:""}${p.text}${p.image ? `<img src="${p.image}" alt="題組附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-top:10px;border:1px solid var(--paper-line);">`:""}`;
+      block.appendChild(passageDiv);
+      p.items.forEach((it,i)=>{
+        const q = document.createElement("div");
+        q.className = "q";
+        const optsHtml = it.options.map((op,oi)=>`
+          <div class="opt" data-idx="${oi}" data-correct="${oi===it.correct}">
+            <span class="tag">(${String.fromCharCode(65+oi)})</span><span>${op}</span>
+          </div>`).join("");
+        q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q}</div>
+          ${it.image ? `<img src="${it.image}" alt="題目附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">`:""}
+          <div class="opts">${optsHtml}</div>`;
+        q.querySelectorAll(".opt").forEach(optEl=>{
+          if(optEl.dataset.correct==="true") optEl.classList.add("is-correct");
+          optEl.addEventListener("click", ()=>selectOption(q, optEl));
+        });
+        block.appendChild(q);
+      });
+    });
+  }
+
+  return block;
+}
+
+function selectOption(qEl, optEl){
+  if(currentMode!=="quiz") return;
+  if(qEl.dataset.answered==="true") return;
+  qEl.dataset.answered = "true";
+  qEl.querySelectorAll(".opt").forEach(o=>o.classList.add("disabled"));
+  optEl.classList.add("selected");
+  const correctOpt = qEl.querySelector('.opt[data-correct="true"]');
+  qEl.dataset.studentAnswer = optEl.textContent.trim();
+  qEl.dataset.correctAnswer = correctOpt ? correctOpt.textContent.trim() : "";
+  qEl.dataset.isCorrect = (optEl.dataset.correct==="true") ? "true" : "false";
+  updateScore();
+}
+
+function updateScore(){
+  let total = 0, answered = 0, correct = 0;
+  contentEl.querySelectorAll(".q").forEach(q=>{
+    const gradable = q.querySelector(".opts") || q.querySelector("input.blank");
+    if(!gradable) return;
+    total++;
+    if(q.dataset.studentAnswer !== undefined){
+      answered++;
+      if(q.dataset.isCorrect === "true") correct++;
+    }
+  });
+  if(window.examAnswersRevealed){
+    scoreText.textContent = `${correct} / ${total}`;
+  } else {
+    scoreText.textContent = `已作答 ${answered} / ${total} 題`;
+  }
+}
+window.updateScore = updateScore;
+
+// 填寫題（注音／國字、改錯）：去掉空白與標點後和正解比對；注音的一聲符號「ˉ」可寫可不寫
+function normFill(s){
+  return String(s).replace(/[\sˉ　，、。．.,;；:：!！?？「」『』（）()【】→\-－—]/g, "").trim();
+}
+document.addEventListener("input", (e)=>{
+  const input = e.target;
+  if(!input.matches || !input.matches("input.blank")) return;
+  const q = input.closest(".q");
+  const answers = JSON.parse(input.dataset.answers || "[]");
+  const val = input.value.trim();
+  if(!val){ delete q.dataset.studentAnswer; delete q.dataset.isCorrect; }
+  else {
+    q.dataset.studentAnswer = val;
+    q.dataset.correctAnswer = answers.join(" ／ ");
+    q.dataset.isCorrect = answers.some(a => normFill(a) === normFill(val)) ? "true" : "false";
+  }
+  updateScore();
+});
+
+document.getElementById("resetBtn").addEventListener("click", render);
+document.getElementById("quizModeBtn").addEventListener("click", ()=>{
+  currentMode = "quiz";
+  document.getElementById("quizModeBtn").classList.add("active");
+  document.getElementById("printModeBtn").classList.remove("active");
+  render();
+});
+document.getElementById("printModeBtn").addEventListener("click", ()=>{
+  if(document.getElementById("printModeBtn").disabled) return;
+  currentMode = "print";
+  document.getElementById("printModeBtn").classList.add("active");
+  document.getElementById("quizModeBtn").classList.remove("active");
+  render();
+});
+
+window.unlockPrintMode = function(){
+  document.getElementById("printModeBtn").disabled = false;
+};
+
+render();
+</script>
+<script src="../sync.js?v=20261018b"></script>
+</body>
+</html>
