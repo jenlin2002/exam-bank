@@ -1,7 +1,7 @@
 """Generate 翰林版八年級英語（三）A卷 pages from data/tNN.py, using the 康軒 pages as templates."""
 import json, re, importlib.util, glob, os
 
-REPO = r"E:\GitHub\exam-bank"
+REPO = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", ".."))
 OUTDIR = os.path.join(REPO, "hanlin-g8-1")
 BOOK = "翰林版八年級英語（三）"
 HERE = os.path.dirname(os.path.abspath(__file__))
