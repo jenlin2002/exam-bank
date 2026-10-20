@@ -1,0 +1,906 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>段考題庫｜國文第12回 - 畫的哀傷</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@500;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#faf6ec;
+    --paper-line:#e3dcc8;
+    --ink:#26332b;
+    --ink-soft:#5b6b5f;
+    --chalk-green:#2f4538;
+    --chalk-green-2:#3d5a48;
+    --pen-red:#b8433a;
+    --pen-red-soft:#f4dedb;
+    --ok-green:#3f7d52;
+    --ok-green-soft:#dfeee1;
+    --gold:#b5842a;
+    --radius:10px;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:"Noto Sans TC",sans-serif;
+    line-height:1.7;
+  }
+  header.hero{
+    background:var(--chalk-green);
+    color:#eef2ea;
+    padding:28px 20px 40px;
+    position:relative;
+  }
+  header.hero::after{
+    content:"";
+    position:absolute;
+    left:0; right:0; bottom:-1px;
+    height:14px;
+    background:repeating-linear-gradient(90deg,var(--paper) 0 18px, transparent 18px 20px);
+  }
+  .hero-inner{max-width:880px;margin:0 auto;}
+  .breadcrumb a{color:#cfe0d1;text-decoration:none;font-size:14px;}
+  .breadcrumb a:hover{text-decoration:underline;}
+  h1{
+    font-family:"Noto Serif TC",serif;
+    font-weight:700;
+    font-size:clamp(24px,4vw,34px);
+    margin:10px 0 6px;
+  }
+  .subtitle{color:#cfe0d1;font-size:15px;margin:0;}
+  main{max-width:880px;margin:0 auto;padding:28px 20px 80px;}
+
+  .controls{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:22px;
+  }
+  .mode-toggle{display:flex;border:2px solid var(--chalk-green);border-radius:999px;overflow:hidden;}
+  .mode-toggle button{
+    background:transparent;border:none;padding:8px 16px;font-size:14px;font-weight:700;
+    color:var(--chalk-green);cursor:pointer;font-family:"Noto Sans TC",sans-serif;
+  }
+  .mode-toggle button.active{background:var(--gold);color:#fff;}
+  .mode-toggle button:disabled{opacity:.4;cursor:not-allowed;}
+
+  .score-bar{
+    display:none;
+    align-items:center;
+    justify-content:space-between;
+    background:#fff;
+    border:1px solid var(--paper-line);
+    border-left:5px solid var(--gold);
+    border-radius:var(--radius);
+    padding:12px 18px;
+    margin-bottom:22px;
+    font-size:14px;
+  }
+  .score-bar.show{display:flex;}
+  .score-bar strong{font-size:18px;color:var(--gold);}
+  .score-bar button{
+    background:none;border:1px solid var(--ink-soft);color:var(--ink-soft);
+    border-radius:6px;padding:6px 12px;font-size:13px;cursor:pointer;
+  }
+
+  section.block{
+    background:#fff;
+    border:1px solid var(--paper-line);
+    border-radius:var(--radius);
+    padding:22px 22px 26px;
+    margin-bottom:20px;
+  }
+  .block h2{
+    font-family:"Noto Serif TC",serif;
+    font-size:19px;
+    margin:0 0 4px;
+    color:var(--chalk-green);
+  }
+  .block .meta{color:var(--ink-soft);font-size:13px;margin:0 0 16px;}
+
+  .q{margin-bottom:18px;padding-bottom:16px;border-bottom:1px dashed var(--paper-line);}
+  .q:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0;}
+  .q-text{font-size:15.5px;margin-bottom:8px;}
+  .q-num{color:var(--gold);font-weight:700;margin-right:4px;}
+
+  .opts{display:grid;gap:8px;}
+  .opt{
+    display:flex;gap:8px;align-items:flex-start;
+    border:1.5px solid var(--paper-line);
+    border-radius:8px;
+    padding:9px 12px;
+    cursor:pointer;
+    font-size:14.5px;
+    background:#fffdf8;
+  }
+  .opt:hover{border-color:var(--chalk-green-2);}
+  .opt.selected{border-color:var(--chalk-green-2);background:#eef3ea;}
+  .opt.correct{border-color:var(--ok-green);background:var(--ok-green-soft);}
+  .opt.wrong{border-color:var(--pen-red);background:var(--pen-red-soft);}
+  .opt .tag{font-weight:700;color:var(--ink-soft);}
+  .opt.correct .tag{color:var(--ok-green);}
+  .opt.wrong .tag{color:var(--pen-red);}
+  .opt.disabled{cursor:default;}
+
+  .passage{
+    background:#f5f2e8;border-radius:8px;padding:14px 16px;margin-bottom:14px;
+    font-size:14.5px;white-space:pre-line;
+  }
+  .passage-label{font-weight:700;color:var(--chalk-green);margin-bottom:4px;display:block;}
+
+  .sec-note{font-size:13.5px;color:var(--ink-soft);background:#f5f2e8;border-radius:8px;padding:8px 12px;margin:-6px 0 14px;}
+  .sec-pre{background:#f5f2e8;border-radius:8px;padding:10px 14px;margin:-4px 0 14px;font-size:14.5px;}
+  .fill-row{display:flex;flex-wrap:wrap;align-items:center;gap:8px;}
+  input.blank{
+    font-family:"Noto Sans TC",sans-serif;font-size:15.5px;border:none;border-bottom:2px solid var(--chalk-green-2);
+    background:#fffdf8;padding:4px 6px;width:170px;max-width:100%;
+  }
+  input.blank.wide{width:100%;}
+  textarea.explain-box{
+    width:100%;min-height:52px;font-family:"Noto Sans TC",sans-serif;font-size:15px;
+    border:1.5px solid var(--paper-line);border-radius:8px;padding:8px 10px;background:#fffdf8;resize:vertical;
+  }
+  .feedback{font-weight:700;font-size:15px;}
+  .feedback.ok{color:var(--ok-green);}
+  .feedback.no{color:var(--pen-red);}
+  .answer-reveal{display:none;margin-top:8px;font-size:14px;color:var(--ok-green);background:var(--ok-green-soft);border-radius:6px;padding:6px 12px;}
+  .answer-reveal.show{display:block;}
+  .zh-und{text-decoration:underline;text-underline-offset:3px;}
+  .footer-link{
+    display:block;text-align:center;margin-top:30px;color:var(--chalk-green);
+    text-decoration:none;font-weight:700;font-size:14px;
+  }
+  .footer-link:hover{text-decoration:underline;}
+
+  @media print{
+    header.hero, .controls, .score-bar, .mini-btn, .footer-link{display:none !important;}
+    body{background:#fff;}
+    section.block{border:none;box-shadow:none;padding:8px 0;margin-bottom:14px;}
+    .opt.correct{background:none;border:none;font-weight:700;}
+    .opt.correct::after{content:" ← 正解";color:var(--pen-red);}
+    .opt{border:none;padding:2px 0;}
+    main{max-width:100%;padding:0 24px;}
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="breadcrumb"><a href="https://jenlin2002.github.io/">🏠 回總目錄</a> ／ <a href="../hanlin-chinese-g8-1.html" style="color:#cfe0d1;">段考題庫</a></div>
+    <h1>國文・第12回</h1>
+    <p class="subtitle">第十課 畫的哀傷｜翰林版八年級國文（三）Ｂ卷</p>
+  </div>
+</header>
+
+<main>
+  <div class="controls">
+    <div class="mode-toggle">
+      <button id="quizModeBtn" class="active">✏️ 測驗模式</button>
+      <button id="printModeBtn" disabled title="完成測驗並送出成績後才能查看">🖨️ 完整題目與解答（送出成績後解鎖）</button>
+    </div>
+  </div>
+
+  <div class="score-bar" id="scoreBar">
+    <div>目前得分：<strong id="scoreText">0 / 0</strong>（選擇題與填寫題；解釋題不計分）</div>
+    <button id="resetBtn">重新作答</button>
+  </div>
+
+  <div id="content"></div>
+
+  <a class="footer-link" href="../hanlin-chinese-g8-1.html">← 回段考題庫總覽</a>
+</main>
+
+<script>
+
+window.EXAM_META = { version: "國文B卷", examLabel: "國文第12回" };
+const DATA = {
+  sections: [
+  {
+    "type": "fill",
+    "title": "一、國字注音",
+    "meta": "每字1分，共10分",
+    "note": "「」裡是注音的寫國字，是國字的寫注音。注音的一聲可以不標。",
+    "placeholder": "國字或注音",
+    "items": [
+      {
+        "q": "「ㄕㄠ」來音訊",
+        "answers": [
+          "捎"
+        ]
+      },
+      {
+        "q": "直「ㄉㄠˇ」黃龍",
+        "answers": [
+          "搗"
+        ]
+      },
+      {
+        "q": "皮膚白「ㄒㄧ」",
+        "answers": [
+          "皙"
+        ]
+      },
+      {
+        "q": "因「ㄍㄨˋ」缺席",
+        "answers": [
+          "故"
+        ]
+      },
+      {
+        "q": "「ㄏㄨㄣˊ」然不覺",
+        "answers": [
+          "渾"
+        ]
+      },
+      {
+        "q": "「恫」嚇",
+        "answers": [
+          "ㄉㄨㄥˋ"
+        ]
+      },
+      {
+        "q": "獨占「鰲」頭",
+        "answers": [
+          "ㄠˊ"
+        ]
+      },
+      {
+        "q": "同「儕」",
+        "answers": [
+          "ㄔㄞˊ"
+        ]
+      },
+      {
+        "q": "輪「廓」",
+        "answers": [
+          "ㄎㄨㄛˋ"
+        ]
+      },
+      {
+        "q": "馬「廄」",
+        "answers": [
+          "ㄐㄧㄡˋ"
+        ]
+      }
+    ]
+  },
+  {
+    "type": "explain",
+    "title": "二、解釋",
+    "meta": "每題2分，共10分（自己對照參考答案，不計入自動計分）",
+    "items": [
+      {
+        "q": "恫嚇",
+        "answer": "恐嚇。"
+      },
+      {
+        "q": "赫然",
+        "answer": "吃驚的樣子。"
+      },
+      {
+        "q": "獨占「鰲」頭",
+        "answer": "一種海中的大龜。"
+      },
+      {
+        "q": "目眩神迷",
+        "answer": "形容所見情景令人驚異。"
+      },
+      {
+        "q": "捶胸頓足",
+        "answer": "捶打胸膛，以腳跺地。形容極為悲憤或悔恨的樣子。"
+      }
+    ]
+  },
+  {
+    "type": "fill",
+    "title": "三、改錯",
+    "meta": "每字1分，共10分",
+    "wide": true,
+    "note": "每句有 5 個錯字。依照出現的順序，只寫出改正後的字（例如寫成「ＯＯＯＯＯ」五個字）。",
+    "placeholder": "依序寫出正確的字",
+    "items": [
+      {
+        "q": "既使在不甘心，也必需成認對方的雕朔作品更為出色，我一路跑回家，撲倒在床上大哭。",
+        "answers": [
+          "即再須承塑"
+        ]
+      },
+      {
+        "q": "死亡是成長小說重要的異題，是小說中角色啟曚與成長過程中最難以刻服的關卡，透過勇敢面對死亡而得到某種啟示，進而遠離青涉的青春階斷。",
+        "answers": [
+          "議蒙克澀段"
+        ]
+      }
+    ]
+  },
+  {
+    "type": "mc",
+    "title": "四、成語活用題",
+    "meta": "每題2分，共10分",
+    "note": "請根據句意，從參考選項中選出適當的成語填入【　】中。",
+    "items": [
+      {
+        "q": "他倆是自小一起長大的【　　　】，兩人的興趣十分相近。",
+        "options": [
+          "點頭之交",
+          "忘年之交",
+          "總角之交",
+          "割席分坐",
+          "推心置腹",
+          "烏集之交"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "我和瑞達僅是【　　　】，要請他為你說情恐怕幫不上忙。",
+        "options": [
+          "點頭之交",
+          "忘年之交",
+          "總角之交",
+          "割席分坐",
+          "推心置腹",
+          "烏集之交"
+        ],
+        "correct": 0
+      },
+      {
+        "q": "對待朋友要真心誠意，【　　　】，彼此互信互愛。",
+        "options": [
+          "點頭之交",
+          "忘年之交",
+          "總角之交",
+          "割席分坐",
+          "推心置腹",
+          "烏集之交"
+        ],
+        "correct": 4
+      },
+      {
+        "q": "陳爺爺閒來就和王小弟一起下棋，一老一少成了【　　　】。",
+        "options": [
+          "點頭之交",
+          "忘年之交",
+          "總角之交",
+          "割席分坐",
+          "推心置腹",
+          "烏集之交"
+        ],
+        "correct": 1
+      },
+      {
+        "q": "詠琪察覺到好友逐漸偏離正軌的行為，毅然決然【　　　】以保護自己。",
+        "options": [
+          "點頭之交",
+          "忘年之交",
+          "總角之交",
+          "割席分坐",
+          "推心置腹",
+          "烏集之交"
+        ],
+        "correct": 3
+      }
+    ]
+  },
+  {
+    "type": "mc",
+    "title": "五、基礎題",
+    "meta": "每題2分，共30分",
+    "items": [
+      {
+        "q": "下列「　」中的字，何組讀音<b>不同</b>？",
+        "options": [
+          "恐「嚇」取財／「嚇」阻犯罪",
+          "「撒」手人寰／「撒」腿就跑",
+          "「差」強人意／鬼使神「差」",
+          "「刻」畫人微／「刻」骨銘心"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "下列「　」中的注音寫成國字後，何組字形相同？",
+        "options": [
+          "雕「ㄓㄨㄛˊ」／「ㄓㄨㄛˊ」磨",
+          "「ㄆㄨˋ」布／「ㄆㄨˋ」光",
+          "臨「ㄇㄛˊ」／按「ㄇㄛˊ」",
+          "「ㄗㄥ」恨／「ㄗㄥ」祖父"
+        ],
+        "correct": 0
+      },
+      {
+        "q": "畫的哀傷一文中主角岡本的「哀傷」來自什麼原因？",
+        "options": [
+          "畫畫才能不被同儕肯定",
+          "後悔少年時代太過自負",
+          "遺憾過往的美好已消逝",
+          "缺乏知音的寂寞"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "下列哪一個成語和「無人能及」一樣具有「第一名」的意思？",
+        "options": [
+          "獨占鰲頭",
+          "難分軒輊",
+          "名落孫山",
+          "並駕齊驅"
+        ],
+        "correct": 0
+      },
+      {
+        "q": "關於畫的哀傷一文的寫作手法，下列說明何者<b>有誤</b>？",
+        "options": [
+          "全文依時間順序記錄岡本的成長歷程",
+          "使用對比手法彰顯人物性格，也豐富了情節內涵",
+          "藉岡本的內心獨白，敘述其心境起伏與情緒變化",
+          "文末以主角岡本因志村的死訊放下對他的嫉妒作結"
+        ],
+        "correct": 3
+      },
+      {
+        "q": "下列各選項中的「然」，何者具有代詞的用法？",
+        "options": [
+          "呀「然」驚恐",
+          "赫「然」發現",
+          "理所當「然」",
+          "截「然」不同"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "根據畫的哀傷一文，下列推論何者正確？",
+        "options": [
+          "喜歡畫畫的人都會大受歡迎",
+          "志村的繪畫能力比不上主角",
+          "主角始終沒有放下對志村的偏見",
+          "志村的個性比主角溫和、穩重"
+        ],
+        "correct": 3
+      },
+      {
+        "q": "下列哪一段敘述最能看出畫的哀傷一文主角岡本挫敗、不甘心的心態？",
+        "options": [
+          "志村的圖畫有時未必那麼出色，大家還是極為讚賞，而就算我畫得再好，也不會有人誇獎",
+          "我在畫馬的時候，心裡經常猜想：志村畫的究竟是什麼",
+          "我衝出校門，也沒回家，眼淚怎麼也停不下來。我不甘心，覺得很沒面子，一路跑到河畔，撲倒在草叢中，捶胸頓足放聲大哭",
+          "唉！想不到他也來了！為什麼總是搶先我一步？真是個討厭的傢伙"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "畫的哀傷文中描述主角岡本和志村的相同點<b>不包含</b>下列何者？",
+        "options": [
+          "外表：長相良好",
+          "個性：高傲自負",
+          "專長：繪畫",
+          "興趣：繪畫"
+        ],
+        "correct": 1
+      },
+      {
+        "q": "下列「　」中的字，何組意思相同？",
+        "options": [
+          "拋「諸」腦後／「諸」子百家",
+          "「盛」氣凌人／年度「盛」事",
+          "「湛」藍天空／技藝精「湛」",
+          "「徵」求同意／無「徵」不信"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "畫的哀傷一文中，岡本小學時對志村的嫉妒心態，可以用下列哪一個詞語形容？",
+        "options": [
+          "瑜亮情結",
+          "誓不兩立",
+          "爭風吃醋",
+          "惺惺相惜"
+        ],
+        "correct": 0
+      },
+      {
+        "q": "在畫的哀傷文中，岡本對志村的態度變化順序，下列說明何者<b>有誤</b>？",
+        "options": [
+          "忿恨不平：大家讚美志村的畫作",
+          "嗤之以鼻：看到志村的粉彩肖像畫",
+          "敬佩友好：和志村一起在河邊寫生",
+          "思念悲慟：久別後得知志村的死訊"
+        ],
+        "correct": 1
+      },
+      {
+        "q": "岡本感受到「黑暗中也有歡欣，光明裡也有哀傷」，這分心情近似下列何者？",
+        "options": [
+          "感受到人事已非，曾有的美好已然逝去",
+          "感受到學海無涯，學畫畫是永無止境的",
+          "感受到人類渺小，生命短暫宜及時行樂",
+          "感受到人心多變，再好的友誼也難持續"
+        ],
+        "correct": 0
+      },
+      {
+        "q": "畫的哀傷一文中對話所透露出的個性和心態，下列說明何者正確？",
+        "options": [
+          "同學們說：「馬固然不錯，但哥倫布更勝一籌啊！」→認為「馬」的畫作比較好",
+          "志村說：「那你就繼續畫吧！我正好可以趁機修一修畫稿。」→表現出志村害怕盛氣凌人的岡本",
+          "志村說：「跟不久前從東京回來的奧野先生學的。才剛學，畫得不怎麼樣。」→志村吹噓自己得到名師的教導",
+          "岡本說：「那幅哥倫布畫得很棒啊！我都嚇了一跳！」→岡本真心佩服志村的才華"
+        ],
+        "correct": 3
+      },
+      {
+        "q": "畫的哀傷文中岡本受到感動而與志村結為好友，當時志村的表現與下列哪一句話的涵義最相近？",
+        "options": [
+          "風雨如晦，雞鳴不已",
+          "桃李不言，下自成蹊",
+          "投之以桃，報之以李",
+          "成也蕭何，敗也蕭何"
+        ],
+        "correct": 1
+      }
+    ]
+  },
+  {
+    "type": "mc",
+    "title": "六、進階題",
+    "meta": "每題2分，共14分",
+    "items": [
+      {
+        "q": "下列各文句，何者文意最通順？",
+        "options": [
+          "即使生活衣食無缺，也不應該浪費",
+          "除非是微小的惡行，也不能去做",
+          "只有找出問題癥結，也能為人民改善生活",
+          "與其老師怎樣苦口婆心，他還是依然故我"
+        ],
+        "correct": 0
+      },
+      {
+        "q": "「何必擁有許許多多的花瓣？哪片花瓣有葉子來得結實呢？何必去向葉子們炫耀？花朵豈知道，當它凋落後留下的果實，還需要葉子們去滋養。」請問這段文字勸勉人們擁有下列何種精神？",
+        "options": [
+          "犧牲小我，完成大我",
+          "甘於平凡，貢獻己力",
+          "寧為雞首，不為牛後",
+          "堅持到底，永不妥協"
+        ],
+        "correct": 1
+      },
+      {
+        "q": "所羅門王曾說：「不輕易發怒的，勝過勇士；制伏己心的，強如取城。」這段話強調什麼的重要？",
+        "options": [
+          "氣力過人",
+          "戰功彪炳",
+          "不忮不求",
+          "控制脾氣"
+        ],
+        "correct": 3
+      },
+      {
+        "q": "松浦彌太郎曾說：「人的一生當中有兩個生日，一個是自己誕生的日子，另一個是真正理解自己的日子。」請問這段文句帶給人們什麼啟示？",
+        "options": [
+          "快樂之權，操之在己",
+          "認識自己，生命才有新開始",
+          "在駕馭別人之前，先能駕馭自己",
+          "唯有自信能帶來勇往直前的勇氣"
+        ],
+        "correct": 1
+      },
+      {
+        "q": "「如果每個人都是特別的，那就沒有一個特別；如果每個人都得到一個獎盃，獎盃就變得毫無意義。生活最甜美的樂趣，在於承認自己並不特別。」這段文字的涵義，與下列何者最接近？",
+        "options": [
+          "承認自己平凡",
+          "不再追逐名利",
+          "享受當下生命",
+          "得失無動於衷"
+        ],
+        "correct": 0
+      },
+      {
+        "q": "老師引用契訶夫的話來勸告奇翔：「對自己的不滿足，是真正的天才所擁有的根本特徵之一。」老師的用意是希望奇翔做到下列何者？",
+        "options": [
+          "認識自己",
+          "肯定自己",
+          "超越自己",
+          "欣賞自己"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "星雲大師曾說：「一般雕刻家在塑造人物時，總是鼻子大、眼睛小。因為大鼻子可以變小，小眼睛可以放大，這是雕刻的祕訣。凡事預留餘地，才有回轉的空間。」這段文字在勸勉人們要具有下列哪一項特質？",
+        "options": [
+          "為人厚道，預留餘地",
+          "推己及人，有同理心",
+          "熟能生巧，累積實力",
+          "吃人嘴軟，拿人手短"
+        ],
+        "correct": 0
+      }
+    ]
+  },
+  {
+    "type": "reading",
+    "title": "七、閱讀測驗",
+    "meta": "每題2分，共10分",
+    "passages": [
+      {
+        "label": "（一）",
+        "text": "有一個人想掛一張畫。他有釘子，但沒有錘子。鄰居有錘子。於是他決定到鄰居那兒去借錘子。\n就在這時候他起了疑心：要是鄰居不樂意把錘子借我，那怎麼辦？昨天他對我只是漫不經心地打招呼，也許他匆匆忙忙，也許這種匆忙是他裝出來的，其實他內心對我是無比不滿的。什麼事不滿呢？我又沒有做對不起他的事，是他自己在多心罷了。要是有人向我借工具，我立刻就借給他。而他為什麼會不借呢？怎麼能拒絕幫別人這麼點兒忙呢？而他還自以為我依賴他，僅僅因為他有一個錘子！我受夠了。\n於是他敏捷地跑過去，按響門鈴。鄰居開門了，還沒來得及說聲「早安」，這個人就衝著他喊道：「留著你的錘子給自己用吧，你這個無賴！」（網路文章 借錘子）",
+        "items": [
+          {
+            "q": "根據本文，「借錘子的人」具有何種性格？",
+            "options": [
+              "成大事者不拘小節",
+              "受人點滴，當湧泉以報",
+              "以小人之心度君子之腹",
+              "寧教我負天下人，休教天下人負我"
+            ],
+            "correct": 2
+          },
+          {
+            "q": "作者藉本文內容說明何種觀念？",
+            "options": [
+              "負面想法造成錯誤行為",
+              "要包容與我們想法不同的人",
+              "人心隔肚皮，要學會保護自己",
+              "要有防人之心，才不會惹禍上身"
+            ],
+            "correct": 0
+          }
+        ]
+      },
+      {
+        "label": "（二）",
+        "text": "五官莫明於目，面有黑子，而目不知，烏在其為明也？目能見物，而不能見吾之面，假於鏡而見焉。鏡之貴，不如目；鏡不求於目，而目轉求於鏡。然世未嘗以鏡之助目，而咎目之失明。鏡何負於目哉？\n客有任目而惡鏡者，曰：「是好苦我。吾自有目，烏用鏡為？」久之，視世所稱美人，鮮當意者，而不知己面之黑子，泰然謂：「美莫己若。」左右匿笑，客終不悟。悲夫！（錢大昕 鏡喻）",
+        "items": [
+          {
+            "q": "根據本文，推論目與鏡的關係為何？",
+            "options": [
+              "目比鏡重要",
+              "鏡比目重要",
+              "目藉鏡來看見自己",
+              "鏡藉目來看清萬物"
+            ],
+            "correct": 2
+          },
+          {
+            "q": "文中提及「客有任目而惡鏡者」，這個人討厭鏡子的原因是什麼？",
+            "options": [
+              "客不想看見自己臉上的黑痣",
+              "客不相信鏡子裡的人是自己",
+              "客認為有雙眼就可以看清楚",
+              "客認為鏡子呈現出虛假世界"
+            ],
+            "correct": 2
+          },
+          {
+            "q": "作者藉由「鏡子」，想說明的道理為何？",
+            "options": [
+              "要懂得明察自己的缺點",
+              "親眼所見才是真實訊息",
+              "即使親眼所見，也要多方證實",
+              "隨身攜帶鏡子，保持儀容整潔"
+            ],
+            "correct": 0
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "type": "reading",
+    "title": "八、閱讀素養題",
+    "meta": "每題3分，共6分",
+    "passages": [
+      {
+        "label": "",
+        "text": "情緒訊號系統的特色就是它總是「開啟」的。最立即的情緒訊號是臉部表情，人們常把生氣、害怕、嫌惡、哀傷和輕蔑視為負面情緒，驚訝和愉快是正面情緒。這簡單的二分法有兩個問題：一是忽略所謂負面情緒並不總是令人不舒服；二是被視為正向情緒的快樂，也可能很殘忍，如嘲笑別人。\n聲音是另一種情緒訊號系統，臉部表情是可以觀察的，聲音則是時斷時續的，可以憑意志完全關閉。想隱藏表情，可能是人常以電話取代面對面溝通的原因。\n身體動作也是情緒訊號：輕鬆時會出現放鬆身體的姿勢，輕蔑的動作是從上往下看對方，驚訝則是把注意力固定在產生情緒的對象。身體動作雖然像臉部和聲音的情緒訊號一樣是不由自主的，但對大多數人而言，控制身體的動作，比完全不露出臉部和聲音的情緒訊號更為容易。（改寫自保羅・艾克曼 心理學家的面相術）",
+        "items": [
+          {
+            "q": "根據本文，下列敘述何者<b>有誤</b>？",
+            "options": [
+              "最立即的情緒訊號是臉部表情",
+              "嘲笑別人是一種殘忍的正向情緒",
+              "若想隱藏表情，可打電話溝通",
+              "輕蔑的動作是由下往上看對方"
+            ],
+            "correct": 3
+          },
+          {
+            "q": "根據本文，控制情緒訊號若由易到難應如何排序？",
+            "options": [
+              "臉部表情＞身體動作＞聲音",
+              "身體動作＞聲音＞臉部表情",
+              "聲音＝臉部表情＞身體動作",
+              "臉部表情＝聲音＝身體動作"
+            ],
+            "correct": 1
+          }
+        ]
+      }
+    ]
+  }
+]
+};
+
+let currentMode = "quiz"; // quiz | print
+
+const contentEl = document.getElementById("content");
+const scoreBar = document.getElementById("scoreBar");
+const scoreText = document.getElementById("scoreText");
+
+function render(){
+  window.examAnswersRevealed = false;
+  contentEl.innerHTML = "";
+  DATA.sections.forEach((sec, si)=> contentEl.appendChild(renderSection(sec, si)));
+  if(currentMode==="quiz"){
+    scoreBar.classList.add("show");
+    updateScore();
+  } else {
+    scoreBar.classList.remove("show");
+    contentEl.querySelectorAll(".opt").forEach(o=>o.classList.add("disabled"));
+    contentEl.querySelectorAll(".opt.is-correct").forEach(o=>o.classList.add("correct"));
+  }
+}
+
+function renderSection(sec, si){
+  const block = document.createElement("section");
+  block.className = "block";
+  block.innerHTML = `<h2>${sec.title}</h2><p class="meta">${sec.meta}</p>`
+    + (sec.note ? `<div class="sec-note">${sec.note}</div>` : "")
+    + (sec.pre ? `<div class="sec-pre">${sec.pre}</div>` : "");
+
+  if(sec.type==="fill"){
+    sec.items.forEach((it,i)=>{
+      const q = document.createElement("div");
+      q.className = "q";
+      const shown = it.answers.join(" ／ ");
+      q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q}</div>
+        <div class="fill-row"><input type="text" class="blank${sec.wide ? " wide" : ""}" autocomplete="off" placeholder="${sec.placeholder || "作答"}"><span class="feedback"></span></div>
+        <div class="answer-reveal">正解：${shown}</div>`;
+      q.querySelector("input.blank").dataset.answers = JSON.stringify(it.answers);
+      if(currentMode!=="quiz"){ q.querySelector("input.blank").disabled = true; q.querySelector(".answer-reveal").classList.add("show"); }
+      block.appendChild(q);
+    });
+  }
+
+  else if(sec.type==="explain"){
+    sec.items.forEach((it,i)=>{
+      const q = document.createElement("div");
+      q.className = "q";
+      q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q}</div>
+        <textarea class="explain-box" placeholder="寫下你的解釋（送出成績後對照參考答案）"></textarea>
+        <div class="answer-reveal">參考答案：${it.answer}</div>`;
+      if(currentMode!=="quiz"){ q.querySelector("textarea").remove(); q.querySelector(".answer-reveal").classList.add("show"); }
+      block.appendChild(q);
+    });
+  }
+
+  else if(sec.type==="mc"){
+    sec.items.forEach((it,i)=>{
+      const q = document.createElement("div");
+      q.className = "q";
+      const optsHtml = it.options.map((op,oi)=>`
+        <div class="opt" data-idx="${oi}" data-correct="${oi===it.correct}">
+          <span class="tag">(${String.fromCharCode(65+oi)})</span><span>${op}</span>
+        </div>`).join("");
+      const imgHtml = it.image ? `<img src="${it.image}" alt="題目附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">` : "";
+      const img2Html = it.image2 ? `<img src="${it.image2}" alt="題目附圖2" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">` : "";
+      q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q}</div>
+        ${imgHtml}${img2Html}
+        <div class="opts">${optsHtml}</div>`;
+      q.querySelectorAll(".opt").forEach(optEl=>{
+        if(optEl.dataset.correct==="true") optEl.classList.add("is-correct");
+        optEl.addEventListener("click", ()=>selectOption(q, optEl));
+      });
+      block.appendChild(q);
+    });
+  }
+
+  else if(sec.type==="reading"){
+    sec.passages.forEach(p=>{
+      const passageDiv = document.createElement("div");
+      passageDiv.className = "passage";
+      passageDiv.innerHTML = `${p.label ? `<span class="passage-label">${p.label}</span>`:""}${p.text}${p.image ? `<img src="${p.image}" alt="題組附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-top:10px;border:1px solid var(--paper-line);">`:""}`;
+      block.appendChild(passageDiv);
+      p.items.forEach((it,i)=>{
+        const q = document.createElement("div");
+        q.className = "q";
+        const optsHtml = it.options.map((op,oi)=>`
+          <div class="opt" data-idx="${oi}" data-correct="${oi===it.correct}">
+            <span class="tag">(${String.fromCharCode(65+oi)})</span><span>${op}</span>
+          </div>`).join("");
+        q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q}</div>
+          ${it.image ? `<img src="${it.image}" alt="題目附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">`:""}
+          <div class="opts">${optsHtml}</div>`;
+        q.querySelectorAll(".opt").forEach(optEl=>{
+          if(optEl.dataset.correct==="true") optEl.classList.add("is-correct");
+          optEl.addEventListener("click", ()=>selectOption(q, optEl));
+        });
+        block.appendChild(q);
+      });
+    });
+  }
+
+  return block;
+}
+
+function selectOption(qEl, optEl){
+  if(currentMode!=="quiz") return;
+  if(qEl.dataset.answered==="true") return;
+  qEl.dataset.answered = "true";
+  qEl.querySelectorAll(".opt").forEach(o=>o.classList.add("disabled"));
+  optEl.classList.add("selected");
+  const correctOpt = qEl.querySelector('.opt[data-correct="true"]');
+  qEl.dataset.studentAnswer = optEl.textContent.trim();
+  qEl.dataset.correctAnswer = correctOpt ? correctOpt.textContent.trim() : "";
+  qEl.dataset.isCorrect = (optEl.dataset.correct==="true") ? "true" : "false";
+  updateScore();
+}
+
+function updateScore(){
+  let total = 0, answered = 0, correct = 0;
+  contentEl.querySelectorAll(".q").forEach(q=>{
+    const gradable = q.querySelector(".opts") || q.querySelector("input.blank");
+    if(!gradable) return;
+    total++;
+    if(q.dataset.studentAnswer !== undefined){
+      answered++;
+      if(q.dataset.isCorrect === "true") correct++;
+    }
+  });
+  if(window.examAnswersRevealed){
+    scoreText.textContent = `${correct} / ${total}`;
+  } else {
+    scoreText.textContent = `已作答 ${answered} / ${total} 題`;
+  }
+}
+window.updateScore = updateScore;
+
+// 填寫題（注音／國字、改錯）：去掉空白與標點後和正解比對；注音的一聲符號「ˉ」可寫可不寫
+function normFill(s){
+  return String(s).replace(/[\sˉ　，、。．.,;；:：!！?？「」『』（）()【】→\-－—]/g, "").trim();
+}
+document.addEventListener("input", (e)=>{
+  const input = e.target;
+  if(!input.matches || !input.matches("input.blank")) return;
+  const q = input.closest(".q");
+  const answers = JSON.parse(input.dataset.answers || "[]");
+  const val = input.value.trim();
+  if(!val){ delete q.dataset.studentAnswer; delete q.dataset.isCorrect; }
+  else {
+    q.dataset.studentAnswer = val;
+    q.dataset.correctAnswer = answers.join(" ／ ");
+    q.dataset.isCorrect = answers.some(a => normFill(a) === normFill(val)) ? "true" : "false";
+  }
+  updateScore();
+});
+
+document.getElementById("resetBtn").addEventListener("click", render);
+document.getElementById("quizModeBtn").addEventListener("click", ()=>{
+  currentMode = "quiz";
+  document.getElementById("quizModeBtn").classList.add("active");
+  document.getElementById("printModeBtn").classList.remove("active");
+  render();
+});
+document.getElementById("printModeBtn").addEventListener("click", ()=>{
+  if(document.getElementById("printModeBtn").disabled) return;
+  currentMode = "print";
+  document.getElementById("printModeBtn").classList.add("active");
+  document.getElementById("quizModeBtn").classList.remove("active");
+  render();
+});
+
+window.unlockPrintMode = function(){
+  document.getElementById("printModeBtn").disabled = false;
+};
+
+render();
+</script>
+<script src="../sync.js?v=20261018b"></script>
+</body>
+</html>

@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>段考題庫｜國文第14回 - 六朝名士畫廊──世說新語選</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@500;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#faf6ec;
+    --paper-line:#e3dcc8;
+    --ink:#26332b;
+    --ink-soft:#5b6b5f;
+    --chalk-green:#2f4538;
+    --chalk-green-2:#3d5a48;
+    --pen-red:#b8433a;
+    --pen-red-soft:#f4dedb;
+    --ok-green:#3f7d52;
+    --ok-green-soft:#dfeee1;
+    --gold:#b5842a;
+    --radius:10px;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:"Noto Sans TC",sans-serif;
+    line-height:1.7;
+  }
+  header.hero{
+    background:var(--chalk-green);
+    color:#eef2ea;
+    padding:28px 20px 40px;
+    position:relative;
+  }
+  header.hero::after{
+    content:"";
+    position:absolute;
+    left:0; right:0; bottom:-1px;
+    height:14px;
+    background:repeating-linear-gradient(90deg,var(--paper) 0 18px, transparent 18px 20px);
+  }
+  .hero-inner{max-width:880px;margin:0 auto;}
+  .breadcrumb a{color:#cfe0d1;text-decoration:none;font-size:14px;}
+  .breadcrumb a:hover{text-decoration:underline;}
+  h1{
+    font-family:"Noto Serif TC",serif;
+    font-weight:700;
+    font-size:clamp(24px,4vw,34px);
+    margin:10px 0 6px;
+  }
+  .subtitle{color:#cfe0d1;font-size:15px;margin:0;}
+  main{max-width:880px;margin:0 auto;padding:28px 20px 80px;}
+
+  .controls{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:22px;
+  }
+  .mode-toggle{display:flex;border:2px solid var(--chalk-green);border-radius:999px;overflow:hidden;}
+  .mode-toggle button{
+    background:transparent;border:none;padding:8px 16px;font-size:14px;font-weight:700;
+    color:var(--chalk-green);cursor:pointer;font-family:"Noto Sans TC",sans-serif;
+  }
+  .mode-toggle button.active{background:var(--gold);color:#fff;}
+  .mode-toggle button:disabled{opacity:.4;cursor:not-allowed;}
+
+  .score-bar{
+    display:none;
+    align-items:center;
+    justify-content:space-between;
+    background:#fff;
+    border:1px solid var(--paper-line);
+    border-left:5px solid var(--gold);
+    border-radius:var(--radius);
+    padding:12px 18px;
+    margin-bottom:22px;
+    font-size:14px;
+  }
+  .score-bar.show{display:flex;}
+  .score-bar strong{font-size:18px;color:var(--gold);}
+  .score-bar button{
+    background:none;border:1px solid var(--ink-soft);color:var(--ink-soft);
+    border-radius:6px;padding:6px 12px;font-size:13px;cursor:pointer;
+  }
+
+  section.block{
+    background:#fff;
+    border:1px solid var(--paper-line);
+    border-radius:var(--radius);
+    padding:22px 22px 26px;
+    margin-bottom:20px;
+  }
+  .block h2{
+    font-family:"Noto Serif TC",serif;
+    font-size:19px;
+    margin:0 0 4px;
+    color:var(--chalk-green);
+  }
+  .block .meta{color:var(--ink-soft);font-size:13px;margin:0 0 16px;}
+
+  .q{margin-bottom:18px;padding-bottom:16px;border-bottom:1px dashed var(--paper-line);}
+  .q:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0;}
+  .q-text{font-size:15.5px;margin-bottom:8px;}
+  .q-num{color:var(--gold);font-weight:700;margin-right:4px;}
+
+  .opts{display:grid;gap:8px;}
+  .opt{
+    display:flex;gap:8px;align-items:flex-start;
+    border:1.5px solid var(--paper-line);
+    border-radius:8px;
+    padding:9px 12px;
+    cursor:pointer;
+    font-size:14.5px;
+    background:#fffdf8;
+  }
+  .opt:hover{border-color:var(--chalk-green-2);}
+  .opt.selected{border-color:var(--chalk-green-2);background:#eef3ea;}
+  .opt.correct{border-color:var(--ok-green);background:var(--ok-green-soft);}
+  .opt.wrong{border-color:var(--pen-red);background:var(--pen-red-soft);}
+  .opt .tag{font-weight:700;color:var(--ink-soft);}
+  .opt.correct .tag{color:var(--ok-green);}
+  .opt.wrong .tag{color:var(--pen-red);}
+  .opt.disabled{cursor:default;}
+
+  .passage{
+    background:#f5f2e8;border-radius:8px;padding:14px 16px;margin-bottom:14px;
+    font-size:14.5px;white-space:pre-line;
+  }
+  .passage-label{font-weight:700;color:var(--chalk-green);margin-bottom:4px;display:block;}
+
+  .sec-note{font-size:13.5px;color:var(--ink-soft);background:#f5f2e8;border-radius:8px;padding:8px 12px;margin:-6px 0 14px;}
+  .sec-pre{background:#f5f2e8;border-radius:8px;padding:10px 14px;margin:-4px 0 14px;font-size:14.5px;}
+  .fill-row{display:flex;flex-wrap:wrap;align-items:center;gap:8px;}
+  input.blank{
+    font-family:"Noto Sans TC",sans-serif;font-size:15.5px;border:none;border-bottom:2px solid var(--chalk-green-2);
+    background:#fffdf8;padding:4px 6px;width:170px;max-width:100%;
+  }
+  input.blank.wide{width:100%;}
+  textarea.explain-box{
+    width:100%;min-height:52px;font-family:"Noto Sans TC",sans-serif;font-size:15px;
+    border:1.5px solid var(--paper-line);border-radius:8px;padding:8px 10px;background:#fffdf8;resize:vertical;
+  }
+  .feedback{font-weight:700;font-size:15px;}
+  .feedback.ok{color:var(--ok-green);}
+  .feedback.no{color:var(--pen-red);}
+  .answer-reveal{display:none;margin-top:8px;font-size:14px;color:var(--ok-green);background:var(--ok-green-soft);border-radius:6px;padding:6px 12px;}
+  .answer-reveal.show{display:block;}
+  .zh-und{text-decoration:underline;text-underline-offset:3px;}
+  .footer-link{
+    display:block;text-align:center;margin-top:30px;color:var(--chalk-green);
+    text-decoration:none;font-weight:700;font-size:14px;
+  }
+  .footer-link:hover{text-decoration:underline;}
+
+  @media print{
+    header.hero, .controls, .score-bar, .mini-btn, .footer-link{display:none !important;}
+    body{background:#fff;}
+    section.block{border:none;box-shadow:none;padding:8px 0;margin-bottom:14px;}
+    .opt.correct{background:none;border:none;font-weight:700;}
+    .opt.correct::after{content:" ← 正解";color:var(--pen-red);}
+    .opt{border:none;padding:2px 0;}
+    main{max-width:100%;padding:0 24px;}
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="breadcrumb"><a href="https://jenlin2002.github.io/">🏠 回總目錄</a> ／ <a href="../hanlin-chinese-g8-1.html" style="color:#cfe0d1;">段考題庫</a></div>
+    <h1>國文・第14回</h1>
+    <p class="subtitle">自學選文一 六朝名士畫廊──世說新語選｜翰林版八年級國文（三）Ｂ卷</p>
+  </div>
+</header>
+
+<main>
+  <div class="controls">
+    <div class="mode-toggle">
+      <button id="quizModeBtn" class="active">✏️ 測驗模式</button>
+      <button id="printModeBtn" disabled title="完成測驗並送出成績後才能查看">🖨️ 完整題目與解答（送出成績後解鎖）</button>
+    </div>
+  </div>
+
+  <div class="score-bar" id="scoreBar">
+    <div>目前得分：<strong id="scoreText">0 / 0</strong>（選擇題與填寫題；解釋題不計分）</div>
+    <button id="resetBtn">重新作答</button>
+  </div>
+
+  <div id="content"></div>
+
+  <a class="footer-link" href="../hanlin-chinese-g8-1.html">← 回段考題庫總覽</a>
+</main>
+
+<script>
+
+window.EXAM_META = { version: "國文B卷", examLabel: "國文第14回" };
+const DATA = {
+  sections: [
+  {
+    "type": "mc",
+    "title": "一、單題",
+    "meta": "每題3分，共75分",
+    "items": [
+      {
+        "q": "下列「　」中的字，何組讀音相同？",
+        "options": [
+          "故作「矜」持／「黔」驢技窮",
+          "「狷」介之士／字跡「娟」秀",
+          "獲頒「獎」狀／瓊「漿」玉液",
+          "容貌「俊」美／嚴刑「峻」法"
+        ],
+        "correct": 3
+      },
+      {
+        "q": "下列各選項「　」中的注音寫成國字後，何組字形相同？",
+        "options": [
+          "一見「ㄓㄨㄥ」情／老態龍「ㄓㄨㄥ」",
+          "胸懷「ㄊㄢˇ」蕩／私心偏「ㄊㄢˇ」",
+          "「ㄈㄨˋ」之一炬／驕傲自「ㄈㄨˋ」",
+          "以腳「ㄓㄢˇ」地／愁眉不「ㄓㄢˇ」"
+        ],
+        "correct": 0
+      },
+      {
+        "q": "「驃騎王武子是衛玠之舅，俊爽有風姿，見玠輒嘆曰：『珠玉在側，覺我形穢！』」（世說新語 容止篇）由上文可知，王武子和衛玠兩人的外表相比結果應是如何？",
+        "options": [
+          "一樣俊美",
+          "王武子勝",
+          "衛玠勝",
+          "都不俊美"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "世說新語中記載郗太尉選中王羲之為女婿的故事，其選婿理由符合當時的何種社會風氣？",
+        "options": [
+          "美男子很受歡迎",
+          "崇尚瀟灑的風采",
+          "喜歡機智的言談",
+          "世族聯姻的習俗"
+        ],
+        "correct": 1
+      },
+      {
+        "q": "下列各選項「　」中出自世說新語的成語，何者運用<b>有誤</b>？",
+        "options": [
+          "她沒有足夠的錢買珍珠項鍊，只能站在櫥窗前「肅然起敬」",
+          "安主廚的廚藝已是「登峰造極」，屢次獲得國際賽事的大獎",
+          "雖然剛開始時諸事不順，但只要肯下功夫，將來必如「倒吃甘蔗」般平順",
+          "他總是不思上進，儘管「小時了了」，長大後卻難有成就"
+        ],
+        "correct": 0
+      },
+      {
+        "q": "下列各選項「　」中的人稱代詞，何者屬於第三人稱？",
+        "options": [
+          "「余」憶童稚時，能張目對日",
+          "蓮之愛，同「予」者何人",
+          "訪之，乃是逸少。因嫁女與「焉」",
+          "百鳥豈無母，「爾」獨哀怨深"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "世說新語中記載了不同特質的王藍田，由此可驗證世說新語在寫作手法上的何種特色？",
+        "options": [
+          "善於自短小篇章凸顯人物處世的多面性",
+          "透過史實呈現人物真實面貌",
+          "嚴謹地利用文句來品評人物",
+          "忠實地呈現市井小民的面貌"
+        ],
+        "correct": 0
+      },
+      {
+        "q": "下列哪一個成語可以用來形容「美男子」？",
+        "options": [
+          "自慚形穢",
+          "擲果盈車",
+          "雞皮鶴髮",
+          "八面玲瓏"
+        ],
+        "correct": 1
+      },
+      {
+        "q": "世說新語一書中記載了許多知名的歷史人物，請問下列成語典故和人物的配對，何者<b>有誤</b>？",
+        "options": [
+          "珠玉在側→衛玠",
+          "小時了了→孔融",
+          "坦腹東床→王羲之",
+          "自慚形穢→何晏"
+        ],
+        "correct": 3
+      },
+      {
+        "q": "關於世說新語一書的說明，下列何者正確？",
+        "options": [
+          "內容記載先秦到東漢間文人的言行趣事",
+          "敘述詳盡，說理明確",
+          "善於抓住人物特質，生動刻畫人物性格",
+          "劉義慶撰寫一千一百多則，依性質分類成三十六門"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "「王藍田的父親王安期擔任東海郡守時，有個小官偷了池塘中的魚，主簿要追查這件事。王安期說：『從前周文王的獵場是和百姓共用的，池塘裡的幾條魚又有什麼值得吝惜的呢？』」（改寫自世說新語 政事篇）這個故事中呈現出王安期的行政理念與下列何者最接近？",
+        "options": [
+          "為政寬厚，體恤百姓",
+          "坦白從寬，抗拒從嚴",
+          "殺一儆百，嚴刑峻法",
+          "賞罰分明，執法明快"
+        ],
+        "correct": 0
+      },
+      {
+        "q": "「郝隆七月七日出日中仰臥。人問其故，答曰：『我晒書。』」（世說新語 排調篇）從這段記載中郝隆想表達的意思<b>不包括</b>下列何者？",
+        "options": [
+          "諷刺藏書不讀的人",
+          "自誇滿腹學識",
+          "顯示豪放瀟灑的風采",
+          "展現虛懷若谷的謙卑"
+        ],
+        "correct": 3
+      },
+      {
+        "q": "下列各選項敘述，何者最貼近世說新語一書在中國文學發展上的地位？",
+        "options": [
+          "單則故事敘述，尚無完整架構",
+          "完整結構的文言短篇小說",
+          "說書人講唱故事的底本",
+          "白話通俗的長篇小說"
+        ],
+        "correct": 0
+      },
+      {
+        "q": "王羲之聽到王藍田吃雞蛋的事情後，大笑說：「即使他父親安期有這種個性，我都認為一無可取了，何況是藍田呢！」由此可知王羲之認為王安期、王藍田這對父子如何？",
+        "options": [
+          "賢父生賢子",
+          "歹竹出好筍",
+          "父不如子",
+          "子不如父"
+        ],
+        "correct": 3
+      },
+      {
+        "q": "由王藍田食雞子一文，可知王藍田的個性急躁。請問下列何者可以用來勸勉他？",
+        "options": [
+          "真理是時間的孩子，不是權威的孩子（布萊希特）",
+          "陰謀陷害別人的人，自己會首先遭到不幸（伊索）",
+          "脾氣暴躁是人類較為卑劣的天性之一，人要是發脾氣就等於在人類進步的階梯上倒退了一步（達爾文）",
+          "我願證明，凡是行為善良與高尚的人，定能因之而擔當患難（貝多芬）"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "下列文句皆是形容忿怒的狀態，何者使用了「誇飾」修辭技巧？",
+        "options": [
+          "他的心像澆了一瓢滾油，連血帶肉一起燃燒",
+          "她睜大了雙眼，只見憤怒的兩顆眼珠就快暴出來了",
+          "他氣得脖子上暴著青筋，眼睛像兩只紅煤球",
+          "他氣得像一頭中了槍彈的野豬一樣又跳又吼"
+        ],
+        "correct": 1
+      },
+      {
+        "q": "「周處除三害」的故事，是指周處射虎斬蛟，勵志向學為善，依據對世說新語一書的了解，應放在哪一篇較合適？",
+        "options": [
+          "言語篇",
+          "自新篇",
+          "雅量篇",
+          "忿狷篇"
+        ],
+        "correct": 1
+      },
+      {
+        "q": "謝靈運嘗曰：「天下才有一石，曹子建獨占八斗，我得一斗，天下共分一斗。」關於上文內容，下列何者說明<b>有誤</b>？",
+        "options": [
+          "須集天下的才氣才能超越曹、謝二人",
+          "曹子建的才氣最高",
+          "謝靈運自認為才氣高於曹子建以外的其他文人",
+          "謝靈運自覺與曹的才氣占了天下十之八九"
+        ],
+        "correct": 0
+      },
+      {
+        "q": "「公子糾預備要作亂，桓公派使者去觀察他，使者回報：『公子糾的笑聲中沒有快樂之情，雖看得見卻是非不分，一定會作亂。』桓公於是命令魯人殺了他。」這則故事中，使者是根據公子糾的何種表現來判斷他必定作亂？",
+        "options": [
+          "學識才能",
+          "生活作息",
+          "言行舉止",
+          "胸襟氣度"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "小翰想利用世說新語一書的記載，來研究文人相關趣事，請問可找下列哪一位文人作為研究對象？",
+        "options": [
+          "司馬遷",
+          "蘇軾",
+          "孔子",
+          "孔融"
+        ],
+        "correct": 3
+      },
+      {
+        "q": "「謝無奕性麤彊，以事不相得，自往數王藍田，肆言極罵。王正色面壁不敢動，半日。謝去良久，轉頭問左右小吏曰：『去未？』答云：『已去。』然後復坐。時人嘆其性急而能有所容。」（世說新語）上述短文的主旨在說明下列何者？（註：①麤彊：粗野剛強。麤，音ㄘㄨ。②數：責備。）",
+        "options": [
+          "指責謝無奕無理",
+          "讚美謝無奕正直",
+          "批評王藍田性急",
+          "肯定王藍田能忍"
+        ],
+        "correct": 3
+      },
+      {
+        "q": "「王戎七歲時，曾經與一群小孩一起玩。看到路邊的李樹果實纍纍，壓彎了樹枝。那群小孩爭相跑去摘，只有王戎站著不動。有人問他為什麼，他回答說：『李樹長在道路旁還能有這麼多的果實，可見這李子一定是苦的。』採來一嘗，果真如此。」由這則記事可知王戎具備何種能力？",
+        "options": [
+          "異於常人的推理力",
+          "超凡入聖的超能力",
+          "源源不絕的想像力",
+          "石破天驚的爆發力"
+        ],
+        "correct": 0
+      },
+      {
+        "q": "「文帝嘗令東阿王七步中作詩，不成者行大法。應聲便為詩曰：『煮豆持作羹，漉菽以為汁。萁在釜下燃，豆在釜中泣，本是同根生，相煎何太急。』帝深有慚色。」（世說新語）下列哪一個成語與此段故事<b>無關</b>？",
+        "options": [
+          "兄弟鬩牆",
+          "煮豆燃萁",
+          "洛陽紙貴",
+          "相煎太急"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "「潘岳妙有姿容，好神情。少時，挾彈出洛陽道，婦人遇者，莫不連手共縈之。左太沖絕醜，亦復效岳遊遨；於是群嫗齊共亂唾之，委頓而返。」（世說新語 容止篇）這則記載中的左太沖可用下列哪一個俗語形容？",
+        "options": [
+          "畫虎不成反類犬",
+          "知其不可而為之",
+          "事非經過不知難",
+          "無心插柳柳成蔭"
+        ],
+        "correct": 0
+      },
+      {
+        "q": "「劉伶常常喝酒，縱情狂歡，有時還脫掉衣服在屋裡活動，別人到他家後就譏笑他。劉伶則說：『我以天地作為我的屋子，居室當作我的衣褲，你們為什麼跑到我的衣褲裡面來呢？』」世說新語將人物言行按性質歸類，上文最可能被歸在下列何者？",
+        "options": [
+          "賢媛篇",
+          "任誕篇",
+          "儉嗇篇",
+          "自新篇"
+        ],
+        "correct": 1
+      }
+    ]
+  },
+  {
+    "type": "reading",
+    "title": "二、題組",
+    "meta": "每題5分，共25分",
+    "passages": [
+      {
+        "label": "（一）",
+        "text": "荀巨伯到遠方去探視生病的友人，正好碰上胡賊來攻城，朋友說：「我都快要死了，你還是趕快離開這裡吧！」荀巨伯說：「我從很遠的地方來看你，你卻要我離開，這種損壞義氣來求生存的做法，怎麼會是我荀巨伯做得出來的事呢？」賊人到了，問荀巨伯：「大軍到來，整個郡都空了，你是什麼人，竟敢獨自停留在這裡？」荀巨伯說：「朋友有病，我不忍心捨棄他讓他一個人在這裡，我情願代他受死。」賊人說：「我們是無義的人，卻進到了講究道義的城。」於是撤兵回去，全城因而得以保全。",
+        "items": [
+          {
+            "q": "從這則故事中，我們<b>不能</b>看出荀巨伯具有下列哪一種德行？",
+            "options": [
+              "愛國",
+              "友愛",
+              "義氣",
+              "勇敢"
+            ],
+            "correct": 0
+          },
+          {
+            "q": "根據本文描述，可推知荀巨伯和他的友人是哪一種朋友？",
+            "options": [
+              "總角之交",
+              "忘年之交",
+              "莫逆之交",
+              "泛泛之交"
+            ],
+            "correct": 2
+          },
+          {
+            "q": "根據本文，胡賊最後退兵的原因最可能為下列何者？",
+            "options": [
+              "答應荀巨伯以身代友的要求",
+              "被荀巨伯對友人的情義感動",
+              "一郡盡空，已無財物可拿取",
+              "有義兵趕至，只好聞風而逃"
+            ],
+            "correct": 1
+          }
+        ]
+      },
+      {
+        "label": "（二）",
+        "text": "王黃門兄弟三人俱詣謝公，子猷、子重多說俗事，子敬寒溫而已。既出，坐客問謝公：「向三賢孰愈？」謝公曰：「小者最勝。」客曰：「何以知之？」謝公曰：「『吉人之辭寡，躁人之辭多。』推此知之。」（世說新語 品藻篇）",
+        "items": [
+          {
+            "q": "本文中，謝公以什麼作為評斷三人的依據？",
+            "options": [
+              "說話的語氣",
+              "說話的音量",
+              "說話的內容",
+              "說話的神態"
+            ],
+            "correct": 2
+          },
+          {
+            "q": "從文中內容推究，下列何者說明正確？",
+            "options": [
+              "三人之中謝公最稱揚王子猷",
+              "三人之中，子敬的話最少",
+              "謝公認為辭多就聒噪，辭少則保身",
+              "從「詣」字可知王黃門兄弟的地位高於謝公"
+            ],
+            "correct": 1
+          }
+        ]
+      }
+    ]
+  }
+]
+};
+
+let currentMode = "quiz"; // quiz | print
+
+const contentEl = document.getElementById("content");
+const scoreBar = document.getElementById("scoreBar");
+const scoreText = document.getElementById("scoreText");
+
+function render(){
+  window.examAnswersRevealed = false;
+  contentEl.innerHTML = "";
+  DATA.sections.forEach((sec, si)=> contentEl.appendChild(renderSection(sec, si)));
+  if(currentMode==="quiz"){
+    scoreBar.classList.add("show");
+    updateScore();
+  } else {
+    scoreBar.classList.remove("show");
+    contentEl.querySelectorAll(".opt").forEach(o=>o.classList.add("disabled"));
+    contentEl.querySelectorAll(".opt.is-correct").forEach(o=>o.classList.add("correct"));
+  }
+}
+
+function renderSection(sec, si){
+  const block = document.createElement("section");
+  block.className = "block";
+  block.innerHTML = `<h2>${sec.title}</h2><p class="meta">${sec.meta}</p>`
+    + (sec.note ? `<div class="sec-note">${sec.note}</div>` : "")
+    + (sec.pre ? `<div class="sec-pre">${sec.pre}</div>` : "");
+
+  if(sec.type==="fill"){
+    sec.items.forEach((it,i)=>{
+      const q = document.createElement("div");
+      q.className = "q";
+      const shown = it.answers.join(" ／ ");
+      q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q}</div>
+        <div class="fill-row"><input type="text" class="blank${sec.wide ? " wide" : ""}" autocomplete="off" placeholder="${sec.placeholder || "作答"}"><span class="feedback"></span></div>
+        <div class="answer-reveal">正解：${shown}</div>`;
+      q.querySelector("input.blank").dataset.answers = JSON.stringify(it.answers);
+      if(currentMode!=="quiz"){ q.querySelector("input.blank").disabled = true; q.querySelector(".answer-reveal").classList.add("show"); }
+      block.appendChild(q);
+    });
+  }
+
+  else if(sec.type==="explain"){
+    sec.items.forEach((it,i)=>{
+      const q = document.createElement("div");
+      q.className = "q";
+      q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q}</div>
+        <textarea class="explain-box" placeholder="寫下你的解釋（送出成績後對照參考答案）"></textarea>
+        <div class="answer-reveal">參考答案：${it.answer}</div>`;
+      if(currentMode!=="quiz"){ q.querySelector("textarea").remove(); q.querySelector(".answer-reveal").classList.add("show"); }
+      block.appendChild(q);
+    });
+  }
+
+  else if(sec.type==="mc"){
+    sec.items.forEach((it,i)=>{
+      const q = document.createElement("div");
+      q.className = "q";
+      const optsHtml = it.options.map((op,oi)=>`
+        <div class="opt" data-idx="${oi}" data-correct="${oi===it.correct}">
+          <span class="tag">(${String.fromCharCode(65+oi)})</span><span>${op}</span>
+        </div>`).join("");
+      const imgHtml = it.image ? `<img src="${it.image}" alt="題目附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">` : "";
+      const img2Html = it.image2 ? `<img src="${it.image2}" alt="題目附圖2" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">` : "";
+      q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q}</div>
+        ${imgHtml}${img2Html}
+        <div class="opts">${optsHtml}</div>`;
+      q.querySelectorAll(".opt").forEach(optEl=>{
+        if(optEl.dataset.correct==="true") optEl.classList.add("is-correct");
+        optEl.addEventListener("click", ()=>selectOption(q, optEl));
+      });
+      block.appendChild(q);
+    });
+  }
+
+  else if(sec.type==="reading"){
+    sec.passages.forEach(p=>{
+      const passageDiv = document.createElement("div");
+      passageDiv.className = "passage";
+      passageDiv.innerHTML = `${p.label ? `<span class="passage-label">${p.label}</span>`:""}${p.text}${p.image ? `<img src="${p.image}" alt="題組附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-top:10px;border:1px solid var(--paper-line);">`:""}`;
+      block.appendChild(passageDiv);
+      p.items.forEach((it,i)=>{
+        const q = document.createElement("div");
+        q.className = "q";
+        const optsHtml = it.options.map((op,oi)=>`
+          <div class="opt" data-idx="${oi}" data-correct="${oi===it.correct}">
+            <span class="tag">(${String.fromCharCode(65+oi)})</span><span>${op}</span>
+          </div>`).join("");
+        q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q}</div>
+          ${it.image ? `<img src="${it.image}" alt="題目附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">`:""}
+          <div class="opts">${optsHtml}</div>`;
+        q.querySelectorAll(".opt").forEach(optEl=>{
+          if(optEl.dataset.correct==="true") optEl.classList.add("is-correct");
+          optEl.addEventListener("click", ()=>selectOption(q, optEl));
+        });
+        block.appendChild(q);
+      });
+    });
+  }
+
+  return block;
+}
+
+function selectOption(qEl, optEl){
+  if(currentMode!=="quiz") return;
+  if(qEl.dataset.answered==="true") return;
+  qEl.dataset.answered = "true";
+  qEl.querySelectorAll(".opt").forEach(o=>o.classList.add("disabled"));
+  optEl.classList.add("selected");
+  const correctOpt = qEl.querySelector('.opt[data-correct="true"]');
+  qEl.dataset.studentAnswer = optEl.textContent.trim();
+  qEl.dataset.correctAnswer = correctOpt ? correctOpt.textContent.trim() : "";
+  qEl.dataset.isCorrect = (optEl.dataset.correct==="true") ? "true" : "false";
+  updateScore();
+}
+
+function updateScore(){
+  let total = 0, answered = 0, correct = 0;
+  contentEl.querySelectorAll(".q").forEach(q=>{
+    const gradable = q.querySelector(".opts") || q.querySelector("input.blank");
+    if(!gradable) return;
+    total++;
+    if(q.dataset.studentAnswer !== undefined){
+      answered++;
+      if(q.dataset.isCorrect === "true") correct++;
+    }
+  });
+  if(window.examAnswersRevealed){
+    scoreText.textContent = `${correct} / ${total}`;
+  } else {
+    scoreText.textContent = `已作答 ${answered} / ${total} 題`;
+  }
+}
+window.updateScore = updateScore;
+
+// 填寫題（注音／國字、改錯）：去掉空白與標點後和正解比對；注音的一聲符號「ˉ」可寫可不寫
+function normFill(s){
+  return String(s).replace(/[\sˉ　，、。．.,;；:：!！?？「」『』（）()【】→\-－—]/g, "").trim();
+}
+document.addEventListener("input", (e)=>{
+  const input = e.target;
+  if(!input.matches || !input.matches("input.blank")) return;
+  const q = input.closest(".q");
+  const answers = JSON.parse(input.dataset.answers || "[]");
+  const val = input.value.trim();
+  if(!val){ delete q.dataset.studentAnswer; delete q.dataset.isCorrect; }
+  else {
+    q.dataset.studentAnswer = val;
+    q.dataset.correctAnswer = answers.join(" ／ ");
+    q.dataset.isCorrect = answers.some(a => normFill(a) === normFill(val)) ? "true" : "false";
+  }
+  updateScore();
+});
+
+document.getElementById("resetBtn").addEventListener("click", render);
+document.getElementById("quizModeBtn").addEventListener("click", ()=>{
+  currentMode = "quiz";
+  document.getElementById("quizModeBtn").classList.add("active");
+  document.getElementById("printModeBtn").classList.remove("active");
+  render();
+});
+document.getElementById("printModeBtn").addEventListener("click", ()=>{
+  if(document.getElementById("printModeBtn").disabled) return;
+  currentMode = "print";
+  document.getElementById("printModeBtn").classList.add("active");
+  document.getElementById("quizModeBtn").classList.remove("active");
+  render();
+});
+
+window.unlockPrintMode = function(){
+  document.getElementById("printModeBtn").disabled = false;
+};
+
+render();
+</script>
+<script src="../sync.js?v=20261018b"></script>
+</body>
+</html>

@@ -1,0 +1,906 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>段考題庫｜國文第8回 - 複習</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@500;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#faf6ec;
+    --paper-line:#e3dcc8;
+    --ink:#26332b;
+    --ink-soft:#5b6b5f;
+    --chalk-green:#2f4538;
+    --chalk-green-2:#3d5a48;
+    --pen-red:#b8433a;
+    --pen-red-soft:#f4dedb;
+    --ok-green:#3f7d52;
+    --ok-green-soft:#dfeee1;
+    --gold:#b5842a;
+    --radius:10px;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:"Noto Sans TC",sans-serif;
+    line-height:1.7;
+  }
+  header.hero{
+    background:var(--chalk-green);
+    color:#eef2ea;
+    padding:28px 20px 40px;
+    position:relative;
+  }
+  header.hero::after{
+    content:"";
+    position:absolute;
+    left:0; right:0; bottom:-1px;
+    height:14px;
+    background:repeating-linear-gradient(90deg,var(--paper) 0 18px, transparent 18px 20px);
+  }
+  .hero-inner{max-width:880px;margin:0 auto;}
+  .breadcrumb a{color:#cfe0d1;text-decoration:none;font-size:14px;}
+  .breadcrumb a:hover{text-decoration:underline;}
+  h1{
+    font-family:"Noto Serif TC",serif;
+    font-weight:700;
+    font-size:clamp(24px,4vw,34px);
+    margin:10px 0 6px;
+  }
+  .subtitle{color:#cfe0d1;font-size:15px;margin:0;}
+  main{max-width:880px;margin:0 auto;padding:28px 20px 80px;}
+
+  .controls{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:22px;
+  }
+  .mode-toggle{display:flex;border:2px solid var(--chalk-green);border-radius:999px;overflow:hidden;}
+  .mode-toggle button{
+    background:transparent;border:none;padding:8px 16px;font-size:14px;font-weight:700;
+    color:var(--chalk-green);cursor:pointer;font-family:"Noto Sans TC",sans-serif;
+  }
+  .mode-toggle button.active{background:var(--gold);color:#fff;}
+  .mode-toggle button:disabled{opacity:.4;cursor:not-allowed;}
+
+  .score-bar{
+    display:none;
+    align-items:center;
+    justify-content:space-between;
+    background:#fff;
+    border:1px solid var(--paper-line);
+    border-left:5px solid var(--gold);
+    border-radius:var(--radius);
+    padding:12px 18px;
+    margin-bottom:22px;
+    font-size:14px;
+  }
+  .score-bar.show{display:flex;}
+  .score-bar strong{font-size:18px;color:var(--gold);}
+  .score-bar button{
+    background:none;border:1px solid var(--ink-soft);color:var(--ink-soft);
+    border-radius:6px;padding:6px 12px;font-size:13px;cursor:pointer;
+  }
+
+  section.block{
+    background:#fff;
+    border:1px solid var(--paper-line);
+    border-radius:var(--radius);
+    padding:22px 22px 26px;
+    margin-bottom:20px;
+  }
+  .block h2{
+    font-family:"Noto Serif TC",serif;
+    font-size:19px;
+    margin:0 0 4px;
+    color:var(--chalk-green);
+  }
+  .block .meta{color:var(--ink-soft);font-size:13px;margin:0 0 16px;}
+
+  .q{margin-bottom:18px;padding-bottom:16px;border-bottom:1px dashed var(--paper-line);}
+  .q:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0;}
+  .q-text{font-size:15.5px;margin-bottom:8px;}
+  .q-num{color:var(--gold);font-weight:700;margin-right:4px;}
+
+  .opts{display:grid;gap:8px;}
+  .opt{
+    display:flex;gap:8px;align-items:flex-start;
+    border:1.5px solid var(--paper-line);
+    border-radius:8px;
+    padding:9px 12px;
+    cursor:pointer;
+    font-size:14.5px;
+    background:#fffdf8;
+  }
+  .opt:hover{border-color:var(--chalk-green-2);}
+  .opt.selected{border-color:var(--chalk-green-2);background:#eef3ea;}
+  .opt.correct{border-color:var(--ok-green);background:var(--ok-green-soft);}
+  .opt.wrong{border-color:var(--pen-red);background:var(--pen-red-soft);}
+  .opt .tag{font-weight:700;color:var(--ink-soft);}
+  .opt.correct .tag{color:var(--ok-green);}
+  .opt.wrong .tag{color:var(--pen-red);}
+  .opt.disabled{cursor:default;}
+
+  .passage{
+    background:#f5f2e8;border-radius:8px;padding:14px 16px;margin-bottom:14px;
+    font-size:14.5px;white-space:pre-line;
+  }
+  .passage-label{font-weight:700;color:var(--chalk-green);margin-bottom:4px;display:block;}
+
+  .sec-note{font-size:13.5px;color:var(--ink-soft);background:#f5f2e8;border-radius:8px;padding:8px 12px;margin:-6px 0 14px;}
+  .sec-pre{background:#f5f2e8;border-radius:8px;padding:10px 14px;margin:-4px 0 14px;font-size:14.5px;}
+  .fill-row{display:flex;flex-wrap:wrap;align-items:center;gap:8px;}
+  input.blank{
+    font-family:"Noto Sans TC",sans-serif;font-size:15.5px;border:none;border-bottom:2px solid var(--chalk-green-2);
+    background:#fffdf8;padding:4px 6px;width:170px;max-width:100%;
+  }
+  input.blank.wide{width:100%;}
+  textarea.explain-box{
+    width:100%;min-height:52px;font-family:"Noto Sans TC",sans-serif;font-size:15px;
+    border:1.5px solid var(--paper-line);border-radius:8px;padding:8px 10px;background:#fffdf8;resize:vertical;
+  }
+  .feedback{font-weight:700;font-size:15px;}
+  .feedback.ok{color:var(--ok-green);}
+  .feedback.no{color:var(--pen-red);}
+  .answer-reveal{display:none;margin-top:8px;font-size:14px;color:var(--ok-green);background:var(--ok-green-soft);border-radius:6px;padding:6px 12px;}
+  .answer-reveal.show{display:block;}
+  .zh-und{text-decoration:underline;text-underline-offset:3px;}
+  .footer-link{
+    display:block;text-align:center;margin-top:30px;color:var(--chalk-green);
+    text-decoration:none;font-weight:700;font-size:14px;
+  }
+  .footer-link:hover{text-decoration:underline;}
+
+  @media print{
+    header.hero, .controls, .score-bar, .mini-btn, .footer-link{display:none !important;}
+    body{background:#fff;}
+    section.block{border:none;box-shadow:none;padding:8px 0;margin-bottom:14px;}
+    .opt.correct{background:none;border:none;font-weight:700;}
+    .opt.correct::after{content:" ← 正解";color:var(--pen-red);}
+    .opt{border:none;padding:2px 0;}
+    main{max-width:100%;padding:0 24px;}
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="breadcrumb"><a href="https://jenlin2002.github.io/">🏠 回總目錄</a> ／ <a href="../hanlin-chinese-g8-1.html" style="color:#cfe0d1;">段考題庫</a></div>
+    <h1>國文・第8回</h1>
+    <p class="subtitle">第四～六課・語文常識（二） 複習｜翰林版八年級國文（三）Ｂ卷</p>
+  </div>
+</header>
+
+<main>
+  <div class="controls">
+    <div class="mode-toggle">
+      <button id="quizModeBtn" class="active">✏️ 測驗模式</button>
+      <button id="printModeBtn" disabled title="完成測驗並送出成績後才能查看">🖨️ 完整題目與解答（送出成績後解鎖）</button>
+    </div>
+  </div>
+
+  <div class="score-bar" id="scoreBar">
+    <div>目前得分：<strong id="scoreText">0 / 0</strong>（選擇題與填寫題；解釋題不計分）</div>
+    <button id="resetBtn">重新作答</button>
+  </div>
+
+  <div id="content"></div>
+
+  <a class="footer-link" href="../hanlin-chinese-g8-1.html">← 回段考題庫總覽</a>
+</main>
+
+<script>
+
+window.EXAM_META = { version: "國文B卷", examLabel: "國文第8回" };
+const DATA = {
+  sections: [
+  {
+    "type": "fill",
+    "title": "一、國字注音",
+    "meta": "每字1分，共10分",
+    "note": "「」裡是注音的寫國字，是國字的寫注音。注音的一聲可以不標。",
+    "placeholder": "國字或注音",
+    "items": [
+      {
+        "q": "「ㄏㄨㄟˋ」質蘭心",
+        "answers": [
+          "蕙"
+        ]
+      },
+      {
+        "q": "數據誤「ㄓˊ」",
+        "answers": [
+          "植"
+        ]
+      },
+      {
+        "q": "和「ㄞˇ」可親",
+        "answers": [
+          "藹"
+        ]
+      },
+      {
+        "q": "「ㄈㄨ」衍了事",
+        "answers": [
+          "敷"
+        ]
+      },
+      {
+        "q": "「ㄡˇ」斷絲連",
+        "answers": [
+          "藕"
+        ]
+      },
+      {
+        "q": "「蜷」伏",
+        "answers": [
+          "ㄑㄩㄢˊ"
+        ]
+      },
+      {
+        "q": "芙「蕖」",
+        "answers": [
+          "ㄑㄩˊ"
+        ]
+      },
+      {
+        "q": "迷「惘」",
+        "answers": [
+          "ㄨㄤˇ"
+        ]
+      },
+      {
+        "q": "「烹」煮食物",
+        "answers": [
+          "ㄆㄥ"
+        ]
+      },
+      {
+        "q": "輕慢「侮」弄",
+        "answers": [
+          "ㄨˇ"
+        ]
+      }
+    ]
+  },
+  {
+    "type": "explain",
+    "title": "二、解釋",
+    "meta": "每題2分，共10分（自己對照參考答案，不計入自動計分）",
+    "items": [
+      {
+        "q": "照眼",
+        "answer": "耀眼醒目。"
+      },
+      {
+        "q": "市聲鼎沸",
+        "answer": "形容市街上的喧譁聲，像鼎裡的水沸騰起來一樣。"
+      },
+      {
+        "q": "濯「清漣」而不妖",
+        "answer": "此指清水。"
+      },
+      {
+        "q": "集腋可以成「裘」",
+        "answer": "皮衣。"
+      },
+      {
+        "q": "不蔓不枝",
+        "answer": "不蔓延細莖，不旁生枝條。"
+      }
+    ]
+  },
+  {
+    "type": "fill",
+    "title": "三、改錯",
+    "meta": "每字1分，共10分",
+    "wide": true,
+    "note": "每句有 5 個錯字。依照出現的順序，只寫出改正後的字（例如寫成「ＯＯＯＯＯ」五個字）。",
+    "placeholder": "依序寫出正確的字",
+    "items": [
+      {
+        "q": "鳥群高踞枝頭，伸著長啄，引航糕歌，青脆、和偕的歌聲十分動聽。",
+        "answers": [
+          "喙吭高清諧"
+        ]
+      },
+      {
+        "q": "在這個順息萬變、節湊明快的勿忙社會裡，如何擅用時間就是制勝的關鍵。",
+        "answers": [
+          "瞬奏匆善致"
+        ]
+      }
+    ]
+  },
+  {
+    "type": "mc",
+    "title": "四、成語活用題",
+    "meta": "每題2分，共10分",
+    "note": "請根據句意，從參考選項中選出適當的成語填入【　】中。",
+    "items": [
+      {
+        "q": "像你這樣【　　　】，不願接納好的意見，將來必定慘遭失敗。",
+        "options": [
+          "一介不取",
+          "不愧不怍",
+          "外圓內方",
+          "一意孤行",
+          "獨闢蹊徑",
+          "見利忘義"
+        ],
+        "correct": 3
+      },
+      {
+        "q": "他向來為官廉潔，秉持【　　　】的態度，所有禮品一概謝絕。",
+        "options": [
+          "一介不取",
+          "不愧不怍",
+          "外圓內方",
+          "一意孤行",
+          "獨闢蹊徑",
+          "見利忘義"
+        ],
+        "correct": 0
+      },
+      {
+        "q": "他處事圓滑，其實【　　　】，內心對正道是很堅持的。",
+        "options": [
+          "一介不取",
+          "不愧不怍",
+          "外圓內方",
+          "一意孤行",
+          "獨闢蹊徑",
+          "見利忘義"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "你要小心他這種【　　　】的人，只要有利害關係，他是不會重視朋友道義的。",
+        "options": [
+          "一介不取",
+          "不愧不怍",
+          "外圓內方",
+          "一意孤行",
+          "獨闢蹊徑",
+          "見利忘義"
+        ],
+        "correct": 5
+      },
+      {
+        "q": "他自認行事光明，【　　　】，不擔心別人惡意的指控。",
+        "options": [
+          "一介不取",
+          "不愧不怍",
+          "外圓內方",
+          "一意孤行",
+          "獨闢蹊徑",
+          "見利忘義"
+        ],
+        "correct": 1
+      }
+    ]
+  },
+  {
+    "type": "mc",
+    "title": "五、基礎題",
+    "meta": "每題2分，共30分",
+    "items": [
+      {
+        "q": "下列「　」中的注音寫成國字後，何組字形相同？",
+        "options": [
+          "「ㄈㄨˋ」可敵國／「ㄈㄨˋ」麗堂皇",
+          "家徒四「ㄅㄧˋ」／白「ㄅㄧˋ」無瑕",
+          "聲音「ㄌㄧㄠˊ」亮／「ㄌㄧㄠˊ」起面紗",
+          "「ㄓㄨㄛˊ」髮難數／洗「ㄓㄨㄛˊ」衣物"
+        ],
+        "correct": 0
+      },
+      {
+        "q": "下列「　」中的字，何組讀音相同？",
+        "options": [
+          "通道狹「隘」／多多「益」善",
+          "跨越「柵」欄／意興闌「珊」",
+          "時間空「檔」／吃虧上「當」",
+          "「幸」災樂禍／「倖」免於難"
+        ],
+        "correct": 3
+      },
+      {
+        "q": "下列成語，何者用字完全正確？",
+        "options": [
+          "絀目驚心",
+          "鱗視昂藏",
+          "驅之若鶩",
+          "梟首示眾"
+        ],
+        "correct": 3
+      },
+      {
+        "q": "下列哪一句和「蓮，花之君子者也」的句型相同？",
+        "options": [
+          "見義不為，無勇也",
+          "君子求諸己",
+          "君子坦蕩蕩",
+          "三人行必有我師焉"
+        ],
+        "correct": 0
+      },
+      {
+        "q": "周敦頤在愛蓮說文末寫出：「牡丹之愛，宜乎眾矣！」其用意為下列何者？",
+        "options": [
+          "讚美牡丹豔麗，受人喜愛",
+          "感慨汲汲於名利的人眾多",
+          "暗示能得到名利的人不多",
+          "斥責世人不懂牡丹雍容氣度"
+        ],
+        "correct": 1
+      },
+      {
+        "q": "愛蓮說一文中以「濯清漣而不妖」來象徵君子的何種品德？",
+        "options": [
+          "不取媚於世",
+          "不攀附權貴",
+          "不消極被動",
+          "不委屈求全"
+        ],
+        "correct": 0
+      },
+      {
+        "q": "下列關於時間的文句，何者涵義與其他三者<b>不同</b>？",
+        "options": [
+          "白日莫空度，青春不再來",
+          "一日無二晨，時間不重臨",
+          "人無千日好，花無百日紅",
+          "少壯不努力，老大徒傷悲"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "下列各選項，何者的句型與「今晚的星空很燦爛」相同？",
+        "options": [
+          "市聲鼎沸",
+          "手不釋卷",
+          "學海無涯",
+          "天下為公"
+        ],
+        "correct": 0
+      },
+      {
+        "q": "下列皆是愛蓮說一文中的文句，何者最能表現君子「高潔品格，美名遠播」的美德？",
+        "options": [
+          "出淤泥而不染",
+          "濯清漣而不妖",
+          "中通外直，不蔓不枝",
+          "香遠益清"
+        ],
+        "correct": 3
+      },
+      {
+        "q": "下列「　」中的字詞，何者是該句的主語？",
+        "options": [
+          "「可愛」者甚蕃",
+          "「濯」清漣而不妖",
+          "「世人」盛愛牡丹",
+          "「亭亭」淨植"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "「牠的苦悶，大概是僅次於黏在膠紙上的蒼蠅。」句中的「於」字與下列何者字義相同？",
+        "options": [
+          "勞力者治「於」人",
+          "哀莫大「於」心死",
+          "嫁禍「於」人",
+          "青出「於」藍"
+        ],
+        "correct": 1
+      },
+      {
+        "q": "鳥：「常年的關在柵欄裡，飲啄倒是方便，冬天還有遮風的棉罩，十分地『優待』。」這段話表達的涵義為下列何者？",
+        "options": [
+          "鳥在人類的照顧下生活非常好",
+          "鳥與人類相處和諧",
+          "鳥關在鳥籠失去自由",
+          "主人以人類的生活方式飼養鳥"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "周敦頤在愛蓮說一文中細數蓮的特質，並以此象徵君子的德行，其中<b>不包含</b>下列何者？",
+        "options": [
+          "不慕榮利，不阿權貴",
+          "仁民愛物，解衣推食",
+          "潔身自愛，不同流合汙",
+          "高風亮節，自重而人重之"
+        ],
+        "correct": 1
+      },
+      {
+        "q": "生命中的碎珠一文提到甘迺迪總統把握會客間的短暫空檔閱讀書籍，這種行為最接近下列何者的精神？",
+        "options": [
+          "今天的事不要拖到明天",
+          "成功總是在等待最好的時機",
+          "想要懂得今天，就必須研究昨天",
+          "只要我們能善用時間，就永遠不愁時間不夠用"
+        ],
+        "correct": 3
+      },
+      {
+        "q": "下列出自鳥一文中的文句，哪一句才是描寫作者真正喜愛的鳥的姿態？",
+        "options": [
+          "羽翮不整地蜷伏著不動",
+          "高踞枝頭，臨風顧盼",
+          "像虹似地一下就消逝了",
+          "一群麻雀擠在簷下的煙突旁邊取暖"
+        ],
+        "correct": 1
+      }
+    ]
+  },
+  {
+    "type": "mc",
+    "title": "六、進階題",
+    "meta": "每題2分，共14分",
+    "items": [
+      {
+        "q": "「搔首弄姿，引人側目。」這種行徑與君子的何種美德<b>迥然不同</b>？",
+        "options": [
+          "出淤泥而不染",
+          "濯清漣而不妖",
+          "中通外直",
+          "不可褻玩"
+        ],
+        "correct": 1
+      },
+      {
+        "q": "老人與海一文中提到：「一個人可以被毀滅，但不能被打敗。」這句話的涵義近似於下列何者？",
+        "options": [
+          "戰戰兢兢，懷抱希望",
+          "堅持信念，奮鬥到底",
+          "勝不驕，敗不餒",
+          "人生無常，瞬息萬變"
+        ],
+        "correct": 1
+      },
+      {
+        "q": "「在職場上，有才幹的人基本上是受大家歡迎與肯定的。不過，有一種人則不然。這種人雖然有些本事，可是傲氣十足，凡事都認為『非我不可』，甚至於自我膨脹，認為個人在公司的地位無人可取代。最後，這些人由於缺乏謙沖的修養，都與失敗者畫上等號。」這段文字說明了什麼道理？",
+        "options": [
+          "謙沖自牧的人必定能得到成功",
+          "有才幹的人必定能受大家歡迎",
+          "足夠的自信，才能得到大家的肯定",
+          "若不知謙虛，再有才幹也無法成功"
+        ],
+        "correct": 3
+      },
+      {
+        "q": "魯迅說：「時間就像海綿裡的水，只要願意擠，總還是有的。」這句話的涵義最貼近下列何者？",
+        "options": [
+          "硬擠出來的時間才格外珍貴",
+          "海綿吸水如收集時光，滿了就停止",
+          "說沒有時間是因為沒有心去找尋",
+          "海綿的水被擠出，就像時間無法抓住"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "「大禹之聖，且惜寸陰；陶侃之賢，且惜分陰；又況賢聖不若彼者乎？」文中的「又況賢聖不若彼者乎」的意思是下列何者？",
+        "options": [
+          "即使聖賢也不如他們",
+          "聖賢也要愛惜光陰",
+          "一般人不可能和他們相比",
+          "一般人更應愛惜、善用光陰"
+        ],
+        "correct": 3
+      },
+      {
+        "q": "古人詩句往往利用植物透露季節的線索。下列各詩句中的花卉，何者代表的季節同於「蓮花」？",
+        "options": [
+          "兔寒蟾冷桂花白，此夜嫦娥應斷腸",
+          "桃花飛綠水，三月下瞿塘",
+          "牆角數枝梅，凌寒獨自開",
+          "更無柳絮因風起，唯有葵花向日傾"
+        ],
+        "correct": 3
+      },
+      {
+        "q": "菜根譚：「心不可不虛，虛則義理來居；心不可不實，實則物欲不入。」這段話的涵義與下列何者最接近？",
+        "options": [
+          "虛懷若谷，有容乃大",
+          "實事求是，腳踏實地",
+          "虛心求道，無欲則剛",
+          "堅持公義，無私奉獻"
+        ],
+        "correct": 2
+      }
+    ]
+  },
+  {
+    "type": "reading",
+    "title": "七、閱讀測驗",
+    "meta": "每題2分，共10分",
+    "passages": [
+      {
+        "label": "（一）",
+        "text": "鬱金香開花之後，春天就要到了。第一聲春雷響起，天氣開始變得反覆無常，情緒多變。每一年，當冬天提著裙裾，步下離別的階梯前，我總會在花盆裡埋下種子──鬱金香、風信子或洋水仙，彷彿成了迎接春天的儀式。但在種下希望的同時，也常感到一股不安，彷彿注定會有些折騰隨之而來。\n春天的溼冷讓頸椎隱隱作痛，我只能靜靜度日，無法像詩人那樣歌頌春光。身體的警訊提醒我：人生時間不多了，不能再浪費。既然日子有限，就該在還能做事的時候，好好善待自己，用最適合的方式過日子。如果還有能力完成什麼，就應該現在就去做，不再猶豫拖延。（改寫自吳淡如 春天泡在醋缸裡）",
+        "items": [
+          {
+            "q": "本文中「當冬天提著裙裾，步下離別的階梯前」一句的意思為何者？",
+            "options": [
+              "冬日的俏皮",
+              "春天的離愁",
+              "季節的轉換",
+              "相思的不安"
+            ],
+            "correct": 2
+          },
+          {
+            "q": "根據本文，下列何者是作者迎接春天時會進行的固定行動？",
+            "options": [
+              "擷取花朵製成香氛",
+              "在花盆裡埋下鬱金香、風信子等種子",
+              "替頸椎保暖，避免春天溼冷引發疼痛",
+              "整理屋內擺設，迎接春季"
+            ],
+            "correct": 1
+          },
+          {
+            "q": "「既然日子有限，就該在還能做事的時候，好好善待自己，用最適合的方式過日子。」這段話的涵義最貼近下列何者？",
+            "options": [
+              "珍惜時間，努力實踐理想",
+              "體力衰退，才明白青春已逝",
+              "年華有限，應努力保持青春",
+              "多休息少操勞，才能長命百歲"
+            ],
+            "correct": 0
+          }
+        ]
+      },
+      {
+        "label": "（二）",
+        "text": "汙溝貯濁水，水上葉田田。\n我來一長嘆，知是東溪蓮。\n下有青汙泥，馨香無復全。\n上有紅塵撲，顏色不得鮮。\n物性猶如此，人事亦宜然。\n託根非其所，不如遭棄捐。\n昔在溪中日，花葉媚清漣。\n今來不得地，憔悴府門前。（白居易 京兆府新栽蓮）",
+        "items": [
+          {
+            "q": "作者看了京兆府新栽的蓮花，心中有何感想？",
+            "options": [
+              "君子具有出淤泥而不染的風骨",
+              "惡劣的環境不會影響人的本質",
+              "攀附權貴的結果是被棄若敝屣",
+              "環境影響大，君子應謹慎選擇"
+            ],
+            "correct": 3
+          },
+          {
+            "q": "關於本詩與周敦頤愛蓮說的比較，下列何者說明正確？",
+            "options": [
+              "兩者皆寄寓君子應潔身自愛之意",
+              "兩者皆旨在讚嘆蓮外觀的美好",
+              "兩者皆稱美蓮花能出淤泥而不染",
+              "兩者皆為古詩"
+            ],
+            "correct": 0
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "type": "reading",
+    "title": "八、閱讀素養題",
+    "meta": "每題3分，共6分",
+    "passages": [
+      {
+        "label": "",
+        "text": "女導演崔永徽的首部劇情長片作品只有大海知道，劇情講述一名蘭嶼男孩為與在臺灣工作的父親見面，決定投身傳統舞蹈來臺演出，給父親驚喜的故事。最特別的是，只有大海知道除了男主角黃尚禾外，其餘均由達悟族素人演員演出，被譽為「最能代表蘭嶼的電影」。\n該片以一個思念父親的男孩故事展開，不僅帶出達悟族文化與現今的融合及衝擊，更側寫了日趨嚴重的隔代教養問題。最珍貴的是，全片並不以「臺灣觀點」來訴說，而是真心誠意呈現他們的所思所想。導演崔永徽透過長期觀察、田野採集的真實故事，費時六年才完成劇本，為了保有真實感，她甚至不讓演員來演，而是聘請老師到蘭嶼教授表演，以激出當地民眾的「表演魂」，自己登上大銀幕講出自己的故事。（節錄自開眼電影網）",
+        "items": [
+          {
+            "q": "下列何者<b>不是</b>導演為了這部電影做出的努力？",
+            "options": [
+              "長期在蘭嶼實地觀察",
+              "全數採用蘭嶼當地演員",
+              "以蘭嶼觀點來訴說故事",
+              "訓練蘭嶼民眾的「表演魂」"
+            ],
+            "correct": 1
+          },
+          {
+            "q": "根據本文，可以推知只有大海知道這部電影主要想傳達的意旨為何？",
+            "options": [
+              "達悟族傳統文化面臨衝擊",
+              "蘭嶼人口老化問題嚴重",
+              "臺灣電影取材多元",
+              "真實故事易引共鳴"
+            ],
+            "correct": 0
+          }
+        ]
+      }
+    ]
+  }
+]
+};
+
+let currentMode = "quiz"; // quiz | print
+
+const contentEl = document.getElementById("content");
+const scoreBar = document.getElementById("scoreBar");
+const scoreText = document.getElementById("scoreText");
+
+function render(){
+  window.examAnswersRevealed = false;
+  contentEl.innerHTML = "";
+  DATA.sections.forEach((sec, si)=> contentEl.appendChild(renderSection(sec, si)));
+  if(currentMode==="quiz"){
+    scoreBar.classList.add("show");
+    updateScore();
+  } else {
+    scoreBar.classList.remove("show");
+    contentEl.querySelectorAll(".opt").forEach(o=>o.classList.add("disabled"));
+    contentEl.querySelectorAll(".opt.is-correct").forEach(o=>o.classList.add("correct"));
+  }
+}
+
+function renderSection(sec, si){
+  const block = document.createElement("section");
+  block.className = "block";
+  block.innerHTML = `<h2>${sec.title}</h2><p class="meta">${sec.meta}</p>`
+    + (sec.note ? `<div class="sec-note">${sec.note}</div>` : "")
+    + (sec.pre ? `<div class="sec-pre">${sec.pre}</div>` : "");
+
+  if(sec.type==="fill"){
+    sec.items.forEach((it,i)=>{
+      const q = document.createElement("div");
+      q.className = "q";
+      const shown = it.answers.join(" ／ ");
+      q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q}</div>
+        <div class="fill-row"><input type="text" class="blank${sec.wide ? " wide" : ""}" autocomplete="off" placeholder="${sec.placeholder || "作答"}"><span class="feedback"></span></div>
+        <div class="answer-reveal">正解：${shown}</div>`;
+      q.querySelector("input.blank").dataset.answers = JSON.stringify(it.answers);
+      if(currentMode!=="quiz"){ q.querySelector("input.blank").disabled = true; q.querySelector(".answer-reveal").classList.add("show"); }
+      block.appendChild(q);
+    });
+  }
+
+  else if(sec.type==="explain"){
+    sec.items.forEach((it,i)=>{
+      const q = document.createElement("div");
+      q.className = "q";
+      q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q}</div>
+        <textarea class="explain-box" placeholder="寫下你的解釋（送出成績後對照參考答案）"></textarea>
+        <div class="answer-reveal">參考答案：${it.answer}</div>`;
+      if(currentMode!=="quiz"){ q.querySelector("textarea").remove(); q.querySelector(".answer-reveal").classList.add("show"); }
+      block.appendChild(q);
+    });
+  }
+
+  else if(sec.type==="mc"){
+    sec.items.forEach((it,i)=>{
+      const q = document.createElement("div");
+      q.className = "q";
+      const optsHtml = it.options.map((op,oi)=>`
+        <div class="opt" data-idx="${oi}" data-correct="${oi===it.correct}">
+          <span class="tag">(${String.fromCharCode(65+oi)})</span><span>${op}</span>
+        </div>`).join("");
+      const imgHtml = it.image ? `<img src="${it.image}" alt="題目附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">` : "";
+      const img2Html = it.image2 ? `<img src="${it.image2}" alt="題目附圖2" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">` : "";
+      q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q}</div>
+        ${imgHtml}${img2Html}
+        <div class="opts">${optsHtml}</div>`;
+      q.querySelectorAll(".opt").forEach(optEl=>{
+        if(optEl.dataset.correct==="true") optEl.classList.add("is-correct");
+        optEl.addEventListener("click", ()=>selectOption(q, optEl));
+      });
+      block.appendChild(q);
+    });
+  }
+
+  else if(sec.type==="reading"){
+    sec.passages.forEach(p=>{
+      const passageDiv = document.createElement("div");
+      passageDiv.className = "passage";
+      passageDiv.innerHTML = `${p.label ? `<span class="passage-label">${p.label}</span>`:""}${p.text}${p.image ? `<img src="${p.image}" alt="題組附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-top:10px;border:1px solid var(--paper-line);">`:""}`;
+      block.appendChild(passageDiv);
+      p.items.forEach((it,i)=>{
+        const q = document.createElement("div");
+        q.className = "q";
+        const optsHtml = it.options.map((op,oi)=>`
+          <div class="opt" data-idx="${oi}" data-correct="${oi===it.correct}">
+            <span class="tag">(${String.fromCharCode(65+oi)})</span><span>${op}</span>
+          </div>`).join("");
+        q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q}</div>
+          ${it.image ? `<img src="${it.image}" alt="題目附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">`:""}
+          <div class="opts">${optsHtml}</div>`;
+        q.querySelectorAll(".opt").forEach(optEl=>{
+          if(optEl.dataset.correct==="true") optEl.classList.add("is-correct");
+          optEl.addEventListener("click", ()=>selectOption(q, optEl));
+        });
+        block.appendChild(q);
+      });
+    });
+  }
+
+  return block;
+}
+
+function selectOption(qEl, optEl){
+  if(currentMode!=="quiz") return;
+  if(qEl.dataset.answered==="true") return;
+  qEl.dataset.answered = "true";
+  qEl.querySelectorAll(".opt").forEach(o=>o.classList.add("disabled"));
+  optEl.classList.add("selected");
+  const correctOpt = qEl.querySelector('.opt[data-correct="true"]');
+  qEl.dataset.studentAnswer = optEl.textContent.trim();
+  qEl.dataset.correctAnswer = correctOpt ? correctOpt.textContent.trim() : "";
+  qEl.dataset.isCorrect = (optEl.dataset.correct==="true") ? "true" : "false";
+  updateScore();
+}
+
+function updateScore(){
+  let total = 0, answered = 0, correct = 0;
+  contentEl.querySelectorAll(".q").forEach(q=>{
+    const gradable = q.querySelector(".opts") || q.querySelector("input.blank");
+    if(!gradable) return;
+    total++;
+    if(q.dataset.studentAnswer !== undefined){
+      answered++;
+      if(q.dataset.isCorrect === "true") correct++;
+    }
+  });
+  if(window.examAnswersRevealed){
+    scoreText.textContent = `${correct} / ${total}`;
+  } else {
+    scoreText.textContent = `已作答 ${answered} / ${total} 題`;
+  }
+}
+window.updateScore = updateScore;
+
+// 填寫題（注音／國字、改錯）：去掉空白與標點後和正解比對；注音的一聲符號「ˉ」可寫可不寫
+function normFill(s){
+  return String(s).replace(/[\sˉ　，、。．.,;；:：!！?？「」『』（）()【】→\-－—]/g, "").trim();
+}
+document.addEventListener("input", (e)=>{
+  const input = e.target;
+  if(!input.matches || !input.matches("input.blank")) return;
+  const q = input.closest(".q");
+  const answers = JSON.parse(input.dataset.answers || "[]");
+  const val = input.value.trim();
+  if(!val){ delete q.dataset.studentAnswer; delete q.dataset.isCorrect; }
+  else {
+    q.dataset.studentAnswer = val;
+    q.dataset.correctAnswer = answers.join(" ／ ");
+    q.dataset.isCorrect = answers.some(a => normFill(a) === normFill(val)) ? "true" : "false";
+  }
+  updateScore();
+});
+
+document.getElementById("resetBtn").addEventListener("click", render);
+document.getElementById("quizModeBtn").addEventListener("click", ()=>{
+  currentMode = "quiz";
+  document.getElementById("quizModeBtn").classList.add("active");
+  document.getElementById("printModeBtn").classList.remove("active");
+  render();
+});
+document.getElementById("printModeBtn").addEventListener("click", ()=>{
+  if(document.getElementById("printModeBtn").disabled) return;
+  currentMode = "print";
+  document.getElementById("printModeBtn").classList.add("active");
+  document.getElementById("quizModeBtn").classList.remove("active");
+  render();
+});
+
+window.unlockPrintMode = function(){
+  document.getElementById("printModeBtn").disabled = false;
+};
+
+render();
+</script>
+<script src="../sync.js?v=20261018b"></script>
+</body>
+</html>
