@@ -144,6 +144,15 @@
   - 32 頁都驗證過：每題正解都判為正確、沒有 JS 錯誤、附圖都有載入。用的是 10-18 新版範本（`sync.js?v=20261018b`，有訂正錯誤、暫存）。
 - 待辦：國文一上（翰林）B、C 卷（原始檔在 `PDF-RAW-DATA/Chinese/hanlin/hanlin-G7-1/`）。
 
+### 2026-10-21（手機雲端版）
+- **修正：翰林一上英語整頁空白**：`hanlin-g7-1.html` 和 `hanlin-g7-1/test1~14.html` 都殘留合併衝突標記（`<<<<<<< Updated upstream`／`>>>>>>> Stashed changes`，GitHub Desktop 的 stash 還原時留下的），JS 壞掉、目錄頁空白。用 `eng7data` 重新產生後內容等於「Stashed」那一邊。**以後 Pull 前若 GitHub Desktop 跳出 stash／衝突，先別 Commit，問 Claude 處理。**
+  - `gen.py` 的 `REPO` 和 `gen_eng7.py` 的 `SRC` 改成相對路徑（讀 `PDF-RAW-DATA/english/hanlin/hanlin-g7-1/`），任何電腦都能跑：`python gen_eng7.py`。
+- **翰林一上英語 B 卷、C 卷第 1～14 回完成**（共 28 頁，聽力第 5、9、13 回，音檔每卷 9 軌、依舊對應 1～3／4～6／7～9）。資料在 `tools/hanlin-g8-1-build/eng7dataB/`、`eng7dataC/`。目錄頁 B／C 卷按鈕已全部開放。
+  - 原卷是掃描檔，看圖逐題打字；選擇題答案全部對過各卷簡答。附圖用 `CROPS` 從原卷裁切（P() 用 PDF pt 座標）。
+  - C 卷的「依句意填入代號」做成選擇題（選項是那組 A～G 句子）；「依照字母順序寫出缺少的字母」做成一格依序填兩個字母（大小寫要對）。
+  - 英語範本不顯示 `note`，說明都寫在 `meta` 裡。
+  - 28 頁都驗證過：每題填正解都判為正確、沒有 JS 錯誤、附圖與音檔都有載入。
+
 ### 待辦／注意
 - 以上變更要在 GitHub Desktop 裡 Commit + Push，換電腦後先 Pull。
 - 尚未製作：翰林二上數學網頁（原始檔已放進 `PDF-RAW-DATA/MATH/hanlin/hanlin-g8-1/`）。另外康軒數學 K 卷只在 OneDrive 裡，沒有放進專案。
