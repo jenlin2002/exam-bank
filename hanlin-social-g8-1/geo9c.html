@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>段考題庫｜地理第9回 - 複習</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@500;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#faf6ec;
+    --paper-line:#e3dcc8;
+    --ink:#26332b;
+    --ink-soft:#5b6b5f;
+    --chalk-green:#2f4538;
+    --chalk-green-2:#3d5a48;
+    --pen-red:#b8433a;
+    --pen-red-soft:#f4dedb;
+    --ok-green:#3f7d52;
+    --ok-green-soft:#dfeee1;
+    --gold:#b5842a;
+    --radius:10px;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:"Noto Sans TC",sans-serif;
+    line-height:1.7;
+  }
+  header.hero{
+    background:var(--chalk-green);
+    color:#eef2ea;
+    padding:28px 20px 40px;
+    position:relative;
+  }
+  header.hero::after{
+    content:"";
+    position:absolute;
+    left:0; right:0; bottom:-1px;
+    height:14px;
+    background:repeating-linear-gradient(90deg,var(--paper) 0 18px, transparent 18px 20px);
+  }
+  .hero-inner{max-width:880px;margin:0 auto;}
+  .breadcrumb a{color:#cfe0d1;text-decoration:none;font-size:14px;}
+  .breadcrumb a:hover{text-decoration:underline;}
+  h1{
+    font-family:"Noto Serif TC",serif;
+    font-weight:700;
+    font-size:clamp(24px,4vw,34px);
+    margin:10px 0 6px;
+  }
+  .subtitle{color:#cfe0d1;font-size:15px;margin:0;}
+  main{max-width:880px;margin:0 auto;padding:28px 20px 80px;}
+
+  .controls{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:22px;
+  }
+  .mode-toggle{display:flex;border:2px solid var(--chalk-green);border-radius:999px;overflow:hidden;}
+  .mode-toggle button{
+    background:transparent;border:none;padding:8px 16px;font-size:14px;font-weight:700;
+    color:var(--chalk-green);cursor:pointer;font-family:"Noto Sans TC",sans-serif;
+  }
+  .mode-toggle button.active{background:var(--gold);color:#fff;}
+  .mode-toggle button:disabled{opacity:.4;cursor:not-allowed;}
+
+  .score-bar{
+    display:none;
+    align-items:center;
+    justify-content:space-between;
+    background:#fff;
+    border:1px solid var(--paper-line);
+    border-left:5px solid var(--gold);
+    border-radius:var(--radius);
+    padding:12px 18px;
+    margin-bottom:22px;
+    font-size:14px;
+  }
+  .score-bar.show{display:flex;}
+  .score-bar strong{font-size:18px;color:var(--gold);}
+  .score-bar button{
+    background:none;border:1px solid var(--ink-soft);color:var(--ink-soft);
+    border-radius:6px;padding:6px 12px;font-size:13px;cursor:pointer;
+  }
+
+  section.block{
+    background:#fff;
+    border:1px solid var(--paper-line);
+    border-radius:var(--radius);
+    padding:22px 22px 26px;
+    margin-bottom:20px;
+  }
+  .block h2{
+    font-family:"Noto Serif TC",serif;
+    font-size:19px;
+    margin:0 0 4px;
+    color:var(--chalk-green);
+  }
+  .block .meta{color:var(--ink-soft);font-size:13px;margin:0 0 16px;}
+
+  .q{margin-bottom:18px;padding-bottom:16px;border-bottom:1px dashed var(--paper-line);}
+  .q:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0;}
+  .q-text{font-size:15.5px;margin-bottom:8px;}
+  .q-num{color:var(--gold);font-weight:700;margin-right:4px;}
+
+  .opts{display:grid;gap:8px;}
+  .opt{
+    display:flex;gap:8px;align-items:flex-start;
+    border:1.5px solid var(--paper-line);
+    border-radius:8px;
+    padding:9px 12px;
+    cursor:pointer;
+    font-size:14.5px;
+    background:#fffdf8;
+  }
+  .opt:hover{border-color:var(--chalk-green-2);}
+  .opt.selected{border-color:var(--chalk-green-2);background:#eef3ea;}
+  .opt.correct{border-color:var(--ok-green);background:var(--ok-green-soft);}
+  .opt.wrong{border-color:var(--pen-red);background:var(--pen-red-soft);}
+  .opt .tag{font-weight:700;color:var(--ink-soft);}
+  .opt.correct .tag{color:var(--ok-green);}
+  .opt.wrong .tag{color:var(--pen-red);}
+  .opt.disabled{cursor:default;}
+
+  .passage{
+    background:#f5f2e8;border-radius:8px;padding:14px 16px;margin-bottom:14px;
+    font-size:14.5px;white-space:pre-line;
+  }
+  .passage-label{font-weight:700;color:var(--chalk-green);margin-bottom:4px;display:block;}
+
+  .footer-link{
+    display:block;text-align:center;margin-top:30px;color:var(--chalk-green);
+    text-decoration:none;font-weight:700;font-size:14px;
+  }
+  .footer-link:hover{text-decoration:underline;}
+
+  @media print{
+    header.hero, .controls, .score-bar, .mini-btn, .footer-link{display:none !important;}
+    body{background:#fff;}
+    section.block{border:none;box-shadow:none;padding:8px 0;margin-bottom:14px;}
+    .opt.correct{background:none;border:none;font-weight:700;}
+    .opt.correct::after{content:" ← 正解";color:var(--pen-red);}
+    .opt{border:none;padding:2px 0;}
+    main{max-width:100%;padding:0 24px;}
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="breadcrumb"><a href="https://jenlin2002.github.io/">🏠 回總目錄</a> ／ <a href="../hanlin-social-g8-1.html" style="color:#cfe0d1;">段考題庫</a></div>
+    <h1>地理・第9回</h1>
+    <p class="subtitle">第二篇第1～2章 複習｜翰林版八年級社會（三）Ｃ卷</p>
+  </div>
+</header>
+
+<main>
+  <div class="controls">
+    <div class="mode-toggle">
+      <button id="quizModeBtn" class="active">✏️ 測驗模式</button>
+      <button id="printModeBtn" disabled title="完成測驗並送出成績後才能查看">🖨️ 完整題目與解答（送出成績後解鎖）</button>
+    </div>
+  </div>
+
+  <div class="score-bar" id="scoreBar">
+    <div>目前得分：<strong id="scoreText">0 / 0</strong>（僅計算選擇題）</div>
+    <button id="resetBtn">重新作答</button>
+  </div>
+
+  <div id="content"></div>
+
+  <a class="footer-link" href="../hanlin-social-g8-1.html">← 回段考題庫總覽</a>
+</main>
+
+<script>
+
+window.EXAM_META = { version: "C卷", examLabel: "地理第9回" };
+const DATA = {
+  sections: [
+  {
+    "type": "mc",
+    "title": "一、基本觀念題",
+    "meta": "60%，每題3分",
+    "items": [
+      {
+        "q": "日本關東平原氣候特徵為夏季悶熱，降水較多；但冬季晴天多，空氣乾燥。形成上述氣候差異的主要因素為何？",
+        "options": [
+          "風向變化",
+          "洋流強弱",
+          "風力大小",
+          "颱風侵襲"
+        ],
+        "correct": 0
+      },
+      {
+        "q": "日本企業推出撿貨機器人服務，協助無人商店利用機器人選貨。當消費者選定商品後，機器人會自動從倉庫取出商品並妥善處理，取代原本人力撿貨流程。上述內容可說明日本產業何種發展趨勢？",
+        "options": [
+          "產品以出口海外市場為主",
+          "著重創新研發的科技產業",
+          "文化產業的產值日益增加",
+          "積極推動在地特色觀光業"
+        ],
+        "correct": 1
+      },
+      {
+        "q": "富良野花海位於日本北海道，是著名的賞花景點。每到夏季，大片繽紛的薰衣草盛開，吸引許多遊客前來拍照留念。若要欣賞上述花海，應前往圖(一)中何處？",
+        "options": [
+          "甲",
+          "乙",
+          "丙",
+          "丁"
+        ],
+        "correct": 0,
+        "image": "images/geo9c/q3.png"
+      },
+      {
+        "q": "日本四面環海，國際貿易發達，可以利用海運大量進出口貨物。根據圖(二)主要工業區分布範圍，日本海運路線主要經過哪一海域？",
+        "options": [
+          "黃海",
+          "太平洋",
+          "日本海",
+          "印度洋"
+        ],
+        "correct": 1,
+        "image": "images/geo9c/q4.png"
+      },
+      {
+        "q": "日本在第二次世界大戰後填海造陸達 2,000 平方公里以上，新陸地主要用於工業、交通及住宅等。日本積極投入填海造陸的原因為何？",
+        "options": [
+          "地震頻繁",
+          "暖流流經",
+          "緯度太高",
+          "地狹人稠"
+        ],
+        "correct": 3
+      },
+      {
+        "q": "南韓為世界第九大能源消費國家，由於能源的需求愈來愈大，為避免過度依賴進口，近年已朝向核能及再生能源方面布局。造成上述現象的主要原因為何？",
+        "options": [
+          "南韓與北韓長期軍事對立",
+          "南韓經濟發展快速需求增",
+          "南韓目前發展重工業為主",
+          "南韓具有發展海運的優勢"
+        ],
+        "correct": 1
+      },
+      {
+        "q": "位於朝鮮半島的北韓農業收穫年僅一次，而南韓每年可收穫二次。上述兩個國家收穫次數的差異，最主要是受到下列何項因素影響？",
+        "options": [
+          "耕地大小",
+          "地勢高低",
+          "緯度高低",
+          "降水量多寡"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "羅伊想要比較朝鮮半島兩個國家的自然環境差異，下表是他製作的比較表格（(甲)平均地勢：北韓較高、南韓較低；(乙)降水量：北韓較少、南韓較多；(丙)冬季均溫：北韓較低、南韓較高；(丁)夏季季風：北韓東南風、南韓東北風）。表中何者的內容<u>不符合</u>現實狀況？",
+        "options": [
+          "(甲)",
+          "(乙)",
+          "(丙)",
+          "(丁)"
+        ],
+        "correct": 3
+      },
+      {
+        "q": "根據統計資料顯示，2023 年前往日本的外國遊客突破 2,500 萬人次，其中主要的遊客應大多來自下列哪個地區？",
+        "options": [
+          "亞洲",
+          "歐洲",
+          "大洋洲",
+          "北美洲"
+        ],
+        "correct": 0
+      },
+      {
+        "q": "日本青森縣以生產蘋果聞名，生產方式多為人力栽種，近年透過改良生產技術，成為以高品質著稱的蘋果產地。上述內容可說明日本農業發展的何種特色？",
+        "options": [
+          "土地資源廣大",
+          "發展精緻農業",
+          "農業人口老化",
+          "引進國際資金"
+        ],
+        "correct": 1
+      },
+      {
+        "q": "日本 10～12 月為賞楓時節，氣溫會逐漸下降，各地的楓葉也由綠轉紅。下列哪一個島嶼由於氣溫轉變較早，因此賞楓時間最早？",
+        "options": [
+          "九州",
+          "四國",
+          "本州",
+          "北海道"
+        ],
+        "correct": 3
+      },
+      {
+        "q": "一地區的傳統民居受氣候環境影響甚大。朝鮮半島的傳統民居設有圖(三)的溫突，這是受到當地哪一氣候特徵影響？",
+        "options": [
+          "夏季有颱風侵襲",
+          "緯度高冬季嚴寒",
+          "位居內陸乾燥少雨",
+          "沿岸為洋流交會處"
+        ],
+        "correct": 1,
+        "image": "images/geo9c/q12.png"
+      },
+      {
+        "q": "財經專家指出，某國的大企業在政府政策扶植下日益壯大，不但限制了國內消費者的選擇權，中小企業更是沒有發展空間。該國前十大企業 2023 年的營收占了該國 GDP 的 48%。上述財經專家指的是下列哪一個國家？",
+        "options": [
+          "臺灣",
+          "南韓",
+          "日本",
+          "北韓"
+        ],
+        "correct": 1
+      },
+      {
+        "q": "由於日本政府支持，2024 年臺灣半導體企業台積電終於在日本成立晶圓工廠，總投資超過 200 億美元。上述內容說明日本工業何種發展特色？",
+        "options": [
+          "人力不足，邁向自動化生產",
+          "工業正在轉型為高科技產業",
+          "透過企業合作吸引外國資金",
+          "部分工廠移至勞力低廉地區"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "香香上網收集東北亞各城市的旅遊特色，下列哪一項資料<u>最不可能</u>出現？",
+        "options": [
+          "日本四國的愛媛縣是適合泡湯的溫泉景點",
+          "日本東京位於關東平原，是觀光重鎮之一",
+          "南韓釜山是觀光、影劇、會議展覽的重鎮",
+          "南韓板門店古蹟多，是熱門韓劇拍攝地點"
+        ],
+        "correct": 3
+      },
+      {
+        "q": "近年來受到韓流影響，臺灣的韓式料理餐廳如雨後春筍般林立，其中泡菜料理更是不可缺少的佳餚。朝鮮半島傳統泡菜的興起與當地何種自然環境最有關？",
+        "options": [
+          "土壤貧瘠",
+          "冬季嚴寒",
+          "降水量少",
+          "地形崎嶇"
+        ],
+        "correct": 1
+      },
+      {
+        "q": "新聞報導：「日本預估機器人將擔負 352 萬人的勞動工作，機器人將成為日本發展經濟的力量。」上述現象最可能是受下列何者影響所致？",
+        "options": [
+          "人口組成高齡化",
+          "缺乏煤鐵等礦產",
+          "工廠大量外移",
+          "依賴國際貿易"
+        ],
+        "correct": 0
+      },
+      {
+        "q": "圖(四)是日本東京與中國鄭州氣候特徵對照。兩地的氣候差異與哪一項自然條件最有關連？",
+        "options": [
+          "地勢高低",
+          "距海遠近",
+          "盛行風向",
+          "氣壓高低"
+        ],
+        "correct": 1,
+        "image": "images/geo9c/q18.png"
+      },
+      {
+        "q": "日本北海道每年雪祭吸引大批觀光客前往參觀，北海道冬季大量降雪，主要受到哪一季風影響？",
+        "options": [
+          "西北季風",
+          "西南季風",
+          "東北季風",
+          "東南季風"
+        ],
+        "correct": 0
+      },
+      {
+        "q": "立群研究目前南韓主要出口的商品產值，如圖(五)，其中以何項產業的產值最高？",
+        "options": [
+          "汽車工業",
+          "科技工業",
+          "紡織工業",
+          "鋼鐵工業"
+        ],
+        "correct": 1,
+        "image": "images/geo9c/q20.png"
+      }
+    ]
+  },
+  {
+    "type": "mc",
+    "title": "二、進階思考題",
+    "meta": "28%，每題4分",
+    "items": [
+      {
+        "q": "日本是世界著名的長壽之國，老年人占總人口比例屢創歷史新高。因應上述社會現象，日本的企業發展具有哪項特色？",
+        "options": [
+          "逐年減少工作時數",
+          "受惠政府政策扶植",
+          "積極發展自動化服務",
+          "有計畫培育文創人才"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "南韓政府在首爾西南方 40 公里處，填海造陸擴建仁川港，希望藉由國際間的經貿往來，增加港口的吞吐量。該港口鄰近圖(六)中哪個地點？",
+        "options": [
+          "甲",
+          "乙",
+          "丙",
+          "丁"
+        ],
+        "correct": 0,
+        "image": "images/geo9c/a2.png"
+      },
+      {
+        "q": "北韓最主要的外匯來源，就是出口煤礦給中國，每年出口上百萬噸，占其出口總額的 1／3。根據上述內容，北韓產業發展具有何種先天優勢？",
+        "options": [
+          "重工業發展條件佳",
+          "電費低廉吸引投資",
+          "人口數多生產力充足",
+          "技術進步生產效率高"
+        ],
+        "correct": 0
+      },
+      {
+        "q": "下列是四位學生在課堂上製作有關日本文化的海報，其中哪一張海報的呈現，與日本位於火山地震帶上最有關連？",
+        "options": [
+          "A",
+          "B",
+          "C",
+          "D"
+        ],
+        "correct": 1,
+        "image": "images/geo9c/a4.png"
+      },
+      {
+        "q": "北韓由於糧食供應不穩定，容易發生饑荒。造成北韓糧食不足，常有饑荒與下列何項自然因素關係最密切？",
+        "options": [
+          "屬於溫帶季風氣候",
+          "地形多火山、地震",
+          "夏季常受颱風侵襲",
+          "平原少、生長季短"
+        ],
+        "correct": 3
+      },
+      {
+        "q": "過去臺灣曾為日本殖民地，不論在人文或自然特色，臺、日有許多相似的地方。下列關於兩地相同之處，哪一項說明正確？",
+        "options": [
+          "高原所占比例均高",
+          "沿海均有洋流經過",
+          "平原主要位在西部",
+          "冬季均為東北季風"
+        ],
+        "correct": 1
+      },
+      {
+        "q": "北韓是目前軍事武器設備最完善的國家之一，其政府積極發展可運用在飛彈、飛機或軍艦上的武器設備。下列哪項情況與北韓積極發展軍事設備<u>較無關連</u>？",
+        "options": [
+          "南、北韓長期處於對峙",
+          "與中國以山脈作為分界",
+          "採共產主義的專制國家",
+          "自然環境具有豐富礦產"
+        ],
+        "correct": 1
+      }
+    ]
+  },
+  {
+    "type": "reading",
+    "title": "三、題組",
+    "meta": "12%，每題3分",
+    "passages": [
+      {
+        "label": "(一)",
+        "text": "位在日本九州地區的櫻島是一座活躍的火山島，其最高山峰有 1,117 公尺，雖然在火山口地區有劃定警戒區域，但仍然有將近六十萬的人口居住在距離火山口最近八公里外的區域。",
+        "image": "images/geo9c/g1.png",
+        "items": [
+          {
+            "q": "根據文中內容，櫻島鄰近圖(七)中哪個島嶼？",
+            "options": [
+              "甲",
+              "乙",
+              "丙",
+              "丁"
+            ],
+            "correct": 3
+          },
+          {
+            "q": "除了櫻島，日本還包含多座火山島，屬於日本地區的火山島形成與哪個板塊運動<u>沒有</u>關連？",
+            "options": [
+              "北美板塊",
+              "印度─澳洲板塊",
+              "歐亞板塊",
+              "菲律賓海板塊"
+            ],
+            "correct": 1
+          }
+        ]
+      },
+      {
+        "label": "(二)",
+        "text": "只要是愛吃生魚片的人，大多會為黑鮪魚的高雅鮮甜著迷，而黑鮪魚在日本稱為金槍魚，是日本平常生活中再熟悉不過的食材，尤其以青森縣出產的「大間金槍魚」最有名。每年元旦，在東京的漁獲批發市場會舉辦熱鬧非凡的新春首場競拍，拍出最高價格的往往是大間金槍魚。",
+        "image": "images/geo9c/g2.png",
+        "items": [
+          {
+            "q": "生魚片是日本國民美食，日本漁獲量大，漁民捕撈技術優良。促進日本漁業發達的主要原因為下列何者？",
+            "options": [
+              "周圍大陸棚分布廣",
+              "海岸線平直多沙岸",
+              "近海有寒暖流交會",
+              "具備填海造陸技術"
+            ],
+            "correct": 2
+          },
+          {
+            "q": "上述的漁獲批發市場應位於圖(八)中哪座島嶼？",
+            "options": [
+              "甲",
+              "乙",
+              "丙",
+              "丁"
+            ],
+            "correct": 1
+          }
+        ]
+      }
+    ]
+  }
+]
+};
+
+let currentMode = "quiz"; // quiz | print
+
+const contentEl = document.getElementById("content");
+const scoreBar = document.getElementById("scoreBar");
+const scoreText = document.getElementById("scoreText");
+
+function render(){
+  window.examAnswersRevealed = false;
+  contentEl.innerHTML = "";
+  DATA.sections.forEach((sec, si)=> contentEl.appendChild(renderSection(sec, si)));
+  if(currentMode==="quiz"){
+    scoreBar.classList.add("show");
+    updateScore();
+  } else {
+    scoreBar.classList.remove("show");
+    contentEl.querySelectorAll(".opt").forEach(o=>o.classList.add("disabled"));
+    contentEl.querySelectorAll(".opt.is-correct").forEach(o=>o.classList.add("correct"));
+  }
+}
+
+function renderSection(sec, si){
+  const block = document.createElement("section");
+  block.className = "block";
+  block.innerHTML = `<h2>${sec.title}</h2><p class="meta">${sec.meta}</p>`;
+
+  if(sec.type==="mc"){
+    sec.items.forEach((it,i)=>{
+      const q = document.createElement("div");
+      q.className = "q";
+      const optsHtml = it.options.map((op,oi)=>`
+        <div class="opt" data-idx="${oi}" data-correct="${oi===it.correct}">
+          <span class="tag">(${String.fromCharCode(65+oi)})</span><span>${op}</span>
+        </div>`).join("");
+      const imgHtml = it.image ? `<img src="${it.image}" alt="題目附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">` : "";
+      const img2Html = it.image2 ? `<img src="${it.image2}" alt="題目附圖2" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">` : "";
+      q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q}</div>
+        ${imgHtml}${img2Html}
+        <div class="opts">${optsHtml}</div>`;
+      q.querySelectorAll(".opt").forEach(optEl=>{
+        if(optEl.dataset.correct==="true") optEl.classList.add("is-correct");
+        optEl.addEventListener("click", ()=>selectOption(q, optEl));
+      });
+      block.appendChild(q);
+    });
+  }
+
+  else if(sec.type==="reading"){
+    sec.passages.forEach(p=>{
+      const passageDiv = document.createElement("div");
+      passageDiv.className = "passage";
+      passageDiv.innerHTML = `${p.label ? `<span class="passage-label">${p.label}</span>`:""}${p.text}${p.image ? `<img src="${p.image}" alt="題組附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-top:10px;border:1px solid var(--paper-line);">`:""}`;
+      block.appendChild(passageDiv);
+      p.items.forEach((it,i)=>{
+        const q = document.createElement("div");
+        q.className = "q";
+        const optsHtml = it.options.map((op,oi)=>`
+          <div class="opt" data-idx="${oi}" data-correct="${oi===it.correct}">
+            <span class="tag">(${String.fromCharCode(65+oi)})</span><span>${op}</span>
+          </div>`).join("");
+        q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q}</div>
+          ${it.image ? `<img src="${it.image}" alt="題目附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">`:""}
+          <div class="opts">${optsHtml}</div>`;
+        q.querySelectorAll(".opt").forEach(optEl=>{
+          if(optEl.dataset.correct==="true") optEl.classList.add("is-correct");
+          optEl.addEventListener("click", ()=>selectOption(q, optEl));
+        });
+        block.appendChild(q);
+      });
+    });
+  }
+
+  return block;
+}
+
+function selectOption(qEl, optEl){
+  if(currentMode!=="quiz") return;
+  if(qEl.dataset.answered==="true") return;
+  qEl.dataset.answered = "true";
+  qEl.querySelectorAll(".opt").forEach(o=>o.classList.add("disabled"));
+  optEl.classList.add("selected");
+  const correctOpt = qEl.querySelector('.opt[data-correct="true"]');
+  qEl.dataset.studentAnswer = optEl.textContent.trim();
+  qEl.dataset.correctAnswer = correctOpt ? correctOpt.textContent.trim() : "";
+  qEl.dataset.isCorrect = (optEl.dataset.correct==="true") ? "true" : "false";
+  updateScore();
+}
+
+function updateScore(){
+  let total = 0, answered = 0, correct = 0;
+  contentEl.querySelectorAll(".q").forEach(q=>{
+    const gradable = q.querySelector(".opts");
+    if(!gradable) return;
+    total++;
+    if(q.dataset.studentAnswer !== undefined){
+      answered++;
+      if(q.dataset.isCorrect === "true") correct++;
+    }
+  });
+  if(window.examAnswersRevealed){
+    scoreText.textContent = `${correct} / ${total}`;
+  } else {
+    scoreText.textContent = `已作答 ${answered} / ${total} 題`;
+  }
+}
+window.updateScore = updateScore;
+
+document.getElementById("resetBtn").addEventListener("click", render);
+document.getElementById("quizModeBtn").addEventListener("click", ()=>{
+  currentMode = "quiz";
+  document.getElementById("quizModeBtn").classList.add("active");
+  document.getElementById("printModeBtn").classList.remove("active");
+  render();
+});
+document.getElementById("printModeBtn").addEventListener("click", ()=>{
+  if(document.getElementById("printModeBtn").disabled) return;
+  currentMode = "print";
+  document.getElementById("printModeBtn").classList.add("active");
+  document.getElementById("quizModeBtn").classList.remove("active");
+  render();
+});
+
+window.unlockPrintMode = function(){
+  document.getElementById("printModeBtn").disabled = false;
+};
+
+render();
+</script>
+<script src="../sync.js?v=20261018b"></script>
+</body>
+</html>

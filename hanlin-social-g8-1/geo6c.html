@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>段考題庫｜地理第6回 - 複習</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@500;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#faf6ec;
+    --paper-line:#e3dcc8;
+    --ink:#26332b;
+    --ink-soft:#5b6b5f;
+    --chalk-green:#2f4538;
+    --chalk-green-2:#3d5a48;
+    --pen-red:#b8433a;
+    --pen-red-soft:#f4dedb;
+    --ok-green:#3f7d52;
+    --ok-green-soft:#dfeee1;
+    --gold:#b5842a;
+    --radius:10px;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:"Noto Sans TC",sans-serif;
+    line-height:1.7;
+  }
+  header.hero{
+    background:var(--chalk-green);
+    color:#eef2ea;
+    padding:28px 20px 40px;
+    position:relative;
+  }
+  header.hero::after{
+    content:"";
+    position:absolute;
+    left:0; right:0; bottom:-1px;
+    height:14px;
+    background:repeating-linear-gradient(90deg,var(--paper) 0 18px, transparent 18px 20px);
+  }
+  .hero-inner{max-width:880px;margin:0 auto;}
+  .breadcrumb a{color:#cfe0d1;text-decoration:none;font-size:14px;}
+  .breadcrumb a:hover{text-decoration:underline;}
+  h1{
+    font-family:"Noto Serif TC",serif;
+    font-weight:700;
+    font-size:clamp(24px,4vw,34px);
+    margin:10px 0 6px;
+  }
+  .subtitle{color:#cfe0d1;font-size:15px;margin:0;}
+  main{max-width:880px;margin:0 auto;padding:28px 20px 80px;}
+
+  .controls{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:22px;
+  }
+  .mode-toggle{display:flex;border:2px solid var(--chalk-green);border-radius:999px;overflow:hidden;}
+  .mode-toggle button{
+    background:transparent;border:none;padding:8px 16px;font-size:14px;font-weight:700;
+    color:var(--chalk-green);cursor:pointer;font-family:"Noto Sans TC",sans-serif;
+  }
+  .mode-toggle button.active{background:var(--gold);color:#fff;}
+  .mode-toggle button:disabled{opacity:.4;cursor:not-allowed;}
+
+  .score-bar{
+    display:none;
+    align-items:center;
+    justify-content:space-between;
+    background:#fff;
+    border:1px solid var(--paper-line);
+    border-left:5px solid var(--gold);
+    border-radius:var(--radius);
+    padding:12px 18px;
+    margin-bottom:22px;
+    font-size:14px;
+  }
+  .score-bar.show{display:flex;}
+  .score-bar strong{font-size:18px;color:var(--gold);}
+  .score-bar button{
+    background:none;border:1px solid var(--ink-soft);color:var(--ink-soft);
+    border-radius:6px;padding:6px 12px;font-size:13px;cursor:pointer;
+  }
+
+  section.block{
+    background:#fff;
+    border:1px solid var(--paper-line);
+    border-radius:var(--radius);
+    padding:22px 22px 26px;
+    margin-bottom:20px;
+  }
+  .block h2{
+    font-family:"Noto Serif TC",serif;
+    font-size:19px;
+    margin:0 0 4px;
+    color:var(--chalk-green);
+  }
+  .block .meta{color:var(--ink-soft);font-size:13px;margin:0 0 16px;}
+
+  .q{margin-bottom:18px;padding-bottom:16px;border-bottom:1px dashed var(--paper-line);}
+  .q:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0;}
+  .q-text{font-size:15.5px;margin-bottom:8px;}
+  .q-num{color:var(--gold);font-weight:700;margin-right:4px;}
+
+  .opts{display:grid;gap:8px;}
+  .opt{
+    display:flex;gap:8px;align-items:flex-start;
+    border:1.5px solid var(--paper-line);
+    border-radius:8px;
+    padding:9px 12px;
+    cursor:pointer;
+    font-size:14.5px;
+    background:#fffdf8;
+  }
+  .opt:hover{border-color:var(--chalk-green-2);}
+  .opt.selected{border-color:var(--chalk-green-2);background:#eef3ea;}
+  .opt.correct{border-color:var(--ok-green);background:var(--ok-green-soft);}
+  .opt.wrong{border-color:var(--pen-red);background:var(--pen-red-soft);}
+  .opt .tag{font-weight:700;color:var(--ink-soft);}
+  .opt.correct .tag{color:var(--ok-green);}
+  .opt.wrong .tag{color:var(--pen-red);}
+  .opt.disabled{cursor:default;}
+
+  .passage{
+    background:#f5f2e8;border-radius:8px;padding:14px 16px;margin-bottom:14px;
+    font-size:14.5px;white-space:pre-line;
+  }
+  .passage-label{font-weight:700;color:var(--chalk-green);margin-bottom:4px;display:block;}
+
+  .footer-link{
+    display:block;text-align:center;margin-top:30px;color:var(--chalk-green);
+    text-decoration:none;font-weight:700;font-size:14px;
+  }
+  .footer-link:hover{text-decoration:underline;}
+
+  @media print{
+    header.hero, .controls, .score-bar, .mini-btn, .footer-link{display:none !important;}
+    body{background:#fff;}
+    section.block{border:none;box-shadow:none;padding:8px 0;margin-bottom:14px;}
+    .opt.correct{background:none;border:none;font-weight:700;}
+    .opt.correct::after{content:" ← 正解";color:var(--pen-red);}
+    .opt{border:none;padding:2px 0;}
+    main{max-width:100%;padding:0 24px;}
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="breadcrumb"><a href="https://jenlin2002.github.io/">🏠 回總目錄</a> ／ <a href="../hanlin-social-g8-1.html" style="color:#cfe0d1;">段考題庫</a></div>
+    <h1>地理・第6回</h1>
+    <p class="subtitle">第一篇第3～4章 複習｜翰林版八年級社會（三）Ｃ卷</p>
+  </div>
+</header>
+
+<main>
+  <div class="controls">
+    <div class="mode-toggle">
+      <button id="quizModeBtn" class="active">✏️ 測驗模式</button>
+      <button id="printModeBtn" disabled title="完成測驗並送出成績後才能查看">🖨️ 完整題目與解答（送出成績後解鎖）</button>
+    </div>
+  </div>
+
+  <div class="score-bar" id="scoreBar">
+    <div>目前得分：<strong id="scoreText">0 / 0</strong>（僅計算選擇題）</div>
+    <button id="resetBtn">重新作答</button>
+  </div>
+
+  <div id="content"></div>
+
+  <a class="footer-link" href="../hanlin-social-g8-1.html">← 回段考題庫總覽</a>
+</main>
+
+<script>
+
+window.EXAM_META = { version: "C卷", examLabel: "地理第6回" };
+const DATA = {
+  sections: [
+  {
+    "type": "mc",
+    "title": "一、基本觀念題",
+    "meta": "60%，每題3分",
+    "items": [
+      {
+        "q": "圖(一)為中國的人口分布圖，下列哪一個地形區全境皆位於圖中虛線以西人口稀疏區？",
+        "options": [
+          "四川盆地",
+          "長江三角洲",
+          "內蒙古高原",
+          "塔里木盆地"
+        ],
+        "correct": 3,
+        "image": "images/geo6c/q1.png"
+      },
+      {
+        "q": "東南亞有許多來自中國的文化特色，例如泰國曼谷的唐人街可以品嘗到燒餅、涼茶等中式飲食。上述華人移民遷居東南亞地區，與原鄉的哪一現象最相關？",
+        "options": [
+          "氣候潮溼",
+          "人口增加",
+          "農業發達",
+          "政府政策"
+        ],
+        "correct": 1
+      },
+      {
+        "q": "從 1979 年到 2015 年，中國實行了長達 36 年的一胎化政策。這項政策對中國造成的影響包括下列何者？",
+        "options": [
+          "糧食產量增加",
+          "自然增加減緩",
+          "農業產值下降",
+          "人口過度集中"
+        ],
+        "correct": 1
+      },
+      {
+        "q": "根據調查，中國的外國企業投資金額全球數一數二，也是世界主要原料進口國。外國企業投資中國的原因最可能為下列何者？",
+        "options": [
+          "各地皆有鐵公路與高鐵",
+          "政府鼓勵農民移入都市",
+          "人口眾多具有低廉勞力",
+          "高科技的技術領先全球"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "中國傳統農業以秦嶺、淮河為界，界線以南多種植水稻，界線以北則多種植小麥、高粱。上述分界與哪項地理特徵最相關？",
+        "options": [
+          "交通",
+          "地形",
+          "人口",
+          "降水量"
+        ],
+        "correct": 3
+      },
+      {
+        "q": "圖(二)是中國三級產業就業人口比例圖，若按照第一、二、三級產業排列，依序為何？",
+        "options": [
+          "甲、乙、丙",
+          "丙、乙、甲",
+          "甲、丙、乙",
+          "丙、甲、乙"
+        ],
+        "correct": 1,
+        "image": "images/geo6c/q6.png"
+      },
+      {
+        "q": "中國自 1980 年代起，陸續在沿海設立經濟特區，以吸引外資並促進在地的經濟發展，下列哪個城市的發展與經濟特區最相關？",
+        "options": [
+          "廣州",
+          "上海",
+          "深圳",
+          "北京"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "中國實施經濟改革開放後，第一級產業隨著經濟發展產生變化，關於其變化的說明，下列何者<u>不符合</u>現況？",
+        "options": [
+          "從事農業人口充足",
+          "轉型為專業生產區",
+          "以永續發展為目標",
+          "開始採行生態農業"
+        ],
+        "correct": 0
+      },
+      {
+        "q": "早期中國在東南沿海設立經濟特區，主要是考量東南沿海地區具備哪些優勢條件？",
+        "options": [
+          "勞力、礦產",
+          "原料、動力",
+          "土地、技術",
+          "交通、勞力"
+        ],
+        "correct": 3
+      },
+      {
+        "q": "圖(三)為中國煤、鐵、石油的分布狀況。根據圖中資料，上述資源主要集中分布在下列哪個地形區？",
+        "options": [
+          "東北平原",
+          "黃土高原",
+          "四川盆地",
+          "長江三角洲"
+        ],
+        "correct": 1,
+        "image": "images/geo6c/q10.png"
+      },
+      {
+        "q": "中國領土面積廣大，位居世界第三，但人均可耕地面積卻低於世界平均，其原因包括下列何者？",
+        "options": [
+          "產業結構改變，導致農業勞動力不足",
+          "地形以山地和高原為主，且比例較高",
+          "降水量不足，居民傳統多以畜牧維生",
+          "實施一胎化政策，造成人口組成失衡"
+        ],
+        "correct": 1
+      },
+      {
+        "q": "中國都市化程度逐年提升，大量人口湧入都市，造成中國人口不均的情況更加嚴重。圖(四)中哪個地區由於經濟條件較佳，使移入人口數量最多？",
+        "options": [
+          "甲",
+          "乙",
+          "丙",
+          "丁"
+        ],
+        "correct": 3,
+        "image": "images/geo6c/q12.png"
+      },
+      {
+        "q": "近幾年中國內蒙古的酪農業發展穩健，相關企業相繼以先進設備提高品質，因此帶動內蒙古的農牧業經濟快速成長。以上現象可用來說明中國農業轉型後的何種特色？",
+        "options": [
+          "為集約農耕",
+          "機械化耕作",
+          "農產品的多樣化",
+          "形成專業生產區"
+        ],
+        "correct": 3
+      },
+      {
+        "q": "報導指出近年來中國人口結構改變而面臨「未富先老」危機，下列哪一說明最可能出現於該報導中？",
+        "options": [
+          "大量外來移民使勞動力充足",
+          "出生率高使人口快速地成長",
+          "中國老年人口比例持續增長",
+          "幼年人口的性別比女多於男"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "圖(五)為某旅行社製作的青藏鐵路沿線景點簡介圖，根據圖中內容判斷，該鐵路對於下列哪一經濟發展政策的推動最有幫助？",
+        "options": [
+          "東北振興",
+          "中部崛起",
+          "西部大開發",
+          "東部率先發展"
+        ],
+        "correct": 2,
+        "image": "images/geo6c/q15.png"
+      },
+      {
+        "q": "中國政府近年積極拓展國際貿易，2020 年簽署區域全面經濟伙伴協定，該協定簽署後將對中國帶來何種影響？",
+        "options": [
+          "與美國的貿易往來更加頻繁",
+          "可利用跨區鐵路與歐洲往來",
+          "大量投資鄰近國家交通建設",
+          "與會員國之間享有減免關稅"
+        ],
+        "correct": 3
+      },
+      {
+        "q": "「近年來中國有許多幼兒園面臨招生困境，幼兒園數量連續 4 年減少。據媒體報導，目前中國有不少幼兒園改造成養老院，或改為『老幼共托』模式，一站式提供居民養老、幼兒托育服務。」文中提及的情形之所以出現與下列何者的關係最密切？",
+        "options": [
+          "曾推行一胎化政策",
+          "民眾教育程度提升",
+          "實施經濟改革開放",
+          "推動一帶一路政策"
+        ],
+        "correct": 0
+      },
+      {
+        "q": "臺灣某餐飲企業目前在全球總共有 566 家門市，2007 年開始在中國經營，目前有 234 家直營門市、年營業額逾新臺幣 63 億元。上述內容可以說明該企業投資中國主要的原因為何？",
+        "options": [
+          "在中國易取得豐富原料",
+          "中國勞動人力十分充足",
+          "中國有廣大市場消費力",
+          "中國電子商務蓬勃發展"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "中國的區域發展政策中，其中哪一項是為了解決礦產枯竭、工廠設備老舊的困境，所提出的區域計畫？",
+        "options": [
+          "東北振興",
+          "中部崛起",
+          "西部大開發",
+          "東部率先發展"
+        ],
+        "correct": 0
+      },
+      {
+        "q": "圖(六)為中國的四大經濟區，圖中哪個區域雖然工商業發展最緩慢，但因為有豐富礦產，具有開發潛力？",
+        "options": [
+          "甲",
+          "乙",
+          "丙",
+          "丁"
+        ],
+        "correct": 3,
+        "image": "images/geo6c/q20.png"
+      }
+    ]
+  },
+  {
+    "type": "mc",
+    "title": "二、進階思考題",
+    "meta": "28%，每題4分",
+    "items": [
+      {
+        "q": "近年來，中國大量興建鐵路與高速公路，圖(七)是中國主要鐵路分布圖，從圖中可看出中國鐵路分布具有下列哪項特色？",
+        "options": [
+          "鐵路集中於西北部地區",
+          "鐵路路線主要為東西向",
+          "高速鐵路多分布在西部",
+          "西半部的鐵路分布較少"
+        ],
+        "correct": 3,
+        "image": "images/geo6c/a1.png"
+      },
+      {
+        "q": "王博士參加以中國現代農業轉型為主題的演講，下列哪個內容符合上述主題？",
+        "options": [
+          "蟲蟲危機：利用太陽能捕蟲燈抓農田害蟲",
+          "山牧季移：順應季節變化的畜牧產業活動",
+          "南稻北麥：南部多種水稻，北部多種小麥",
+          "在地好牛：內蒙古東部廣闊草原放牧牛群"
+        ],
+        "correct": 0
+      },
+      {
+        "q": "中國科學家在山東省一座農場進行農業試驗，以「不減產、保生態、漲農價」為目標。上述目標與中國農業轉型的何種特色最相關？",
+        "options": [
+          "提高人均可耕地的面積",
+          "利用科技提高農作產量",
+          "須兼顧自然環境與產量",
+          "各地生產具優勢農產品"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "表(一)為中國一帶一路政策中，陸上絲路與海上絲路間的比較（陸上：公路、鐵路／移動速度較慢／運量較少／時間較短；海上：海運／移動速度較快／運量較多／時間較長），下列哪個選項<u>不正確</u>？",
+        "options": [
+          "交通方式",
+          "移動速度",
+          "運量",
+          "時間"
+        ],
+        "correct": 1
+      },
+      {
+        "q": "近年中國大型企業對非洲的投資金額快速成長，尤其在中國政府推動「走出去」（going global）策略以及加入世界貿易組織（WTO）後，中國在非洲的貿易和投資活動更積極。中國政府鼓勵企業投資非洲的主要因素包括下列何者？",
+        "options": [
+          "解決水資源缺乏的情形",
+          "希望取得更多礦產資源",
+          "積極降低人口性別比例",
+          "希望更快獲取研發技術"
+        ],
+        "correct": 1
+      },
+      {
+        "q": "中國 2013 年提出的一帶一路政策，影響地區廣大，為中國的國際貿易翻開嶄新的一頁。上述政策對中國的影響，<u>不包括</u>下列何者？",
+        "options": [
+          "與他國合作建設交通能源等基礎設施",
+          "藉由強化基礎建設消化中國過剩產能",
+          "開拓國際市場並得到穩定的能源供給",
+          "降低中國大城市過度發展的汙染問題"
+        ],
+        "correct": 3
+      },
+      {
+        "q": "圖(八)為中國的四大經濟區。位於長江中游的武漢市，由於政府相關政策，目前以較低廉的工資及自然資源優勢吸引外資投入，成為連結沿海及內陸的重要交通樞紐，近幾年經濟成長速度甚至超越沿海城市。武漢市應位於圖(八)中哪個區域？",
+        "options": [
+          "甲",
+          "乙",
+          "丙",
+          "丁"
+        ],
+        "correct": 1,
+        "image": "images/geo6c/q27.png"
+      }
+    ]
+  },
+  {
+    "type": "reading",
+    "title": "三、題組",
+    "meta": "12%，每題3分",
+    "passages": [
+      {
+        "label": "(一)",
+        "text": "中國於 1978 年實施了某項政策，吸引大量外國資金到中國投資設廠，帶動沿海城市快速發展，表(二)為中國近代都市化程度變化（都市化程度：1964 年 18.3%、1978 年 17.9%、1985 年 23.7%、1990 年 26.4%、2000 年 36.2%、2015 年 56.1%；都市人口由 12,710 萬人增至 77,116 萬人）。",
+        "items": [
+          {
+            "q": "上文中提及的「某項政策」應為下列何者？",
+            "options": [
+              "轉型為科技化農業",
+              "多條高速鐵路完工",
+              "實施經濟改革開放",
+              "都市的生育率提高"
+            ],
+            "correct": 2
+          },
+          {
+            "q": "隨著表中都市化程度的變化，同時期中國可能會出現下列哪種現象？",
+            "options": [
+              "大量人口移入都市",
+              "出生率逐漸下降",
+              "農耕人口大量增加",
+              "都市環境品質提升"
+            ],
+            "correct": 0
+          }
+        ]
+      },
+      {
+        "label": "(二)",
+        "text": "中國經濟改革開放後，來自世界各國的企業湧入中國，以製造業為主力，積極投資擴廠，使得「中國製造」悄悄進入世界上許多人的家中，但有識之士已經嗅到轉變，隨著人口組成的變化，中國已逐漸失去傳統製造業的優勢。",
+        "items": [
+          {
+            "q": "過往外資湧入，主要會在人口密集的哪一地區設廠？",
+            "options": [
+              "內陸盆地",
+              "東南沿海",
+              "西南高原",
+              "東北平原"
+            ],
+            "correct": 1
+          },
+          {
+            "q": "上述人口組成的變化，應是指下列何者？",
+            "options": [
+              "勞動力增加",
+              "人口的外移",
+              "性別比偏高",
+              "人口高齡化"
+            ],
+            "correct": 3
+          }
+        ]
+      }
+    ]
+  }
+]
+};
+
+let currentMode = "quiz"; // quiz | print
+
+const contentEl = document.getElementById("content");
+const scoreBar = document.getElementById("scoreBar");
+const scoreText = document.getElementById("scoreText");
+
+function render(){
+  window.examAnswersRevealed = false;
+  contentEl.innerHTML = "";
+  DATA.sections.forEach((sec, si)=> contentEl.appendChild(renderSection(sec, si)));
+  if(currentMode==="quiz"){
+    scoreBar.classList.add("show");
+    updateScore();
+  } else {
+    scoreBar.classList.remove("show");
+    contentEl.querySelectorAll(".opt").forEach(o=>o.classList.add("disabled"));
+    contentEl.querySelectorAll(".opt.is-correct").forEach(o=>o.classList.add("correct"));
+  }
+}
+
+function renderSection(sec, si){
+  const block = document.createElement("section");
+  block.className = "block";
+  block.innerHTML = `<h2>${sec.title}</h2><p class="meta">${sec.meta}</p>`;
+
+  if(sec.type==="mc"){
+    sec.items.forEach((it,i)=>{
+      const q = document.createElement("div");
+      q.className = "q";
+      const optsHtml = it.options.map((op,oi)=>`
+        <div class="opt" data-idx="${oi}" data-correct="${oi===it.correct}">
+          <span class="tag">(${String.fromCharCode(65+oi)})</span><span>${op}</span>
+        </div>`).join("");
+      const imgHtml = it.image ? `<img src="${it.image}" alt="題目附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">` : "";
+      const img2Html = it.image2 ? `<img src="${it.image2}" alt="題目附圖2" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">` : "";
+      q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q}</div>
+        ${imgHtml}${img2Html}
+        <div class="opts">${optsHtml}</div>`;
+      q.querySelectorAll(".opt").forEach(optEl=>{
+        if(optEl.dataset.correct==="true") optEl.classList.add("is-correct");
+        optEl.addEventListener("click", ()=>selectOption(q, optEl));
+      });
+      block.appendChild(q);
+    });
+  }
+
+  else if(sec.type==="reading"){
+    sec.passages.forEach(p=>{
+      const passageDiv = document.createElement("div");
+      passageDiv.className = "passage";
+      passageDiv.innerHTML = `${p.label ? `<span class="passage-label">${p.label}</span>`:""}${p.text}${p.image ? `<img src="${p.image}" alt="題組附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-top:10px;border:1px solid var(--paper-line);">`:""}`;
+      block.appendChild(passageDiv);
+      p.items.forEach((it,i)=>{
+        const q = document.createElement("div");
+        q.className = "q";
+        const optsHtml = it.options.map((op,oi)=>`
+          <div class="opt" data-idx="${oi}" data-correct="${oi===it.correct}">
+            <span class="tag">(${String.fromCharCode(65+oi)})</span><span>${op}</span>
+          </div>`).join("");
+        q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q}</div>
+          ${it.image ? `<img src="${it.image}" alt="題目附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">`:""}
+          <div class="opts">${optsHtml}</div>`;
+        q.querySelectorAll(".opt").forEach(optEl=>{
+          if(optEl.dataset.correct==="true") optEl.classList.add("is-correct");
+          optEl.addEventListener("click", ()=>selectOption(q, optEl));
+        });
+        block.appendChild(q);
+      });
+    });
+  }
+
+  return block;
+}
+
+function selectOption(qEl, optEl){
+  if(currentMode!=="quiz") return;
+  if(qEl.dataset.answered==="true") return;
+  qEl.dataset.answered = "true";
+  qEl.querySelectorAll(".opt").forEach(o=>o.classList.add("disabled"));
+  optEl.classList.add("selected");
+  const correctOpt = qEl.querySelector('.opt[data-correct="true"]');
+  qEl.dataset.studentAnswer = optEl.textContent.trim();
+  qEl.dataset.correctAnswer = correctOpt ? correctOpt.textContent.trim() : "";
+  qEl.dataset.isCorrect = (optEl.dataset.correct==="true") ? "true" : "false";
+  updateScore();
+}
+
+function updateScore(){
+  let total = 0, answered = 0, correct = 0;
+  contentEl.querySelectorAll(".q").forEach(q=>{
+    const gradable = q.querySelector(".opts");
+    if(!gradable) return;
+    total++;
+    if(q.dataset.studentAnswer !== undefined){
+      answered++;
+      if(q.dataset.isCorrect === "true") correct++;
+    }
+  });
+  if(window.examAnswersRevealed){
+    scoreText.textContent = `${correct} / ${total}`;
+  } else {
+    scoreText.textContent = `已作答 ${answered} / ${total} 題`;
+  }
+}
+window.updateScore = updateScore;
+
+document.getElementById("resetBtn").addEventListener("click", render);
+document.getElementById("quizModeBtn").addEventListener("click", ()=>{
+  currentMode = "quiz";
+  document.getElementById("quizModeBtn").classList.add("active");
+  document.getElementById("printModeBtn").classList.remove("active");
+  render();
+});
+document.getElementById("printModeBtn").addEventListener("click", ()=>{
+  if(document.getElementById("printModeBtn").disabled) return;
+  currentMode = "print";
+  document.getElementById("printModeBtn").classList.add("active");
+  document.getElementById("quizModeBtn").classList.remove("active");
+  render();
+});
+
+window.unlockPrintMode = function(){
+  document.getElementById("printModeBtn").disabled = false;
+};
+
+render();
+</script>
+<script src="../sync.js?v=20261018b"></script>
+</body>
+</html>
