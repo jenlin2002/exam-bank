@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>段考題庫｜歷史第4回 - 宋元多民族並立的時期</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@500;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#faf6ec;
+    --paper-line:#e3dcc8;
+    --ink:#26332b;
+    --ink-soft:#5b6b5f;
+    --chalk-green:#2f4538;
+    --chalk-green-2:#3d5a48;
+    --pen-red:#b8433a;
+    --pen-red-soft:#f4dedb;
+    --ok-green:#3f7d52;
+    --ok-green-soft:#dfeee1;
+    --gold:#b5842a;
+    --radius:10px;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:"Noto Sans TC",sans-serif;
+    line-height:1.7;
+  }
+  header.hero{
+    background:var(--chalk-green);
+    color:#eef2ea;
+    padding:28px 20px 40px;
+    position:relative;
+  }
+  header.hero::after{
+    content:"";
+    position:absolute;
+    left:0; right:0; bottom:-1px;
+    height:14px;
+    background:repeating-linear-gradient(90deg,var(--paper) 0 18px, transparent 18px 20px);
+  }
+  .hero-inner{max-width:880px;margin:0 auto;}
+  .breadcrumb a{color:#cfe0d1;text-decoration:none;font-size:14px;}
+  .breadcrumb a:hover{text-decoration:underline;}
+  h1{
+    font-family:"Noto Serif TC",serif;
+    font-weight:700;
+    font-size:clamp(24px,4vw,34px);
+    margin:10px 0 6px;
+  }
+  .subtitle{color:#cfe0d1;font-size:15px;margin:0;}
+  main{max-width:880px;margin:0 auto;padding:28px 20px 80px;}
+
+  .controls{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:22px;
+  }
+  .mode-toggle{display:flex;border:2px solid var(--chalk-green);border-radius:999px;overflow:hidden;}
+  .mode-toggle button{
+    background:transparent;border:none;padding:8px 16px;font-size:14px;font-weight:700;
+    color:var(--chalk-green);cursor:pointer;font-family:"Noto Sans TC",sans-serif;
+  }
+  .mode-toggle button.active{background:var(--gold);color:#fff;}
+  .mode-toggle button:disabled{opacity:.4;cursor:not-allowed;}
+
+  .score-bar{
+    display:none;
+    align-items:center;
+    justify-content:space-between;
+    background:#fff;
+    border:1px solid var(--paper-line);
+    border-left:5px solid var(--gold);
+    border-radius:var(--radius);
+    padding:12px 18px;
+    margin-bottom:22px;
+    font-size:14px;
+  }
+  .score-bar.show{display:flex;}
+  .score-bar strong{font-size:18px;color:var(--gold);}
+  .score-bar button{
+    background:none;border:1px solid var(--ink-soft);color:var(--ink-soft);
+    border-radius:6px;padding:6px 12px;font-size:13px;cursor:pointer;
+  }
+
+  section.block{
+    background:#fff;
+    border:1px solid var(--paper-line);
+    border-radius:var(--radius);
+    padding:22px 22px 26px;
+    margin-bottom:20px;
+  }
+  .block h2{
+    font-family:"Noto Serif TC",serif;
+    font-size:19px;
+    margin:0 0 4px;
+    color:var(--chalk-green);
+  }
+  .block .meta{color:var(--ink-soft);font-size:13px;margin:0 0 16px;}
+
+  .q{margin-bottom:18px;padding-bottom:16px;border-bottom:1px dashed var(--paper-line);}
+  .q:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0;}
+  .q-text{font-size:15.5px;margin-bottom:8px;}
+  .q-num{color:var(--gold);font-weight:700;margin-right:4px;}
+
+  .opts{display:grid;gap:8px;}
+  .opt{
+    display:flex;gap:8px;align-items:flex-start;
+    border:1.5px solid var(--paper-line);
+    border-radius:8px;
+    padding:9px 12px;
+    cursor:pointer;
+    font-size:14.5px;
+    background:#fffdf8;
+  }
+  .opt:hover{border-color:var(--chalk-green-2);}
+  .opt.selected{border-color:var(--chalk-green-2);background:#eef3ea;}
+  .opt.correct{border-color:var(--ok-green);background:var(--ok-green-soft);}
+  .opt.wrong{border-color:var(--pen-red);background:var(--pen-red-soft);}
+  .opt .tag{font-weight:700;color:var(--ink-soft);}
+  .opt.correct .tag{color:var(--ok-green);}
+  .opt.wrong .tag{color:var(--pen-red);}
+  .opt.disabled{cursor:default;}
+
+  .passage{
+    background:#f5f2e8;border-radius:8px;padding:14px 16px;margin-bottom:14px;
+    font-size:14.5px;white-space:pre-line;
+  }
+  .passage-label{font-weight:700;color:var(--chalk-green);margin-bottom:4px;display:block;}
+
+  .footer-link{
+    display:block;text-align:center;margin-top:30px;color:var(--chalk-green);
+    text-decoration:none;font-weight:700;font-size:14px;
+  }
+  .footer-link:hover{text-decoration:underline;}
+
+  @media print{
+    header.hero, .controls, .score-bar, .mini-btn, .footer-link{display:none !important;}
+    body{background:#fff;}
+    section.block{border:none;box-shadow:none;padding:8px 0;margin-bottom:14px;}
+    .opt.correct{background:none;border:none;font-weight:700;}
+    .opt.correct::after{content:" ← 正解";color:var(--pen-red);}
+    .opt{border:none;padding:2px 0;}
+    main{max-width:100%;padding:0 24px;}
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="breadcrumb"><a href="https://jenlin2002.github.io/">🏠 回總目錄</a> ／ <a href="../hanlin-social-g8-1.html" style="color:#cfe0d1;">段考題庫</a></div>
+    <h1>歷史・第4回</h1>
+    <p class="subtitle">第三篇第3章 宋元多民族並立的時期｜翰林版八年級社會（三）Ｂ卷</p>
+  </div>
+</header>
+
+<main>
+  <div class="controls">
+    <div class="mode-toggle">
+      <button id="quizModeBtn" class="active">✏️ 測驗模式</button>
+      <button id="printModeBtn" disabled title="完成測驗並送出成績後才能查看">🖨️ 完整題目與解答（送出成績後解鎖）</button>
+    </div>
+  </div>
+
+  <div class="score-bar" id="scoreBar">
+    <div>目前得分：<strong id="scoreText">0 / 0</strong>（僅計算選擇題）</div>
+    <button id="resetBtn">重新作答</button>
+  </div>
+
+  <div id="content"></div>
+
+  <a class="footer-link" href="../hanlin-social-g8-1.html">← 回段考題庫總覽</a>
+</main>
+
+<script>
+
+window.EXAM_META = { version: "B卷", examLabel: "歷史第4回" };
+const DATA = {
+  sections: [
+  {
+    "type": "mc",
+    "title": "一、單題",
+    "meta": "72%，每題3分",
+    "items": [
+      {
+        "q": "小櫻利用圖示學習宋代的歷史。下列四幅小櫻繪製的兩宋與遼、西夏、金對立形勢簡圖，何者<b>有誤</b>？",
+        "options": [
+          "北宋與西夏、遼對立",
+          "北宋與西夏、金對立",
+          "南宋與遼、金對立",
+          "南宋與西夏、金對立"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "「北宋末年，由女真族建立的一個王朝，女真族首領完顏阿骨打在統一女真諸部後，建都立國。」上述指的是哪一個政權？",
+        "options": [
+          "西夏",
+          "大理",
+          "遼",
+          "金"
+        ],
+        "correct": 3
+      },
+      {
+        "q": "圖(一)為張擇端的畫作「清明上河圖」，描繪北宋首都的繁榮，此場景貿易興盛的原因是因不再受過去何種政策的限制？",
+        "options": [
+          "郡縣制度",
+          "廣設驛站",
+          "坊市制度",
+          "實施科舉"
+        ],
+        "correct": 2,
+        "image": "images/hist4b/q3.png"
+      },
+      {
+        "q": "阿德是生活在北宋時期的商人，根據判斷，他很可能會有什麼樣的生活？",
+        "options": [
+          "透過活字印刷術印製大量書籍販賣",
+          "為了準備科舉而研讀《四書集注》",
+          "前往驛站與外國商人進行商業買賣",
+          "聽聞蒙古軍在邊境與軍隊爆發衝突"
+        ],
+        "correct": 0
+      },
+      {
+        "q": "「元」是中國第一個以異族統一天下的朝代，其版圖遼闊，但是立足中原卻不到百年就滅亡了。下列何者<b>不是</b>其衰亡的原因？",
+        "options": [
+          "民變紛起",
+          "財政混亂",
+          "重文輕武",
+          "帝位繼承紛爭不斷"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "部分史家認為，宋代並非如此積弱不振，而是他們遭遇的外患實力太過強大。北宋的主要外患<b>不包括</b>下列哪一部族？",
+        "options": [
+          "西夏",
+          "蒙古",
+          "契丹",
+          "女真"
+        ],
+        "correct": 1
+      },
+      {
+        "q": "文鍾是某個朝代的讀書人，居住在福建一帶。今年是他第一次參加科舉考試，但是受於當朝實施某種政策，導致考試題目較難、錄取率低；就算考上，也很難升遷到較高的職務。可知上述的政策為下列何者？",
+        "options": [
+          "推舉孝廉的任官標準",
+          "偏重文人的基本國策",
+          "宗法血緣的禮樂制度",
+          "差別待遇的種族政策"
+        ],
+        "correct": 3
+      },
+      {
+        "q": "南宋某學者集理學之大成，學術成就「致廣大，盡精微，綜羅百代」，被譽為繼孔孟之後影響最深遠的一代宗師，該學者是下列何人？",
+        "options": [
+          "畢昇",
+          "岳飛",
+          "朱熹",
+          "張擇端"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "宋代農業發展的重要關鍵，是新稻種的引進，加上耕作技術的改良，使得糧食產量大增。當時是由何處引進「早熟稻」？",
+        "options": [
+          "天竺（印度）",
+          "占城（越南）",
+          "大食（阿拉伯）",
+          "呂宋（菲律賓）"
+        ],
+        "correct": 1
+      },
+      {
+        "q": "「長城自古以來是中國抵禦北方草原民族的重要防線，但在宋代建國以前，卻因『燕雲十六州』被割讓給外族，長城失去防禦功能，使得宋代備受威脅。」此一外族為下列何族？",
+        "options": [
+          "契丹",
+          "突厥",
+          "女真",
+          "蒙古"
+        ],
+        "correct": 0
+      },
+      {
+        "q": "翔翔在暑假時與家人一同去旅遊，看到了某個古蹟的介紹如下：「北宋時期，由當時來華的阿拉伯商人所建立，為目前中國保存最古老與完整的伊斯蘭教聖跡之地。該地港口同時為宋朝時的市舶司設立地點，因此充斥著豐富的歷史氛圍。」根據內容判斷，翔翔旅遊的地點最可能為下列何者？",
+        "options": [
+          "長安",
+          "汴京",
+          "泉州",
+          "洛陽"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "宋代積弱不振，自建國後，即不斷遭受來自外族的威脅，最後並為其所滅。北宋和南宋分別亡於哪一外族？",
+        "options": [
+          "西夏、女真",
+          "契丹、女真",
+          "契丹、蒙古",
+          "女真、蒙古"
+        ],
+        "correct": 3
+      },
+      {
+        "q": "蒙古以草原民族入主中國，憑藉的是強盛的武力。統一全國後，元帝國唯恐漢人不服，遂施行高壓的統治方式，因蒙古人自身文化水平較低，鑑於漢族傳統士人地位高、影響大，難以管理，便加以打擊。實施的種族政策以哪些等級受到較多的不平等待遇？",
+        "options": [
+          "蒙古人、色目人",
+          "色目人、漢人",
+          "漢人、南人",
+          "蒙古人、南人"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "真真整理歷史筆記，其中一個地方卻不小心遭到汙損：「11世紀中期，於今日河南的三峰山爆發戰爭，當時＿＿族以少量的軍隊打敗了北方的金國。此事件之後，也讓金國從此一蹶不振，再也無法強大，最終滅亡。」根據內容判斷，該民族應為下列何者？",
+        "options": [
+          "女真",
+          "蒙古",
+          "契丹",
+          "突厥"
+        ],
+        "correct": 1
+      },
+      {
+        "q": "1206 年，一個位於漠北的草原民族，建立起龐大的帝國，並開始向外擴張，先後攻滅西夏、金等國，下列關於這個民族的敘述，何者正確？",
+        "options": [
+          "與北宋簽訂澶淵之盟維持和平",
+          "北宋時成吉思汗建立蒙古帝國",
+          "統一中國後將人民分為四等級",
+          "曾建立橫跨歐、亞、非的帝國"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "范仲淹有「先天下之憂而憂，後天下之樂而樂」的志向，可看出宋代文人自我期許相當高，往往「以天下為己任」，所以他們通曉經典是為了學以致用，而這也是宋代理學最基本的精神。宋代的理學最主要融合了哪些思想？",
+        "options": [
+          "儒學、佛學",
+          "儒學、伊斯蘭文化",
+          "儒學、科學",
+          "儒學、歐洲文化"
+        ],
+        "correct": 0
+      },
+      {
+        "q": "元代時，義大利人馬可波羅來到中國，他可能經歷下列何種狀況？",
+        "options": [
+          "在首都汴京街上看到國內外商人雲集",
+          "欣賞《清明上河圖》所繪大都的情形",
+          "他屬於「色目人」等級，被朝廷重用",
+          "逛市場要留意營業時間與地點的限制"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "13 世紀時，義大利北部某教堂的神父告訴信徒，虔誠向上帝禱告並懺悔，便可躲過東方草原民族帶來的「黃禍」。上述中的「黃禍」，應該是指哪個民族向歐洲的擴張？",
+        "options": [
+          "蒙古",
+          "女真",
+          "匈奴",
+          "契丹"
+        ],
+        "correct": 0
+      },
+      {
+        "q": "歷史課時，幾位同學探討有關忽必烈的重要事蹟，下列何人所言<b>有誤</b>？",
+        "options": [
+          "王韶：興兵滅南宋，統一全中國",
+          "李晴：建國號為元，定都於大都",
+          "郭靜：實施差別待遇的種族政策",
+          "楊康：派使者前往西域活絡貿易"
+        ],
+        "correct": 3
+      },
+      {
+        "q": "宋代由於人工磁化法（以磁石磨針鋒）的發明，使得指南針的應用範圍更廣。阿拉伯人將此技術傳入何處，開啟日後新航路的發現？",
+        "options": [
+          "美洲",
+          "非洲",
+          "澳洲",
+          "歐洲"
+        ],
+        "correct": 3
+      },
+      {
+        "q": "伊斯蘭教創立於 7 世紀，在宋元時期，向亞洲各地擴張，下列相關敘述何者<b>錯誤</b>？",
+        "options": [
+          "阿拉伯商人來華貿易，於聚集地建立清真寺禮拜",
+          "到中國貿易的伊斯蘭教商人，乃地位低下的南人",
+          "海陸交通暢通，使伊斯蘭教商人東來貿易者眾多",
+          "伊斯蘭文化中的天文、曆法和醫學影響中國深遠"
+        ],
+        "correct": 1
+      },
+      {
+        "q": "宋代是中國科學技術取得較大進展的時期，幾大發明的投入實用及大規模外傳均在此際，其中三項成就更是在航海、學術、戰爭方面有重大影響。上述所指是哪些成就？",
+        "options": [
+          "紙幣、造紙術、火藥",
+          "羅盤、青銅器、火藥",
+          "指南針、印刷術、火藥",
+          "青銅器、造紙術、火藥"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "正赫撰寫以蒙古為主題的報告，下列是其報告的部分內容，哪一項敘述<b>有誤</b>？",
+        "options": [
+          "鐵木真和繼位者發動三次西征",
+          "蒙古西征之後建立了四大汗國",
+          "蒙古對歐亞文化交流頗有貢獻",
+          "成吉思汗建立元朝並定都大都"
+        ],
+        "correct": 3
+      },
+      {
+        "q": "拉帕：「我的祖國被征服了，我淪為被統治者，但比起其他民族的遭遇，我們還算幸運，得到統治階層的信任，把我們當助手，派我們處理財政、稅賦方面的職務。」由上述判斷，拉帕最有可能為何種身分？",
+        "options": [
+          "西晉時，移入中原的匈奴人",
+          "唐代時，旅居長安的突厥人",
+          "金國統治中原時的契丹人",
+          "元代統治中國時的西域人"
+        ],
+        "correct": 3
+      }
+    ]
+  },
+  {
+    "type": "reading",
+    "title": "二、題組",
+    "meta": "28%，每題4分",
+    "passages": [
+      {
+        "label": "(一)",
+        "text": "歷史老師在上課時提供以下資料：<br>資料一：宋朝與「甲國」原本因土地的管轄有紛爭，長年戰爭下，最後由宋朝皇帝親征後終於妥協。依照規定，宋朝交付甲國銀、絹，作為歲幣。訂定白溝河作為邊界，且為維護兩國和平，宋朝為兄、甲國為弟。<br>資料二：宋朝與「乙國」在戰爭下進入混亂，宋朝皇帝遭乙國擄走，危難之下宋室南遷，於臨安另立新都致力抗衡，雙方形成長期對峙的局面。",
+        "items": [
+          {
+            "q": "文中資料一的甲國，應為下列哪一民族？",
+            "options": [
+              "契丹",
+              "匈奴",
+              "女真",
+              "蒙古"
+            ],
+            "correct": 0
+          },
+          {
+            "q": "關於文中資料二的乙國，下列何者正確？",
+            "options": [
+              "當時的領袖為成吉思汗",
+              "建國之後聯盟攻打甲國",
+              "崛起地點位於今日西域",
+              "最後滅亡於西夏的手上"
+            ],
+            "correct": 1
+          },
+          {
+            "q": "根據文中兩資料，當時的國際局勢呈現哪一特色？",
+            "options": [
+              "開始修築長城防禦外族",
+              "北亞草原民族勢力強盛",
+              "宋朝成為東亞秩序盟主",
+              "四大汗國突破歐亞疆域"
+            ],
+            "correct": 1
+          },
+          {
+            "q": "同學們針對文中兩份資料的內容進行討論，下列何者的說法正確？",
+            "options": [
+              "芙莉：資料一的背景應為永嘉之禍",
+              "魯夫：資料二的背景應為澶淵之盟",
+              "小桃：資料一當時親征的皇帝為趙匡胤",
+              "小吉：資料二與乙國的紛爭為靖康之禍"
+            ],
+            "correct": 3
+          }
+        ]
+      },
+      {
+        "label": "(二)",
+        "text": "故宮在 2020 年特別規畫「四方來朝─職貢圖特展」，「職貢」是歷代中國對外交往的體制，意指朝貢國向宗主國──中國修職納貢，並接受朝觀、冊封與賞賜，以示臣服。展品中《契丹使朝聘》描繪在簽訂澶淵之盟後，契丹族前往朝廷拜見中國皇帝的場景，但主賓契丹使節卻被畫在畫作不起眼的左下角，顯見畫家要建構的是一個以中國為國際中心的圖像。",
+        "items": [
+          {
+            "q": "由文中提到的展品《契丹使朝聘》，可了解當時的國際局勢，畫中的契丹使節代表的是下列哪一政權？",
+            "options": [
+              "遼國",
+              "金國",
+              "西夏",
+              "蒙古帝國"
+            ],
+            "correct": 0
+          },
+          {
+            "q": "文中畫作中接受契丹使節來朝聘的中國皇帝，是下列哪一位君王？",
+            "options": [
+              "漢武帝",
+              "唐太宗",
+              "宋真宗",
+              "元世祖"
+            ],
+            "correct": 2
+          },
+          {
+            "q": "文中使節被畫在邊緣處，但其國家強盛時，曾經是東亞國際局勢的主導者，鄰近多國都向其稱臣納貢，但<b>最不可能</b>包括下列何者？",
+            "options": [
+              "女真",
+              "西夏",
+              "高麗",
+              "蒙古"
+            ],
+            "correct": 3
+          }
+        ]
+      }
+    ]
+  }
+]
+};
+
+let currentMode = "quiz"; // quiz | print
+
+const contentEl = document.getElementById("content");
+const scoreBar = document.getElementById("scoreBar");
+const scoreText = document.getElementById("scoreText");
+
+function render(){
+  window.examAnswersRevealed = false;
+  contentEl.innerHTML = "";
+  DATA.sections.forEach((sec, si)=> contentEl.appendChild(renderSection(sec, si)));
+  if(currentMode==="quiz"){
+    scoreBar.classList.add("show");
+    updateScore();
+  } else {
+    scoreBar.classList.remove("show");
+    contentEl.querySelectorAll(".opt").forEach(o=>o.classList.add("disabled"));
+    contentEl.querySelectorAll(".opt.is-correct").forEach(o=>o.classList.add("correct"));
+  }
+}
+
+function renderSection(sec, si){
+  const block = document.createElement("section");
+  block.className = "block";
+  block.innerHTML = `<h2>${sec.title}</h2><p class="meta">${sec.meta}</p>`;
+
+  if(sec.type==="mc"){
+    sec.items.forEach((it,i)=>{
+      const q = document.createElement("div");
+      q.className = "q";
+      const optsHtml = it.options.map((op,oi)=>`
+        <div class="opt" data-idx="${oi}" data-correct="${oi===it.correct}">
+          <span class="tag">(${String.fromCharCode(65+oi)})</span><span>${op}</span>
+        </div>`).join("");
+      const imgHtml = it.image ? `<img src="${it.image}" alt="題目附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">` : "";
+      const img2Html = it.image2 ? `<img src="${it.image2}" alt="題目附圖2" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">` : "";
+      q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q}</div>
+        ${imgHtml}${img2Html}
+        <div class="opts">${optsHtml}</div>`;
+      q.querySelectorAll(".opt").forEach(optEl=>{
+        if(optEl.dataset.correct==="true") optEl.classList.add("is-correct");
+        optEl.addEventListener("click", ()=>selectOption(q, optEl));
+      });
+      block.appendChild(q);
+    });
+  }
+
+  else if(sec.type==="reading"){
+    sec.passages.forEach(p=>{
+      const passageDiv = document.createElement("div");
+      passageDiv.className = "passage";
+      passageDiv.innerHTML = `${p.label ? `<span class="passage-label">${p.label}</span>`:""}${p.text}${p.image ? `<img src="${p.image}" alt="題組附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-top:10px;border:1px solid var(--paper-line);">`:""}`;
+      block.appendChild(passageDiv);
+      p.items.forEach((it,i)=>{
+        const q = document.createElement("div");
+        q.className = "q";
+        const optsHtml = it.options.map((op,oi)=>`
+          <div class="opt" data-idx="${oi}" data-correct="${oi===it.correct}">
+            <span class="tag">(${String.fromCharCode(65+oi)})</span><span>${op}</span>
+          </div>`).join("");
+        q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q}</div>
+          ${it.image ? `<img src="${it.image}" alt="題目附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">`:""}
+          <div class="opts">${optsHtml}</div>`;
+        q.querySelectorAll(".opt").forEach(optEl=>{
+          if(optEl.dataset.correct==="true") optEl.classList.add("is-correct");
+          optEl.addEventListener("click", ()=>selectOption(q, optEl));
+        });
+        block.appendChild(q);
+      });
+    });
+  }
+
+  return block;
+}
+
+function selectOption(qEl, optEl){
+  if(currentMode!=="quiz") return;
+  if(qEl.dataset.answered==="true") return;
+  qEl.dataset.answered = "true";
+  qEl.querySelectorAll(".opt").forEach(o=>o.classList.add("disabled"));
+  optEl.classList.add("selected");
+  const correctOpt = qEl.querySelector('.opt[data-correct="true"]');
+  qEl.dataset.studentAnswer = optEl.textContent.trim();
+  qEl.dataset.correctAnswer = correctOpt ? correctOpt.textContent.trim() : "";
+  qEl.dataset.isCorrect = (optEl.dataset.correct==="true") ? "true" : "false";
+  updateScore();
+}
+
+function updateScore(){
+  let total = 0, answered = 0, correct = 0;
+  contentEl.querySelectorAll(".q").forEach(q=>{
+    const gradable = q.querySelector(".opts");
+    if(!gradable) return;
+    total++;
+    if(q.dataset.studentAnswer !== undefined){
+      answered++;
+      if(q.dataset.isCorrect === "true") correct++;
+    }
+  });
+  if(window.examAnswersRevealed){
+    scoreText.textContent = `${correct} / ${total}`;
+  } else {
+    scoreText.textContent = `已作答 ${answered} / ${total} 題`;
+  }
+}
+window.updateScore = updateScore;
+
+document.getElementById("resetBtn").addEventListener("click", render);
+document.getElementById("quizModeBtn").addEventListener("click", ()=>{
+  currentMode = "quiz";
+  document.getElementById("quizModeBtn").classList.add("active");
+  document.getElementById("printModeBtn").classList.remove("active");
+  render();
+});
+document.getElementById("printModeBtn").addEventListener("click", ()=>{
+  if(document.getElementById("printModeBtn").disabled) return;
+  currentMode = "print";
+  document.getElementById("printModeBtn").classList.add("active");
+  document.getElementById("quizModeBtn").classList.remove("active");
+  render();
+});
+
+window.unlockPrintMode = function(){
+  document.getElementById("printModeBtn").disabled = false;
+};
+
+render();
+</script>
+<script src="../sync.js?v=20261018b"></script>
+</body>
+</html>

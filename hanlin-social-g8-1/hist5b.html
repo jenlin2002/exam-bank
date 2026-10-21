@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>段考題庫｜歷史第5回 - 明清時期東亞世界的變動</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@500;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#faf6ec;
+    --paper-line:#e3dcc8;
+    --ink:#26332b;
+    --ink-soft:#5b6b5f;
+    --chalk-green:#2f4538;
+    --chalk-green-2:#3d5a48;
+    --pen-red:#b8433a;
+    --pen-red-soft:#f4dedb;
+    --ok-green:#3f7d52;
+    --ok-green-soft:#dfeee1;
+    --gold:#b5842a;
+    --radius:10px;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:"Noto Sans TC",sans-serif;
+    line-height:1.7;
+  }
+  header.hero{
+    background:var(--chalk-green);
+    color:#eef2ea;
+    padding:28px 20px 40px;
+    position:relative;
+  }
+  header.hero::after{
+    content:"";
+    position:absolute;
+    left:0; right:0; bottom:-1px;
+    height:14px;
+    background:repeating-linear-gradient(90deg,var(--paper) 0 18px, transparent 18px 20px);
+  }
+  .hero-inner{max-width:880px;margin:0 auto;}
+  .breadcrumb a{color:#cfe0d1;text-decoration:none;font-size:14px;}
+  .breadcrumb a:hover{text-decoration:underline;}
+  h1{
+    font-family:"Noto Serif TC",serif;
+    font-weight:700;
+    font-size:clamp(24px,4vw,34px);
+    margin:10px 0 6px;
+  }
+  .subtitle{color:#cfe0d1;font-size:15px;margin:0;}
+  main{max-width:880px;margin:0 auto;padding:28px 20px 80px;}
+
+  .controls{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:22px;
+  }
+  .mode-toggle{display:flex;border:2px solid var(--chalk-green);border-radius:999px;overflow:hidden;}
+  .mode-toggle button{
+    background:transparent;border:none;padding:8px 16px;font-size:14px;font-weight:700;
+    color:var(--chalk-green);cursor:pointer;font-family:"Noto Sans TC",sans-serif;
+  }
+  .mode-toggle button.active{background:var(--gold);color:#fff;}
+  .mode-toggle button:disabled{opacity:.4;cursor:not-allowed;}
+
+  .score-bar{
+    display:none;
+    align-items:center;
+    justify-content:space-between;
+    background:#fff;
+    border:1px solid var(--paper-line);
+    border-left:5px solid var(--gold);
+    border-radius:var(--radius);
+    padding:12px 18px;
+    margin-bottom:22px;
+    font-size:14px;
+  }
+  .score-bar.show{display:flex;}
+  .score-bar strong{font-size:18px;color:var(--gold);}
+  .score-bar button{
+    background:none;border:1px solid var(--ink-soft);color:var(--ink-soft);
+    border-radius:6px;padding:6px 12px;font-size:13px;cursor:pointer;
+  }
+
+  section.block{
+    background:#fff;
+    border:1px solid var(--paper-line);
+    border-radius:var(--radius);
+    padding:22px 22px 26px;
+    margin-bottom:20px;
+  }
+  .block h2{
+    font-family:"Noto Serif TC",serif;
+    font-size:19px;
+    margin:0 0 4px;
+    color:var(--chalk-green);
+  }
+  .block .meta{color:var(--ink-soft);font-size:13px;margin:0 0 16px;}
+
+  .q{margin-bottom:18px;padding-bottom:16px;border-bottom:1px dashed var(--paper-line);}
+  .q:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0;}
+  .q-text{font-size:15.5px;margin-bottom:8px;}
+  .q-num{color:var(--gold);font-weight:700;margin-right:4px;}
+
+  .opts{display:grid;gap:8px;}
+  .opt{
+    display:flex;gap:8px;align-items:flex-start;
+    border:1.5px solid var(--paper-line);
+    border-radius:8px;
+    padding:9px 12px;
+    cursor:pointer;
+    font-size:14.5px;
+    background:#fffdf8;
+  }
+  .opt:hover{border-color:var(--chalk-green-2);}
+  .opt.selected{border-color:var(--chalk-green-2);background:#eef3ea;}
+  .opt.correct{border-color:var(--ok-green);background:var(--ok-green-soft);}
+  .opt.wrong{border-color:var(--pen-red);background:var(--pen-red-soft);}
+  .opt .tag{font-weight:700;color:var(--ink-soft);}
+  .opt.correct .tag{color:var(--ok-green);}
+  .opt.wrong .tag{color:var(--pen-red);}
+  .opt.disabled{cursor:default;}
+
+  .passage{
+    background:#f5f2e8;border-radius:8px;padding:14px 16px;margin-bottom:14px;
+    font-size:14.5px;white-space:pre-line;
+  }
+  .passage-label{font-weight:700;color:var(--chalk-green);margin-bottom:4px;display:block;}
+
+  .footer-link{
+    display:block;text-align:center;margin-top:30px;color:var(--chalk-green);
+    text-decoration:none;font-weight:700;font-size:14px;
+  }
+  .footer-link:hover{text-decoration:underline;}
+
+  @media print{
+    header.hero, .controls, .score-bar, .mini-btn, .footer-link{display:none !important;}
+    body{background:#fff;}
+    section.block{border:none;box-shadow:none;padding:8px 0;margin-bottom:14px;}
+    .opt.correct{background:none;border:none;font-weight:700;}
+    .opt.correct::after{content:" ← 正解";color:var(--pen-red);}
+    .opt{border:none;padding:2px 0;}
+    main{max-width:100%;padding:0 24px;}
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="breadcrumb"><a href="https://jenlin2002.github.io/">🏠 回總目錄</a> ／ <a href="../hanlin-social-g8-1.html" style="color:#cfe0d1;">段考題庫</a></div>
+    <h1>歷史・第5回</h1>
+    <p class="subtitle">第三篇第4章 明清時期東亞世界的變動｜翰林版八年級社會（三）Ｂ卷</p>
+  </div>
+</header>
+
+<main>
+  <div class="controls">
+    <div class="mode-toggle">
+      <button id="quizModeBtn" class="active">✏️ 測驗模式</button>
+      <button id="printModeBtn" disabled title="完成測驗並送出成績後才能查看">🖨️ 完整題目與解答（送出成績後解鎖）</button>
+    </div>
+  </div>
+
+  <div class="score-bar" id="scoreBar">
+    <div>目前得分：<strong id="scoreText">0 / 0</strong>（僅計算選擇題）</div>
+    <button id="resetBtn">重新作答</button>
+  </div>
+
+  <div id="content"></div>
+
+  <a class="footer-link" href="../hanlin-social-g8-1.html">← 回段考題庫總覽</a>
+</main>
+
+<script>
+
+window.EXAM_META = { version: "B卷", examLabel: "歷史第5回" };
+const DATA = {
+  sections: [
+  {
+    "type": "mc",
+    "title": "一、單題",
+    "meta": "72%，每題3分",
+    "items": [
+      {
+        "q": "小安是生活在 16 世紀時期的南洋居民，某日他跟隨著國家的使節前往傳說中的「天朝」，將國家的奇珍異寶獻給天朝的皇帝後，接受冊封並得以在天朝內進行商業買賣。上述互動應為下列何項政策？",
+        "options": [
+          "朝貢貿易",
+          "海禁政策",
+          "和親政策",
+          "驛站制度"
+        ],
+        "correct": 0
+      },
+      {
+        "q": "下列兩份資料的統治者，應為哪一政權？<br>資料一：新疆在 18 世紀時，統治者平定當地後逐漸加深控制，並以「新的疆土」之稱於當地設省。<br>資料二：西藏以前有圖博、吐蕃等稱呼，直到 18 世紀時，統治者平定當地起事，逐漸納入版圖，再更名為西藏。",
+        "options": [
+          "唐朝",
+          "元朝",
+          "明朝",
+          "清朝"
+        ],
+        "correct": 3
+      },
+      {
+        "q": "下表為明代軍費與年度支出的統計表（1548 年：軍費 231 萬、年度支出 347 萬、占 66.57%；1579 年：322、422、76.29%；1600 年：400、450、85.11%；1612 年：389、400、97.25%），下列何者<b>不是</b>導致軍費支出日益增加的原因？",
+        "options": [
+          "蒙古侵擾北方",
+          "女真人的進犯",
+          "倭寇騷擾沿海",
+          "西方列強侵略"
+        ],
+        "correct": 3
+      },
+      {
+        "q": "在歷史上，明末清初的吳梅村一句「慟哭六軍俱縞素，衝冠一怒為紅顏」，說明了明代山海關守將何人降清，引清兵入關？",
+        "options": [
+          "鄭和",
+          "吳三桂",
+          "徐光啟",
+          "李自成"
+        ],
+        "correct": 1
+      },
+      {
+        "q": "阿青是一位生活在明代北京的雜貨商人，他<b>最不可能</b>有下列哪一經歷？",
+        "options": [
+          "在市場販售馬鈴薯",
+          "到專業市鎮購買商品",
+          "轉手景德鎮青花瓷盤",
+          "被官府強迫薙髮留辮"
+        ],
+        "correct": 3
+      },
+      {
+        "q": "元代末年，群雄並起，最後以出身民間而建立明代的是下列何人？",
+        "options": [
+          "吳三桂",
+          "朱元璋",
+          "李自成",
+          "鐵木真"
+        ],
+        "correct": 1
+      },
+      {
+        "q": "明代自建國以後，北方始終處於「甲」的威脅之下，而東南沿海則苦於「乙」的侵擾。甲、乙依序應填入下列何者？",
+        "options": [
+          "突厥、流寇",
+          "蒙古、倭寇",
+          "女真、倭寇",
+          "契丹、流寇"
+        ],
+        "correct": 1
+      },
+      {
+        "q": "18 世紀時，當時歐洲的學者因為崇尚中國儒家風氣，改編了中國傳統民間故事。根據上述內容判斷，歐洲人接觸到中國儒家風氣，應與何種因素有關？",
+        "options": [
+          "耶穌會傳教士訪華後交流經典",
+          "蒙古西征時將經典帶入到歐洲",
+          "鄭和下西洋時與歐洲人有貿易",
+          "阿拉伯商人經商時帶回的經典"
+        ],
+        "correct": 0
+      },
+      {
+        "q": "某書為中國士大夫徐光啟與傳教士共同翻譯的歐洲典籍，成為當時中國人學習數學的教材。該典籍應為下列何者？",
+        "options": [
+          "《聖經》",
+          "《四書集注》",
+          "《回回藥方》",
+          "《幾何原本》"
+        ],
+        "correct": 3
+      },
+      {
+        "q": "下列兩則事例反映出明清時期的哪一現象？<br>事例一：明太祖年間，官員趙伯寧上〈萬壽表〉，其中有「垂子孫而作則」句，因「作則」與「作賊」音似，遭處死。<br>事例二：清世宗年間，徐駿因寫了「明月有情還顧我，清風無意不留人」被處死。",
+        "options": [
+          "禁止私人講學論政",
+          "重武輕文貶低儒生",
+          "以文字獄摧殘文人",
+          "科舉取士出現弊端"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "15、16 世紀，歐洲商人到東亞貿易，他們帶著□□大量購買中國的絲綢、瓷器等商品，造成中國貨幣經濟產生重大變化。上文提到的□□應為下列何者？",
+        "options": [
+          "白銀",
+          "黃金",
+          "青銅",
+          "紙幣"
+        ],
+        "correct": 0
+      },
+      {
+        "q": "同樣由來自於關外的少數民族所統治，清代國祚卻較蒙古人的元代為長，因為它對漢族並非單純地征服、鎮壓，而是實施一套高壓與懷柔相結合的統治政策。下列哪一政策是屬於懷柔的部分？",
+        "options": [
+          "舉行科舉",
+          "大興文字獄",
+          "採九品任官的作法",
+          "強迫漢人薙髮留辮"
+        ],
+        "correct": 0
+      },
+      {
+        "q": "某部電影內容描述 17 世紀時，在日本傳教的耶穌會傳教士遭到指控背棄了教義。其學生為了證實老師的清白前往日本，但在過程中看到了他們信仰的宗教在日本發展的困境。上述主角等人信仰的宗教，最可能為下列何者？",
+        "options": [
+          "基督教",
+          "伊斯蘭教",
+          "天主教",
+          "佛教"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "中國至唐代以來，海外貿易就相當發達，但明代與清初政府均曾下令實施海禁政策，嚴禁人民出海。其防堵的對象分別為何？",
+        "options": [
+          "明—流寇，清—倭寇",
+          "明—荷蘭，清—西班牙",
+          "明—倭寇，清—臺灣鄭氏",
+          "明—臺灣鄭氏，清—倭寇"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "15 世紀末，歐洲人發現了通往亞洲的新航路，陸續前來中國進行貿易。明代中期到清初對外關係的特徵<b>不包括</b>下列何者？",
+        "options": [
+          "對外經濟、文化等交流頻繁",
+          "政府閉關自守禁絕對外貿易",
+          "白銀大量流入逐漸取代紙幣",
+          "交易商品以絲綢、瓷器為主"
+        ],
+        "correct": 1
+      },
+      {
+        "q": "傳教士來到中國，將西方的科技帶入，並且也將中國典籍、園林建築傳回歐洲，其中的西方科技<b>不包含</b>下列何者？",
+        "options": [
+          "幾何學",
+          "天文曆法",
+          "軍事科技",
+          "活字印刷術"
+        ],
+        "correct": 3
+      },
+      {
+        "q": "隨著大航海時代來臨，東亞與西方曾有廣泛的文化交流，但後來卻又因故中斷交流，例如：日本在 17 世紀實施鎖國政策，限制通商與傳教，只允許中國、荷蘭商船到何地貿易？",
+        "options": [
+          "東京",
+          "大阪",
+          "京都",
+          "長崎"
+        ],
+        "correct": 3
+      },
+      {
+        "q": "「張生是明代人，(甲)平常聽聞北方蒙古進犯，後來又聽說不要到東南沿海活動，(乙)因為有流寇在海上劫掠。(丙)某天他跟友人到夜市逛逛，(丁)幸運地買到精緻的景德鎮瓷器，高興地捧著瓷器回家。」上述是峻碩的歷史作業，何者敘述<b>有誤</b>？",
+        "options": [
+          "(甲)",
+          "(乙)",
+          "(丙)",
+          "(丁)"
+        ],
+        "correct": 1
+      },
+      {
+        "q": "凱瑜晚餐時，在餐桌上看到花生、玉米、馬鈴薯等食材，想起老師曾提到這些作物原產於美洲，經過東西文化交流，才會出現在我們的餐桌上。關於這些食物的傳播歷程，下列何項敘述正確？",
+        "options": [
+          "荷蘭治臺時引進臺灣，再經由臺灣傳至中國",
+          "鄭和出使「西洋」時，從中南美洲帶回中國",
+          "蒙古三次西征橫跨歐亞，促進異國作物交流",
+          "歐洲商人到亞洲貿易，將美洲作物傳入中國"
+        ],
+        "correct": 3
+      },
+      {
+        "q": "滿清以少數民族作為統治者，故針對不同的民族實行多元的統治政策，其中何者<b>並非</b>針對統治漢人所採取的策略？",
+        "options": [
+          "大興文字獄，箝制其思想",
+          "保護支持其宗教藉以拉攏",
+          "舉行科舉，特別晉用士人",
+          "強迫兩族人都要薙髮留辮"
+        ],
+        "correct": 1
+      },
+      {
+        "q": "佑軒以「明清時期的對外貿易」為主題，撰寫歷史報告，下列哪一項資料會出現在他的報告中？",
+        "options": [
+          "明代政府首次設立市舶司，管理海上貿易",
+          "對外貿易使用的貨幣，是紙幣與銅錢並用",
+          "實施海禁，以「朝貢貿易」進行對外貿易",
+          "15 世紀初期，出現「海商集團」影響貿易"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "明清之際，西方文物曾大量傳入中國，而中國思想與技術也傳至西方，這樣的文化交流，因清代發生哪一事件而被迫中斷？",
+        "options": [
+          "厲行海禁政策，阻止外人入境",
+          "大興文字獄，排斥西學與洋教",
+          "實施禁教，驅逐西洋的傳教士",
+          "積極經營西域，防止歐人東進"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "15 世紀末，葡萄牙人發現了經由非洲南端通往亞洲的新航路，引發地理大發現的風潮，對世界各地的歷史發展產生重大影響。下列何者<b>並非</b>此風潮對中國造成的影響？",
+        "options": [
+          "鄭和率艦隊多次出使西洋",
+          "西方的近代科技傳入中國",
+          "白銀自海外大量輸入中國",
+          "天主教耶穌會傳教士來華"
+        ],
+        "correct": 0
+      },
+      {
+        "q": "「1980 年在北京永定門外沙子口一個建築工地上，施工者掘到古錢一枚，其銅色金黃，寬輪光背，『永昌通寶』4 個字清晰可辨。考古學者判斷，此幣應為明末農民起義軍領袖李自成所鑄。」下列何者與該位領袖最為相關？",
+        "options": [
+          "帶領流寇攻陷北京，明代亡",
+          "驅除蒙古人，結束元朝統治",
+          "其武裝力量的海商，進行東亞走私貿易",
+          "與吳三桂合作，攻陷北京，遂自立為王"
+        ],
+        "correct": 0
+      }
+    ]
+  },
+  {
+    "type": "reading",
+    "title": "二、題組",
+    "meta": "28%，每題4分",
+    "passages": [
+      {
+        "label": "(一)",
+        "text": "「雍正王朝」這部歷史劇以正史的拍攝手法，描寫諸皇子間的鬥爭、機詐，讓雍正脫穎而出，以及雍正即位後，在阻絆中大力推動改革，最後勞累而死的過程。該劇創下極高收視率，一改過往雍正的電視反派形象，甚至讓許多觀眾開始研究這段歷史。",
+        "items": [
+          {
+            "q": "文中的故事背景，是由哪一民族所建立的朝代？",
+            "options": [
+              "契丹",
+              "匈奴",
+              "女真",
+              "蒙古"
+            ],
+            "correct": 2
+          },
+          {
+            "q": "雍正在經歷繼承權之爭後登基，立即下令禁教，這與下列哪一原因最密切相關？",
+            "options": [
+              "耶穌會允許教徒祭祖",
+              "傳教士涉及宮廷政爭",
+              "儒家經典被傳到歐洲",
+              "傳教士拒絕薙髮留辮"
+            ],
+            "correct": 1
+          },
+          {
+            "q": "根據上文，在觀看這部連續劇時，最可能會看到下列哪一場景？",
+            "options": [
+              "派施琅攻臺並將臺灣納入版圖",
+              "文人的詩句因得罪皇帝被判刑",
+              "李自成的崛起使皇家出兵平定",
+              "皇帝為了穩固政權遷都至北京"
+            ],
+            "correct": 1
+          }
+        ]
+      },
+      {
+        "label": "(二)",
+        "text": "附圖是 15 世紀初期，鄭和下西洋的航海路線圖，是歷時 29 年的七場連續的大規模遠洋航海，象徵著中國航海史上的一個高峰。",
+        "image": "images/hist5b/g2.png",
+        "items": [
+          {
+            "q": "圖中的航行路線主要是發生於哪位皇帝在位時？",
+            "options": [
+              "漢武帝",
+              "唐太宗",
+              "宋真宗",
+              "明成祖"
+            ],
+            "correct": 3
+          },
+          {
+            "q": "由附圖判斷，鄭和下西洋的「西洋」是指今日哪些地區？",
+            "options": [
+              "東南亞、大西洋",
+              "大西洋、印度洋",
+              "東南亞、印度洋",
+              "太平洋、大西洋"
+            ],
+            "correct": 2
+          },
+          {
+            "q": "附圖包含歷次出使的艦隊航行範圍，可知其航行路線最遠抵達何地？",
+            "options": [
+              "美洲西岸",
+              "印度南岸",
+              "歐洲西部",
+              "非洲東岸"
+            ],
+            "correct": 3
+          },
+          {
+            "q": "此大規模的航海活動影響深遠，下列何者<b>不是</b>其所造成的影響？",
+            "options": [
+              "沿海居民移居東南亞",
+              "明代向南方擴展版圖",
+              "南海諸國向明帝國進貢",
+              "擴大了朝貢貿易的規模"
+            ],
+            "correct": 1
+          }
+        ]
+      }
+    ]
+  }
+]
+};
+
+let currentMode = "quiz"; // quiz | print
+
+const contentEl = document.getElementById("content");
+const scoreBar = document.getElementById("scoreBar");
+const scoreText = document.getElementById("scoreText");
+
+function render(){
+  window.examAnswersRevealed = false;
+  contentEl.innerHTML = "";
+  DATA.sections.forEach((sec, si)=> contentEl.appendChild(renderSection(sec, si)));
+  if(currentMode==="quiz"){
+    scoreBar.classList.add("show");
+    updateScore();
+  } else {
+    scoreBar.classList.remove("show");
+    contentEl.querySelectorAll(".opt").forEach(o=>o.classList.add("disabled"));
+    contentEl.querySelectorAll(".opt.is-correct").forEach(o=>o.classList.add("correct"));
+  }
+}
+
+function renderSection(sec, si){
+  const block = document.createElement("section");
+  block.className = "block";
+  block.innerHTML = `<h2>${sec.title}</h2><p class="meta">${sec.meta}</p>`;
+
+  if(sec.type==="mc"){
+    sec.items.forEach((it,i)=>{
+      const q = document.createElement("div");
+      q.className = "q";
+      const optsHtml = it.options.map((op,oi)=>`
+        <div class="opt" data-idx="${oi}" data-correct="${oi===it.correct}">
+          <span class="tag">(${String.fromCharCode(65+oi)})</span><span>${op}</span>
+        </div>`).join("");
+      const imgHtml = it.image ? `<img src="${it.image}" alt="題目附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">` : "";
+      const img2Html = it.image2 ? `<img src="${it.image2}" alt="題目附圖2" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">` : "";
+      q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q}</div>
+        ${imgHtml}${img2Html}
+        <div class="opts">${optsHtml}</div>`;
+      q.querySelectorAll(".opt").forEach(optEl=>{
+        if(optEl.dataset.correct==="true") optEl.classList.add("is-correct");
+        optEl.addEventListener("click", ()=>selectOption(q, optEl));
+      });
+      block.appendChild(q);
+    });
+  }
+
+  else if(sec.type==="reading"){
+    sec.passages.forEach(p=>{
+      const passageDiv = document.createElement("div");
+      passageDiv.className = "passage";
+      passageDiv.innerHTML = `${p.label ? `<span class="passage-label">${p.label}</span>`:""}${p.text}${p.image ? `<img src="${p.image}" alt="題組附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-top:10px;border:1px solid var(--paper-line);">`:""}`;
+      block.appendChild(passageDiv);
+      p.items.forEach((it,i)=>{
+        const q = document.createElement("div");
+        q.className = "q";
+        const optsHtml = it.options.map((op,oi)=>`
+          <div class="opt" data-idx="${oi}" data-correct="${oi===it.correct}">
+            <span class="tag">(${String.fromCharCode(65+oi)})</span><span>${op}</span>
+          </div>`).join("");
+        q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q}</div>
+          ${it.image ? `<img src="${it.image}" alt="題目附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">`:""}
+          <div class="opts">${optsHtml}</div>`;
+        q.querySelectorAll(".opt").forEach(optEl=>{
+          if(optEl.dataset.correct==="true") optEl.classList.add("is-correct");
+          optEl.addEventListener("click", ()=>selectOption(q, optEl));
+        });
+        block.appendChild(q);
+      });
+    });
+  }
+
+  return block;
+}
+
+function selectOption(qEl, optEl){
+  if(currentMode!=="quiz") return;
+  if(qEl.dataset.answered==="true") return;
+  qEl.dataset.answered = "true";
+  qEl.querySelectorAll(".opt").forEach(o=>o.classList.add("disabled"));
+  optEl.classList.add("selected");
+  const correctOpt = qEl.querySelector('.opt[data-correct="true"]');
+  qEl.dataset.studentAnswer = optEl.textContent.trim();
+  qEl.dataset.correctAnswer = correctOpt ? correctOpt.textContent.trim() : "";
+  qEl.dataset.isCorrect = (optEl.dataset.correct==="true") ? "true" : "false";
+  updateScore();
+}
+
+function updateScore(){
+  let total = 0, answered = 0, correct = 0;
+  contentEl.querySelectorAll(".q").forEach(q=>{
+    const gradable = q.querySelector(".opts");
+    if(!gradable) return;
+    total++;
+    if(q.dataset.studentAnswer !== undefined){
+      answered++;
+      if(q.dataset.isCorrect === "true") correct++;
+    }
+  });
+  if(window.examAnswersRevealed){
+    scoreText.textContent = `${correct} / ${total}`;
+  } else {
+    scoreText.textContent = `已作答 ${answered} / ${total} 題`;
+  }
+}
+window.updateScore = updateScore;
+
+document.getElementById("resetBtn").addEventListener("click", render);
+document.getElementById("quizModeBtn").addEventListener("click", ()=>{
+  currentMode = "quiz";
+  document.getElementById("quizModeBtn").classList.add("active");
+  document.getElementById("printModeBtn").classList.remove("active");
+  render();
+});
+document.getElementById("printModeBtn").addEventListener("click", ()=>{
+  if(document.getElementById("printModeBtn").disabled) return;
+  currentMode = "print";
+  document.getElementById("printModeBtn").classList.add("active");
+  document.getElementById("quizModeBtn").classList.remove("active");
+  render();
+});
+
+window.unlockPrintMode = function(){
+  document.getElementById("printModeBtn").disabled = false;
+};
+
+render();
+</script>
+<script src="../sync.js?v=20261018b"></script>
+</body>
+</html>
