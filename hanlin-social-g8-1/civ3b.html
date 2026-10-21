@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>段考題庫｜公民第3回 - 複習</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@500;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#faf6ec;
+    --paper-line:#e3dcc8;
+    --ink:#26332b;
+    --ink-soft:#5b6b5f;
+    --chalk-green:#2f4538;
+    --chalk-green-2:#3d5a48;
+    --pen-red:#b8433a;
+    --pen-red-soft:#f4dedb;
+    --ok-green:#3f7d52;
+    --ok-green-soft:#dfeee1;
+    --gold:#b5842a;
+    --radius:10px;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:"Noto Sans TC",sans-serif;
+    line-height:1.7;
+  }
+  header.hero{
+    background:var(--chalk-green);
+    color:#eef2ea;
+    padding:28px 20px 40px;
+    position:relative;
+  }
+  header.hero::after{
+    content:"";
+    position:absolute;
+    left:0; right:0; bottom:-1px;
+    height:14px;
+    background:repeating-linear-gradient(90deg,var(--paper) 0 18px, transparent 18px 20px);
+  }
+  .hero-inner{max-width:880px;margin:0 auto;}
+  .breadcrumb a{color:#cfe0d1;text-decoration:none;font-size:14px;}
+  .breadcrumb a:hover{text-decoration:underline;}
+  h1{
+    font-family:"Noto Serif TC",serif;
+    font-weight:700;
+    font-size:clamp(24px,4vw,34px);
+    margin:10px 0 6px;
+  }
+  .subtitle{color:#cfe0d1;font-size:15px;margin:0;}
+  main{max-width:880px;margin:0 auto;padding:28px 20px 80px;}
+
+  .controls{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:22px;
+  }
+  .mode-toggle{display:flex;border:2px solid var(--chalk-green);border-radius:999px;overflow:hidden;}
+  .mode-toggle button{
+    background:transparent;border:none;padding:8px 16px;font-size:14px;font-weight:700;
+    color:var(--chalk-green);cursor:pointer;font-family:"Noto Sans TC",sans-serif;
+  }
+  .mode-toggle button.active{background:var(--gold);color:#fff;}
+  .mode-toggle button:disabled{opacity:.4;cursor:not-allowed;}
+
+  .score-bar{
+    display:none;
+    align-items:center;
+    justify-content:space-between;
+    background:#fff;
+    border:1px solid var(--paper-line);
+    border-left:5px solid var(--gold);
+    border-radius:var(--radius);
+    padding:12px 18px;
+    margin-bottom:22px;
+    font-size:14px;
+  }
+  .score-bar.show{display:flex;}
+  .score-bar strong{font-size:18px;color:var(--gold);}
+  .score-bar button{
+    background:none;border:1px solid var(--ink-soft);color:var(--ink-soft);
+    border-radius:6px;padding:6px 12px;font-size:13px;cursor:pointer;
+  }
+
+  section.block{
+    background:#fff;
+    border:1px solid var(--paper-line);
+    border-radius:var(--radius);
+    padding:22px 22px 26px;
+    margin-bottom:20px;
+  }
+  .block h2{
+    font-family:"Noto Serif TC",serif;
+    font-size:19px;
+    margin:0 0 4px;
+    color:var(--chalk-green);
+  }
+  .block .meta{color:var(--ink-soft);font-size:13px;margin:0 0 16px;}
+
+  .q{margin-bottom:18px;padding-bottom:16px;border-bottom:1px dashed var(--paper-line);}
+  .q:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0;}
+  .q-text{font-size:15.5px;margin-bottom:8px;}
+  .q-num{color:var(--gold);font-weight:700;margin-right:4px;}
+
+  .opts{display:grid;gap:8px;}
+  .opt{
+    display:flex;gap:8px;align-items:flex-start;
+    border:1.5px solid var(--paper-line);
+    border-radius:8px;
+    padding:9px 12px;
+    cursor:pointer;
+    font-size:14.5px;
+    background:#fffdf8;
+  }
+  .opt:hover{border-color:var(--chalk-green-2);}
+  .opt.selected{border-color:var(--chalk-green-2);background:#eef3ea;}
+  .opt.correct{border-color:var(--ok-green);background:var(--ok-green-soft);}
+  .opt.wrong{border-color:var(--pen-red);background:var(--pen-red-soft);}
+  .opt .tag{font-weight:700;color:var(--ink-soft);}
+  .opt.correct .tag{color:var(--ok-green);}
+  .opt.wrong .tag{color:var(--pen-red);}
+  .opt.disabled{cursor:default;}
+
+  .passage{
+    background:#f5f2e8;border-radius:8px;padding:14px 16px;margin-bottom:14px;
+    font-size:14.5px;white-space:pre-line;
+  }
+  .passage-label{font-weight:700;color:var(--chalk-green);margin-bottom:4px;display:block;}
+
+  .footer-link{
+    display:block;text-align:center;margin-top:30px;color:var(--chalk-green);
+    text-decoration:none;font-weight:700;font-size:14px;
+  }
+  .footer-link:hover{text-decoration:underline;}
+
+  @media print{
+    header.hero, .controls, .score-bar, .mini-btn, .footer-link{display:none !important;}
+    body{background:#fff;}
+    section.block{border:none;box-shadow:none;padding:8px 0;margin-bottom:14px;}
+    .opt.correct{background:none;border:none;font-weight:700;}
+    .opt.correct::after{content:" ← 正解";color:var(--pen-red);}
+    .opt{border:none;padding:2px 0;}
+    main{max-width:100%;padding:0 24px;}
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="breadcrumb"><a href="https://jenlin2002.github.io/">🏠 回總目錄</a> ／ <a href="../hanlin-social-g8-1.html" style="color:#cfe0d1;">段考題庫</a></div>
+    <h1>公民・第3回</h1>
+    <p class="subtitle">第四篇第1～2章 複習｜翰林版八年級社會（三）Ｂ卷</p>
+  </div>
+</header>
+
+<main>
+  <div class="controls">
+    <div class="mode-toggle">
+      <button id="quizModeBtn" class="active">✏️ 測驗模式</button>
+      <button id="printModeBtn" disabled title="完成測驗並送出成績後才能查看">🖨️ 完整題目與解答（送出成績後解鎖）</button>
+    </div>
+  </div>
+
+  <div class="score-bar" id="scoreBar">
+    <div>目前得分：<strong id="scoreText">0 / 0</strong>（僅計算選擇題）</div>
+    <button id="resetBtn">重新作答</button>
+  </div>
+
+  <div id="content"></div>
+
+  <a class="footer-link" href="../hanlin-social-g8-1.html">← 回段考題庫總覽</a>
+</main>
+
+<script>
+
+window.EXAM_META = { version: "B卷", examLabel: "公民第3回" };
+const DATA = {
+  sections: [
+  {
+    "type": "mc",
+    "title": "一、單題",
+    "meta": "72%，每題3分",
+    "items": [
+      {
+        "q": "圖(一)為某政黨的簡介：「軍公教聯盟黨為臺灣第 258 個合法登記的政黨，其以維護軍公教尊嚴、振興軍公教士氣、提升為國為民服務效能、弘揚社會正義，落實社會公益及國家永續發展為宗旨。」人民成立政黨屬於《憲法》所保障的何種基本權利？",
+        "options": [
+          "平等權",
+          "自由權",
+          "參政權",
+          "受益權"
+        ],
+        "correct": 1
+      },
+      {
+        "q": "我國《憲法》第 15 條規定：「人民之生存權、工作權及財產權，應予保障。」而其具體的做法則規範在《社會救助法》、《勞動基準法》及《民法》等相關法規中。這是展現《憲法》的何項特性？",
+        "options": [
+          "最高性",
+          "固定性",
+          "原則性",
+          "強制性"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "由於原本《地方稅法通則》規範不夠明確，可能使地方稅適用範圍被不當擴大，為確保地方稅制度的合理運作，相關機關於 2024 年年底進行修正並三讀通過。下列相關敘述，何者正確？",
+        "options": [
+          "此法的位階為命令",
+          "上述相關機關為行政院",
+          "此法通過後由總統公布",
+          "此法制定後須經選舉人複決"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "圖(二)中政府的政策（「助你好孕」相關計畫：減輕有 5 歲以下幼兒在養育上的壓力，只要父母及兒童皆設籍並實際居住本市滿 1 年以上，就可以申請每月 2,500 元津貼）與何種國家組成要素有關？",
+        "options": [
+          "主權",
+          "國家",
+          "領土",
+          "人民"
+        ],
+        "correct": 3
+      },
+      {
+        "q": "表(一)為依照我國《紀念日及節日實施條例》規定，節錄當年各原住民族在歲時祭儀的休假日期（泰雅族：感恩祭 8 月 28 日；撒奇萊雅族：火神祭 Palamal 10 月 2 日）。政府制定該辦法主要是保障原住民族於《憲法》的何種基本權利？",
+        "options": [
+          "環境權",
+          "隱私權",
+          "平等權",
+          "多元文化權"
+        ],
+        "correct": 3
+      },
+      {
+        "q": "國防部為了在春節期間展現捍衛領空安全的軍力，由第 439 聯隊展示空軍執行空中運輸、反潛作戰等全方位戰力。上文中「領空」的範圍為何？",
+        "options": [
+          "僅限公海的上空",
+          "領陸與領海的上空",
+          "僅限領陸的上空",
+          "領陸與經濟海域的上空"
+        ],
+        "correct": 1
+      },
+      {
+        "q": "圖(三)為教育部推出防駭客的宣傳海報。此海報主要說明政府宣導的事項是為了保障《憲法》中何種人民的基本權利？",
+        "options": [
+          "環境權",
+          "平等權",
+          "隱私權",
+          "多元文化權"
+        ],
+        "correct": 2,
+        "image": "images/civ3b/q7.png"
+      },
+      {
+        "q": "爭好氣聯盟與其他的民間團體共同向市議會提出請願，希望市政府達成減煤目標。圖(四)為請願書內容的一部分，根據資料判斷，此一請願主要是保障《憲法》中人民的何種基本權利？",
+        "options": [
+          "環境權",
+          "隱私權",
+          "平等權",
+          "多元文化權"
+        ],
+        "correct": 0,
+        "image": "images/civ3b/q8.png"
+      },
+      {
+        "q": "曾發生比特犬追咬騎士的社會事件，動物保護處認定飼主無法妥善管理犬隻，依《動物保護法》裁罰飼主新臺幣 20 萬元的行政處分。若飼主認為此處分不當可提出權利救濟。關於飼主可提出的權利救濟，何者正確？",
+        "options": [
+          "參政權中的複決",
+          "受益權中的訴願",
+          "平等權中的種族平等",
+          "自由權中的結社自由"
+        ],
+        "correct": 1
+      },
+      {
+        "q": "孫中山先生提出五權分立，政府應設置行政院、立法院、司法院、監察院、考試院，並行使公權力治理國家。上述與哪一國家組成要素相關？",
+        "options": [
+          "人民",
+          "領土",
+          "主權",
+          "政府"
+        ],
+        "correct": 3
+      },
+      {
+        "q": "由於颱風來襲，高雄市部分山區出現持續性落石，為考量居民及師生安全，桃源區公所宣布若風雨達到《天然災害停止上班及上課作業辦法》規定，可立即停止上班、上課。關於上述法律，何者<b>錯誤</b>？",
+        "options": [
+          "為命令位階",
+          "應由行政機關訂定",
+          "位階同《空氣品質標準》",
+          "為區公所施政依據，屬於責任政治"
+        ],
+        "correct": 3
+      },
+      {
+        "q": "我國《憲法》修正必須由立法院提案通過，公告半年後，再交由選舉人投票複決，其過程比一般法律或命令之修正還複雜，這顯示我國《憲法》具有何項特性？",
+        "options": [
+          "固定性",
+          "最高性",
+          "原則性",
+          "綱要性"
+        ],
+        "correct": 0
+      },
+      {
+        "q": "有關《憲法》的敘述，下列何者正確？",
+        "options": [
+          "法律位階低於法律、高於命令",
+          "具有固定性，是國家的根本大法",
+          "《憲法》保障國家統治權而約束人民權利",
+          "《憲法》的內容詳細規定了各事項的實施方法"
+        ],
+        "correct": 1
+      },
+      {
+        "q": "表(二)為中央與北市的社會住宅方案（北市版：弱勢群體與無自有住宅但育有小孩的青年家庭，只租不售；內政部版：青年學生、初入社會就業者與特定資格的弱勢戶，只租不售），根據表中內容可知，社會住宅的興建顯示國家的何種功能？",
+        "options": [
+          "保衛國家安全",
+          "促進經濟發展",
+          "提升文化素質",
+          "推動社會福利"
+        ],
+        "correct": 3
+      },
+      {
+        "q": "圖(五)為某機關新頒布的法律內容（《十二年國教課程綱要》：提升工具學科基本學力、避免增加學生課業壓力、給予學生適性發展的學習空間），也是制定學校課程、教科書與升學考試的重要依據。下列關於此法律的說明何者正確？",
+        "options": [
+          "屬於命令",
+          "法律位階最高",
+          "屬於狹義法律",
+          "須由立法院修正"
+        ],
+        "correct": 0
+      },
+      {
+        "q": "憲法法庭於 113 年做出憲判字第 5 號判決，認定《刑法》第 140 條關於人民對政府機關措施的質疑，即使言詞尖酸刻薄，也屬於監督施政的表達，難以認定會妨害公務執行，故應受《憲法》保障，此法條應自本判決宣示之日起，失其效力。關於此判決何者正確？",
+        "options": [
+          "《刑法》是由憲法法庭制定",
+          "此判決彰顯出《憲法》最高性",
+          "此處《憲法》保障人民的受益權",
+          "《刑法》法律位階應高於《憲法》"
+        ],
+        "correct": 1
+      },
+      {
+        "q": "1906 年，芬蘭政府修正《選舉法》，賦予全國各族群男女相同的投票權與被選舉權，因而誕生全球最早的民選女性國會議員。上述芬蘭政府的作為與我國《憲法》保障人民的何種基本權利相同？",
+        "options": [
+          "平等權、受益權",
+          "受益權、自由權",
+          "平等權、參政權",
+          "自由權、參政權"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "113 年公布的《通訊保障及監察法》在一定程度上規範檢調單位的網路監聽行為，但由於網路通訊技術的發展迅速、規範條文的適用範圍不明確，以及實務運作的監督機制不足，使《憲法》保障人民的基本權利仍存在商議空間。上述提到的基本權利應為何？",
+        "options": [
+          "平等權",
+          "參政權",
+          "受益權",
+          "自由權"
+        ],
+        "correct": 3
+      },
+      {
+        "q": "圖(六)為各政黨推出的天龍市市長候選人（2022 天龍市市長候選人：林守忠、陳菊美、吳志明、林小璐）。此可顯示出民主政治的何項特色？",
+        "options": [
+          "政黨政治",
+          "民意政治",
+          "法治政治",
+          "責任政治"
+        ],
+        "correct": 0
+      },
+      {
+        "q": "由於現行《房屋稅條例》規定，若房屋現值在 10 萬元以下則免課房屋稅，因此不少投機取巧的房東刻意分割房產為小坪數以避稅，財政部為防堵分割避稅，於 2021 年提出《房屋稅條例》修法，限制自然人最多三戶免稅額度。下列敘述何者正確？",
+        "options": [
+          "此法屬於狹義法律",
+          "可知政府作為未依法行政",
+          "此法須經行政院通過才能施行",
+          "此次修法須經過選舉人投票複決通過"
+        ],
+        "correct": 0
+      },
+      {
+        "q": "圖(七)為《土壤及地下水汙染整治法施行細則》之部分條文（行政院環保署令，中華民國 99 年 12 月 31 日環署土字第 0990118529 號令修正；第 1 條：本細則依《土壤及地下水汙染整治法》第 56 條規定訂定之），下列有關此法的敘述，何者正確？",
+        "options": [
+          "是由立法院三讀通過",
+          "可由行政機關自行修正",
+          "位階低於《憲法》、高於法律",
+          "內容多簡潔扼要且具原則性事項"
+        ],
+        "correct": 1
+      },
+      {
+        "q": "我國政府官員談及企業與外商合資一事，出現不當且歧視性用語，事後官員坦言發言不當並公開致歉。上述事件顯示出民主政治的哪一項特色？",
+        "options": [
+          "責任政治",
+          "民意政治",
+          "法治政治",
+          "政黨政治"
+        ],
+        "correct": 0
+      },
+      {
+        "q": "某政治人物被指控之前擔任公職人員期間收賄，地方法院認定犯罪嫌疑重大，有逃亡及串供之虞，裁定羈押於看守所，每天僅有 3～5 分鐘可出來活動筋骨。此政治人物被剝奪何項基本權利？",
+        "options": [
+          "表現自由",
+          "人身自由",
+          "祕密通訊自由",
+          "集會及結社自由"
+        ],
+        "correct": 1
+      },
+      {
+        "q": "圖(八)為電視臺對某市長在風災後一週的民調結果，對此市長表示虛心接受並已擬定新的相關處理流程。該市市長此舉顯示出民主政治的何項特色？",
+        "options": [
+          "以民眾意見為考量",
+          "施政不受民意監督",
+          "保障人民遷徙自由",
+          "照顧社會上的弱勢"
+        ],
+        "correct": 0,
+        "image": "images/civ3b/q24.png"
+      }
+    ]
+  },
+  {
+    "type": "reading",
+    "title": "二、題組",
+    "meta": "28%，每題4分",
+    "passages": [
+      {
+        "label": "(一)",
+        "text": "俄烏戰爭延燒迄今，2025 年美國總統川普上任後，積極展開與(甲)烏俄雙方領導人的談話，證實雙方互換戰俘，同時俄國移交 22 名需要緊急醫治的重傷人員給烏克蘭。儘管雙方曾透過有限停火協議緩解衝突，但由於互相指責違反協議，使戰火再起。俄國甚至宣布將奪回原本屬於俄國的庫爾斯克地區。另一方面，歐洲多數國家表示會繼續向烏克蘭提供金援，並(乙)供應相關的國防需求。",
+        "items": [
+          {
+            "q": "上述(甲)是屬於國家何種組成要素？",
+            "options": [
+              "人民",
+              "主權",
+              "領土",
+              "政府"
+            ],
+            "correct": 3
+          },
+          {
+            "q": "上述俄國針對庫爾斯克地區的談話，彰顯出國家的何種組成要素？",
+            "options": [
+              "政府、人民",
+              "主權、領土",
+              "人民、領土",
+              "領土、政府"
+            ],
+            "correct": 1
+          },
+          {
+            "q": "上述(乙)主要有助於達到國家的何種功能？",
+            "options": [
+              "維持社會秩序",
+              "促進經濟發展",
+              "推動社會福利",
+              "保衛國家安全"
+            ],
+            "correct": 3
+          }
+        ]
+      },
+      {
+        "label": "(二)",
+        "text": "猴痘疫情曾在部分縣市有上升的趨勢，當時我國政府根據《傳染病防治法》規定，要求疑似感染者須配合居家自主健康管理與社區防疫措施，以避免猴痘擴散。<u>然而仍有部分民眾未依規定配合地方衛生單位指示的防疫措施，而遭到處罰</u>。對此相關政府機關表示，為提升防疫效果，還請民眾盡力配合防疫政策。",
+        "items": [
+          {
+            "q": "上文中通過《傳染病防治法》的應是下列何者？",
+            "options": [
+              "立法院",
+              "司法院",
+              "行政院",
+              "公民投票"
+            ],
+            "correct": 0
+          },
+          {
+            "q": "上文中的《傳染病防治法》，其法律位階是屬於下列何者？",
+            "options": [
+              "憲法",
+              "法律",
+              "命令",
+              "緊急命令"
+            ],
+            "correct": 1
+          },
+          {
+            "q": "上文中畫雙底線處顯示出民眾欠缺民主政治的何項特色？",
+            "options": [
+              "民意政治",
+              "責任政治",
+              "法治政治",
+              "政黨政治"
+            ],
+            "correct": 2
+          },
+          {
+            "q": "上述畫雙底線處主要是限制《憲法》所保障人民的何種權利？",
+            "options": [
+              "平等權",
+              "受益權",
+              "參政權",
+              "自由權"
+            ],
+            "correct": 3
+          }
+        ]
+      }
+    ]
+  }
+]
+};
+
+let currentMode = "quiz"; // quiz | print
+
+const contentEl = document.getElementById("content");
+const scoreBar = document.getElementById("scoreBar");
+const scoreText = document.getElementById("scoreText");
+
+function render(){
+  window.examAnswersRevealed = false;
+  contentEl.innerHTML = "";
+  DATA.sections.forEach((sec, si)=> contentEl.appendChild(renderSection(sec, si)));
+  if(currentMode==="quiz"){
+    scoreBar.classList.add("show");
+    updateScore();
+  } else {
+    scoreBar.classList.remove("show");
+    contentEl.querySelectorAll(".opt").forEach(o=>o.classList.add("disabled"));
+    contentEl.querySelectorAll(".opt.is-correct").forEach(o=>o.classList.add("correct"));
+  }
+}
+
+function renderSection(sec, si){
+  const block = document.createElement("section");
+  block.className = "block";
+  block.innerHTML = `<h2>${sec.title}</h2><p class="meta">${sec.meta}</p>`;
+
+  if(sec.type==="mc"){
+    sec.items.forEach((it,i)=>{
+      const q = document.createElement("div");
+      q.className = "q";
+      const optsHtml = it.options.map((op,oi)=>`
+        <div class="opt" data-idx="${oi}" data-correct="${oi===it.correct}">
+          <span class="tag">(${String.fromCharCode(65+oi)})</span><span>${op}</span>
+        </div>`).join("");
+      const imgHtml = it.image ? `<img src="${it.image}" alt="題目附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">` : "";
+      const img2Html = it.image2 ? `<img src="${it.image2}" alt="題目附圖2" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">` : "";
+      q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q}</div>
+        ${imgHtml}${img2Html}
+        <div class="opts">${optsHtml}</div>`;
+      q.querySelectorAll(".opt").forEach(optEl=>{
+        if(optEl.dataset.correct==="true") optEl.classList.add("is-correct");
+        optEl.addEventListener("click", ()=>selectOption(q, optEl));
+      });
+      block.appendChild(q);
+    });
+  }
+
+  else if(sec.type==="reading"){
+    sec.passages.forEach(p=>{
+      const passageDiv = document.createElement("div");
+      passageDiv.className = "passage";
+      passageDiv.innerHTML = `${p.label ? `<span class="passage-label">${p.label}</span>`:""}${p.text}${p.image ? `<img src="${p.image}" alt="題組附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-top:10px;border:1px solid var(--paper-line);">`:""}`;
+      block.appendChild(passageDiv);
+      p.items.forEach((it,i)=>{
+        const q = document.createElement("div");
+        q.className = "q";
+        const optsHtml = it.options.map((op,oi)=>`
+          <div class="opt" data-idx="${oi}" data-correct="${oi===it.correct}">
+            <span class="tag">(${String.fromCharCode(65+oi)})</span><span>${op}</span>
+          </div>`).join("");
+        q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q}</div>
+          ${it.image ? `<img src="${it.image}" alt="題目附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">`:""}
+          <div class="opts">${optsHtml}</div>`;
+        q.querySelectorAll(".opt").forEach(optEl=>{
+          if(optEl.dataset.correct==="true") optEl.classList.add("is-correct");
+          optEl.addEventListener("click", ()=>selectOption(q, optEl));
+        });
+        block.appendChild(q);
+      });
+    });
+  }
+
+  return block;
+}
+
+function selectOption(qEl, optEl){
+  if(currentMode!=="quiz") return;
+  if(qEl.dataset.answered==="true") return;
+  qEl.dataset.answered = "true";
+  qEl.querySelectorAll(".opt").forEach(o=>o.classList.add("disabled"));
+  optEl.classList.add("selected");
+  const correctOpt = qEl.querySelector('.opt[data-correct="true"]');
+  qEl.dataset.studentAnswer = optEl.textContent.trim();
+  qEl.dataset.correctAnswer = correctOpt ? correctOpt.textContent.trim() : "";
+  qEl.dataset.isCorrect = (optEl.dataset.correct==="true") ? "true" : "false";
+  updateScore();
+}
+
+function updateScore(){
+  let total = 0, answered = 0, correct = 0;
+  contentEl.querySelectorAll(".q").forEach(q=>{
+    const gradable = q.querySelector(".opts");
+    if(!gradable) return;
+    total++;
+    if(q.dataset.studentAnswer !== undefined){
+      answered++;
+      if(q.dataset.isCorrect === "true") correct++;
+    }
+  });
+  if(window.examAnswersRevealed){
+    scoreText.textContent = `${correct} / ${total}`;
+  } else {
+    scoreText.textContent = `已作答 ${answered} / ${total} 題`;
+  }
+}
+window.updateScore = updateScore;
+
+document.getElementById("resetBtn").addEventListener("click", render);
+document.getElementById("quizModeBtn").addEventListener("click", ()=>{
+  currentMode = "quiz";
+  document.getElementById("quizModeBtn").classList.add("active");
+  document.getElementById("printModeBtn").classList.remove("active");
+  render();
+});
+document.getElementById("printModeBtn").addEventListener("click", ()=>{
+  if(document.getElementById("printModeBtn").disabled) return;
+  currentMode = "print";
+  document.getElementById("printModeBtn").classList.add("active");
+  document.getElementById("quizModeBtn").classList.remove("active");
+  render();
+});
+
+window.unlockPrintMode = function(){
+  document.getElementById("printModeBtn").disabled = false;
+};
+
+render();
+</script>
+<script src="../sync.js?v=20261018b"></script>
+</body>
+</html>

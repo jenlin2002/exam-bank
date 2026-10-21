@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>段考題庫｜公民第1回 - 國家與民主政治</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@500;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#faf6ec;
+    --paper-line:#e3dcc8;
+    --ink:#26332b;
+    --ink-soft:#5b6b5f;
+    --chalk-green:#2f4538;
+    --chalk-green-2:#3d5a48;
+    --pen-red:#b8433a;
+    --pen-red-soft:#f4dedb;
+    --ok-green:#3f7d52;
+    --ok-green-soft:#dfeee1;
+    --gold:#b5842a;
+    --radius:10px;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:"Noto Sans TC",sans-serif;
+    line-height:1.7;
+  }
+  header.hero{
+    background:var(--chalk-green);
+    color:#eef2ea;
+    padding:28px 20px 40px;
+    position:relative;
+  }
+  header.hero::after{
+    content:"";
+    position:absolute;
+    left:0; right:0; bottom:-1px;
+    height:14px;
+    background:repeating-linear-gradient(90deg,var(--paper) 0 18px, transparent 18px 20px);
+  }
+  .hero-inner{max-width:880px;margin:0 auto;}
+  .breadcrumb a{color:#cfe0d1;text-decoration:none;font-size:14px;}
+  .breadcrumb a:hover{text-decoration:underline;}
+  h1{
+    font-family:"Noto Serif TC",serif;
+    font-weight:700;
+    font-size:clamp(24px,4vw,34px);
+    margin:10px 0 6px;
+  }
+  .subtitle{color:#cfe0d1;font-size:15px;margin:0;}
+  main{max-width:880px;margin:0 auto;padding:28px 20px 80px;}
+
+  .controls{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:22px;
+  }
+  .mode-toggle{display:flex;border:2px solid var(--chalk-green);border-radius:999px;overflow:hidden;}
+  .mode-toggle button{
+    background:transparent;border:none;padding:8px 16px;font-size:14px;font-weight:700;
+    color:var(--chalk-green);cursor:pointer;font-family:"Noto Sans TC",sans-serif;
+  }
+  .mode-toggle button.active{background:var(--gold);color:#fff;}
+  .mode-toggle button:disabled{opacity:.4;cursor:not-allowed;}
+
+  .score-bar{
+    display:none;
+    align-items:center;
+    justify-content:space-between;
+    background:#fff;
+    border:1px solid var(--paper-line);
+    border-left:5px solid var(--gold);
+    border-radius:var(--radius);
+    padding:12px 18px;
+    margin-bottom:22px;
+    font-size:14px;
+  }
+  .score-bar.show{display:flex;}
+  .score-bar strong{font-size:18px;color:var(--gold);}
+  .score-bar button{
+    background:none;border:1px solid var(--ink-soft);color:var(--ink-soft);
+    border-radius:6px;padding:6px 12px;font-size:13px;cursor:pointer;
+  }
+
+  section.block{
+    background:#fff;
+    border:1px solid var(--paper-line);
+    border-radius:var(--radius);
+    padding:22px 22px 26px;
+    margin-bottom:20px;
+  }
+  .block h2{
+    font-family:"Noto Serif TC",serif;
+    font-size:19px;
+    margin:0 0 4px;
+    color:var(--chalk-green);
+  }
+  .block .meta{color:var(--ink-soft);font-size:13px;margin:0 0 16px;}
+
+  .q{margin-bottom:18px;padding-bottom:16px;border-bottom:1px dashed var(--paper-line);}
+  .q:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0;}
+  .q-text{font-size:15.5px;margin-bottom:8px;}
+  .q-num{color:var(--gold);font-weight:700;margin-right:4px;}
+
+  .opts{display:grid;gap:8px;}
+  .opt{
+    display:flex;gap:8px;align-items:flex-start;
+    border:1.5px solid var(--paper-line);
+    border-radius:8px;
+    padding:9px 12px;
+    cursor:pointer;
+    font-size:14.5px;
+    background:#fffdf8;
+  }
+  .opt:hover{border-color:var(--chalk-green-2);}
+  .opt.selected{border-color:var(--chalk-green-2);background:#eef3ea;}
+  .opt.correct{border-color:var(--ok-green);background:var(--ok-green-soft);}
+  .opt.wrong{border-color:var(--pen-red);background:var(--pen-red-soft);}
+  .opt .tag{font-weight:700;color:var(--ink-soft);}
+  .opt.correct .tag{color:var(--ok-green);}
+  .opt.wrong .tag{color:var(--pen-red);}
+  .opt.disabled{cursor:default;}
+
+  .passage{
+    background:#f5f2e8;border-radius:8px;padding:14px 16px;margin-bottom:14px;
+    font-size:14.5px;white-space:pre-line;
+  }
+  .passage-label{font-weight:700;color:var(--chalk-green);margin-bottom:4px;display:block;}
+
+  .footer-link{
+    display:block;text-align:center;margin-top:30px;color:var(--chalk-green);
+    text-decoration:none;font-weight:700;font-size:14px;
+  }
+  .footer-link:hover{text-decoration:underline;}
+
+  @media print{
+    header.hero, .controls, .score-bar, .mini-btn, .footer-link{display:none !important;}
+    body{background:#fff;}
+    section.block{border:none;box-shadow:none;padding:8px 0;margin-bottom:14px;}
+    .opt.correct{background:none;border:none;font-weight:700;}
+    .opt.correct::after{content:" ← 正解";color:var(--pen-red);}
+    .opt{border:none;padding:2px 0;}
+    main{max-width:100%;padding:0 24px;}
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="breadcrumb"><a href="https://jenlin2002.github.io/">🏠 回總目錄</a> ／ <a href="../hanlin-social-g8-1.html" style="color:#cfe0d1;">段考題庫</a></div>
+    <h1>公民・第1回</h1>
+    <p class="subtitle">第四篇第1章 國家與民主政治｜翰林版八年級社會（三）Ｂ卷</p>
+  </div>
+</header>
+
+<main>
+  <div class="controls">
+    <div class="mode-toggle">
+      <button id="quizModeBtn" class="active">✏️ 測驗模式</button>
+      <button id="printModeBtn" disabled title="完成測驗並送出成績後才能查看">🖨️ 完整題目與解答（送出成績後解鎖）</button>
+    </div>
+  </div>
+
+  <div class="score-bar" id="scoreBar">
+    <div>目前得分：<strong id="scoreText">0 / 0</strong>（僅計算選擇題）</div>
+    <button id="resetBtn">重新作答</button>
+  </div>
+
+  <div id="content"></div>
+
+  <a class="footer-link" href="../hanlin-social-g8-1.html">← 回段考題庫總覽</a>
+</main>
+
+<script>
+
+window.EXAM_META = { version: "B卷", examLabel: "公民第1回" };
+const DATA = {
+  sections: [
+  {
+    "type": "mc",
+    "title": "一、單題",
+    "meta": "72%，每題3分",
+    "items": [
+      {
+        "q": "國家是由人民、領土、政府及主權四種要素組合而成的，下列關於「人民」的敘述，何者<b>錯誤</b>？",
+        "options": [
+          "是國家的組成分子",
+          "會受到國家的保護",
+          "只須享有國家賦予的權利",
+          "主要是指擁有該國國籍的人民"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "所謂「經濟海域」是指該國在此海域內擁有資源使用權，其範圍是指從領海基線往外推至多少範圍內的海域？",
+        "options": [
+          "12 公里",
+          "12 浬",
+          "200 公里",
+          "200 浬"
+        ],
+        "correct": 3
+      },
+      {
+        "q": "民主國家是與獨裁國家相對的概念，其主要的意涵在於國家的政治領袖、民意代表均由人民選出。下列關於民主國家的敘述，何者正確？",
+        "options": [
+          "政治領袖是國家的主人",
+          "政府是為服務政治領袖而存在",
+          "政治領袖施政不會受法律限制",
+          "民主國家強調主權在民的理念"
+        ],
+        "correct": 3
+      },
+      {
+        "q": "四架俄羅斯戰機曾疑似侵犯隸屬瑞典波羅的海哥特蘭島以東的空域，對此瑞典國防部部長隨即予以譴責，尤其此時正值俄羅斯入侵烏克蘭之際，俄國此舉令人無法接受。瑞典此一抗議舉動主要是因為俄羅斯侵犯該國的何項領土？",
+        "options": [
+          "領海",
+          "領陸",
+          "領空",
+          "經濟海域"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "圖(一)為我國行政院的統計資料，圖中的狀況最可能會影響國家何種組成要素？",
+        "options": [
+          "人民",
+          "主權",
+          "政府",
+          "領土"
+        ],
+        "correct": 0,
+        "image": "images/civ1b/q5.png"
+      },
+      {
+        "q": "我國漁船在經濟海域進行船隻作業時，有時會被菲律賓政府以越界侵入菲律賓「領土」的名義將我國漁民逮捕。上文中的「領土」是指哪一部分？",
+        "options": [
+          "領空",
+          "領海",
+          "領陸",
+          "公海"
+        ],
+        "correct": 1
+      },
+      {
+        "q": "2022 年 3 月發生全臺 303 大停電事件，總計影響全臺戶數約 549 萬戶，半導體、石化相關產業損失近百億元，部分用戶停電時間長達 12 小時，可說是近年最嚴重的停電事故，事件發生後經濟部部長兩度公開鞠躬向國人致歉，同時並向行政院自請處分。上文中經濟部部長此舉顯示出民主政治的何項特色？",
+        "options": [
+          "民意政治",
+          "責任政治",
+          "法治政治",
+          "政黨政治"
+        ],
+        "correct": 1
+      },
+      {
+        "q": "「天子犯法與庶民同罪」，在民主國家中，不管是誰犯法，都必須接受法律制裁，這就是民主政治的何種特色？",
+        "options": [
+          "民意政治",
+          "責任政治",
+          "法治政治",
+          "政黨政治"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "圖(二)為新住民依法取得我國身分證的相關資格說明，圖中取得身分證的新住民可稱為下列何者？",
+        "options": [
+          "難民",
+          "平民",
+          "國民",
+          "移工"
+        ],
+        "correct": 2,
+        "image": "images/civ1b/q9.png"
+      },
+      {
+        "q": "我國任何一個政黨若能在總統大選中獲勝，便可以獲得執政的機會，而其他政黨則負責監督執政黨。由此可知，我國具有何項民主運作的特色？",
+        "options": [
+          "極權政治",
+          "責任政治",
+          "政黨政治",
+          "法治政治"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "圖(三)為 113 年社福津貼調增的規定，由圖中內容判斷，此為發揮國家的何種功能？",
+        "options": [
+          "發展經濟",
+          "維護秩序",
+          "傳承文化",
+          "實施福利"
+        ],
+        "correct": 3,
+        "image": "images/civ1b/q11.png"
+      },
+      {
+        "q": "國家的統治權力包含對內與對外層面，政府可行使公權力執行政策。若要區分兩者差異，舉新聞實例來說明國家對外的權力，下列哪一新聞標題最為合適？",
+        "options": [
+          "新北市全額補助弱勢群體接種流感疫苗",
+          "行政院通過性別暴力防治國家行動計畫",
+          "我方與馬紹爾簽訂刑事司法互助條約",
+          "屏東縣農會率團前往新加坡推廣水果"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "表(一)為我國 2024 年總統選舉各政黨得票率（台灣民眾黨 26.46%、民主進步黨 40.05%、中國國民黨 33.49%），根據表中內容判斷，下列相關敘述何者正確？",
+        "options": [
+          "可體現出責任政治",
+          "我國的總統選舉結果無法反映民意",
+          "政權轉移過程易導致社會發生戰亂",
+          "象徵政府的統治權來自人民的授予"
+        ],
+        "correct": 3
+      },
+      {
+        "q": "為使偏遠地區民眾能有機會接觸國家級的歷史文物與美術品，國立歷史博物館於民國 90 年起首創行動博物館，改裝大型貨櫃車成為小型博物館，定時定點巡迴偏遠地區。由上述可知，行動博物館在發揮民主國家的哪一項功能？",
+        "options": [
+          "保國衛民",
+          "維護秩序",
+          "傳承文化",
+          "促進經濟"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "表(二)是小鋒參加某一會議中，針對未來國家發展提出的構想（構想一：增加寬頻網路建設；構想二：促進數位產業發展；構想三：確保市場公平競爭；構想四：提升通訊技術品質）。由表中內容可知，這是現代國家所具備的何項功能？",
+        "options": [
+          "促進經濟發展",
+          "重視社會福利",
+          "傳承文化發展",
+          "保衛國家安全"
+        ],
+        "correct": 0
+      },
+      {
+        "q": "對一般民眾而言，政府和國家是極易混淆的名詞，原因在於現今國家的功能愈來愈依賴政府職能履行，但兩者在實際運作上仍有不同。下列關於國家與政府的敘述，何者正確？",
+        "options": [
+          "政府會隨政權轉移而被取代",
+          "政府是一個具有穩定性的政治實體",
+          "政府所具備的主權對內具有最高性",
+          "從國家組成要素而言，政府涵蓋範圍比國家廣"
+        ],
+        "correct": 0
+      },
+      {
+        "q": "圖(四)為一則政府政策的說明。社會住宅的興建可顯示出國家的何項功能？",
+        "options": [
+          "保衛國家安全",
+          "促進經濟發展",
+          "傳承文化發展",
+          "實施社會福利"
+        ],
+        "correct": 3,
+        "image": "images/civ1b/q17.png"
+      },
+      {
+        "q": "圖(五)是我國某組織彼此分工合作的說明，圖中組織屬於國家組成的何種要素？",
+        "options": [
+          "領土",
+          "主權",
+          "人民",
+          "政府"
+        ],
+        "correct": 3,
+        "image": "images/civ1b/q18.png"
+      },
+      {
+        "q": "我國副總統曾以「總統特使」身分出席中美洲友邦的總統就職典禮。上文中我國副總統此行主要在彰顯國家的何種功能？",
+        "options": [
+          "保衛國家安全",
+          "重視社會福利",
+          "保障基本人權",
+          "促進經濟發展"
+        ],
+        "correct": 0
+      },
+      {
+        "q": "一位在臺波蘭籍記者曾發文指出，在高雄市機車族騎上人行道的情況比比皆是，嚴重侵犯行人路權，對此高雄市市長請警方加強取締，執法第一天就開出 427 張罰單。上文中警方加強取締開出罰單顯示民主政治的何項特色？",
+        "options": [
+          "民意政治",
+          "法治政治",
+          "責任政治",
+          "政黨政治"
+        ],
+        "correct": 1
+      },
+      {
+        "q": "行政院國家通訊傳播委員會曾發布命令指出民眾若於海外購買攝影機、藍牙耳機等無線電信設備，每件需收取 750 元審查費，引發民怨。最後國家通訊傳播委員會表示將就收費方式再進行更周延的估算，故宣布暫緩實施。上述顯示出民主政治的何種特色？",
+        "options": [
+          "政府的運作必須考量民意",
+          "政府官員須負起責任辭職",
+          "政黨透過公平選舉取得執政權",
+          "法律制定後人民必須遵守法律"
+        ],
+        "correct": 0
+      },
+      {
+        "q": "媒體報導指出某軍人涉嫌性騷擾事件，對此指揮部表示已成立性騷擾申訴會，秉持毋枉毋縱的原則進行調查，若調查屬實將依規定嚴懲。上述指揮部此舉彰顯出的民主政治特色與何者相同？",
+        "options": [
+          "在野黨負責監督執政黨施政狀況與預算編列",
+          "海關某主任對下屬霸凌屬實，依法撤職記過",
+          "新北市政府在施政調查中平均滿意度破 8 成",
+          "經濟部部長為評論企業合資案發言不當致歉"
+        ],
+        "correct": 1
+      },
+      {
+        "q": "民主國家的政黨，基本上是處於競爭狀態，許多政黨在爭取生存空間的同時，易淪為政黨惡鬥的情形。有關政黨間的競爭方式，下列何者較適宜？",
+        "options": [
+          "大選獲勝而成為在野黨",
+          "各黨施政不受民意監督",
+          "在野黨應為反對而反對",
+          "各政黨應彼此互相尊重"
+        ],
+        "correct": 3
+      },
+      {
+        "q": "屏東縣政府興建「屏東縣王船文化館」，於 2024 年完工啟用，全館以「海洋信仰」、「千歲巡狩」、「屏東代巡」、「打造神舟」與「東港迎王」等五大展示主題，讓民眾透過沉浸式體驗，近距離認識王船的歷史脈絡。此展館落實國家的功能與何者相同？",
+        "options": [
+          "高鐵辦理延伸屏東的規畫作業",
+          "高雄市設置社會福利服務中心",
+          "政府辦理歌仔戲旗艦展演補助計畫",
+          "我國向美國提出 150 億美元軍購案"
+        ],
+        "correct": 2
+      }
+    ]
+  },
+  {
+    "type": "reading",
+    "title": "二、題組",
+    "meta": "28%，每題4分",
+    "passages": [
+      {
+        "label": "(一)",
+        "text": "2020 年，代表和平黨參選奇異國總統的柏宇競選連任失敗，由代表民生黨的子翔當選；2024 年柏宇東山再起，擊敗民生黨對手芷晴，成為奇異國的新總統。<br>柏宇執政後宣布<u>成立臨時組織，目的為精簡公家機關運作、削減開支、革除不必要支出，讓公家機關能更有效能</u>，迄今已超過 10 萬名公務人員遭到解僱，招致民眾愈來愈多的反對聲浪，並面臨來自 20 位檢察總長指控，認為柏宇在未遵循必要程序的情況下，解僱了數千名試用期的員工，違反法律規定。",
+        "items": [
+          {
+            "q": "文中第一段內容為哪一概念的最佳說明？",
+            "options": [
+              "主權獨立",
+              "政黨輪替",
+              "責任政治",
+              "國家組成要素"
+            ],
+            "correct": 1
+          },
+          {
+            "q": "文中第二段內容顯示，柏宇執政缺乏民主政治的何種特色？",
+            "options": [
+              "主權政治",
+              "責任政治",
+              "法治政治",
+              "政黨政治"
+            ],
+            "correct": 2
+          },
+          {
+            "q": "文中畫雙底線部分，與國家何種組成要素最有關？",
+            "options": [
+              "政府",
+              "主權",
+              "人民",
+              "領土"
+            ],
+            "correct": 0
+          },
+          {
+            "q": "依上文所述，下列關於此一新聞的說明何者正確？",
+            "options": [
+              "2020 年奇異國的執政黨為和平黨",
+              "2024 年民生黨敗選後成為在野黨",
+              "以選舉轉移政權非民主國家趨勢",
+              "政府不會隨政權轉移而有所改變"
+            ],
+            "correct": 1
+          }
+        ]
+      },
+      {
+        "label": "(二)",
+        "text": "2022 年 2 月，俄羅斯總統普丁對烏克蘭採取「特殊軍事行動」，發動全面入侵，烏克蘭總統緊急召開國安會議，宣布全國戒嚴抗戰，期間烏克蘭媒體報導有一架軍機號稱烏克蘭「基輔之鬼」獨自擊落 10 架入侵的俄軍飛機，振奮當地士氣，烏克蘭總統因此數次呼籲美國協助提供更多戰機。此外，在全球各地的烏克蘭人也紛紛回國抗戰，他們堅信「死守家園是為了再次團聚」，而該地區一份對烏克蘭全國各地 2000 名 18 歲以上民眾的調查，顯示對總統決策的支持率高達 91%。",
+        "items": [
+          {
+            "q": "上文中的「國安會議」屬於國家何種組成要素？",
+            "options": [
+              "人民",
+              "領土",
+              "政府",
+              "主權"
+            ],
+            "correct": 2
+          },
+          {
+            "q": "上文中烏克蘭總統對美國的呼籲，主要在落實國家的哪一功能？",
+            "options": [
+              "促進經濟發展",
+              "重視社會福利",
+              "保障基本人權",
+              "保衛國家安全"
+            ],
+            "correct": 3
+          },
+          {
+            "q": "上文中提到民眾對總統的支持率，符合民主政治的何項特色？",
+            "options": [
+              "民意政治",
+              "法治政治",
+              "政黨政治",
+              "責任政治"
+            ],
+            "correct": 0
+          }
+        ]
+      }
+    ]
+  }
+]
+};
+
+let currentMode = "quiz"; // quiz | print
+
+const contentEl = document.getElementById("content");
+const scoreBar = document.getElementById("scoreBar");
+const scoreText = document.getElementById("scoreText");
+
+function render(){
+  window.examAnswersRevealed = false;
+  contentEl.innerHTML = "";
+  DATA.sections.forEach((sec, si)=> contentEl.appendChild(renderSection(sec, si)));
+  if(currentMode==="quiz"){
+    scoreBar.classList.add("show");
+    updateScore();
+  } else {
+    scoreBar.classList.remove("show");
+    contentEl.querySelectorAll(".opt").forEach(o=>o.classList.add("disabled"));
+    contentEl.querySelectorAll(".opt.is-correct").forEach(o=>o.classList.add("correct"));
+  }
+}
+
+function renderSection(sec, si){
+  const block = document.createElement("section");
+  block.className = "block";
+  block.innerHTML = `<h2>${sec.title}</h2><p class="meta">${sec.meta}</p>`;
+
+  if(sec.type==="mc"){
+    sec.items.forEach((it,i)=>{
+      const q = document.createElement("div");
+      q.className = "q";
+      const optsHtml = it.options.map((op,oi)=>`
+        <div class="opt" data-idx="${oi}" data-correct="${oi===it.correct}">
+          <span class="tag">(${String.fromCharCode(65+oi)})</span><span>${op}</span>
+        </div>`).join("");
+      const imgHtml = it.image ? `<img src="${it.image}" alt="題目附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">` : "";
+      const img2Html = it.image2 ? `<img src="${it.image2}" alt="題目附圖2" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">` : "";
+      q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q}</div>
+        ${imgHtml}${img2Html}
+        <div class="opts">${optsHtml}</div>`;
+      q.querySelectorAll(".opt").forEach(optEl=>{
+        if(optEl.dataset.correct==="true") optEl.classList.add("is-correct");
+        optEl.addEventListener("click", ()=>selectOption(q, optEl));
+      });
+      block.appendChild(q);
+    });
+  }
+
+  else if(sec.type==="reading"){
+    sec.passages.forEach(p=>{
+      const passageDiv = document.createElement("div");
+      passageDiv.className = "passage";
+      passageDiv.innerHTML = `${p.label ? `<span class="passage-label">${p.label}</span>`:""}${p.text}${p.image ? `<img src="${p.image}" alt="題組附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-top:10px;border:1px solid var(--paper-line);">`:""}`;
+      block.appendChild(passageDiv);
+      p.items.forEach((it,i)=>{
+        const q = document.createElement("div");
+        q.className = "q";
+        const optsHtml = it.options.map((op,oi)=>`
+          <div class="opt" data-idx="${oi}" data-correct="${oi===it.correct}">
+            <span class="tag">(${String.fromCharCode(65+oi)})</span><span>${op}</span>
+          </div>`).join("");
+        q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q}</div>
+          ${it.image ? `<img src="${it.image}" alt="題目附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">`:""}
+          <div class="opts">${optsHtml}</div>`;
+        q.querySelectorAll(".opt").forEach(optEl=>{
+          if(optEl.dataset.correct==="true") optEl.classList.add("is-correct");
+          optEl.addEventListener("click", ()=>selectOption(q, optEl));
+        });
+        block.appendChild(q);
+      });
+    });
+  }
+
+  return block;
+}
+
+function selectOption(qEl, optEl){
+  if(currentMode!=="quiz") return;
+  if(qEl.dataset.answered==="true") return;
+  qEl.dataset.answered = "true";
+  qEl.querySelectorAll(".opt").forEach(o=>o.classList.add("disabled"));
+  optEl.classList.add("selected");
+  const correctOpt = qEl.querySelector('.opt[data-correct="true"]');
+  qEl.dataset.studentAnswer = optEl.textContent.trim();
+  qEl.dataset.correctAnswer = correctOpt ? correctOpt.textContent.trim() : "";
+  qEl.dataset.isCorrect = (optEl.dataset.correct==="true") ? "true" : "false";
+  updateScore();
+}
+
+function updateScore(){
+  let total = 0, answered = 0, correct = 0;
+  contentEl.querySelectorAll(".q").forEach(q=>{
+    const gradable = q.querySelector(".opts");
+    if(!gradable) return;
+    total++;
+    if(q.dataset.studentAnswer !== undefined){
+      answered++;
+      if(q.dataset.isCorrect === "true") correct++;
+    }
+  });
+  if(window.examAnswersRevealed){
+    scoreText.textContent = `${correct} / ${total}`;
+  } else {
+    scoreText.textContent = `已作答 ${answered} / ${total} 題`;
+  }
+}
+window.updateScore = updateScore;
+
+document.getElementById("resetBtn").addEventListener("click", render);
+document.getElementById("quizModeBtn").addEventListener("click", ()=>{
+  currentMode = "quiz";
+  document.getElementById("quizModeBtn").classList.add("active");
+  document.getElementById("printModeBtn").classList.remove("active");
+  render();
+});
+document.getElementById("printModeBtn").addEventListener("click", ()=>{
+  if(document.getElementById("printModeBtn").disabled) return;
+  currentMode = "print";
+  document.getElementById("printModeBtn").classList.add("active");
+  document.getElementById("quizModeBtn").classList.remove("active");
+  render();
+});
+
+window.unlockPrintMode = function(){
+  document.getElementById("printModeBtn").disabled = false;
+};
+
+render();
+</script>
+<script src="../sync.js?v=20261018b"></script>
+</body>
+</html>
