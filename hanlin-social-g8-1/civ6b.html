@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>段考題庫｜公民第6回 - 複習</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@500;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#faf6ec;
+    --paper-line:#e3dcc8;
+    --ink:#26332b;
+    --ink-soft:#5b6b5f;
+    --chalk-green:#2f4538;
+    --chalk-green-2:#3d5a48;
+    --pen-red:#b8433a;
+    --pen-red-soft:#f4dedb;
+    --ok-green:#3f7d52;
+    --ok-green-soft:#dfeee1;
+    --gold:#b5842a;
+    --radius:10px;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:"Noto Sans TC",sans-serif;
+    line-height:1.7;
+  }
+  header.hero{
+    background:var(--chalk-green);
+    color:#eef2ea;
+    padding:28px 20px 40px;
+    position:relative;
+  }
+  header.hero::after{
+    content:"";
+    position:absolute;
+    left:0; right:0; bottom:-1px;
+    height:14px;
+    background:repeating-linear-gradient(90deg,var(--paper) 0 18px, transparent 18px 20px);
+  }
+  .hero-inner{max-width:880px;margin:0 auto;}
+  .breadcrumb a{color:#cfe0d1;text-decoration:none;font-size:14px;}
+  .breadcrumb a:hover{text-decoration:underline;}
+  h1{
+    font-family:"Noto Serif TC",serif;
+    font-weight:700;
+    font-size:clamp(24px,4vw,34px);
+    margin:10px 0 6px;
+  }
+  .subtitle{color:#cfe0d1;font-size:15px;margin:0;}
+  main{max-width:880px;margin:0 auto;padding:28px 20px 80px;}
+
+  .controls{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:22px;
+  }
+  .mode-toggle{display:flex;border:2px solid var(--chalk-green);border-radius:999px;overflow:hidden;}
+  .mode-toggle button{
+    background:transparent;border:none;padding:8px 16px;font-size:14px;font-weight:700;
+    color:var(--chalk-green);cursor:pointer;font-family:"Noto Sans TC",sans-serif;
+  }
+  .mode-toggle button.active{background:var(--gold);color:#fff;}
+  .mode-toggle button:disabled{opacity:.4;cursor:not-allowed;}
+
+  .score-bar{
+    display:none;
+    align-items:center;
+    justify-content:space-between;
+    background:#fff;
+    border:1px solid var(--paper-line);
+    border-left:5px solid var(--gold);
+    border-radius:var(--radius);
+    padding:12px 18px;
+    margin-bottom:22px;
+    font-size:14px;
+  }
+  .score-bar.show{display:flex;}
+  .score-bar strong{font-size:18px;color:var(--gold);}
+  .score-bar button{
+    background:none;border:1px solid var(--ink-soft);color:var(--ink-soft);
+    border-radius:6px;padding:6px 12px;font-size:13px;cursor:pointer;
+  }
+
+  section.block{
+    background:#fff;
+    border:1px solid var(--paper-line);
+    border-radius:var(--radius);
+    padding:22px 22px 26px;
+    margin-bottom:20px;
+  }
+  .block h2{
+    font-family:"Noto Serif TC",serif;
+    font-size:19px;
+    margin:0 0 4px;
+    color:var(--chalk-green);
+  }
+  .block .meta{color:var(--ink-soft);font-size:13px;margin:0 0 16px;}
+
+  .q{margin-bottom:18px;padding-bottom:16px;border-bottom:1px dashed var(--paper-line);}
+  .q:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0;}
+  .q-text{font-size:15.5px;margin-bottom:8px;}
+  .q-num{color:var(--gold);font-weight:700;margin-right:4px;}
+
+  .opts{display:grid;gap:8px;}
+  .opt{
+    display:flex;gap:8px;align-items:flex-start;
+    border:1.5px solid var(--paper-line);
+    border-radius:8px;
+    padding:9px 12px;
+    cursor:pointer;
+    font-size:14.5px;
+    background:#fffdf8;
+  }
+  .opt:hover{border-color:var(--chalk-green-2);}
+  .opt.selected{border-color:var(--chalk-green-2);background:#eef3ea;}
+  .opt.correct{border-color:var(--ok-green);background:var(--ok-green-soft);}
+  .opt.wrong{border-color:var(--pen-red);background:var(--pen-red-soft);}
+  .opt .tag{font-weight:700;color:var(--ink-soft);}
+  .opt.correct .tag{color:var(--ok-green);}
+  .opt.wrong .tag{color:var(--pen-red);}
+  .opt.disabled{cursor:default;}
+
+  .passage{
+    background:#f5f2e8;border-radius:8px;padding:14px 16px;margin-bottom:14px;
+    font-size:14.5px;white-space:pre-line;
+  }
+  .passage-label{font-weight:700;color:var(--chalk-green);margin-bottom:4px;display:block;}
+
+  .footer-link{
+    display:block;text-align:center;margin-top:30px;color:var(--chalk-green);
+    text-decoration:none;font-weight:700;font-size:14px;
+  }
+  .footer-link:hover{text-decoration:underline;}
+
+  @media print{
+    header.hero, .controls, .score-bar, .mini-btn, .footer-link{display:none !important;}
+    body{background:#fff;}
+    section.block{border:none;box-shadow:none;padding:8px 0;margin-bottom:14px;}
+    .opt.correct{background:none;border:none;font-weight:700;}
+    .opt.correct::after{content:" ← 正解";color:var(--pen-red);}
+    .opt{border:none;padding:2px 0;}
+    main{max-width:100%;padding:0 24px;}
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="breadcrumb"><a href="https://jenlin2002.github.io/">🏠 回總目錄</a> ／ <a href="../hanlin-social-g8-1.html" style="color:#cfe0d1;">段考題庫</a></div>
+    <h1>公民・第6回</h1>
+    <p class="subtitle">第四篇第3～4章 複習｜翰林版八年級社會（三）Ｂ卷</p>
+  </div>
+</header>
+
+<main>
+  <div class="controls">
+    <div class="mode-toggle">
+      <button id="quizModeBtn" class="active">✏️ 測驗模式</button>
+      <button id="printModeBtn" disabled title="完成測驗並送出成績後才能查看">🖨️ 完整題目與解答（送出成績後解鎖）</button>
+    </div>
+  </div>
+
+  <div class="score-bar" id="scoreBar">
+    <div>目前得分：<strong id="scoreText">0 / 0</strong>（僅計算選擇題）</div>
+    <button id="resetBtn">重新作答</button>
+  </div>
+
+  <div id="content"></div>
+
+  <a class="footer-link" href="../hanlin-social-g8-1.html">← 回段考題庫總覽</a>
+</main>
+
+<script>
+
+window.EXAM_META = { version: "B卷", examLabel: "公民第6回" };
+const DATA = {
+  sections: [
+  {
+    "type": "mc",
+    "title": "一、單題",
+    "meta": "72%，每題3分",
+    "items": [
+      {
+        "q": "根據下列內容判斷，此為何種政治學概念？「是現代國家統治模式的一種，其設計理念是將各種國家公權力分散，不使其集中在單一機關內，是當前世界上多數國家採用的一種政治制度。」",
+        "options": [
+          "人治社會",
+          "主權在民",
+          "權力分立",
+          "責任政治"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "近 3 年來全國各警察機關違規查詢個資案件計 52 件，其中 10 件涉及與不法組織勾結，監察院認定內政部警政署未落實督導、查察，使不肖員警洩漏偵查訊息及出賣民眾個資。在調查報告經審查通過後，可能會對文中內政部警政署進行下列何者？",
+        "options": [
+          "糾舉",
+          "糾正",
+          "彈劾",
+          "懲戒"
+        ],
+        "correct": 1
+      },
+      {
+        "q": "根據我國相關規定，何者主要是由公民直選產生？",
+        "options": [
+          "監察委員",
+          "立法委員",
+          "司法院院長",
+          "行政院院長"
+        ],
+        "correct": 1
+      },
+      {
+        "q": "2020 年英國脫歐後，當時的英國首相強森為安撫朝野民心，對政府內閣進行大幅調整（如圖(一)）。根據其內閣改組後的陣容來看，強森與內閣主要是掌握政府的何種權力？",
+        "options": [
+          "司法權",
+          "立法權",
+          "監察權",
+          "行政權"
+        ],
+        "correct": 3,
+        "image": "images/civ6b/q4.png"
+      },
+      {
+        "q": "為提升專門職業和技術人員考試水準，甲院考選部規畫協調行政院公共工程委員會，將技師才能執行的業務以法律規範，樹立執照權威。上文中的甲院應是下列何者？",
+        "options": [
+          "立法院",
+          "行政院",
+          "司法院",
+          "考試院"
+        ],
+        "correct": 3
+      },
+      {
+        "q": "先前在疫情延燒期間，行政院院長率各部會首長赴「相關機關」進行施政方針及施政報告，執政黨建議該機關縮短質詢時間。但在野黨表示，質詢能讓民眾了解防疫狀況、幫助政府防止防疫漏洞，他們不會縮短質詢時間。上文中提到的「相關機關」主要是掌理政府的何種權力？",
+        "options": [
+          "司法權",
+          "監察權",
+          "立法權",
+          "行政權"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "近年警民衝突事件中，頗具有爭議的莫過於<u>(甲)警方對民眾實施臨檢</u>，合法臨檢的前提為員警須拿出證件以證明身分，且得在公共場所進行，若在警方強制執行搜身時起爭執，<u>(乙)民眾可提告</u>。臨檢過程中<u>(丙)民眾為了維護自己的利益可進行錄影</u>，但民眾不可以辱罵員警，否則<u>(丁)員警可依「妨害公務」等理由當場逮捕民眾</u>。上文中畫底線部分何者屬於政府的權力？",
+        "options": [
+          "(甲)、(乙)",
+          "(乙)、(丙)",
+          "(甲)、(丁)",
+          "(丙)、(丁)"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "總統為國家元首，下列何者屬於我國總統的職權？",
+        "options": [
+          "制定法律",
+          "統率陸海空三軍",
+          "提出領土變更案",
+          "向立法院提出施政報告"
+        ],
+        "correct": 1
+      },
+      {
+        "q": "《張釋之執法》記敘漢文帝時代，廷尉張釋之因縣人驚動漢文帝座車的事件，展現出不畏皇權依法審理的態度，最後獲得皇帝認同，並收回懲處。下列關於上述文章的時代背景，何者敘述正確？",
+        "options": [
+          "屬於人治社會",
+          "人民選出代表制定法律",
+          "政府不可任意侵害人民權利",
+          "人民與統治者皆須受到法律制裁"
+        ],
+        "correct": 0
+      },
+      {
+        "q": "圖(二)為我國憲法法庭運作法源依據摘要：「《憲法法庭審理規則》第 8 條　憲法法庭受理政黨解散案件認有必要時，得指定大法官三人小組為受命大法官行準備程序，並由資深大法官主持之；資同以年長者主持之。」圖中受理案件的機關隸屬於哪一中央政府機關？",
+        "options": [
+          "立法院",
+          "監察院",
+          "司法院",
+          "考試院"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "中國古代社會設有「諫官」制度，其設置的目的是為規勸君主及彈劾違法失職的官員，並使其改正。若依我國《憲法》規定，「諫官」制度應是掌有政府的何種權力？",
+        "options": [
+          "司法權",
+          "立法權",
+          "監察權",
+          "行政權"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "圖(三)為美國立法權與司法權彼此間的權力關係示意圖。圖中主要說明政府體制中的何種概念？",
+        "options": [
+          "五權分立",
+          "主權在民",
+          "責任政治",
+          "分權制衡"
+        ],
+        "correct": 3,
+        "image": "images/civ6b/q12.png"
+      },
+      {
+        "q": "中央某機關網站上提到：「依據孫中山先生首創的五權憲法，由國民大會代表全體國民行使政權，於中央分設五院，行使治權。而本院就其職權、性質及功能而言，相當於一般民主國家的國會。」關於此機關的說明，何者正確？",
+        "options": [
+          "擁有司法權",
+          "擁有執行公共事務的權力",
+          "擁有總統副總統罷免案提案權",
+          "院長須由總統提名立法委員同意"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "圖(四)為明清時期政府機關所設計的科舉制度示意圖。若依我國《憲法》規定，該政府機關應為掌握政府的何種權力？",
+        "options": [
+          "考試權",
+          "監察權",
+          "立法權",
+          "行政權"
+        ],
+        "correct": 0,
+        "image": "images/civ6b/q14.png"
+      },
+      {
+        "q": "法治社會是與人治社會相對的概念，兩者是用來說明一個社會上的公共事務如何運作的模式。下列關於兩者的說明，何者正確？",
+        "options": [
+          "人治社會無法律，法治社會有法律",
+          "現代民主國家基本上是屬於人治社會",
+          "人治社會的法律主要是用來限制人民的工具",
+          "法治社會中法律會隨著統治者的需求而修定"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "近日安德國某地區新建工廠完工，地方政府舉辦慶祝活動，餐敘期間因部分人員行為不當，而引起批評。事件曝光後，該國最高領導人震怒，隨即未遵照法律與知會相關單位，便下令嚴懲所有相關人員，甚至封閉宴會場所，其他地區的類似場所也被迫停業，引發民眾恐慌與不安。關於安德國的敘述，何者正確？",
+        "options": [
+          "沒有法律存在",
+          "屬於法治社會",
+          "最高領導人的意思即是法律",
+          "法律主要目的為限制政府權力"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "某中央權責機關公布中央政府總決算審核報告，對於財政狀況表達擔憂，因為若加計特別預算，除了 107、108 及 111 年度外，其餘年度皆為入不敷出。而 113 年預計將缺少 4,905 億元，建議行政院與財政部等相關單位持續精進財務管理及債務管控。上文中的中央權責機關應是擁有何種政府權力？",
+        "options": [
+          "司法權",
+          "監察權",
+          "行政權",
+          "立法權"
+        ],
+        "correct": 1
+      },
+      {
+        "q": "圖(五)為小鳳上網瀏覽中央某政府機關時看到的院徽圖示。此中央政府機關所擁有的權力<u>不包含</u>何者？",
+        "options": [
+          "解釋權",
+          "懲戒權",
+          "糾正權",
+          "審判權"
+        ],
+        "correct": 2,
+        "image": "images/civ6b/q18.png"
+      },
+      {
+        "q": "新型冠狀病毒疫情蔓延全球時，各國政府紛紛發布緊急命令進行封城，關閉營業場所，限制人民的外出活動，以避免疫情擴散，減少傷亡。若依我國法律規定，發布「緊急命令」須經何種程序才有效？",
+        "options": [
+          "行政院會議決議→總統發布→立法院追認",
+          "行政院院長決議→立法院發布→總統追認",
+          "行政院會議決議→總統發布→司法院追認",
+          "立法院決議→總統公告→行政院會議追認"
+        ],
+        "correct": 0
+      },
+      {
+        "q": "下列為中央政府某部會的施政目標：(1)積極推動重大法案，健全人事法制。(2)完備公務員官制官規架構，活化人力。(3)建構公務員退休安全網絡，兼顧社會正義。(4)整合文官資訊系統，提升決策品質。(5)監理退撫基金運用效益，確保永續經營。由內容可知，該政府機關亦擁有下列何種權力？",
+        "options": [
+          "審判權",
+          "糾舉權",
+          "考試權",
+          "人事同意權"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "身為監察委員的大佑，在某段期間看到媒體揭露下列四則新聞。根據大佑的職權判斷，哪一則新聞的報導對象，最可能被他提出彈劾？",
+        "options": [
+          "民調顯示，民眾對於內閣官員的滿意度大幅下滑",
+          "警方破獲史上最大幫派分子製毒、販毒集團",
+          "現任總統疑似洩漏國家機密，影響國家安全",
+          "中央政府部會首長涉嫌官商勾結，從中舞弊"
+        ],
+        "correct": 3
+      },
+      {
+        "q": "圖(六)為我國的中央政府總預算，根據圖中內容判斷，這項報告主要是由下列何者負責審查通過？",
+        "options": [
+          "監察院",
+          "立法院",
+          "司法院",
+          "行政院"
+        ],
+        "correct": 1,
+        "image": "images/civ6b/q22.png"
+      },
+      {
+        "q": "老師將班上分為四組，分別上臺報告各政府機關及其職權（甲：監察院－人事任命同意權；乙：司法院－解釋《憲法》法律權；丙：立法院－調查糾正彈劾權；丁：行政院－行政訴訟審判權）。哪一組報告內容最正確？",
+        "options": [
+          "甲",
+          "乙",
+          "丙",
+          "丁"
+        ],
+        "correct": 1
+      },
+      {
+        "q": "一名取得居留的巴勒斯坦學生曾在學校發起抗議以色列對加薩地區發動戰爭，並遭到移民局逮捕，美國政府認為他宣揚恐怖主義而依法將其拘捕並驅逐出境。對此人權團體認為政府行徑不必要而且帶有歧視意味，會對校園內的學習環境帶來分化的負面影響，並表示美國政府作法應避免損害社會對法治的信任。根據上文，下列哪一說明最為正確？",
+        "options": [
+          "美國可能是屬於人治社會",
+          "將人驅逐出境為政府權力",
+          "接受教育是屬於人民權力",
+          "發起抗議為平等權的保障"
+        ],
+        "correct": 1
+      }
+    ]
+  },
+  {
+    "type": "reading",
+    "title": "二、題組",
+    "meta": "28%，每題4分",
+    "passages": [
+      {
+        "label": "(一)",
+        "text": "(甲)在 2025 年 3 月提名司法院正副院長與大法官人選，共有 7 位被提名人，其身分、背景專長多元。高層期許這些提名人能守護自由、民主憲政制度、提升國安案件專業能量。依規定，這批大法官提名人須經由(乙)進行同意權表決，以補足大法官缺額，符合最新《憲法訴訟法》修法規定，明定大法官人數不得低於 9 人限制，避免影響憲法法庭運作。",
+        "items": [
+          {
+            "q": "上文中提到的《憲法訴訟法》，其修法的政府機關應為下列何者？",
+            "options": [
+              "總統",
+              "行政院",
+              "司法院",
+              "立法院"
+            ],
+            "correct": 3
+          },
+          {
+            "q": "上文中提到的新任大法官，主要是擁有政府的何種權力？",
+            "options": [
+              "立法權",
+              "解釋權",
+              "懲戒權",
+              "糾正權"
+            ],
+            "correct": 1
+          },
+          {
+            "q": "上文中提到的(甲)應是指下列何者？",
+            "options": [
+              "總統",
+              "立法院院長",
+              "行政院院長",
+              "司法院院長"
+            ],
+            "correct": 0
+          },
+          {
+            "q": "下列關於文中所述的說明，何者正確？",
+            "options": [
+              "(甲)依法對立法院負責",
+              "(乙)可提出領土變更案",
+              "司法院副院長擁有懲戒權",
+              "(乙)院長由總統提名，立法院同意產生"
+            ],
+            "correct": 1
+          }
+        ]
+      },
+      {
+        "label": "(二)",
+        "text": "根據法務部調查發現，原本臺電向某民營公司採購數萬具變壓器，藉以改善全臺供電量穩定，造福工商業，但卻發現有 3.4 萬具變壓器遭偷工換料，造成多起變電箱爆炸事件，因此經□□院調查後，認定臺電確有疏失，擬糾正臺電公司。",
+        "items": [
+          {
+            "q": "上文中所提到的「法務部」隸屬於哪一中央政府組織？",
+            "options": [
+              "行政院",
+              "監察院",
+              "立法院",
+              "司法院"
+            ],
+            "correct": 0
+          },
+          {
+            "q": "承第 5. 題，該中央政府組織主要掌理何種權力？",
+            "options": [
+              "司法權",
+              "考試權",
+              "立法權",
+              "行政權"
+            ],
+            "correct": 3
+          },
+          {
+            "q": "上文中□□處應該填入下列何者？",
+            "options": [
+              "立法",
+              "行政",
+              "監察",
+              "司法"
+            ],
+            "correct": 2
+          }
+        ]
+      }
+    ]
+  }
+]
+};
+
+let currentMode = "quiz"; // quiz | print
+
+const contentEl = document.getElementById("content");
+const scoreBar = document.getElementById("scoreBar");
+const scoreText = document.getElementById("scoreText");
+
+function render(){
+  window.examAnswersRevealed = false;
+  contentEl.innerHTML = "";
+  DATA.sections.forEach((sec, si)=> contentEl.appendChild(renderSection(sec, si)));
+  if(currentMode==="quiz"){
+    scoreBar.classList.add("show");
+    updateScore();
+  } else {
+    scoreBar.classList.remove("show");
+    contentEl.querySelectorAll(".opt").forEach(o=>o.classList.add("disabled"));
+    contentEl.querySelectorAll(".opt.is-correct").forEach(o=>o.classList.add("correct"));
+  }
+}
+
+function renderSection(sec, si){
+  const block = document.createElement("section");
+  block.className = "block";
+  block.innerHTML = `<h2>${sec.title}</h2><p class="meta">${sec.meta}</p>`;
+
+  if(sec.type==="mc"){
+    sec.items.forEach((it,i)=>{
+      const q = document.createElement("div");
+      q.className = "q";
+      const optsHtml = it.options.map((op,oi)=>`
+        <div class="opt" data-idx="${oi}" data-correct="${oi===it.correct}">
+          <span class="tag">(${String.fromCharCode(65+oi)})</span><span>${op}</span>
+        </div>`).join("");
+      const imgHtml = it.image ? `<img src="${it.image}" alt="題目附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">` : "";
+      const img2Html = it.image2 ? `<img src="${it.image2}" alt="題目附圖2" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">` : "";
+      q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q}</div>
+        ${imgHtml}${img2Html}
+        <div class="opts">${optsHtml}</div>`;
+      q.querySelectorAll(".opt").forEach(optEl=>{
+        if(optEl.dataset.correct==="true") optEl.classList.add("is-correct");
+        optEl.addEventListener("click", ()=>selectOption(q, optEl));
+      });
+      block.appendChild(q);
+    });
+  }
+
+  else if(sec.type==="reading"){
+    sec.passages.forEach(p=>{
+      const passageDiv = document.createElement("div");
+      passageDiv.className = "passage";
+      passageDiv.innerHTML = `${p.label ? `<span class="passage-label">${p.label}</span>`:""}${p.text}${p.image ? `<img src="${p.image}" alt="題組附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-top:10px;border:1px solid var(--paper-line);">`:""}`;
+      block.appendChild(passageDiv);
+      p.items.forEach((it,i)=>{
+        const q = document.createElement("div");
+        q.className = "q";
+        const optsHtml = it.options.map((op,oi)=>`
+          <div class="opt" data-idx="${oi}" data-correct="${oi===it.correct}">
+            <span class="tag">(${String.fromCharCode(65+oi)})</span><span>${op}</span>
+          </div>`).join("");
+        q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q}</div>
+          ${it.image ? `<img src="${it.image}" alt="題目附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">`:""}
+          <div class="opts">${optsHtml}</div>`;
+        q.querySelectorAll(".opt").forEach(optEl=>{
+          if(optEl.dataset.correct==="true") optEl.classList.add("is-correct");
+          optEl.addEventListener("click", ()=>selectOption(q, optEl));
+        });
+        block.appendChild(q);
+      });
+    });
+  }
+
+  return block;
+}
+
+function selectOption(qEl, optEl){
+  if(currentMode!=="quiz") return;
+  if(qEl.dataset.answered==="true") return;
+  qEl.dataset.answered = "true";
+  qEl.querySelectorAll(".opt").forEach(o=>o.classList.add("disabled"));
+  optEl.classList.add("selected");
+  const correctOpt = qEl.querySelector('.opt[data-correct="true"]');
+  qEl.dataset.studentAnswer = optEl.textContent.trim();
+  qEl.dataset.correctAnswer = correctOpt ? correctOpt.textContent.trim() : "";
+  qEl.dataset.isCorrect = (optEl.dataset.correct==="true") ? "true" : "false";
+  updateScore();
+}
+
+function updateScore(){
+  let total = 0, answered = 0, correct = 0;
+  contentEl.querySelectorAll(".q").forEach(q=>{
+    const gradable = q.querySelector(".opts");
+    if(!gradable) return;
+    total++;
+    if(q.dataset.studentAnswer !== undefined){
+      answered++;
+      if(q.dataset.isCorrect === "true") correct++;
+    }
+  });
+  if(window.examAnswersRevealed){
+    scoreText.textContent = `${correct} / ${total}`;
+  } else {
+    scoreText.textContent = `已作答 ${answered} / ${total} 題`;
+  }
+}
+window.updateScore = updateScore;
+
+document.getElementById("resetBtn").addEventListener("click", render);
+document.getElementById("quizModeBtn").addEventListener("click", ()=>{
+  currentMode = "quiz";
+  document.getElementById("quizModeBtn").classList.add("active");
+  document.getElementById("printModeBtn").classList.remove("active");
+  render();
+});
+document.getElementById("printModeBtn").addEventListener("click", ()=>{
+  if(document.getElementById("printModeBtn").disabled) return;
+  currentMode = "print";
+  document.getElementById("printModeBtn").classList.add("active");
+  document.getElementById("quizModeBtn").classList.remove("active");
+  render();
+});
+
+window.unlockPrintMode = function(){
+  document.getElementById("printModeBtn").disabled = false;
+};
+
+render();
+</script>
+<script src="../sync.js?v=20261018b"></script>
+</body>
+</html>
