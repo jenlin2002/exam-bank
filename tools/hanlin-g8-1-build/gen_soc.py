@@ -4,9 +4,9 @@ Template: the 翰林七上社會 pages made on the home PC (hanlin-social-g7-1/)
 import os, re, json, glob, importlib.util, sys
 import pymupdf
 
-REPO = r"E:\GitHub\exam-bank"
+REPO = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", ".."))
 HERE = os.path.dirname(os.path.abspath(__file__))
-SRC = r"C:\Users\jenlin2002\OneDrive - avc.co\興雅國中\XXY\校用券1到3 年級全出版社\115年\115上國中2年級校卷\115上翰林2上校卷\115上翰林社會2上校卷\115上翰林社會2上{}卷_學用.pdf"
+SRC = os.path.join(REPO, "PDF-RAW-DATA", "SocialStudies", "hanlin", "hanlin-G8-1", "115上翰林社會2上{}卷_學用.pdf")
 OUT = os.path.join(REPO, "hanlin-social-g8-1")
 BOOK = "翰林版八年級社會（三）"
 SUBJ = {"geo": "地理", "hist": "歷史", "civ": "公民"}

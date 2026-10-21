@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>段考題庫｜地理第3回 - 複習</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@500;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#faf6ec;
+    --paper-line:#e3dcc8;
+    --ink:#26332b;
+    --ink-soft:#5b6b5f;
+    --chalk-green:#2f4538;
+    --chalk-green-2:#3d5a48;
+    --pen-red:#b8433a;
+    --pen-red-soft:#f4dedb;
+    --ok-green:#3f7d52;
+    --ok-green-soft:#dfeee1;
+    --gold:#b5842a;
+    --radius:10px;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:"Noto Sans TC",sans-serif;
+    line-height:1.7;
+  }
+  header.hero{
+    background:var(--chalk-green);
+    color:#eef2ea;
+    padding:28px 20px 40px;
+    position:relative;
+  }
+  header.hero::after{
+    content:"";
+    position:absolute;
+    left:0; right:0; bottom:-1px;
+    height:14px;
+    background:repeating-linear-gradient(90deg,var(--paper) 0 18px, transparent 18px 20px);
+  }
+  .hero-inner{max-width:880px;margin:0 auto;}
+  .breadcrumb a{color:#cfe0d1;text-decoration:none;font-size:14px;}
+  .breadcrumb a:hover{text-decoration:underline;}
+  h1{
+    font-family:"Noto Serif TC",serif;
+    font-weight:700;
+    font-size:clamp(24px,4vw,34px);
+    margin:10px 0 6px;
+  }
+  .subtitle{color:#cfe0d1;font-size:15px;margin:0;}
+  main{max-width:880px;margin:0 auto;padding:28px 20px 80px;}
+
+  .controls{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:22px;
+  }
+  .mode-toggle{display:flex;border:2px solid var(--chalk-green);border-radius:999px;overflow:hidden;}
+  .mode-toggle button{
+    background:transparent;border:none;padding:8px 16px;font-size:14px;font-weight:700;
+    color:var(--chalk-green);cursor:pointer;font-family:"Noto Sans TC",sans-serif;
+  }
+  .mode-toggle button.active{background:var(--gold);color:#fff;}
+  .mode-toggle button:disabled{opacity:.4;cursor:not-allowed;}
+
+  .score-bar{
+    display:none;
+    align-items:center;
+    justify-content:space-between;
+    background:#fff;
+    border:1px solid var(--paper-line);
+    border-left:5px solid var(--gold);
+    border-radius:var(--radius);
+    padding:12px 18px;
+    margin-bottom:22px;
+    font-size:14px;
+  }
+  .score-bar.show{display:flex;}
+  .score-bar strong{font-size:18px;color:var(--gold);}
+  .score-bar button{
+    background:none;border:1px solid var(--ink-soft);color:var(--ink-soft);
+    border-radius:6px;padding:6px 12px;font-size:13px;cursor:pointer;
+  }
+
+  section.block{
+    background:#fff;
+    border:1px solid var(--paper-line);
+    border-radius:var(--radius);
+    padding:22px 22px 26px;
+    margin-bottom:20px;
+  }
+  .block h2{
+    font-family:"Noto Serif TC",serif;
+    font-size:19px;
+    margin:0 0 4px;
+    color:var(--chalk-green);
+  }
+  .block .meta{color:var(--ink-soft);font-size:13px;margin:0 0 16px;}
+
+  .q{margin-bottom:18px;padding-bottom:16px;border-bottom:1px dashed var(--paper-line);}
+  .q:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0;}
+  .q-text{font-size:15.5px;margin-bottom:8px;}
+  .q-num{color:var(--gold);font-weight:700;margin-right:4px;}
+
+  .opts{display:grid;gap:8px;}
+  .opt{
+    display:flex;gap:8px;align-items:flex-start;
+    border:1.5px solid var(--paper-line);
+    border-radius:8px;
+    padding:9px 12px;
+    cursor:pointer;
+    font-size:14.5px;
+    background:#fffdf8;
+  }
+  .opt:hover{border-color:var(--chalk-green-2);}
+  .opt.selected{border-color:var(--chalk-green-2);background:#eef3ea;}
+  .opt.correct{border-color:var(--ok-green);background:var(--ok-green-soft);}
+  .opt.wrong{border-color:var(--pen-red);background:var(--pen-red-soft);}
+  .opt .tag{font-weight:700;color:var(--ink-soft);}
+  .opt.correct .tag{color:var(--ok-green);}
+  .opt.wrong .tag{color:var(--pen-red);}
+  .opt.disabled{cursor:default;}
+
+  .passage{
+    background:#f5f2e8;border-radius:8px;padding:14px 16px;margin-bottom:14px;
+    font-size:14.5px;white-space:pre-line;
+  }
+  .passage-label{font-weight:700;color:var(--chalk-green);margin-bottom:4px;display:block;}
+
+  .footer-link{
+    display:block;text-align:center;margin-top:30px;color:var(--chalk-green);
+    text-decoration:none;font-weight:700;font-size:14px;
+  }
+  .footer-link:hover{text-decoration:underline;}
+
+  @media print{
+    header.hero, .controls, .score-bar, .mini-btn, .footer-link{display:none !important;}
+    body{background:#fff;}
+    section.block{border:none;box-shadow:none;padding:8px 0;margin-bottom:14px;}
+    .opt.correct{background:none;border:none;font-weight:700;}
+    .opt.correct::after{content:" ← 正解";color:var(--pen-red);}
+    .opt{border:none;padding:2px 0;}
+    main{max-width:100%;padding:0 24px;}
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="breadcrumb"><a href="https://jenlin2002.github.io/">🏠 回總目錄</a> ／ <a href="../hanlin-social-g8-1.html" style="color:#cfe0d1;">段考題庫</a></div>
+    <h1>地理・第3回</h1>
+    <p class="subtitle">第1～2章 複習｜翰林版八年級社會（三）Ｂ卷</p>
+  </div>
+</header>
+
+<main>
+  <div class="controls">
+    <div class="mode-toggle">
+      <button id="quizModeBtn" class="active">✏️ 測驗模式</button>
+      <button id="printModeBtn" disabled title="完成測驗並送出成績後才能查看">🖨️ 完整題目與解答（送出成績後解鎖）</button>
+    </div>
+  </div>
+
+  <div class="score-bar" id="scoreBar">
+    <div>目前得分：<strong id="scoreText">0 / 0</strong>（僅計算選擇題）</div>
+    <button id="resetBtn">重新作答</button>
+  </div>
+
+  <div id="content"></div>
+
+  <a class="footer-link" href="../hanlin-social-g8-1.html">← 回段考題庫總覽</a>
+</main>
+
+<script>
+
+window.EXAM_META = { version: "B卷", examLabel: "地理第3回" };
+const DATA = {
+  sections: [
+  {
+    "type": "mc",
+    "title": "一、單題",
+    "meta": "72%，每題3分",
+    "items": [
+      {
+        "q": "秦嶺是中國重要的地理界線，以該山脈為界，其大概與 1 月 0°C 等溫線大致相符，若要在圖(一)中標示該山脈位置，則下列何者最正確？",
+        "options": [
+          "甲",
+          "乙",
+          "丙",
+          "丁"
+        ],
+        "correct": 1,
+        "image": "images/geo3b/q1.png"
+      },
+      {
+        "q": "甲位於中國地勢中階梯地形區，地表受到河川侵蝕切割而崎嶇不平，且造成流經的黃河含沙量高。上述甲為哪一地形區？",
+        "options": [
+          "四川盆地",
+          "黃土高原",
+          "內蒙古高原",
+          "塔里木盆地"
+        ],
+        "correct": 1
+      },
+      {
+        "q": "旅行社的導覽寫著：「站在世界的屋頂～搭上前往海拔五千多公尺高的火車，呼吸著稀薄的氧氣，前往這片被評選為一生中一定要去的神祕雪域，以獨特的自然與文化呼喚著旅人。」根據上述，這可能是下列哪一行程？",
+        "options": [
+          "東北冰封大地六日遊",
+          "新疆絲綢之路八日遊",
+          "青藏高原天路九日遊",
+          "內蒙大漠風情十日遊"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "西藏的墨脫地區曾發生芮氏規模 8.6 的強震，受創嚴重，復原時間長達數年。依據位置判斷，協助復原的團隊在該地區感受到的特徵<b>不包括</b>下列何者？",
+        "options": [
+          "因海拔高使空氣相對稀薄",
+          "夏季氣溫較同緯度來得低",
+          "因位居高緯使其年溫差大",
+          "植被隨高度呈現垂直變化"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "圖(二)是中國近期積極興建的鐵路路線，該鐵道鋪設的地區受到地質及氣候環境影響，施工難度較高，但完工後除了可帶動沿線地區的發展外，也可以鞏固中國與哪一國家之間的邊防？",
+        "options": [
+          "印度",
+          "北韓",
+          "俄羅斯",
+          "菲律賓"
+        ],
+        "correct": 0,
+        "image": "images/geo3b/q5.png"
+      },
+      {
+        "q": "圖(三)是中國「一帶一路」政策所規畫的中尼鐵路，依據圖中資訊判斷，該鐵路最可能穿越下列哪一地形區？",
+        "options": [
+          "秦嶺",
+          "黃土高原",
+          "塔里木盆地",
+          "喜馬拉雅山"
+        ],
+        "correct": 3,
+        "image": "images/geo3b/q6.png"
+      },
+      {
+        "q": "「與俄羅斯接壤的東北平原，冬季嚴寒多雪，當地藉此特色舉辦冰雪節，成為著名的國際盛事。」上文中描述的地區屬於何種氣候分布區？",
+        "options": [
+          "高地氣候",
+          "溫帶沙漠氣候",
+          "熱帶季風氣候",
+          "溫帶季風氣候"
+        ],
+        "correct": 3
+      },
+      {
+        "q": "中國三條重要河川分別為黃河、長江和珠江，這三條河川主流的流向最可能為下列何者？",
+        "options": [
+          "由南向北流",
+          "由北向南流",
+          "由西向東流",
+          "由東向西流"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "中國根據溫度、溼度等數據研究出啤酒指數，天氣冷時指數較低，天氣熱時指數較高，此時啤酒成為民眾的消暑聖品。若僅考慮上述因素，則圖(四)中哪一地區商家的啤酒進貨量可能最高？",
+        "options": [
+          "甲",
+          "乙",
+          "丙",
+          "丁"
+        ],
+        "correct": 1,
+        "image": "images/geo3b/q9.png"
+      },
+      {
+        "q": "表(一)是阿雅整理的中國部分氣候分類準則，其中首都「北京」應分類在哪一種氣候類型區？",
+        "options": [
+          "甲₁",
+          "甲₂",
+          "甲₃",
+          "乙₁"
+        ],
+        "correct": 2,
+        "image": "images/geo3b/q10.png"
+      },
+      {
+        "q": "中國疆域遼闊、氣候多樣，其中新疆塔里木盆地的民眾所感受到的氣候特徵與下列何者最相符？",
+        "options": [
+          "終年低溫",
+          "冬雨夏乾",
+          "乾燥少雨",
+          "溫暖潮溼"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "圖(五)是小明和小華的故鄉及移居路線圖，依圖中資訊判斷，二人由故鄉到移居地均會感受到下列哪一地理現象的變化？",
+        "options": [
+          "日均溫漸低",
+          "日溫差漸大",
+          "年降水量漸多",
+          "年溫差值漸大"
+        ],
+        "correct": 2,
+        "image": "images/geo3b/q12.png"
+      },
+      {
+        "q": "圖(六)為某一季風形成示意圖。由圖中高低氣壓的位置判斷，在該季節中國東南丘陵的盛行風向應為下列何者？",
+        "options": [
+          "東北風",
+          "東南風",
+          "西北風",
+          "西南風"
+        ],
+        "correct": 3,
+        "image": "images/geo3b/q13.png"
+      },
+      {
+        "q": "1956 年 5 月 26 日，第一架從北京飛往西藏拉薩的領隊運輸機順利飛越「世界屋脊」，並安全降落於拉薩附近的飛機場。文中提及的航線應為下列何者？",
+        "options": [
+          "A",
+          "B",
+          "C",
+          "D"
+        ],
+        "correct": 0,
+        "image": "images/geo3b/q14.png"
+      },
+      {
+        "q": "該地形區是世界最高峰，每年吸引許多民眾攀登。民眾的登山路線可以由中國或南亞地區的國家開始規畫。文中提及的地形區最可能為下列何者？",
+        "options": [
+          "秦嶺",
+          "橫斷山脈",
+          "內蒙古高原",
+          "喜馬拉雅山"
+        ],
+        "correct": 3
+      },
+      {
+        "q": "圖(七)為中國地勢立體圖，由圖中可以看出中國地形的哪一項特徵？",
+        "options": [
+          "整體地勢為西高東低",
+          "東部山脈多東西走向",
+          "東側主要地形為高原",
+          "河川大多為南北流向"
+        ],
+        "correct": 0,
+        "image": "images/geo3b/q16.png"
+      },
+      {
+        "q": "「受強冷空氣影響，這個位於西北內陸的行政區氣溫降至－52.3°C，創下當地歷史最低溫紀錄。同年，該地亦測得高達 52.2°C 的高溫，刷新中國實測最高溫紀錄，顯示當地年溫差超過 100°C，氣候變化極為劇烈。」文中提及行政區應屬於下列何種氣候類型？",
+        "options": [
+          "溫帶沙漠氣候",
+          "溫帶季風氣候",
+          "熱帶季風氣候",
+          "高地氣候"
+        ],
+        "correct": 0
+      },
+      {
+        "q": "中國是全世界面積排名第四大的國家，其領土幅員遼闊，經緯度跨度極大，主要位於下列哪一半球？",
+        "options": [
+          "西、北半球",
+          "東、北半球",
+          "西、南半球",
+          "西、北半球"
+        ],
+        "correct": 1
+      },
+      {
+        "q": "每年冬末春初，南韓境內常因為來自中國內蒙古的沙塵暴影響，導致空氣品質惡化，嚴重時空氣中的懸浮微粒濃度會飆升至平常的數倍，各地空氣品質達到「非常糟糕」等級。依據上述判斷，導致沙塵飄揚到南韓的盛行風向應為下列何者？",
+        "options": [
+          "東北季風",
+          "西北季風",
+          "東南季風",
+          "西南季風"
+        ],
+        "correct": 1
+      },
+      {
+        "q": "根據中國商務部公布的數據顯示，2025 年中國和中亞進出口總值首次突破 1000 億美元，在新疆與中亞交界地區有許多邊境貿易城市。文中提及的邊境貿易城市的氣候特徵與下列何者最相符？",
+        "options": [
+          "年溫差小、日溫差小",
+          "年溫差小、日溫差大",
+          "年溫差大、日溫差小",
+          "年溫差大、日溫差大"
+        ],
+        "correct": 3
+      },
+      {
+        "q": "這個地區在青藏鐵路未完工前，對外交通相當不便，加上氣候環境的限制，除了當地住民之外，外來人口並不多。交通改善之後，當地來了許多的觀光客，產業也隨之發展。若要利用★標示出該地區所在的地形剖面圖，則下列哪一張圖所呈現的最正確？",
+        "options": [
+          "A",
+          "B",
+          "C",
+          "D"
+        ],
+        "correct": 0,
+        "image": "images/geo3b/q21.png"
+      },
+      {
+        "q": "圖(八)是中國與某一鄰國的邊境區內的標誌，依據圖中資訊判斷，該標誌所在的地區應為下列何種氣候分布區？",
+        "options": [
+          "寒帶氣候",
+          "溫帶氣候",
+          "熱帶氣候",
+          "副熱帶氣候"
+        ],
+        "correct": 1,
+        "image": "images/geo3b/q22.png"
+      },
+      {
+        "q": "中國曾陷入「非洲沙漠蝗蟲侵入」的危機，專家分析，沙漠蝗蟲可能從鄰國攻入圖(九)中深色區塊的行政區。依據上述判斷，下列哪一地形區會最早面臨威脅？",
+        "options": [
+          "塔里木盆地",
+          "黃土高原",
+          "東南丘陵",
+          "內蒙古高原"
+        ],
+        "correct": 0,
+        "image": "images/geo3b/q23.png"
+      },
+      {
+        "q": "駝峰航線是第二次世界大戰期間中美合作開闢的危險空中補給線，從印度北部的阿薩姆邦至中國西南部雲南昆明的航線，因飛越山峰連綿如駝峰而得名。文中提及的航線最可能飛越哪一地形區？",
+        "options": [
+          "黃土高原",
+          "東南丘陵",
+          "橫斷山脈",
+          "內蒙古高原"
+        ],
+        "correct": 2
+      }
+    ]
+  },
+  {
+    "type": "reading",
+    "title": "二、題組",
+    "meta": "28%，每題4分",
+    "passages": [
+      {
+        "label": "(一)",
+        "text": "圖(十)中的★地區曾發生過強震，由於該地區地勢高聳，終年積雪，地震引發雪崩。中國官方指出，地震震央雖在鄰近的國家，但中國鄰近震央的藏南地區也感受到極大的震度以及出現零星房屋倒塌等災情。",
+        "image": "images/geo3b/g1.png",
+        "items": [
+          {
+            "q": "文中提及地震引發的「雪崩」，指的是下列哪一地形區的積雪崩落？",
+            "options": [
+              "黃土高原",
+              "秦嶺",
+              "塔里木盆地",
+              "喜馬拉雅山"
+            ],
+            "correct": 3
+          },
+          {
+            "q": "圖中的地震產生與板塊間的活動有關，造成地震的板塊包括下列何者？",
+            "options": [
+              "北美板塊",
+              "印度─澳洲板塊",
+              "太平洋板塊",
+              "菲律賓海板塊"
+            ],
+            "correct": 1
+          },
+          {
+            "q": "上述提及中國出現房屋倒塌地區的氣候特徵，與下列哪一張圖所呈現的最相符？",
+            "options": [
+              "A",
+              "B",
+              "C",
+              "D"
+            ],
+            "correct": 1,
+            "image": "images/geo3b/a3.png"
+          }
+        ]
+      },
+      {
+        "label": "(二)",
+        "text": "中國荔枝的產期在春末到夏季期間，歷史上最有名的荔枝愛好者是楊貴妃。杜牧在其《新唐書楊貴妃傳》中說「妃嗜荔枝，必欲生致之，乃置騎傳送，走數千里，味不變，已至京師」，當時唐朝還開闢了從南到北專運荔枝的「荔枝道」，圖(十一)為主要的四個路線。",
+        "image": "images/geo3b/g2.png",
+        "items": [
+          {
+            "q": "由圖(十一)可知，中國的荔枝產地多屬於何種氣候區？",
+            "options": [
+              "高地氣候",
+              "草原氣候",
+              "沙漠氣候",
+              "季風氣候"
+            ],
+            "correct": 3
+          },
+          {
+            "q": "上文的「京師」為唐朝長安城，位於秦嶺北側平原，該地區不適合荔枝生產，是由於當地氣候呈現下列哪一特色？",
+            "options": [
+              "降水集中於冬季",
+              "冬季的氣溫較低",
+              "終年乾燥少雨，沙漠廣布",
+              "地勢高聳，平均溫度較低"
+            ],
+            "correct": 1
+          },
+          {
+            "q": "圖(十一)中丁路線所經過的地區包括下列哪一地形區？",
+            "options": [
+              "塔里木盆地",
+              "四川盆地",
+              "青藏高原",
+              "長江三角洲"
+            ],
+            "correct": 3
+          },
+          {
+            "q": "依中國荔枝的產期判斷，圖(十一)中丙、丁兩路線荔枝產地的收成季節，當地的盛行風向為下列何者？",
+            "options": [
+              "↖",
+              "↗",
+              "↙",
+              "↘"
+            ],
+            "correct": 1
+          }
+        ]
+      }
+    ]
+  }
+]
+};
+
+let currentMode = "quiz"; // quiz | print
+
+const contentEl = document.getElementById("content");
+const scoreBar = document.getElementById("scoreBar");
+const scoreText = document.getElementById("scoreText");
+
+function render(){
+  window.examAnswersRevealed = false;
+  contentEl.innerHTML = "";
+  DATA.sections.forEach((sec, si)=> contentEl.appendChild(renderSection(sec, si)));
+  if(currentMode==="quiz"){
+    scoreBar.classList.add("show");
+    updateScore();
+  } else {
+    scoreBar.classList.remove("show");
+    contentEl.querySelectorAll(".opt").forEach(o=>o.classList.add("disabled"));
+    contentEl.querySelectorAll(".opt.is-correct").forEach(o=>o.classList.add("correct"));
+  }
+}
+
+function renderSection(sec, si){
+  const block = document.createElement("section");
+  block.className = "block";
+  block.innerHTML = `<h2>${sec.title}</h2><p class="meta">${sec.meta}</p>`;
+
+  if(sec.type==="mc"){
+    sec.items.forEach((it,i)=>{
+      const q = document.createElement("div");
+      q.className = "q";
+      const optsHtml = it.options.map((op,oi)=>`
+        <div class="opt" data-idx="${oi}" data-correct="${oi===it.correct}">
+          <span class="tag">(${String.fromCharCode(65+oi)})</span><span>${op}</span>
+        </div>`).join("");
+      const imgHtml = it.image ? `<img src="${it.image}" alt="題目附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">` : "";
+      const img2Html = it.image2 ? `<img src="${it.image2}" alt="題目附圖2" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">` : "";
+      q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q}</div>
+        ${imgHtml}${img2Html}
+        <div class="opts">${optsHtml}</div>`;
+      q.querySelectorAll(".opt").forEach(optEl=>{
+        if(optEl.dataset.correct==="true") optEl.classList.add("is-correct");
+        optEl.addEventListener("click", ()=>selectOption(q, optEl));
+      });
+      block.appendChild(q);
+    });
+  }
+
+  else if(sec.type==="reading"){
+    sec.passages.forEach(p=>{
+      const passageDiv = document.createElement("div");
+      passageDiv.className = "passage";
+      passageDiv.innerHTML = `${p.label ? `<span class="passage-label">${p.label}</span>`:""}${p.text}${p.image ? `<img src="${p.image}" alt="題組附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-top:10px;border:1px solid var(--paper-line);">`:""}`;
+      block.appendChild(passageDiv);
+      p.items.forEach((it,i)=>{
+        const q = document.createElement("div");
+        q.className = "q";
+        const optsHtml = it.options.map((op,oi)=>`
+          <div class="opt" data-idx="${oi}" data-correct="${oi===it.correct}">
+            <span class="tag">(${String.fromCharCode(65+oi)})</span><span>${op}</span>
+          </div>`).join("");
+        q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q}</div>
+          ${it.image ? `<img src="${it.image}" alt="題目附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">`:""}
+          <div class="opts">${optsHtml}</div>`;
+        q.querySelectorAll(".opt").forEach(optEl=>{
+          if(optEl.dataset.correct==="true") optEl.classList.add("is-correct");
+          optEl.addEventListener("click", ()=>selectOption(q, optEl));
+        });
+        block.appendChild(q);
+      });
+    });
+  }
+
+  return block;
+}
+
+function selectOption(qEl, optEl){
+  if(currentMode!=="quiz") return;
+  if(qEl.dataset.answered==="true") return;
+  qEl.dataset.answered = "true";
+  qEl.querySelectorAll(".opt").forEach(o=>o.classList.add("disabled"));
+  optEl.classList.add("selected");
+  const correctOpt = qEl.querySelector('.opt[data-correct="true"]');
+  qEl.dataset.studentAnswer = optEl.textContent.trim();
+  qEl.dataset.correctAnswer = correctOpt ? correctOpt.textContent.trim() : "";
+  qEl.dataset.isCorrect = (optEl.dataset.correct==="true") ? "true" : "false";
+  updateScore();
+}
+
+function updateScore(){
+  let total = 0, answered = 0, correct = 0;
+  contentEl.querySelectorAll(".q").forEach(q=>{
+    const gradable = q.querySelector(".opts");
+    if(!gradable) return;
+    total++;
+    if(q.dataset.studentAnswer !== undefined){
+      answered++;
+      if(q.dataset.isCorrect === "true") correct++;
+    }
+  });
+  if(window.examAnswersRevealed){
+    scoreText.textContent = `${correct} / ${total}`;
+  } else {
+    scoreText.textContent = `已作答 ${answered} / ${total} 題`;
+  }
+}
+window.updateScore = updateScore;
+
+document.getElementById("resetBtn").addEventListener("click", render);
+document.getElementById("quizModeBtn").addEventListener("click", ()=>{
+  currentMode = "quiz";
+  document.getElementById("quizModeBtn").classList.add("active");
+  document.getElementById("printModeBtn").classList.remove("active");
+  render();
+});
+document.getElementById("printModeBtn").addEventListener("click", ()=>{
+  if(document.getElementById("printModeBtn").disabled) return;
+  currentMode = "print";
+  document.getElementById("printModeBtn").classList.add("active");
+  document.getElementById("quizModeBtn").classList.remove("active");
+  render();
+});
+
+window.unlockPrintMode = function(){
+  document.getElementById("printModeBtn").disabled = false;
+};
+
+render();
+</script>
+<script src="../sync.js?v=20261018b"></script>
+</body>
+</html>
