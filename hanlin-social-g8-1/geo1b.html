@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>段考題庫｜地理第1回 - 中國的地形</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@500;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#faf6ec;
+    --paper-line:#e3dcc8;
+    --ink:#26332b;
+    --ink-soft:#5b6b5f;
+    --chalk-green:#2f4538;
+    --chalk-green-2:#3d5a48;
+    --pen-red:#b8433a;
+    --pen-red-soft:#f4dedb;
+    --ok-green:#3f7d52;
+    --ok-green-soft:#dfeee1;
+    --gold:#b5842a;
+    --radius:10px;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:"Noto Sans TC",sans-serif;
+    line-height:1.7;
+  }
+  header.hero{
+    background:var(--chalk-green);
+    color:#eef2ea;
+    padding:28px 20px 40px;
+    position:relative;
+  }
+  header.hero::after{
+    content:"";
+    position:absolute;
+    left:0; right:0; bottom:-1px;
+    height:14px;
+    background:repeating-linear-gradient(90deg,var(--paper) 0 18px, transparent 18px 20px);
+  }
+  .hero-inner{max-width:880px;margin:0 auto;}
+  .breadcrumb a{color:#cfe0d1;text-decoration:none;font-size:14px;}
+  .breadcrumb a:hover{text-decoration:underline;}
+  h1{
+    font-family:"Noto Serif TC",serif;
+    font-weight:700;
+    font-size:clamp(24px,4vw,34px);
+    margin:10px 0 6px;
+  }
+  .subtitle{color:#cfe0d1;font-size:15px;margin:0;}
+  main{max-width:880px;margin:0 auto;padding:28px 20px 80px;}
+
+  .controls{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:22px;
+  }
+  .mode-toggle{display:flex;border:2px solid var(--chalk-green);border-radius:999px;overflow:hidden;}
+  .mode-toggle button{
+    background:transparent;border:none;padding:8px 16px;font-size:14px;font-weight:700;
+    color:var(--chalk-green);cursor:pointer;font-family:"Noto Sans TC",sans-serif;
+  }
+  .mode-toggle button.active{background:var(--gold);color:#fff;}
+  .mode-toggle button:disabled{opacity:.4;cursor:not-allowed;}
+
+  .score-bar{
+    display:none;
+    align-items:center;
+    justify-content:space-between;
+    background:#fff;
+    border:1px solid var(--paper-line);
+    border-left:5px solid var(--gold);
+    border-radius:var(--radius);
+    padding:12px 18px;
+    margin-bottom:22px;
+    font-size:14px;
+  }
+  .score-bar.show{display:flex;}
+  .score-bar strong{font-size:18px;color:var(--gold);}
+  .score-bar button{
+    background:none;border:1px solid var(--ink-soft);color:var(--ink-soft);
+    border-radius:6px;padding:6px 12px;font-size:13px;cursor:pointer;
+  }
+
+  section.block{
+    background:#fff;
+    border:1px solid var(--paper-line);
+    border-radius:var(--radius);
+    padding:22px 22px 26px;
+    margin-bottom:20px;
+  }
+  .block h2{
+    font-family:"Noto Serif TC",serif;
+    font-size:19px;
+    margin:0 0 4px;
+    color:var(--chalk-green);
+  }
+  .block .meta{color:var(--ink-soft);font-size:13px;margin:0 0 16px;}
+
+  .q{margin-bottom:18px;padding-bottom:16px;border-bottom:1px dashed var(--paper-line);}
+  .q:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0;}
+  .q-text{font-size:15.5px;margin-bottom:8px;}
+  .q-num{color:var(--gold);font-weight:700;margin-right:4px;}
+
+  .opts{display:grid;gap:8px;}
+  .opt{
+    display:flex;gap:8px;align-items:flex-start;
+    border:1.5px solid var(--paper-line);
+    border-radius:8px;
+    padding:9px 12px;
+    cursor:pointer;
+    font-size:14.5px;
+    background:#fffdf8;
+  }
+  .opt:hover{border-color:var(--chalk-green-2);}
+  .opt.selected{border-color:var(--chalk-green-2);background:#eef3ea;}
+  .opt.correct{border-color:var(--ok-green);background:var(--ok-green-soft);}
+  .opt.wrong{border-color:var(--pen-red);background:var(--pen-red-soft);}
+  .opt .tag{font-weight:700;color:var(--ink-soft);}
+  .opt.correct .tag{color:var(--ok-green);}
+  .opt.wrong .tag{color:var(--pen-red);}
+  .opt.disabled{cursor:default;}
+
+  .passage{
+    background:#f5f2e8;border-radius:8px;padding:14px 16px;margin-bottom:14px;
+    font-size:14.5px;white-space:pre-line;
+  }
+  .passage-label{font-weight:700;color:var(--chalk-green);margin-bottom:4px;display:block;}
+
+  .footer-link{
+    display:block;text-align:center;margin-top:30px;color:var(--chalk-green);
+    text-decoration:none;font-weight:700;font-size:14px;
+  }
+  .footer-link:hover{text-decoration:underline;}
+
+  @media print{
+    header.hero, .controls, .score-bar, .mini-btn, .footer-link{display:none !important;}
+    body{background:#fff;}
+    section.block{border:none;box-shadow:none;padding:8px 0;margin-bottom:14px;}
+    .opt.correct{background:none;border:none;font-weight:700;}
+    .opt.correct::after{content:" ← 正解";color:var(--pen-red);}
+    .opt{border:none;padding:2px 0;}
+    main{max-width:100%;padding:0 24px;}
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="breadcrumb"><a href="https://jenlin2002.github.io/">🏠 回總目錄</a> ／ <a href="../hanlin-social-g8-1.html" style="color:#cfe0d1;">段考題庫</a></div>
+    <h1>地理・第1回</h1>
+    <p class="subtitle">第1章 中國的地形｜翰林版八年級社會（三）Ｂ卷</p>
+  </div>
+</header>
+
+<main>
+  <div class="controls">
+    <div class="mode-toggle">
+      <button id="quizModeBtn" class="active">✏️ 測驗模式</button>
+      <button id="printModeBtn" disabled title="完成測驗並送出成績後才能查看">🖨️ 完整題目與解答（送出成績後解鎖）</button>
+    </div>
+  </div>
+
+  <div class="score-bar" id="scoreBar">
+    <div>目前得分：<strong id="scoreText">0 / 0</strong>（僅計算選擇題）</div>
+    <button id="resetBtn">重新作答</button>
+  </div>
+
+  <div id="content"></div>
+
+  <a class="footer-link" href="../hanlin-social-g8-1.html">← 回段考題庫總覽</a>
+</main>
+
+<script>
+
+window.EXAM_META = { version: "B卷", examLabel: "地理第1回" };
+const DATA = {
+  sections: [
+  {
+    "type": "mc",
+    "title": "一、單題",
+    "meta": "72%，每題3分",
+    "items": [
+      {
+        "q": "圓餅圖是呈現比例的最佳圖示之一，如果要利用此一圖示來呈現中國各類地形所占面積的比例，則下列何者最正確？",
+        "options": [
+          "A",
+          "B",
+          "C",
+          "D"
+        ],
+        "correct": 2,
+        "image": "images/geo1b/q1.png"
+      },
+      {
+        "q": "中國發布的「2023 年版標準地圖」，將許多與鄰國存在爭議的地區皆納入中國的行政區，此舉引發許多鄰國抗議。根據中國的位置來看，最可能提出抗議的國家是下列何者？",
+        "options": [
+          "英國",
+          "印度",
+          "加拿大",
+          "紐西蘭"
+        ],
+        "correct": 1
+      },
+      {
+        "q": "小如到中國旅遊，看到旅遊導覽寫著：「奔馳在海拔五千多公尺高的鐵路前往世界屋脊，利用高架橋克服地形高低起伏問題，沿途行經湛藍通透的青海湖。」根據導覽內容，小如最可能到下列何地旅遊？",
+        "options": [
+          "黃土高原",
+          "青藏高原",
+          "塔里木盆地",
+          "長江三角洲"
+        ],
+        "correct": 1
+      },
+      {
+        "q": "中國五大地形中，農業發達、人口密集的精華區應位在下列哪一張等高線所呈現的地形區中？",
+        "options": [
+          "A",
+          "B",
+          "C",
+          "D"
+        ],
+        "correct": 0,
+        "image": "images/geo1b/q4.png"
+      },
+      {
+        "q": "「中煤集團是世界三大煤炭企業，該公司目前所開挖的礦坑集中在圖(一)中的圓圈附近。」依圖中內容判斷，其挖掘地區最可能位於下列何者？",
+        "options": [
+          "青藏高原",
+          "四川盆地",
+          "黃土高原",
+          "塔里木盆地"
+        ],
+        "correct": 2,
+        "image": "images/geo1b/q5.png"
+      },
+      {
+        "q": "「黑龍江省漠河縣的北極村是中國境內觀賞極光的最佳地點，遊客可遊覽中國與鄰國俄羅斯邊界河川中的沙洲，造訪最北的哨所與郵局等特色建築，感受極地風情。」文中提及的中國鄰國其領土涵蓋下列哪一地區？",
+        "options": [
+          "北亞",
+          "西亞",
+          "南亞",
+          "東南亞"
+        ],
+        "correct": 0
+      },
+      {
+        "q": "中國設立 5 個少數民族自治區，這些行政區分布於地勢高階及中階地形區內，其分布位置與下列哪一張圖所呈現的最相符？",
+        "options": [
+          "A",
+          "B",
+          "C",
+          "D"
+        ],
+        "correct": 1,
+        "image": "images/geo1b/q7.png"
+      },
+      {
+        "q": "這個地形區為位於長江河口的沖積平原，同時也是中國人口與產業的精華區。該地形區最可能為圖(二)中何處？",
+        "options": [
+          "甲",
+          "乙",
+          "丙",
+          "丁"
+        ],
+        "correct": 2,
+        "image": "images/geo1b/q8.png"
+      },
+      {
+        "q": "「中國疆域面積遼闊，在陸地上共與 14 個國家接壤，總界線長達約 2.2 萬公里，是全球陸地鄰國最多的國家之一。」上文中提及的 14 個國家<b>不包括</b>下列何者？",
+        "options": [
+          "越南",
+          "印度",
+          "日本",
+          "北韓"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "地理老師要求同學回家繪製一張中國位置圖，並且標上經緯度，下列哪一張地圖最正確？",
+        "options": [
+          "A",
+          "B",
+          "C",
+          "D"
+        ],
+        "correct": 0,
+        "image": "images/geo1b/q10.png"
+      },
+      {
+        "q": "地理老師請同學針對中國地勢起伏的型態及其可能產生的影響進行討論，下列哪一位同學的說法最正確？",
+        "options": [
+          "明哲：地勢南高北低",
+          "昱成：大河注入大西洋",
+          "禮文：河川由西向東流",
+          "夏琳：國土多居中緯度"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "「位於雲南省西側的新華隧道日前完工，這是通往中南半島國家的鐵路工程，隧道經過的地區山高谷深，需克服高水壓、高地震強度等難題。」上述隧道經過的地區可能為下列何者？",
+        "options": [
+          "四川盆地",
+          "黃土高原",
+          "橫斷山脈",
+          "東南丘陵"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "畫分地理區域的方式相當多樣，下列何者是依據地勢高低所畫分出的區域？",
+        "options": [
+          "A",
+          "B",
+          "C",
+          "D"
+        ],
+        "correct": 0,
+        "image": "images/geo1b/q13.png"
+      },
+      {
+        "q": "依據地形高度，可以將中國大致分為高、中、低三階，下列哪一地形區<b>不屬於</b>「中階」？",
+        "options": [
+          "四川盆地",
+          "內蒙古高原",
+          "青藏高原",
+          "塔里木盆地"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "「雅魯藏布江是全世界海拔最高的河流，流量大、落差大，水力資源非常豐富，中國計畫在該河川中游興建水壩，地點如圖(三)所示，此舉引起下游國家的關切。」上文中提及的下游國家應位於亞洲哪一分區？",
+        "options": [
+          "南亞",
+          "北亞",
+          "中亞",
+          "東南亞"
+        ],
+        "correct": 0,
+        "image": "images/geo1b/q15.png"
+      },
+      {
+        "q": "家住臺灣的君平和友人利用假期前往中國旅遊，他們的旅遊地是上海，這座巨大繁榮的城市位於長江三角洲，除了各式的現代建築外，還能欣賞江南水鄉景觀。君平若由臺北搭機前往，飛機最可能朝哪一方向飛行？",
+        "options": [
+          "東北方",
+          "東南方",
+          "西北方",
+          "西南方"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "中國東半部山脈多為東北──西南走向，下列哪一張示意圖最能呈現該區板塊推擠影響山脈的方向？",
+        "options": [
+          "A",
+          "B",
+          "C",
+          "D"
+        ],
+        "correct": 3,
+        "image": "images/geo1b/q17.png"
+      },
+      {
+        "q": "甲地形區西依青藏高原和橫斷山脈，由連結的山脈環繞而成，中央地區的海拔多在250～700公尺，河川都是由該區邊緣山地匯聚到長江流域。上述甲地形區最可能為何？",
+        "options": [
+          "東南丘陵",
+          "四川盆地",
+          "塔里木盆地",
+          "長江三角洲"
+        ],
+        "correct": 1
+      },
+      {
+        "q": "此高原位於中國地形的最高階，是除了南北極之外，地球的「第三極」。文中提及的高原應為圖(四)中何處？",
+        "options": [
+          "甲",
+          "乙",
+          "丙",
+          "丁"
+        ],
+        "correct": 3,
+        "image": "images/geo1b/q19.png"
+      },
+      {
+        "q": "知名的空拍攝影師王先生要前進中國製作一系列的空拍影片，下列為其四次攝影路線圖，他在哪一路線中<b>無法</b>拍攝到中國高原地區的地景地貌？",
+        "options": [
+          "A",
+          "B",
+          "C",
+          "D"
+        ],
+        "correct": 0,
+        "image": "images/geo1b/q20.png"
+      },
+      {
+        "q": "圖(五)是 2025 年 1 月 7 日規模 7.1 地震的震央位置，該次地震的發生最可能是歐亞板塊與哪一板塊間的活動有關？",
+        "options": [
+          "北美板塊",
+          "太平洋板塊",
+          "菲律賓海板塊",
+          "印度─澳洲板塊"
+        ],
+        "correct": 3,
+        "image": "images/geo1b/q21.png"
+      },
+      {
+        "q": "圖(六)是預計於 2030 年完工的中吉烏鐵路。依據圖中資訊判斷，中國可利用該鐵路線聯繫亞洲哪一地區？",
+        "options": [
+          "南亞",
+          "中亞",
+          "東北亞",
+          "東南亞"
+        ],
+        "correct": 1,
+        "image": "images/geo1b/q22.png"
+      },
+      {
+        "q": "圖(七)為中國某河段的縱剖面示意圖，該河段河川水量豐沛，加上其位於中國地勢高、中兩階的交界處，山高谷深，適合在該地區興建水力發電設施。上文中提及的河段應位於圖(八)中哪一地區？",
+        "options": [
+          "甲",
+          "乙",
+          "丙",
+          "丁"
+        ],
+        "correct": 2,
+        "image": "images/geo1b/q23.png"
+      },
+      {
+        "q": "四極點是指一個地理範圍內最東、最西、最南、最北的四個極端位置，通常用來描述一個國家、洲或大陸的地理範圍。近年來有愈來愈多的遊客喜歡進行「極點之旅」。附表為中國四極點的位置，若有遊客想體驗「極西點」的最晚日出及日落的感受，則其所前往的地區可能為表中何地？",
+        "options": [
+          "甲",
+          "乙",
+          "丙",
+          "丁"
+        ],
+        "correct": 1,
+        "image": "images/geo1b/q24.png"
+      }
+    ]
+  },
+  {
+    "type": "reading",
+    "title": "二、題組",
+    "meta": "28%，每題4分",
+    "passages": [
+      {
+        "label": "(一)",
+        "text": "中國山脈走向有明顯的空間分布差異，其山脈的走向與板塊和擠壓方向有關，圖(九)中的山脈是中國重要的地形分界，其東西兩側分屬於不同的地形區。",
+        "image": "images/geo1b/g1.png",
+        "items": [
+          {
+            "q": "圖中所標示出的山脈走向是歐亞板塊與哪一板塊的擠壓所致？",
+            "options": [
+              "非洲板塊",
+              "北美板塊",
+              "太平洋板塊",
+              "印度-澳洲板塊"
+            ],
+            "correct": 2
+          },
+          {
+            "q": "乙地形區的地表呈現溝壑縱橫、崎嶇不平的景象，此一地貌的成因與下列何者的關係最密切？",
+            "options": [
+              "板塊作用",
+              "河川侵蝕",
+              "風力侵蝕",
+              "火山活動"
+            ],
+            "correct": 1
+          },
+          {
+            "q": "圖中甲地形區為中原文化的核心，現今仍為中國政治中心。若前往該區旅遊，會有以下哪一參觀行程？",
+            "options": [
+              "長江小鎮",
+              "新疆沙漠",
+              "北京故宮",
+              "蒙古草原"
+            ],
+            "correct": 2
+          },
+          {
+            "q": "甲地區為遼闊的平原，沖積出該平原的河川應包括下列何者？",
+            "options": [
+              "黃河",
+              "珠江",
+              "長江",
+              "松花江"
+            ],
+            "correct": 0
+          }
+        ]
+      },
+      {
+        "label": "(二)",
+        "text": "圖(十)為亞洲分區圖。明清時期中國東南沿海地區人口遽增，加上該地區的地形限制，糧食不足，生活壓力大，因此部分居民遠渡重洋移居臺灣及今日的東南亞地區，而使得這些地區有「中國僑鄉」之稱。",
+        "image": "images/geo1b/g2.png",
+        "items": [
+          {
+            "q": "上文提及部分居民遠渡重洋除了移居臺灣之外，還包含圖(十)中哪一地區？",
+            "options": [
+              "甲",
+              "乙",
+              "丙",
+              "丁"
+            ],
+            "correct": 1
+          },
+          {
+            "q": "文中提及的中國僑鄉屬中國哪一地勢階梯？",
+            "options": [
+              "高階",
+              "中階",
+              "低階",
+              "無法判斷"
+            ],
+            "correct": 2
+          },
+          {
+            "q": "依上文判斷，有「中國僑鄉」之稱的地區可能以何種地形為主？",
+            "options": [
+              "A",
+              "B",
+              "C",
+              "D"
+            ],
+            "correct": 1,
+            "image": "images/geo1b/a7.png"
+          }
+        ]
+      }
+    ]
+  }
+]
+};
+
+let currentMode = "quiz"; // quiz | print
+
+const contentEl = document.getElementById("content");
+const scoreBar = document.getElementById("scoreBar");
+const scoreText = document.getElementById("scoreText");
+
+function render(){
+  window.examAnswersRevealed = false;
+  contentEl.innerHTML = "";
+  DATA.sections.forEach((sec, si)=> contentEl.appendChild(renderSection(sec, si)));
+  if(currentMode==="quiz"){
+    scoreBar.classList.add("show");
+    updateScore();
+  } else {
+    scoreBar.classList.remove("show");
+    contentEl.querySelectorAll(".opt").forEach(o=>o.classList.add("disabled"));
+    contentEl.querySelectorAll(".opt.is-correct").forEach(o=>o.classList.add("correct"));
+  }
+}
+
+function renderSection(sec, si){
+  const block = document.createElement("section");
+  block.className = "block";
+  block.innerHTML = `<h2>${sec.title}</h2><p class="meta">${sec.meta}</p>`;
+
+  if(sec.type==="mc"){
+    sec.items.forEach((it,i)=>{
+      const q = document.createElement("div");
+      q.className = "q";
+      const optsHtml = it.options.map((op,oi)=>`
+        <div class="opt" data-idx="${oi}" data-correct="${oi===it.correct}">
+          <span class="tag">(${String.fromCharCode(65+oi)})</span><span>${op}</span>
+        </div>`).join("");
+      const imgHtml = it.image ? `<img src="${it.image}" alt="題目附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">` : "";
+      const img2Html = it.image2 ? `<img src="${it.image2}" alt="題目附圖2" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">` : "";
+      q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q}</div>
+        ${imgHtml}${img2Html}
+        <div class="opts">${optsHtml}</div>`;
+      q.querySelectorAll(".opt").forEach(optEl=>{
+        if(optEl.dataset.correct==="true") optEl.classList.add("is-correct");
+        optEl.addEventListener("click", ()=>selectOption(q, optEl));
+      });
+      block.appendChild(q);
+    });
+  }
+
+  else if(sec.type==="reading"){
+    sec.passages.forEach(p=>{
+      const passageDiv = document.createElement("div");
+      passageDiv.className = "passage";
+      passageDiv.innerHTML = `${p.label ? `<span class="passage-label">${p.label}</span>`:""}${p.text}${p.image ? `<img src="${p.image}" alt="題組附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-top:10px;border:1px solid var(--paper-line);">`:""}`;
+      block.appendChild(passageDiv);
+      p.items.forEach((it,i)=>{
+        const q = document.createElement("div");
+        q.className = "q";
+        const optsHtml = it.options.map((op,oi)=>`
+          <div class="opt" data-idx="${oi}" data-correct="${oi===it.correct}">
+            <span class="tag">(${String.fromCharCode(65+oi)})</span><span>${op}</span>
+          </div>`).join("");
+        q.innerHTML = `<div class="q-text"><span class="q-num">${i+1}.</span>${it.q}</div>
+          ${it.image ? `<img src="${it.image}" alt="題目附圖" style="width:100%;max-width:420px;display:block;border-radius:8px;margin-bottom:10px;border:1px solid var(--paper-line);">`:""}
+          <div class="opts">${optsHtml}</div>`;
+        q.querySelectorAll(".opt").forEach(optEl=>{
+          if(optEl.dataset.correct==="true") optEl.classList.add("is-correct");
+          optEl.addEventListener("click", ()=>selectOption(q, optEl));
+        });
+        block.appendChild(q);
+      });
+    });
+  }
+
+  return block;
+}
+
+function selectOption(qEl, optEl){
+  if(currentMode!=="quiz") return;
+  if(qEl.dataset.answered==="true") return;
+  qEl.dataset.answered = "true";
+  qEl.querySelectorAll(".opt").forEach(o=>o.classList.add("disabled"));
+  optEl.classList.add("selected");
+  const correctOpt = qEl.querySelector('.opt[data-correct="true"]');
+  qEl.dataset.studentAnswer = optEl.textContent.trim();
+  qEl.dataset.correctAnswer = correctOpt ? correctOpt.textContent.trim() : "";
+  qEl.dataset.isCorrect = (optEl.dataset.correct==="true") ? "true" : "false";
+  updateScore();
+}
+
+function updateScore(){
+  let total = 0, answered = 0, correct = 0;
+  contentEl.querySelectorAll(".q").forEach(q=>{
+    const gradable = q.querySelector(".opts");
+    if(!gradable) return;
+    total++;
+    if(q.dataset.studentAnswer !== undefined){
+      answered++;
+      if(q.dataset.isCorrect === "true") correct++;
+    }
+  });
+  if(window.examAnswersRevealed){
+    scoreText.textContent = `${correct} / ${total}`;
+  } else {
+    scoreText.textContent = `已作答 ${answered} / ${total} 題`;
+  }
+}
+window.updateScore = updateScore;
+
+document.getElementById("resetBtn").addEventListener("click", render);
+document.getElementById("quizModeBtn").addEventListener("click", ()=>{
+  currentMode = "quiz";
+  document.getElementById("quizModeBtn").classList.add("active");
+  document.getElementById("printModeBtn").classList.remove("active");
+  render();
+});
+document.getElementById("printModeBtn").addEventListener("click", ()=>{
+  if(document.getElementById("printModeBtn").disabled) return;
+  currentMode = "print";
+  document.getElementById("printModeBtn").classList.add("active");
+  document.getElementById("quizModeBtn").classList.remove("active");
+  render();
+});
+
+window.unlockPrintMode = function(){
+  document.getElementById("printModeBtn").disabled = false;
+};
+
+render();
+</script>
+<script src="../sync.js?v=20261018b"></script>
+</body>
+</html>
